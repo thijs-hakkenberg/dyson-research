@@ -143,6 +143,11 @@ def run_mc_loop(
 ) -> NDFloat:
     """Execute the MC loop: for each sample, compute crossover at fixed r.
 
+    When the baseline has launch learning (b_L is set), the sampled p_launch
+    is decomposed into fuel and ops components: p_fuel is held at the baseline
+    value (irreducible propellant floor), and p_ops = p_launch - p_fuel
+    captures the learnable operational component.
+
     Returns array of crossover values.
     """
     n_runs = len(next(iter(param_arrays.values())))
@@ -152,6 +157,12 @@ def run_mc_loop(
         for name, arr in param_arrays.items():
             p[name] = arr[i]
         p["r"] = r_fixed
+        # Decompose sampled p_launch into fuel/ops when launch learning is active
+        if p.get("b_L") is not None:
+            p_fuel_base = BASELINE.get("p_fuel", 200)
+            p_launch_sampled = p["p_launch"]
+            p["p_fuel"] = p_fuel_base
+            p["p_ops_launch"] = max(p_launch_sampled - p_fuel_base, 0)
         crossovers[i] = find_crossover_npv(p, N_max=n_max)
     return crossovers
 

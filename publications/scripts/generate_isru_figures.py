@@ -1286,6 +1286,26 @@ def print_no_launch_learning_sensitivity():
 
 
 # ---------------------------------------------------------------------------
+# J1: Fuel floor sensitivity
+# ---------------------------------------------------------------------------
+def print_fuel_floor_sensitivity():
+    """J1: Sweep fuel floor to show robustness of structural asymmetry argument."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  J1: Fuel floor sensitivity (NPV, r=5%, baseline N*={base_npv:,}):")
+    print(f"  {'p_fuel':>8s}  {'p_ops':>8s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}")
+
+    for p_fuel in [50, 100, 200, 300, 400]:
+        p = BASELINE.copy()
+        p["p_fuel"] = p_fuel
+        p["p_ops_launch"] = 1000 - p_fuel  # keep total first-unit = $1000/kg
+        cross = find_crossover_npv(p)
+        shift = cross - base_npv
+        print(f"  {p_fuel:>7d}$  {1000-p_fuel:>7d}$  {cross:>8,d}  {shift:>+8,d}")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -1374,5 +1394,6 @@ if __name__ == "__main__":
     print_additional_correlations()
     print_revenue_breakeven()
     print_no_launch_learning_sensitivity()
+    print_fuel_floor_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")
