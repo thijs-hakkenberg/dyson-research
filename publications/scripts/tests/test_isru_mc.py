@@ -20,9 +20,12 @@ class TestSampleMCParams:
         for name, arr in params.items():
             assert arr.shape == (100,), f"{name} has wrong shape"
 
-    def test_all_nine_params_present(self, rng):
+    def test_all_eleven_params_present(self, rng):
         params = sample_mc_params(rng, 10)
-        expected = {"p_launch", "K", "LR_E", "LR_I", "t0", "C_ops1", "C_mfg1", "alpha", "p_transport"}
+        expected = {
+            "p_launch", "K", "LR_E", "LR_I", "t0", "C_ops1", "C_mfg1",
+            "alpha", "p_transport", "C_floor", "prod_rate",
+        }
         assert set(params.keys()) == expected
 
     def test_ranges_respected(self, rng):
@@ -36,6 +39,8 @@ class TestSampleMCParams:
         assert np.all(params["C_mfg1"] >= 50e6) and np.all(params["C_mfg1"] <= 100e6)
         assert np.all(params["alpha"] >= 1.0) and np.all(params["alpha"] <= 2.0)
         assert np.all(params["p_transport"] >= 50) and np.all(params["p_transport"] <= 300)
+        assert np.all(params["C_floor"] >= 0.3e6) and np.all(params["C_floor"] <= 2.0e6)
+        assert np.all(params["prod_rate"] >= 250) and np.all(params["prod_rate"] <= 750)
 
     def test_correlated_vs_uncorrelated(self, rng):
         """Correlated samples should have positive correlation between p_launch and K."""
@@ -151,7 +156,7 @@ class TestRunMCIntegration:
         assert result.r_fixed == 0.05
         assert len(result.crossovers) == 500
         assert 0 <= result.stats.convergence_rate <= 100
-        assert len(result.spearman) == 9  # 9 parameters
+        assert len(result.spearman) == 11  # 11 parameters
 
     @pytest.mark.slow
     def test_reproducible_with_same_seed(self):

@@ -12,6 +12,7 @@ from isru_model import (
     cumulative_isru,
     cumulative_npv,
     earth_delivery_time,
+    earth_delivery_time_ramped,
     earth_unit_cost,
     find_crossover,
     find_crossover_npv,
@@ -253,6 +254,48 @@ class TestEarthDeliveryTime:
         ts = earth_delivery_time(ns, 500)
         expected = np.array([0.2, 1.0, 2.0])
         np.testing.assert_allclose(ts, expected)
+
+
+# ===== TestEarthDeliveryTimeRamped =====
+
+class TestEarthDeliveryTimeRamped:
+    def test_monotonic(self):
+        ns = np.arange(1, 1000, dtype=float)
+        ts = earth_delivery_time_ramped(ns, 500, t0_earth=1.0, k_earth=2.0)
+        assert np.all(np.diff(ts) >= 0)
+
+    def test_matches_unit_to_time(self):
+        """Ramped Earth schedule uses same logistic as ISRU schedule."""
+        ns = np.array([1.0, 100.0, 1000.0])
+        ts_ramped = earth_delivery_time_ramped(ns, 500, t0_earth=1.0, k_earth=2.0)
+        ts_unit = unit_to_time(ns, 500, 1.0, 2.0)
+        np.testing.assert_allclose(ts_ramped, ts_unit)
+
+    def test_t0_zero_approaches_linear(self):
+        """With t0=0 and large k, should approach n/prod_rate."""
+        ns = np.array([500.0, 1000.0, 5000.0])
+        ts = earth_delivery_time_ramped(ns, 500, t0_earth=0.0, k_earth=10.0)
+        expected = ns / 500.0
+        # For large k and t0=0, the logistic approaches linear at large n
+        np.testing.assert_allclose(ts, expected, atol=0.5)
+
+    def test_delayed_vs_instant(self):
+        """Ramped schedule should always be later than instant start."""
+        ns = np.array([10.0, 100.0, 1000.0])
+        ts_instant = earth_delivery_time(ns, 500)
+        ts_ramped = earth_delivery_time_ramped(ns, 500, t0_earth=1.0, k_earth=2.0)
+        assert np.all(ts_ramped >= ts_instant)
+
+    def test_find_crossover_with_earth_ramp(self):
+        """Crossover with Earth ramp should be >= crossover without.
+
+        Earth ramp delays Earth costs → lower PV → Earth looks cheaper →
+        ISRU needs more units to achieve crossover.
+        """
+        p = BASELINE.copy()
+        cross_no_ramp = find_crossover(p, discount=True)
+        cross_ramp = find_crossover(p, discount=True, earth_ramp=(1.0, 2.0))
+        assert cross_ramp >= cross_no_ramp
 
 
 # ===== TestCumulativeNPV =====

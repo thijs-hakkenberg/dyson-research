@@ -232,12 +232,27 @@ def earth_delivery_time(ns: float | NDFloat, prod_rate: float = 500) -> NDFloat:
     return asarray(ns, dtype=float) / prod_rate
 
 
+def earth_delivery_time_ramped(
+    ns: float | NDFloat,
+    prod_rate: float = 500,
+    t0_earth: float = 1.0,
+    k_earth: float = 2.0,
+) -> NDFloat:
+    """Earth delivery time with logistic ramp-up (robustness test).
+
+    Like the ISRU schedule but with a shorter ramp-up delay.
+    Uses the same integrated-logistic inverse as unit_to_time.
+    """
+    return unit_to_time(asarray(ns, dtype=float), prod_rate, t0_earth, k_earth)
+
+
 def find_crossover(
     params: Params,
     n_max: int = 20000,
     *,
     discount: bool = False,
     phased_k_years: int | None = None,
+    earth_ramp: tuple[float, float] | None = None,
 ) -> int:
     """Find smallest N where ISRU cumulative <= Earth cumulative.
 
@@ -251,6 +266,9 @@ def find_crossover(
         If True, use NPV discounting with pathway-specific timing.
     phased_k_years : int or None
         If set, spread capital K over this many annual tranches (requires discount=True).
+    earth_ramp : tuple(t0_earth, k_earth) or None
+        If set, use logistic ramp-up for Earth delivery schedule instead of
+        instant-start. Tuple is (midpoint_years, steepness).
     """
     r = params.get("r", 0.0) if discount else 0.0
 
@@ -266,7 +284,11 @@ def find_crossover(
     # Earth side
     earth_units = earth_unit_cost(ns, params)
     if discount:
-        t_n_earth = earth_delivery_time(ns, prod_rate)
+        if earth_ramp is not None:
+            t0_e, k_e = earth_ramp
+            t_n_earth = earth_delivery_time_ramped(ns, prod_rate, t0_e, k_e)
+        else:
+            t_n_earth = earth_delivery_time(ns, prod_rate)
         discount_earth = (1.0 + r) ** (-t_n_earth)
         earth_cum = cumsum(earth_units * discount_earth)
     else:

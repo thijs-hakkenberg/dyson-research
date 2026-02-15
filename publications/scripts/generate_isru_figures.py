@@ -47,6 +47,7 @@ from isru_model import (  # noqa: E402
     cumulative_isru,
     cumulative_npv,
     earth_delivery_time,
+    earth_delivery_time_ramped,
     earth_unit_cost,
     find_crossover,
     find_crossover_npv,
@@ -405,6 +406,12 @@ def print_mc_diagnostics(all_results, mc_rates):
             for label, rate in ncp.non_conv_by_K.items():
                 print(f"           K={label}: {rate:.1f}% non-converge")
 
+        if res.convergence_drivers:
+            print("         Convergence drivers (Cohen's d, converged vs non-converged):")
+            for name, d in res.convergence_drivers[:5]:
+                direction = "favors conv." if d > 0 else "favors non-conv."
+                print(f"           {name:>12s}: d={d:+.3f} ({direction})")
+
 
 def print_copula_diagnostic(res5):
     """Print copula diagnostic comparing correlated vs uncorrelated sampling."""
@@ -669,6 +676,64 @@ def print_cumulative_economics():
 
 
 # ---------------------------------------------------------------------------
+# F4: Earth ramp-up robustness test
+# ---------------------------------------------------------------------------
+def print_earth_ramp_robustness():
+    """F4: Test crossover with Earth logistic ramp-up (1yr and 2yr midpoints)."""
+    base_npv = find_crossover(BASELINE, discount=True)
+    print("\n  F4: Earth ramp-up robustness (NPV, r=5%):")
+    print(f"    Baseline (instant Earth start):     N* = {base_npv:,}")
+    for t0_e in [1.0, 2.0]:
+        cross = find_crossover(
+            BASELINE, discount=True, earth_ramp=(t0_e, 2.0)
+        )
+        shift = cross - base_npv
+        pct = shift / base_npv * 100
+        print(f"    Earth ramp-up t0={t0_e:.0f}yr, k=2.0:    N* = {cross:,} "
+              f"(shift: {shift:+,}, {pct:+.1f}%)")
+
+
+# ---------------------------------------------------------------------------
+# F3: C_floor threshold analysis
+# ---------------------------------------------------------------------------
+def print_cfloor_threshold():
+    """F3: Sweep C_floor to find where crossover fails."""
+    from numpy import linspace as np_linspace
+    floors = np_linspace(0.3e6, 3.0e6, 28)
+    print("\n  F3: C_floor threshold analysis (NPV, r=5%):")
+    n_max = 40000
+    threshold_found = False
+    for cf in floors:
+        p = BASELINE.copy()
+        p["C_floor"] = cf
+        cross = find_crossover(p, n_max=n_max, discount=True)
+        label = f"${cf/1e6:.1f}M"
+        if cross >= n_max and not threshold_found:
+            print(f"    C_floor = {label:>6s}: NO CROSSOVER within {n_max:,} units  <-- threshold")
+            threshold_found = True
+        elif not threshold_found:
+            print(f"    C_floor = {label:>6s}: N* = {cross:,}")
+    if not threshold_found:
+        print(f"    Crossover achieved at all tested C_floor values up to $3.0M")
+
+
+# ---------------------------------------------------------------------------
+# F6: Production rate sensitivity
+# ---------------------------------------------------------------------------
+def print_prod_rate_sensitivity():
+    """F6: Sweep prod_rate and show crossover shift."""
+    base_npv = find_crossover(BASELINE, discount=True)
+    rates = [250, 500, 750, 1000]
+    print("\n  F6: Production rate sensitivity (NPV, r=5%):")
+    for pr in rates:
+        p = BASELINE.copy()
+        p["prod_rate"] = pr
+        cross = find_crossover(p, discount=True)
+        shift = cross - base_npv
+        print(f"    prod_rate={pr:>5d} units/yr: N* = {cross:,} (shift: {shift:+,})")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -732,5 +797,8 @@ if __name__ == "__main__":
     print_learning_scenarios()
     print_distribution_sensitivity()
     print_cumulative_economics()
+    print_earth_ramp_robustness()
+    print_cfloor_threshold()
+    print_prod_rate_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")

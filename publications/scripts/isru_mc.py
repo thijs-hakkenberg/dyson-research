@@ -7,7 +7,7 @@ analysis as composable functions. No matplotlib, no prints.
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
-from numpy import floating, array, clip, empty, percentile, sum, mean, median
+from numpy import floating, array, clip, empty, percentile, sum, mean, median, std as np_std, sqrt as np_sqrt
 from numpy.random import Generator
 from numpy.linalg import cholesky 
 from numpy.typing import NDArray
@@ -72,6 +72,7 @@ class MCResult:
     non_convergence_profile: NonConvergenceProfile
     param_arrays: dict[str, NDFloat]
     N_MAX_MC: int
+    convergence_drivers: list[tuple[str, float]] = field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -118,6 +119,8 @@ def sample_mc_params(
         "C_mfg1": rng.uniform(50e6, 100e6, n_runs),
         "alpha": rng.uniform(1.0, 2.0, n_runs),
         "p_transport": rng.uniform(50, 300, n_runs),
+        "C_floor": rng.uniform(0.3e6, 2.0e6, n_runs),
+        "prod_rate": rng.uniform(250, 750, n_runs),
     }
 
 
@@ -254,6 +257,39 @@ def characterize_nonconvergence(
     )
 
 
+def compute_convergence_drivers(
+    param_arrays: dict[str, NDFloat],
+    converged_mask: NDFloat,
+) -> list[tuple[str, float]]:
+    """Censoring-aware analysis: standardized mean difference for each param.
+
+    Computes Cohen's d between converged and non-converged groups for each
+    parameter, ranking by |d|. This avoids the censoring bias in Spearman
+    correlations (which treat non-converged runs as tied at H).
+    """
+    n_conv = int(sum(converged_mask))
+    n_nonconv = int(sum(~converged_mask))
+    if n_conv < 30 or n_nonconv < 30:
+        return []
+
+    results = []
+    for name, arr in param_arrays.items():
+        m_conv = float(mean(arr[converged_mask]))
+        m_nonconv = float(mean(arr[~converged_mask]))
+        s_conv = float(np_std(arr[converged_mask], ddof=1))
+        s_nonconv = float(np_std(arr[~converged_mask], ddof=1))
+        # Pooled standard deviation
+        s_pooled = float(np_sqrt(
+            ((n_conv - 1) * s_conv**2 + (n_nonconv - 1) * s_nonconv**2)
+            / (n_conv + n_nonconv - 2)
+        ))
+        d = (m_conv - m_nonconv) / s_pooled if s_pooled > 0 else 0.0
+        results.append((name, d))
+
+    results.sort(key=lambda x: abs(x[1]), reverse=True)
+    return results
+
+
 # ---------------------------------------------------------------------------
 # Orchestrator
 # ---------------------------------------------------------------------------
@@ -289,6 +325,8 @@ def run_mc(
         param_arrays, converged_mask, crossovers, n_max_mc
     )
 
+    conv_drivers = compute_convergence_drivers(param_arrays, converged_mask)
+
     return MCResult(
         r_fixed=r_fixed,
         crossovers=crossovers,
@@ -299,4 +337,5 @@ def run_mc(
         non_convergence_profile=nonconv,
         param_arrays=param_arrays,
         N_MAX_MC=n_max_mc,
+        convergence_drivers=conv_drivers,
     )
