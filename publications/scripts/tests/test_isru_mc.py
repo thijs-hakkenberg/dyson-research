@@ -138,15 +138,15 @@ class TestNonconvergenceRate:
             params, converged_mask, crossovers, 40000
         )
         # Higher K bucket should have more non-convergence
-        if "$30-50B" in nonconv.nonconv_by_K and "$75-100B" in nonconv.nonconv_by_K:
-            assert nonconv.nonconv_by_K["$75-100B"] > nonconv.nonconv_by_K["$30-50B"]
+        if "$30-50B" in nonconv.non_conv_by_K and "$75-100B" in nonconv.non_conv_by_K:
+            assert nonconv.non_conv_by_K["$75-100B"] > nonconv.non_conv_by_K["$30-50B"]
 
 
 class TestRunMCIntegration:
     @pytest.mark.slow
     def test_full_run_produces_valid_result(self):
         rng = np.random.default_rng(42)
-        result = run_mc(0.05, rng, n_runs=500, N_MAX_MC=20000)
+        result = run_mc(0.05, rng, n_runs=500, n_max_mc=20000)
         assert isinstance(result, MCResult)
         assert result.r_fixed == 0.05
         assert len(result.crossovers) == 500
@@ -156,9 +156,9 @@ class TestRunMCIntegration:
     @pytest.mark.slow
     def test_reproducible_with_same_seed(self):
         rng1 = np.random.default_rng(123)
-        res1 = run_mc(0.05, rng1, n_runs=200, N_MAX_MC=10000)
+        res1 = run_mc(0.05, rng1, n_runs=200, n_max_mc=10000)
 
         rng2 = np.random.default_rng(123)
-        res2 = run_mc(0.05, rng2, n_runs=200, N_MAX_MC=10000)
+        res2 = run_mc(0.05, rng2, n_runs=200, n_max_mc=10000)
 
         np.testing.assert_array_equal(res1.crossovers, res2.crossovers)

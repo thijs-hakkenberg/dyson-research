@@ -217,7 +217,7 @@ class TestFindCrossover:
     def test_extreme_params_no_crossover(self):
         p = BASELINE.copy()
         p["K"] = 1e12  # Trillion dollar capital
-        result = find_crossover(p, N_max=5000)
+        result = find_crossover(p, n_max=5000)
         assert result == 5000
 
     def test_npv_gte_undiscounted(self, baseline):
@@ -236,7 +236,7 @@ class TestFindCrossover:
         shim = find_crossover_npv(baseline)
         assert direct == shim
 
-        direct_phased = find_crossover(baseline, discount=True, phased_K_years=5)
+        direct_phased = find_crossover(baseline, discount=True, phased_k_years=5)
         shim_phased = find_crossover_npv_phased(baseline, K_years=5)
         assert direct_phased == shim_phased
 

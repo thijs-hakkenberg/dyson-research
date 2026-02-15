@@ -5,11 +5,11 @@ analysis as composable functions. No matplotlib, no prints.
 """
 
 from __future__ import annotations
-
 from dataclasses import dataclass, field
 from typing import Any
-
-import numpy as np
+from numpy import floating, array, clip, empty, percentile, sum, mean, median
+from numpy.random import Generator
+from numpy.linalg import cholesky 
 from numpy.typing import NDArray
 from scipy.stats import norm as sp_norm, spearmanr
 
@@ -20,7 +20,7 @@ from isru_model import (
     significance_stars,
 )
 
-NDFloat = NDArray[np.floating[Any]]
+NDFloat = NDArray[floating[Any]]
 
 # ---------------------------------------------------------------------------
 # Result dataclasses
@@ -49,7 +49,7 @@ class SpearmanResult:
     """Spearman rank correlation for one parameter."""
     name: str
     rho: float
-    pval: float
+    p_val: float
     stars: str
 
 
@@ -57,7 +57,7 @@ class SpearmanResult:
 class NonConvergenceProfile:
     """Characterization of non-convergence drivers."""
     non_conv_drivers: dict[str, tuple[float, float]]
-    nonconv_by_K: dict[str, float]
+    non_conv_by_K: dict[str, float]
 
 
 @dataclass
@@ -69,7 +69,7 @@ class MCResult:
     stats: ConvergenceStats
     spearman: list[SpearmanResult]
     spearman_conditional: list[SpearmanResult]
-    nonconv: NonConvergenceProfile
+    non_convergence_profile: NonConvergenceProfile
     param_arrays: dict[str, NDFloat]
     N_MAX_MC: int
 
@@ -78,7 +78,7 @@ class MCResult:
 # Sampling
 # ---------------------------------------------------------------------------
 def sample_mc_params(
-    rng: np.random.Generator,
+    rng: Generator,
     n_runs: int,
     *,
     rho: float = 0.3,
@@ -96,23 +96,23 @@ def sample_mc_params(
         If False, sample p_launch and K independently (uniform).
     """
     if correlated:
-        cov_matrix = np.array([[1.0, rho], [rho, 1.0]])
-        L = np.linalg.cholesky(cov_matrix)
+        cov_matrix = array([[1.0, rho], [rho, 1.0]])
+        L = cholesky(cov_matrix)
         z = rng.standard_normal((n_runs, 2))
         corr_normals = z @ L.T
         u_launch = sp_norm.cdf(corr_normals[:, 0])
         u_capital = sp_norm.cdf(corr_normals[:, 1])
         p_launch_samples = 500 + u_launch * (2000 - 500)
-        K_samples = 30e9 + u_capital * (100e9 - 30e9)
+        k_samples = 30e9 + u_capital * (100e9 - 30e9)
     else:
         p_launch_samples = rng.uniform(500, 2000, n_runs)
-        K_samples = rng.uniform(30e9, 100e9, n_runs)
+        k_samples = rng.uniform(30e9, 100e9, n_runs)
 
     return {
         "p_launch": p_launch_samples,
-        "K": K_samples,
-        "LR_E": np.clip(rng.normal(0.85, 0.03, n_runs), 0.75, 0.95),
-        "LR_I": np.clip(rng.normal(0.90, 0.03, n_runs), 0.80, 0.98),
+        "K": k_samples,
+        "LR_E": clip(rng.normal(0.85, 0.03, n_runs), 0.75, 0.95),
+        "LR_I": clip(rng.normal(0.90, 0.03, n_runs), 0.80, 0.98),
         "t0": rng.uniform(3, 8, n_runs),
         "C_ops1": rng.uniform(2e6, 10e6, n_runs),
         "C_mfg1": rng.uniform(50e6, 100e6, n_runs),
@@ -124,27 +124,27 @@ def sample_mc_params(
 def run_mc_loop(
     param_arrays: dict[str, NDFloat],
     r_fixed: float,
-    N_max: int,
+    n_max: int,
 ) -> NDFloat:
     """Execute the MC loop: for each sample, compute crossover at fixed r.
 
     Returns array of crossover values.
     """
     n_runs = len(next(iter(param_arrays.values())))
-    crossovers = np.empty(n_runs, dtype=float)
+    crossovers = empty(n_runs, dtype=float)
     for i in range(n_runs):
         p = BASELINE.copy()
         for name, arr in param_arrays.items():
             p[name] = arr[i]
         p["r"] = r_fixed
-        crossovers[i] = find_crossover_npv(p, N_max=N_max)
+        crossovers[i] = find_crossover_npv(p, N_max=n_max)
     return crossovers
 
 
 def compute_convergence_stats(
     crossovers: NDFloat,
-    N_MAX_MC: int,
-    rng: np.random.Generator,
+    n_max_mc: int,
+    rng: Generator,
     *,
     n_boot: int = 5000,
     horizons: list[int] | None = None,
@@ -154,36 +154,36 @@ def compute_convergence_stats(
         horizons = [1000, 2000, 5000, 10000, 20000, 40000]
 
     n_runs = len(crossovers)
-    converged_mask = crossovers < N_MAX_MC
-    n_converged = int(np.sum(converged_mask))
+    converged_mask = crossovers < n_max_mc
+    n_converged = int(sum(converged_mask))
     convergence_rate = n_converged / n_runs * 100
 
-    p_below_h = {h: float(np.mean(crossovers <= h) * 100) for h in horizons}
+    p_below_h = {h: float(mean(crossovers <= h) * 100) for h in horizons}
 
     # Unconditional statistics
-    median = float(np.median(crossovers))
-    q25, q75 = [float(x) for x in np.percentile(crossovers, [25, 75])]
-    p10, p90 = [float(x) for x in np.percentile(crossovers, [10, 90])]
+    calc_median = float(median(crossovers))
+    q25, q75 = [float(x) for x in percentile(crossovers, [25, 75])]
+    p10, p90 = [float(x) for x in percentile(crossovers, [10, 90])]
 
     # Conditional statistics
     if n_converged > 0:
         cond_crossovers = crossovers[converged_mask]
-        cond_median = float(np.median(cond_crossovers))
-        cond_q25, cond_q75 = [float(x) for x in np.percentile(cond_crossovers, [25, 75])]
-        cond_p10, cond_p90 = [float(x) for x in np.percentile(cond_crossovers, [10, 90])]
+        cond_median = float(median(cond_crossovers))
+        cond_q25, cond_q75 = [float(x) for x in percentile(cond_crossovers, [25, 75])]
+        cond_p10, cond_p90 = [float(x) for x in percentile(cond_crossovers, [10, 90])]
     else:
-        cond_median = cond_q25 = cond_q75 = cond_p10 = cond_p90 = float(N_MAX_MC)
+        cond_median = cond_q25 = cond_q75 = cond_p10 = cond_p90 = float(n_max_mc)
 
     # Bootstrap confidence intervals
-    boot_cond_medians = np.empty(n_boot)
+    boot_cond_medians = empty(n_boot)
     for b in range(n_boot):
         boot_sample = rng.choice(crossovers, size=n_runs, replace=True)
-        boot_conv = boot_sample[boot_sample < N_MAX_MC]
-        boot_cond_medians[b] = np.median(boot_conv) if len(boot_conv) > 0 else N_MAX_MC
-    ci_cond_median = np.percentile(boot_cond_medians, [2.5, 97.5])
+        boot_conv = boot_sample[boot_sample < n_max_mc]
+        boot_cond_medians[b] = median(boot_conv) if len(boot_conv) > 0 else n_max_mc
+    ci_cond_median = percentile(boot_cond_medians, [2.5, 97.5])
 
     return ConvergenceStats(
-        median=median, q25=q25, q75=q75, p10=p10, p90=p90,
+        median=calc_median, q25=q25, q75=q75, p10=p10, p90=p90,
         cond_median=cond_median, cond_q25=cond_q25, cond_q75=cond_q75,
         cond_p10=cond_p10, cond_p90=cond_p90,
         ci_cond_median=ci_cond_median,
@@ -205,10 +205,10 @@ def compute_spearman_correlations(
             a, c = arr[mask], crossovers[mask]
         else:
             a, c = arr, crossovers
-        corr, pval = spearmanr(a, c)
+        corr, p_val = spearmanr(a, c)
         results.append(SpearmanResult(
-            name=name, rho=float(corr), pval=float(pval),
-            stars=significance_stars(float(pval)),
+            name=name, rho=float(corr), p_val=float(p_val),
+            stars=significance_stars(float(p_val)),
         ))
     return results
 
@@ -217,40 +217,40 @@ def characterize_nonconvergence(
     param_arrays: dict[str, NDFloat],
     converged_mask: NDFloat,
     crossovers: NDFloat,
-    N_MAX_MC: int,
+    n_max_mc: int,
     *,
-    K_buckets: list[tuple[float, float, str]] | None = None,
+    k_buckets: list[tuple[float, float, str]] | None = None,
 ) -> NonConvergenceProfile:
     """Characterize drivers of non-convergence."""
-    if K_buckets is None:
-        K_buckets = [
+    if k_buckets is None:
+        k_buckets = [
             (30e9, 50e9, "$30-50B"),
             (50e9, 75e9, "$50-75B"),
             (75e9, 100e9, "$75-100B"),
         ]
 
-    n_converged = int(np.sum(converged_mask))
+    n_converged = int(sum(converged_mask))
     n_runs = len(converged_mask)
 
     non_conv_drivers: dict[str, tuple[float, float]] = {}
     if n_converged > 100 and (n_runs - n_converged) > 100:
         for name, arr in param_arrays.items():
-            mean_conv = float(np.mean(arr[converged_mask]))
-            mean_nonconv = float(np.mean(arr[~converged_mask]))
+            mean_conv = float(mean(arr[converged_mask]))
+            mean_nonconv = float(mean(arr[~converged_mask]))
             non_conv_drivers[name] = (mean_conv, mean_nonconv)
 
-    K_samples = param_arrays["K"]
-    nonconv_by_K: dict[str, float] = {}
-    for lo, hi, label in K_buckets:
-        bucket_mask = (K_samples >= lo) & (K_samples < hi)
-        if np.sum(bucket_mask) > 0:
-            nonconv_by_K[label] = float(
-                (1 - np.mean(crossovers[bucket_mask] < N_MAX_MC)) * 100
+    k_samples = param_arrays["K"]
+    non_conv_by_K: dict[str, float] = {}
+    for lo, hi, label in k_buckets:
+        bucket_mask = (k_samples >= lo) & (k_samples < hi)
+        if sum(bucket_mask) > 0:
+            non_conv_by_K[label] = float(
+                (1 - mean(crossovers[bucket_mask] < n_max_mc)) * 100
             )
 
     return NonConvergenceProfile(
         non_conv_drivers=non_conv_drivers,
-        nonconv_by_K=nonconv_by_K,
+        non_conv_by_K=non_conv_by_K,
     )
 
 
@@ -259,9 +259,9 @@ def characterize_nonconvergence(
 # ---------------------------------------------------------------------------
 def run_mc(
     r_fixed: float,
-    rng: np.random.Generator,
+    rng: Generator,
     n_runs: int = 10000,
-    N_MAX_MC: int = 40000,
+    n_max_mc: int = 40000,
 ) -> MCResult:
     """Run full Monte Carlo at a fixed discount rate.
 
@@ -269,12 +269,12 @@ def run_mc(
     correlations, and non-convergence analysis.
     """
     param_arrays = sample_mc_params(rng, n_runs, rho=0.3, correlated=True)
-    crossovers = run_mc_loop(param_arrays, r_fixed, N_MAX_MC)
+    crossovers = run_mc_loop(param_arrays, r_fixed, n_max_mc)
 
-    converged_mask = crossovers < N_MAX_MC
-    n_converged = int(np.sum(converged_mask))
+    converged_mask = crossovers < n_max_mc
+    n_converged = int(sum(converged_mask))
 
-    stats = compute_convergence_stats(crossovers, N_MAX_MC, rng)
+    stats = compute_convergence_stats(crossovers, n_max_mc, rng)
 
     spearman = compute_spearman_correlations(param_arrays, crossovers)
     spearman_conditional = (
@@ -286,7 +286,7 @@ def run_mc(
     )
 
     nonconv = characterize_nonconvergence(
-        param_arrays, converged_mask, crossovers, N_MAX_MC
+        param_arrays, converged_mask, crossovers, n_max_mc
     )
 
     return MCResult(
@@ -296,7 +296,7 @@ def run_mc(
         stats=stats,
         spearman=spearman,
         spearman_conditional=spearman_conditional,
-        nonconv=nonconv,
+        non_convergence_profile=nonconv,
         param_arrays=param_arrays,
-        N_MAX_MC=N_MAX_MC,
+        N_MAX_MC=n_max_mc,
     )
