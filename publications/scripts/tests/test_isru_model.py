@@ -17,7 +17,9 @@ from isru_model import (
     find_crossover,
     find_crossover_npv,
     find_crossover_npv_phased,
+    find_crossover_rate_dependent,
     isru_ops_cost,
+    isru_ops_cost_rate_dependent,
     isru_unit_cost,
     learning_exponent,
     s_curve,
@@ -351,3 +353,77 @@ class TestClampParam:
 
     def test_unknown_param(self):
         assert clamp_param("unknown_param", -999) == -999
+
+
+# ===== TestVitaminFraction =====
+
+class TestVitaminFraction:
+    def test_zero_matches_baseline(self, baseline):
+        """vitamin_frac=0.0 should match original isru_ops_cost."""
+        baseline["vitamin_frac"] = 0.0
+        ns = np.array([1.0, 100.0, 1000.0])
+        cost_vf0 = isru_ops_cost(ns, baseline)
+        # Remove vitamin_frac to test default behavior
+        del baseline["vitamin_frac"]
+        cost_default = isru_ops_cost(ns, baseline)
+        np.testing.assert_allclose(cost_vf0, cost_default)
+
+    def test_positive_increases_cost(self, baseline):
+        """vitamin_frac > 0 should increase ISRU ops cost."""
+        ns = np.array([1.0, 100.0, 1000.0])
+        cost_base = isru_ops_cost(ns, baseline)
+        baseline["vitamin_frac"] = 0.10
+        cost_vf10 = isru_ops_cost(ns, baseline)
+        assert np.all(cost_vf10 > cost_base)
+
+    def test_monotonic_in_frac(self, baseline):
+        """Higher vitamin fraction should give higher cost."""
+        n = 500.0
+        baseline["vitamin_frac"] = 0.05
+        cost_5 = float(isru_ops_cost(n, baseline))
+        baseline["vitamin_frac"] = 0.10
+        cost_10 = float(isru_ops_cost(n, baseline))
+        baseline["vitamin_frac"] = 0.15
+        cost_15 = float(isru_ops_cost(n, baseline))
+        assert cost_5 < cost_10 < cost_15
+
+    def test_crossover_delayed(self, baseline):
+        """Vitamin fraction should delay crossover."""
+        cross_base = find_crossover_npv(baseline)
+        baseline["vitamin_frac"] = 0.10
+        cross_vf = find_crossover_npv(baseline, N_max=40000)
+        assert cross_vf >= cross_base
+
+
+# ===== TestRateDependentLearning =====
+
+class TestRateDependentLearning:
+    def test_above_threshold_matches_baseline(self):
+        """For late units (all above threshold), should match baseline."""
+        p = BASELINE.copy()
+        # Units at n=5000+ are well past ramp-up, all above any threshold
+        ns = np.arange(5000, 5100, dtype=float)
+        cost_base = isru_ops_cost(ns, p)
+        cost_rd = isru_ops_cost_rate_dependent(ns, p, rate_threshold=0.2)
+        np.testing.assert_allclose(cost_rd, cost_base, rtol=0.01)
+
+    def test_early_units_higher_or_equal(self):
+        """Rate-dependent cost should be >= baseline (frozen learning = higher cost)."""
+        p = BASELINE.copy()
+        ns = np.arange(1, 1000, dtype=float)
+        cost_base = isru_ops_cost(ns, p)
+        cost_rd = isru_ops_cost_rate_dependent(ns, p, rate_threshold=0.2)
+        # Rate-dependent freezes learning during slow ramp, so costs should be >= baseline
+        assert np.all(cost_rd >= cost_base - 1.0)  # small tolerance for float
+
+    def test_crossover_delayed_or_equal(self):
+        """Rate-dependent learning should delay crossover (or keep same)."""
+        cross_base = find_crossover_npv(BASELINE)
+        cross_rd = find_crossover_rate_dependent(BASELINE)
+        assert cross_rd >= cross_base
+
+    def test_higher_threshold_more_penalty(self):
+        """Higher threshold means more units are 'frozen', delaying crossover more."""
+        cross_20 = find_crossover_rate_dependent(BASELINE, rate_threshold=0.2)
+        cross_50 = find_crossover_rate_dependent(BASELINE, rate_threshold=0.5)
+        assert cross_50 >= cross_20

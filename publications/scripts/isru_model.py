@@ -37,6 +37,7 @@ BASELINE: Params = {
     "p_ops_launch": 800,    # ops component of launch cost ($/kg)
     "alpha": 1.0,           # D5: mass penalty factor for ISRU units
     "p_transport": 100,     # D6: ISRU-to-orbit transport cost ($/kg)
+    "vitamin_frac": 0.0,    # G11: fraction of unit that must be Earth-sourced
 }
 
 # ---------------------------------------------------------------------------
@@ -178,6 +179,7 @@ def isru_ops_cost(n: float | NDFloat, params: Params) -> NDFloat:
     Ramp-up effect is through production schedule timing (unit_to_time
     integrates S(t)). Mass penalty alpha multiplies ops cost.
     Transport cost added as m * p_transport * alpha.
+    Vitamin fraction adds Earth-sourced component cost.
     """
     n = asarray(n, dtype=float)
     b_i = learning_exponent(params["LR_I"])
@@ -192,6 +194,65 @@ def isru_ops_cost(n: float | NDFloat, params: Params) -> NDFloat:
     if p_transport > 0:
         c_transport = params["m"] * p_transport * alpha
         c_ops = c_ops + c_transport
+
+    # Vitamin fraction: Earth-sourced components that ISRU cannot produce
+    vitamin_frac = params.get("vitamin_frac", 0.0)
+    if vitamin_frac > 0:
+        c_ops = c_ops + vitamin_frac * earth_unit_cost(n, params)
+
+    return c_ops
+
+
+def isru_ops_cost_rate_dependent(
+    n: float | NDFloat, params: Params, *, rate_threshold: float = 0.2
+) -> NDFloat:
+    """ISRU ops cost with rate-dependent learning (organizational forgetting).
+
+    When the instantaneous production rate S(t_n) < rate_threshold * n_max,
+    learning is frozen: the cost of units produced during slow periods equals
+    the cost of the last unit produced above the threshold.
+
+    This approximates organizational forgetting during low-activity periods.
+    """
+    n = asarray(n, dtype=float)
+    b_i = learning_exponent(params["LR_I"])
+    alpha = params.get("alpha", 1.0)
+    c_floor = params.get("C_floor", 0)
+    prod_rate = params.get("prod_rate", 500)
+    t0 = params["t0"]
+    k_ramp = params.get("k_ramp", 2.0)
+
+    # Compute time and instantaneous rate for each unit
+    t_n = unit_to_time(n, prod_rate, t0, k_ramp)
+    s_t = s_curve(t_n, t0, k_ramp)
+    above_threshold = s_t >= rate_threshold
+
+    # Base learning curve cost (without rate-dependent freezing)
+    c_learn = c_floor + (params["C_ops1"] - c_floor) * n ** b_i
+
+    # For units below threshold, freeze at the cost of the last above-threshold unit
+    # Find the effective unit number for learning (frozen during slow periods)
+    # Use cumulative max of (n * above_threshold) to carry forward last active n
+    effective_n = n.copy()
+    last_active = 0.0
+    for i in range(len(n)):
+        if above_threshold[i]:
+            last_active = n[i]
+        elif last_active > 0:
+            effective_n[i] = last_active
+    c_learn_rd = c_floor + (params["C_ops1"] - c_floor) * effective_n ** b_i
+
+    c_ops = alpha * c_learn_rd
+
+    # Transport cost
+    p_transport = params.get("p_transport", 0)
+    if p_transport > 0:
+        c_ops = c_ops + params["m"] * p_transport * alpha
+
+    # Vitamin fraction
+    vitamin_frac = params.get("vitamin_frac", 0.0)
+    if vitamin_frac > 0:
+        c_ops = c_ops + vitamin_frac * earth_unit_cost(n, params)
 
     return c_ops
 
@@ -314,6 +375,38 @@ def find_crossover(
     isru_cum = K_eff + isru_ops_cum
 
     # Find crossover
+    diff = isru_cum - earth_cum
+    crossings = np_where(diff <= 0)[0]
+    if len(crossings) > 0:
+        return int(ns[crossings[0]])
+    return n_max
+
+
+def find_crossover_rate_dependent(
+    params: Params,
+    n_max: int = 20000,
+    *,
+    rate_threshold: float = 0.2,
+) -> int:
+    """Find NPV crossover using rate-dependent ISRU learning."""
+    r = params.get("r", 0.05)
+    ns = arange(1, n_max + 1, dtype=float)
+    prod_rate = params.get("prod_rate", 500)
+    k_ramp = params.get("k_ramp", 2.0)
+
+    # Earth side
+    earth_units = earth_unit_cost(ns, params)
+    t_n_earth = earth_delivery_time(ns, prod_rate)
+    discount_earth = (1.0 + r) ** (-t_n_earth)
+    earth_cum = cumsum(earth_units * discount_earth)
+
+    # ISRU side with rate-dependent ops
+    ops = isru_ops_cost_rate_dependent(ns, params, rate_threshold=rate_threshold)
+    t_n_isru = unit_to_time(ns, prod_rate, params["t0"], k_ramp)
+    discount_isru = (1.0 + r) ** (-t_n_isru)
+    isru_ops_cum = cumsum(ops * discount_isru)
+
+    isru_cum = params["K"] + isru_ops_cum
     diff = isru_cum - earth_cum
     crossings = np_where(diff <= 0)[0]
     if len(crossings) > 0:

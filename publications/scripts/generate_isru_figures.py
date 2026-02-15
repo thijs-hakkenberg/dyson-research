@@ -52,14 +52,16 @@ from isru_model import (  # noqa: E402
     find_crossover,
     find_crossover_npv,
     find_crossover_npv_phased,
+    find_crossover_rate_dependent,
     isru_ops_cost,
+    isru_ops_cost_rate_dependent,
     isru_unit_cost,
     learning_exponent,
     s_curve,
     unit_to_time,
     _cumulative_production,
 )
-from isru_mc import run_mc  # noqa: E402
+from isru_mc import run_mc, sample_mc_params, run_mc_loop, compute_convergence_stats  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Output directory
@@ -734,6 +736,266 @@ def print_prod_rate_sensitivity():
 
 
 # ---------------------------------------------------------------------------
+# G1a: Launch learning rate parametric sweep
+# ---------------------------------------------------------------------------
+def print_launch_learning_sweep():
+    """G1a: Sweep launch learning rate and report NPV crossover shift."""
+    base_npv = find_crossover_npv(BASELINE)
+    lr_values = [0.90, 0.93, 0.95, 0.97, 0.99, 1.00]
+
+    print("\n  G1a: Launch learning rate sweep (NPV, r=5%):")
+    print(f"  {'LR_L':>6s}  {'b_L':>8s}  {'N*':>8s}  {'Shift':>8s}  {'Note':>30s}")
+    print(f"  {'------':>6s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'------------------------------':>30s}")
+
+    for lr_l in lr_values:
+        p = BASELINE.copy()
+        if lr_l < 1.0:
+            b_l = learning_exponent(lr_l)
+            p["b_L"] = b_l
+            p["LR_launch"] = lr_l
+        # else: no launch learning (baseline behavior)
+        cross = find_crossover_npv(p)
+        shift = cross - base_npv
+        note = ""
+        if lr_l == 1.00:
+            note = "(no launch learning = baseline)"
+        elif lr_l == 0.97:
+            note = "(Version F default)"
+        elif lr_l == 0.90:
+            note = "(aggressive learning)"
+        print(f"  {lr_l:>6.2f}  {learning_exponent(lr_l) if lr_l < 1.0 else 0.0:>8.4f}  "
+              f"{cross:>8,d}  {shift:>+8,d}  {note:>30s}")
+
+    # Decomposition note
+    p_fuel = BASELINE.get("p_fuel", 200)
+    p_ops = BASELINE.get("p_ops_launch", 800)
+    print(f"\n    Launch cost decomposition: fuel=${p_fuel}/kg (fixed) + ops=${p_ops}/kg (learnable)")
+    print(f"    At n=10,000 with LR_L=0.97: ops component = ${p_ops} * 10000^{learning_exponent(0.97):.4f} = "
+          f"${p_ops * 10000**learning_exponent(0.97):.0f}/kg")
+
+
+# ---------------------------------------------------------------------------
+# G1b: MC convergence diagnostic
+# ---------------------------------------------------------------------------
+def print_mc_convergence():
+    """G1b: Show MC convergence stabilization at increasing sample sizes."""
+    checkpoints = [100, 500, 1000, 2000, 5000, 10000]
+    rng = default_rng(42)
+    n_max_mc = 40000
+
+    # Sample full 10,000 params upfront
+    param_arrays = sample_mc_params(rng, 10000, rho=0.3, correlated=True)
+    crossovers = run_mc_loop(param_arrays, 0.05, n_max_mc)
+
+    print("\n  G1b: MC convergence diagnostic (r=5%, rho=0.3):")
+    print(f"  {'N_runs':>8s}  {'Conv%':>8s}  {'Cond.Med':>10s}  {'Cond.IQR':>20s}  {'Stable?':>8s}")
+    print(f"  {'--------':>8s}  {'--------':>8s}  {'----------':>10s}  {'--------------------':>20s}  {'--------':>8s}")
+
+    prev_med = None
+    for cp in checkpoints:
+        subset = crossovers[:cp]
+        converged = subset[subset < n_max_mc]
+        conv_rate = len(converged) / cp * 100
+        if len(converged) > 0:
+            cond_med = int(median(converged))
+            q25 = int(percentile(converged, 25))
+            q75 = int(percentile(converged, 75))
+        else:
+            cond_med = n_max_mc
+            q25 = q75 = n_max_mc
+        stable = "---"
+        if prev_med is not None and prev_med > 0:
+            pct_change = abs(cond_med - prev_med) / prev_med * 100
+            stable = "YES" if pct_change < 2.0 else "no"
+        prev_med = cond_med
+        print(f"  {cp:>8,d}  {conv_rate:>7.1f}%  {cond_med:>10,d}  [{q25:>8,d}, {q75:>8,d}]  {stable:>8s}")
+
+
+# ---------------------------------------------------------------------------
+# G1c: NPV cumulative economics (extends E6)
+# ---------------------------------------------------------------------------
+def print_cumulative_economics_npv():
+    """G1c: Cumulative economics with NPV-discounted columns at r=5%."""
+    prod_rate = BASELINE["prod_rate"]
+    t0 = BASELINE["t0"]
+    k = BASELINE["k_ramp"]
+    r = BASELINE["r"]
+
+    print("\n  G1c: Cumulative economics with NPV (r=5%, baseline):")
+    print(f"  {'Year':>6s}  {'Units':>8s}  "
+          f"{'Earth($B)':>10s}  {'ISRU($B)':>10s}  {'Net($B)':>10s}  "
+          f"{'EarthNPV':>10s}  {'ISRU_NPV':>10s}  {'NetNPV':>10s}")
+    print(f"  {'------':>6s}  {'--------':>8s}  "
+          f"{'----------':>10s}  {'----------':>10s}  {'----------':>10s}  "
+          f"{'----------':>10s}  {'----------':>10s}  {'----------':>10s}")
+
+    for year in [5, 10, 15, 20]:
+        n_produced = max(0, _cumulative_production(year, prod_rate, t0, k))
+        n_produced = int(round(n_produced))
+        if n_produced < 1:
+            print(f"  {year:>6d}  {0:>8d}  {'---':>10s}  {'---':>10s}  {'---':>10s}  "
+                  f"{'---':>10s}  {'---':>10s}  {'---':>10s}")
+            continue
+
+        ns = arange(1, n_produced + 1, dtype=float)
+
+        # Undiscounted
+        earth_cum = sum(earth_unit_cost(ns, BASELINE))
+        isru_cum = BASELINE["K"] + sum(isru_ops_cost(ns, BASELINE))
+
+        # NPV discounted
+        t_e = earth_delivery_time(ns, prod_rate)
+        t_i = unit_to_time(ns, prod_rate, t0, k)
+        disc_e = (1.0 + r) ** (-t_e)
+        disc_i = (1.0 + r) ** (-t_i)
+        earth_npv = sum(earth_unit_cost(ns, BASELINE) * disc_e)
+        isru_npv = BASELINE["K"] + sum(isru_ops_cost(ns, BASELINE) * disc_i)
+
+        print(f"  {year:>6d}  {n_produced:>8,d}  "
+              f"{earth_cum/1e9:>10.1f}  {isru_cum/1e9:>10.1f}  {(earth_cum-isru_cum)/1e9:>+10.1f}  "
+              f"{earth_npv/1e9:>10.1f}  {isru_npv/1e9:>10.1f}  {(earth_npv-isru_npv)/1e9:>+10.1f}")
+
+
+# ---------------------------------------------------------------------------
+# G1d: Copula rho sensitivity
+# ---------------------------------------------------------------------------
+def print_copula_rho_sensitivity():
+    """G1d: MC at r=5% with different copula rho values."""
+    rho_values = [0.0, 0.3, 0.6]
+    n_runs = 10000
+    n_max_mc = 40000
+
+    print("\n  G1d: Copula rho sensitivity (r=5%, n=10,000):")
+    print(f"  {'rho':>6s}  {'Conv%':>8s}  {'Cond.Med':>10s}  {'Cond.IQR':>20s}")
+    print(f"  {'------':>6s}  {'--------':>8s}  {'----------':>10s}  {'--------------------':>20s}")
+
+    for rho in rho_values:
+        rng = default_rng(42)
+        param_arrays = sample_mc_params(rng, n_runs, rho=rho, correlated=(rho > 0))
+        crossovers = run_mc_loop(param_arrays, 0.05, n_max_mc)
+        converged = crossovers[crossovers < n_max_mc]
+        conv_rate = len(converged) / n_runs * 100
+        if len(converged) > 0:
+            cond_med = int(median(converged))
+            q25 = int(percentile(converged, 25))
+            q75 = int(percentile(converged, 75))
+        else:
+            cond_med = q25 = q75 = n_max_mc
+        print(f"  {rho:>6.1f}  {conv_rate:>7.1f}%  {cond_med:>10,d}  [{q25:>8,d}, {q75:>8,d}]")
+
+
+# ---------------------------------------------------------------------------
+# G1e: Rate-dependent ISRU learning robustness
+# ---------------------------------------------------------------------------
+def print_rate_dependent_learning():
+    """G1e: Compare baseline vs rate-dependent learning crossover."""
+    base_npv = find_crossover_npv(BASELINE)
+    rd_npv = find_crossover_rate_dependent(BASELINE)
+
+    print("\n  G1e: Rate-dependent learning (organizational forgetting, r=5%):")
+    print(f"    Baseline (smooth learning):     N* = {base_npv:,}")
+    print(f"    Rate-dependent (threshold=20%): N* = {rd_npv:,} "
+          f"(shift: {rd_npv - base_npv:+,})")
+
+    # Also test with a higher threshold
+    rd_30 = find_crossover_rate_dependent(BASELINE, rate_threshold=0.3)
+    print(f"    Rate-dependent (threshold=30%): N* = {rd_30:,} "
+          f"(shift: {rd_30 - base_npv:+,})")
+
+
+# ---------------------------------------------------------------------------
+# G1f: Vitamin fraction sensitivity
+# ---------------------------------------------------------------------------
+def print_vitamin_sensitivity():
+    """G1f: Sweep vitamin fraction and report crossover shift."""
+    base_npv = find_crossover_npv(BASELINE)
+    fracs = [0.0, 0.05, 0.10, 0.15]
+
+    print("\n  G1f: Vitamin fraction sensitivity (NPV, r=5%):")
+    print(f"  {'Vitamin%':>10s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}")
+
+    for vf in fracs:
+        p = BASELINE.copy()
+        p["vitamin_frac"] = vf
+        cross = find_crossover_npv(p, N_max=40000)
+        shift = cross - base_npv
+        if cross >= 40000:
+            print(f"  {vf*100:>9.0f}%  {'>40,000':>8s}  {'N/A':>8s}")
+        else:
+            print(f"  {vf*100:>9.0f}%  {cross:>8,d}  {shift:>+8,d}")
+
+
+# ---------------------------------------------------------------------------
+# Figure 7: Production Schedule Validation (Phase 3)
+# ---------------------------------------------------------------------------
+def fig_production_schedule():
+    """Two-panel figure: instantaneous rate and cumulative production for both pathways."""
+    p = BASELINE.copy()
+    prod_rate = p["prod_rate"]
+    t0 = p["t0"]
+    k = p["k_ramp"]
+
+    t = linspace(0, 25, 500)
+
+    # ISRU: instantaneous rate = prod_rate * S(t)
+    isru_rate = prod_rate * s_curve(t, t0, k)
+    # ISRU: cumulative production
+    isru_cum = array([max(0, float(_cumulative_production(ti, prod_rate, t0, k))) for ti in t])
+
+    # Earth: constant rate from t=0
+    earth_rate = prod_rate * array([1.0] * len(t))
+    earth_cum = prod_rate * t
+
+    fig, (ax1, ax2) = subplots(1, 2, figsize=(12, 4.5))
+
+    # Left panel: instantaneous rate
+    ax1.plot(t, earth_rate, color=c_earth, linewidth=2, label="Earth $\\dot{n}(t)$")
+    ax1.plot(t, isru_rate, color=c_isru, linewidth=2, label="ISRU $\\dot{n}(t)$")
+    ax1.axvline(t0, color="gray", linestyle=":", linewidth=1, alpha=0.7)
+    ax1.annotate(f"$t_0 = {t0}$ yr", xy=(t0, prod_rate * 0.5),
+                 xytext=(t0 + 1.5, prod_rate * 0.3), fontsize=9, color="gray",
+                 arrowprops=dict(arrowstyle="->", color="gray", lw=0.8))
+    ax1.set_xlabel("Time (years)")
+    ax1.set_ylabel("Production Rate (units/year)")
+    ax1.set_xlim(0, 25)
+    ax1.set_ylim(0, prod_rate * 1.15)
+    ax1.legend(loc="center right", framealpha=0.9)
+    ax1.set_title("(a) Instantaneous Production Rate")
+
+    # Right panel: cumulative production
+    ax2.plot(t, earth_cum, color=c_earth, linewidth=2, label="Earth $N(t)$")
+    ax2.plot(t, isru_cum, color=c_isru, linewidth=2, label="ISRU $N(t)$")
+    ax2.axvline(t0, color="gray", linestyle=":", linewidth=1, alpha=0.7)
+
+    # Mark timing gap at N=1000
+    n_mark = 1000
+    t_earth_mark = n_mark / prod_rate
+    t_isru_mark = float(unit_to_time(n_mark, prod_rate, t0, k))
+    ax2.plot([t_earth_mark, t_isru_mark], [n_mark, n_mark], "k-", linewidth=1.5, alpha=0.6)
+    ax2.plot(t_earth_mark, n_mark, "o", color=c_earth, markersize=6, zorder=5)
+    ax2.plot(t_isru_mark, n_mark, "o", color=c_isru, markersize=6, zorder=5)
+    ax2.annotate(f"Gap: {t_isru_mark - t_earth_mark:.1f} yr",
+                 xy=((t_earth_mark + t_isru_mark) / 2, n_mark),
+                 xytext=((t_earth_mark + t_isru_mark) / 2, n_mark + 800),
+                 fontsize=8, ha="center",
+                 arrowprops=dict(arrowstyle="->", color="black", lw=0.8))
+
+    ax2.set_xlabel("Time (years)")
+    ax2.set_ylabel("Cumulative Units Produced")
+    ax2.set_xlim(0, 25)
+    ax2.set_ylim(0, None)
+    ax2.legend(loc="upper left", framealpha=0.9)
+    ax2.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
+    ax2.set_title("(b) Cumulative Production")
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-production-schedule.pdf"))
+    close(fig)
+    print("  [7/7] fig-production-schedule.pdf")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -800,5 +1062,14 @@ if __name__ == "__main__":
     print_earth_ramp_robustness()
     print_cfloor_threshold()
     print_prod_rate_sensitivity()
+
+    # Version G diagnostics
+    print_launch_learning_sweep()
+    print_mc_convergence()
+    print_cumulative_economics_npv()
+    print_copula_rho_sensitivity()
+    print_rate_dependent_learning()
+    print_vitamin_sensitivity()
+    fig_production_schedule()
 
     print(f"\nDone. All figures saved to {fig_dir}")
