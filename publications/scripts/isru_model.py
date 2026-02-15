@@ -139,6 +139,78 @@ def unit_to_time(
     return result
 
 
+def unit_to_time_piecewise(
+    n: float | NDFloat,
+    prod_rate: float = 500,
+    t0: float = 5,
+    k: float = 2.0,
+    t_construction: float | None = None,
+) -> NDFloat:
+    """Map unit number to calendar time with explicit construction delay.
+
+    For t < t_c, production rate is zero (construction phase).
+    For t >= t_c, logistic ramp-up centered at t_c + delta.
+    Default t_c = t0 - 1 (construction ends 1yr before logistic midpoint).
+
+    This is a sensitivity variant of unit_to_time(); at large t the two
+    converge because the logistic asymptotes to the same linear regime.
+    """
+    if t_construction is None:
+        t_construction = t0 - 1.0
+
+    n = asarray(n, dtype=float)
+    # Shift the logistic midpoint to start after construction
+    # The effective midpoint is t_construction + (t0 - t_construction) = t0
+    # So for default t_c = t0-1, the midpoint is still t0.
+    # But the piecewise constraint means N(t<t_c) = 0.
+    # We compute the baseline t(n) and clamp: t_pw = max(t(n), t_c).
+    t_baseline = unit_to_time(n, prod_rate, t0, k)
+    return maximum(t_baseline, t_construction)
+
+
+def find_crossover_mfg_lead(
+    params: Params,
+    n_max: int = 20000,
+    *,
+    tau_mfg: float = 0.5,
+) -> int:
+    """Find NPV crossover with manufacturing lead-time adjustment.
+
+    Earth manufacturing cost is discounted at t_{n,E} - tau_mfg (paid earlier),
+    while Earth launch cost is discounted at t_{n,E} (at delivery).
+    This tests the sensitivity of the pay-at-delivery simplification.
+    """
+    r = params.get("r", 0.05)
+    ns = arange(1, n_max + 1, dtype=float)
+    prod_rate = params.get("prod_rate", 500)
+    k_ramp = params.get("k_ramp", 2.0)
+
+    # Earth side — split mfg and launch timing
+    b_E = learning_exponent(params["LR_E"])
+    c_mfg = params["C_mfg1"] * ns ** b_E
+    c_launch = params["m"] * params["p_launch"] * ones_like(ns)
+
+    t_n_earth = earth_delivery_time(ns, prod_rate)
+    t_mfg = maximum(t_n_earth - tau_mfg, 0.0)  # mfg cost paid earlier
+
+    discount_mfg = (1.0 + r) ** (-t_mfg)
+    discount_launch = (1.0 + r) ** (-t_n_earth)
+    earth_cum = cumsum(c_mfg * discount_mfg + c_launch * discount_launch)
+
+    # ISRU side — unchanged
+    ops = isru_ops_cost(ns, params)
+    t_n_isru = unit_to_time(ns, prod_rate, params["t0"], k_ramp)
+    discount_isru = (1.0 + r) ** (-t_n_isru)
+    isru_ops_cum = cumsum(ops * discount_isru)
+    isru_cum = params["K"] + isru_ops_cum
+
+    diff = isru_cum - earth_cum
+    crossings = np_where(diff <= 0)[0]
+    if len(crossings) > 0:
+        return int(ns[crossings[0]])
+    return n_max
+
+
 def earth_unit_cost(n: float | NDFloat, params: Params) -> NDFloat:
     """Eq 2-4: Earth per-unit cost = manufacturing learning + launch."""
     n = asarray(n, dtype=float)
@@ -195,10 +267,12 @@ def isru_ops_cost(n: float | NDFloat, params: Params) -> NDFloat:
         c_transport = params["m"] * p_transport * alpha
         c_ops = c_ops + c_transport
 
-    # Vitamin fraction: Earth-sourced components that ISRU cannot produce
+    # Vitamin fraction: Earth-sourced components that ISRU cannot produce.
+    # ISRU only processes (1 - fv) of the unit, so ops cost is scaled down;
+    # the vitamin portion pays Earth cost for that fraction.
     vitamin_frac = params.get("vitamin_frac", 0.0)
     if vitamin_frac > 0:
-        c_ops = c_ops + vitamin_frac * earth_unit_cost(n, params)
+        c_ops = (1.0 - vitamin_frac) * c_ops + vitamin_frac * earth_unit_cost(n, params)
 
     return c_ops
 
@@ -249,10 +323,10 @@ def isru_ops_cost_rate_dependent(
     if p_transport > 0:
         c_ops = c_ops + params["m"] * p_transport * alpha
 
-    # Vitamin fraction
+    # Vitamin fraction (same corrected formula as isru_ops_cost)
     vitamin_frac = params.get("vitamin_frac", 0.0)
     if vitamin_frac > 0:
-        c_ops = c_ops + vitamin_frac * earth_unit_cost(n, params)
+        c_ops = (1.0 - vitamin_frac) * c_ops + vitamin_frac * earth_unit_cost(n, params)
 
     return c_ops
 

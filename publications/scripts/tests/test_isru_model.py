@@ -15,6 +15,7 @@ from isru_model import (
     earth_delivery_time_ramped,
     earth_unit_cost,
     find_crossover,
+    find_crossover_mfg_lead,
     find_crossover_npv,
     find_crossover_npv_phased,
     find_crossover_rate_dependent,
@@ -25,6 +26,7 @@ from isru_model import (
     s_curve,
     significance_stars,
     unit_to_time,
+    unit_to_time_piecewise,
 )
 
 
@@ -427,3 +429,104 @@ class TestRateDependentLearning:
         cross_20 = find_crossover_rate_dependent(BASELINE, rate_threshold=0.2)
         cross_50 = find_crossover_rate_dependent(BASELINE, rate_threshold=0.5)
         assert cross_50 >= cross_20
+
+
+# ===== TestVitaminFractionCorrected =====
+
+class TestVitaminFractionCorrected:
+    """Verify the corrected (1-fv)*c_ops + fv*c_earth formula."""
+
+    def test_reduces_isru_ops_component(self, baseline):
+        """With fv>0, the ISRU-ops portion is scaled down by (1-fv)."""
+        ns = np.array([100.0, 1000.0])
+        cost_base = isru_ops_cost(ns, baseline)
+        baseline["vitamin_frac"] = 0.10
+        cost_vf = isru_ops_cost(ns, baseline)
+        # The ISRU ops component is reduced (multiplied by 0.9),
+        # but Earth cost is added. Net should still be > baseline
+        # because Earth unit cost >> ISRU ops cost.
+        assert np.all(cost_vf > cost_base)
+
+    def test_less_penalty_than_additive(self):
+        """Corrected formula gives lower cost than naive additive formula."""
+        p = BASELINE.copy()
+        ns = np.array([100.0, 1000.0])
+        # Compute with corrected formula
+        p["vitamin_frac"] = 0.10
+        cost_corrected = isru_ops_cost(ns, p)
+        # Compute naive additive: c_ops + 0.10 * c_earth
+        p["vitamin_frac"] = 0.0
+        cost_base = isru_ops_cost(ns, p)
+        cost_naive = cost_base + 0.10 * earth_unit_cost(ns, p)
+        # Corrected should be less than naive (by 0.10 * c_ops)
+        assert np.all(cost_corrected < cost_naive)
+
+
+# ===== TestPiecewiseSchedule =====
+
+class TestPiecewiseSchedule:
+    def test_matches_logistic_at_large_t(self):
+        """Piecewise matches logistic for units well past construction."""
+        ns = np.array([5000.0, 10000.0])
+        t_baseline = unit_to_time(ns, 500, 5, 2.0)
+        t_piecewise = unit_to_time_piecewise(ns, 500, 5, 2.0, t_construction=4.0)
+        np.testing.assert_allclose(t_piecewise, t_baseline, rtol=1e-10)
+
+    def test_clamped_during_construction(self):
+        """Units produced during construction phase are clamped to t_c."""
+        # Very early units with high t_c should be clamped
+        t_c = 10.0  # construction ends at year 10
+        ns = np.array([1.0, 10.0])
+        t_pw = unit_to_time_piecewise(ns, 500, 5, 2.0, t_construction=t_c)
+        assert np.all(t_pw >= t_c)
+
+    def test_default_construction_time(self):
+        """Default t_c = t0 - 1."""
+        ns = np.array([1.0])
+        t_pw = unit_to_time_piecewise(ns, 500, 5.0, 2.0)
+        # t_c defaults to 4.0, and unit_to_time(1, ...) ≈ 5.0
+        # so piecewise should be max(5.0, 4.0) = 5.0
+        t_base = unit_to_time(ns, 500, 5.0, 2.0)
+        np.testing.assert_allclose(t_pw, t_base)
+
+    def test_monotonic(self):
+        """Piecewise schedule should be monotonically increasing."""
+        ns = np.arange(1, 1000, dtype=float)
+        ts = unit_to_time_piecewise(ns, 500, 5, 2.0, t_construction=4.0)
+        assert np.all(np.diff(ts) >= 0)
+
+
+# ===== TestMfgLeadTime =====
+
+class TestMfgLeadTime:
+    def test_returns_int(self, baseline):
+        result = find_crossover_mfg_lead(baseline, tau_mfg=0.5)
+        assert isinstance(result, int)
+
+    def test_lead_time_shifts_crossover(self, baseline):
+        """Mfg lead-time means Earth pays earlier → higher PV → earlier crossover."""
+        cross_base = find_crossover_npv(baseline)
+        cross_lead = find_crossover_mfg_lead(baseline, tau_mfg=0.5)
+        # Earth mfg cost paid earlier → higher PV → Earth more expensive → crossover earlier
+        assert cross_lead <= cross_base
+
+    def test_zero_lead_matches_baseline(self, baseline):
+        """With tau_mfg=0, should match standard NPV crossover."""
+        cross_base = find_crossover_npv(baseline)
+        cross_zero = find_crossover_mfg_lead(baseline, tau_mfg=0.0)
+        # Should be very close (not exact due to split mfg/launch discounting)
+        assert abs(cross_zero - cross_base) <= 1
+
+
+# ===== TestKProdRateCorrelation =====
+
+class TestKProdRateCorrelation:
+    def test_correlated_sampling_positive_spearman(self):
+        """Correlated sampling should produce positive Spearman(K, prod_rate)."""
+        from isru_mc import sample_mc_params
+        from scipy.stats import spearmanr
+        rng = np.random.default_rng(42)
+        params = sample_mc_params(rng, 5000, rho=0.3, rho_k_prod=0.5, correlated=True)
+        rho_sp, p_val = spearmanr(params["K"], params["prod_rate"])
+        assert rho_sp > 0.3  # should be strongly positive
+        assert p_val < 0.001

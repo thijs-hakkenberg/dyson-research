@@ -50,6 +50,7 @@ from isru_model import (  # noqa: E402
     earth_delivery_time_ramped,
     earth_unit_cost,
     find_crossover,
+    find_crossover_mfg_lead,
     find_crossover_npv,
     find_crossover_npv_phased,
     find_crossover_rate_dependent,
@@ -59,6 +60,7 @@ from isru_model import (  # noqa: E402
     learning_exponent,
     s_curve,
     unit_to_time,
+    unit_to_time_piecewise,
     _cumulative_production,
 )
 from isru_mc import run_mc, sample_mc_params, run_mc_loop, compute_convergence_stats  # noqa: E402
@@ -996,6 +998,134 @@ def fig_production_schedule():
 
 
 # ---------------------------------------------------------------------------
+# H1c: Convergence curve figure — P(N* <= H) vs H as continuous curve
+# ---------------------------------------------------------------------------
+def fig_convergence_curve():
+    """H1c: Plot P(N* <= H) as continuous curve for three discount rates."""
+    mc_rates = [0.03, 0.05, 0.08]
+    rate_labels = ["3%", "5%", "8%"]
+    rate_colors = ["#2563eb", "#16a34a", "#dc2626"]
+
+    fig, ax = subplots(figsize=(6, 4))
+    horizons = arange(1000, 40001, 100)
+
+    for r_fixed, label, color in zip(mc_rates, rate_labels, rate_colors):
+        rng = default_rng(42)
+        res = run_mc(r_fixed, rng)
+        crossovers = res.crossovers
+
+        # Compute P(N* <= H) for each horizon value
+        p_below = array([float((crossovers <= h).mean() * 100) for h in horizons])
+        ax.plot(horizons, p_below, color=color, linewidth=2, label=f"r = {label}")
+
+    ax.set_xlabel("Planning Horizon $H$ (units)")
+    ax.set_ylabel("$P(N^* \\leq H)$ (\\%)")
+    ax.set_xlim(1000, 40000)
+    ax.set_ylim(0, 100)
+    ax.legend(loc="lower right", framealpha=0.9)
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
+
+    # Mark key horizons
+    for h in [10000, 20000]:
+        ax.axvline(h, color="gray", linestyle=":", linewidth=0.8, alpha=0.5)
+
+    fig.savefig(join(fig_dir, "fig-convergence-curve.pdf"))
+    close(fig)
+    print("  [H1c] fig-convergence-curve.pdf")
+
+
+# ---------------------------------------------------------------------------
+# H1b: K–prod_rate correlation MC comparison
+# ---------------------------------------------------------------------------
+def print_k_prodrate_correlation():
+    """H1b: Compare MC results with and without K-prod_rate correlation."""
+    n_runs = 10000
+    n_max_mc = 40000
+    r_fixed = 0.05
+
+    print("\n  H1b: K-prod_rate correlation sensitivity (r=5%, n=10,000):")
+    print(f"  {'rho(K,prod)':>12s}  {'Conv%':>8s}  {'Cond.Med':>10s}  {'Cond.IQR':>20s}")
+    print(f"  {'------------':>12s}  {'--------':>8s}  {'----------':>10s}  {'--------------------':>20s}")
+
+    for rho_kp in [0.0, 0.5]:
+        rng = default_rng(42)
+        param_arrays = sample_mc_params(rng, n_runs, rho=0.3, rho_k_prod=rho_kp, correlated=True)
+        crossovers = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+        converged = crossovers[crossovers < n_max_mc]
+        conv_rate = len(converged) / n_runs * 100
+        if len(converged) > 0:
+            cond_med = int(median(converged))
+            q25 = int(percentile(converged, 25))
+            q75 = int(percentile(converged, 75))
+        else:
+            cond_med = q25 = q75 = n_max_mc
+
+        # Check Spearman(K, prod_rate)
+        from scipy.stats import spearmanr as sp_corr
+        rho_actual, _ = sp_corr(param_arrays["K"], param_arrays["prod_rate"])
+        print(f"  {rho_kp:>12.1f}  {conv_rate:>7.1f}%  {cond_med:>10,d}  [{q25:>8,d}, {q75:>8,d}]  "
+              f"(actual Spearman K-prod: {rho_actual:+.3f})")
+
+
+# ---------------------------------------------------------------------------
+# H1d: Piecewise schedule sensitivity test
+# ---------------------------------------------------------------------------
+def print_piecewise_schedule_test():
+    """H1d: Compare baseline logistic vs piecewise schedule crossover."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print("\n  H1d: Piecewise schedule sensitivity (NPV, r=5%):")
+    print(f"    Baseline (continuous logistic):  N* = {base_npv:,}")
+
+    # Compute piecewise crossover by using unit_to_time_piecewise in a manual loop
+    from numpy import arange as np_arange, cumsum as np_cumsum, where as np_where2
+    r = BASELINE["r"]
+    ns = np_arange(1, 20001, dtype=float)
+    prod_rate = BASELINE["prod_rate"]
+    k_ramp = BASELINE["k_ramp"]
+    t0 = BASELINE["t0"]
+
+    # Earth side (same as baseline)
+    earth_units = earth_unit_cost(ns, BASELINE)
+    t_n_earth = earth_delivery_time(ns, prod_rate)
+    discount_earth = (1.0 + r) ** (-t_n_earth)
+    earth_cum = np_cumsum(earth_units * discount_earth)
+
+    for t_c_offset in [-1.0, -2.0]:
+        t_c = t0 + t_c_offset
+        t_n_isru = unit_to_time_piecewise(ns, prod_rate, t0, k_ramp, t_construction=t_c)
+        ops = isru_ops_cost(ns, BASELINE)
+        discount_isru = (1.0 + r) ** (-t_n_isru)
+        isru_cum = BASELINE["K"] + np_cumsum(ops * discount_isru)
+
+        diff = isru_cum - earth_cum
+        crossings = np_where2(diff <= 0)[0]
+        cross_pw = int(ns[crossings[0]]) if len(crossings) > 0 else 20000
+        shift = cross_pw - base_npv
+        pct = shift / base_npv * 100
+        print(f"    Piecewise (t_c={t_c:.0f}yr, t0={t0:.0f}yr):   N* = {cross_pw:,} "
+              f"(shift: {shift:+,}, {pct:+.1f}%)")
+
+
+# ---------------------------------------------------------------------------
+# H1e: Cash-flow timing sensitivity (manufacturing lead-time)
+# ---------------------------------------------------------------------------
+def print_cashflow_timing_test():
+    """H1e: Test sensitivity to manufacturing lead-time adjustment."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print("\n  H1e: Cash-flow timing sensitivity (NPV, r=5%):")
+    print(f"    Baseline (pay-at-delivery):      N* = {base_npv:,}")
+
+    for tau in [0.5, 1.0]:
+        cross = find_crossover_mfg_lead(BASELINE, tau_mfg=tau)
+        shift = cross - base_npv
+        pct = shift / base_npv * 100
+        print(f"    Mfg lead-time tau={tau:.1f}yr:         N* = {cross:,} "
+              f"(shift: {shift:+,}, {pct:+.1f}%)")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -1071,5 +1201,11 @@ if __name__ == "__main__":
     print_rate_dependent_learning()
     print_vitamin_sensitivity()
     fig_production_schedule()
+
+    # Version H diagnostics
+    fig_convergence_curve()
+    print_k_prodrate_correlation()
+    print_piecewise_schedule_test()
+    print_cashflow_timing_test()
 
     print(f"\nDone. All figures saved to {fig_dir}")

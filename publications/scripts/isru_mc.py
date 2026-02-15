@@ -83,6 +83,7 @@ def sample_mc_params(
     n_runs: int,
     *,
     rho: float = 0.3,
+    rho_k_prod: float = 0.0,
     correlated: bool = True,
 ) -> dict[str, NDFloat]:
     """Sample MC parameter arrays.
@@ -93,21 +94,32 @@ def sample_mc_params(
     n_runs : int
     rho : float
         Correlation between p_launch and K (Gaussian copula).
+    rho_k_prod : float
+        Correlation between K and prod_rate (Gaussian copula).
+        Reflects that higher-capacity facilities require larger capital.
     correlated : bool
-        If False, sample p_launch and K independently (uniform).
+        If False, sample p_launch, K, and prod_rate independently (uniform).
     """
     if correlated:
-        cov_matrix = array([[1.0, rho], [rho, 1.0]])
+        # 3D Gaussian copula: (p_launch, K, prod_rate)
+        cov_matrix = array([
+            [1.0,  rho,       0.0],
+            [rho,  1.0,       rho_k_prod],
+            [0.0,  rho_k_prod, 1.0],
+        ])
         L = cholesky(cov_matrix)
-        z = rng.standard_normal((n_runs, 2))
+        z = rng.standard_normal((n_runs, 3))
         corr_normals = z @ L.T
         u_launch = sp_norm.cdf(corr_normals[:, 0])
         u_capital = sp_norm.cdf(corr_normals[:, 1])
+        u_prod = sp_norm.cdf(corr_normals[:, 2])
         p_launch_samples = 500 + u_launch * (2000 - 500)
         k_samples = 30e9 + u_capital * (100e9 - 30e9)
+        prod_rate_samples = 250 + u_prod * (750 - 250)
     else:
         p_launch_samples = rng.uniform(500, 2000, n_runs)
         k_samples = rng.uniform(30e9, 100e9, n_runs)
+        prod_rate_samples = rng.uniform(250, 750, n_runs)
 
     return {
         "p_launch": p_launch_samples,
@@ -120,7 +132,7 @@ def sample_mc_params(
         "alpha": rng.uniform(1.0, 2.0, n_runs),
         "p_transport": rng.uniform(50, 300, n_runs),
         "C_floor": rng.uniform(0.3e6, 2.0e6, n_runs),
-        "prod_rate": rng.uniform(250, 750, n_runs),
+        "prod_rate": prod_rate_samples,
     }
 
 
