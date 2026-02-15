@@ -11,8 +11,9 @@ Implements Equations 1-9 (plus NPV extensions) from the paper and produces
   5. fig-histogram.pdf        — Monte Carlo histogram of crossover points (NPV)
   6. fig-npv-comparison.pdf   — Cumulative cost at multiple discount rates
 
-Version C: Addresses peer review critique (NPV analysis, cost floor, launch
-learning, expanded Monte Carlo with correlated sampling and bootstrap CIs).
+Version D: Addresses Version C peer review (D1: integrated ramp-up in production
+schedule, D2: Spearman diagnostics, D3: phased capital deployment, D4: censoring-
+aware MC reporting, D5: mass penalty factor alpha, D6: transport cost).
 
 Usage:
     source publications/scripts/.venv/bin/activate
@@ -22,6 +23,7 @@ Usage:
 import os
 import numpy as np
 from scipy import stats as sp_stats
+# brentq no longer needed — unit_to_time uses closed-form inverse
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -83,6 +85,8 @@ BASELINE = {
     "b_L": None,            # launch learning exponent (None = no learning)
     "p_fuel": 200,          # fuel component of launch cost ($/kg)
     "p_ops_launch": 800,    # ops component of launch cost ($/kg)
+    "alpha": 1.0,           # D5: mass penalty factor for ISRU units
+    "p_transport": 100,     # D6: ISRU-to-orbit transport cost ($/kg)
 }
 
 
@@ -100,13 +104,46 @@ def s_curve(t, t0, k=2.0):
     return 1.0 / (1.0 + np.exp(-k * (t - t0)))
 
 
-def unit_to_time(n, prod_rate=500, t0=5):
-    """Map unit number to elapsed time (years).
+def _cumulative_production(t, prod_rate, t0, k):
+    """Cumulative production N(t) by integrating ṅ(t) = prod_rate * S(t).
 
-    Production begins at the ramp-up midpoint t0 (after construction),
-    then accumulates at prod_rate units/year at full capacity.
+    D1: The integral of the logistic S(t) has closed form:
+      N(t) = (prod_rate / k) * [ln(1 + exp(k*(t - t0))) - ln(2)]
+
+    This accounts for the S-curve ramp-up in the production *rate*, not
+    just as a cost penalty. Early production is slower, so early units
+    are produced later than the old linear schedule assumed.
     """
-    return t0 + np.asarray(n, dtype=float) / prod_rate
+    t = np.asarray(t, dtype=float)
+    # Use log-sum-exp trick for numerical stability
+    arg = k * (t - t0)
+    # ln(1 + exp(x)) = x + ln(1 + exp(-x)) for large x (avoids overflow)
+    log1pexp = np.where(arg > 20, arg, np.log1p(np.exp(arg)))
+    return (prod_rate / k) * (log1pexp - np.log(2))
+
+
+def unit_to_time(n, prod_rate=500, t0=5, k=2.0):
+    """D1: Map unit number to calendar time by inverting N(t).
+
+    Closed-form inverse of N(t) = (prod_rate/k) * [ln(1+exp(k*(t-t0))) - ln(2)]:
+      t(n) = t0 + (1/k) * ln(2*exp(n*k/prod_rate) - 1)
+
+    For large n*k/prod_rate (>30), uses asymptotic form to avoid overflow:
+      t(n) ~ t0 + n/prod_rate + ln(2)/k
+
+    Fully vectorized — no per-element root finding.
+    """
+    n = np.asarray(n, dtype=float)
+    x = n * k / prod_rate  # dimensionless argument
+
+    # Exact formula: t = t0 + (1/k) * ln(2*exp(x) - 1)
+    # For large x: ln(2*exp(x) - 1) ~ x + ln(2), avoiding overflow
+    result = np.where(
+        x < 30,
+        t0 + (1.0 / k) * np.log(np.maximum(2.0 * np.exp(x) - 1.0, 1e-300)),
+        t0 + n / prod_rate + np.log(2.0) / k,
+    )
+    return result
 
 
 def earth_unit_cost(n, params):
@@ -141,31 +178,35 @@ def earth_unit_cost_launch_learning(n, params):
     return params["m"] * (p_fuel + p_ops * n ** b_L)
 
 
-def isru_unit_cost(n, params):
-    """Eq 6-8: ISRU per-unit cost = amortized capital + ops*learning/S-curve.
+def isru_ops_cost(n, params):
+    """D1/D5/D6: Operational cost only (no amortized capital).
 
-    Includes cost floor: C_floor + (C_ops1 - C_floor) * n^b_I / S(t_n)
+    D1: Ramp-up effect is now purely through production schedule timing
+    (unit_to_time integrates S(t)), so the 1/S(t) penalty is removed.
+    D5: Mass penalty alpha multiplies ops cost.
+    D6: Transport cost added as m * p_transport * alpha.
     """
     n = np.asarray(n, dtype=float)
     b_I = learning_exponent(params["LR_I"])
-    t_n = unit_to_time(n, params.get("prod_rate", 500), params["t0"])
-    s = s_curve(t_n, params["t0"], params.get("k_ramp", 2.0))
-    s = np.maximum(s, 0.05)
+    alpha = params.get("alpha", 1.0)
+    C_floor = params.get("C_floor", 0)
+
+    # Learning curve ops cost (no S-curve penalty — D1)
+    c_ops = alpha * (C_floor + (params["C_ops1"] - C_floor) * n ** b_I)
+
+    # D6: Transport cost
+    p_transport = params.get("p_transport", 0)
+    if p_transport > 0:
+        c_transport = params["m"] * p_transport * alpha
+        c_ops = c_ops + c_transport
+
+    return c_ops
+
+
+def isru_unit_cost(n, params):
+    """ISRU per-unit cost = amortized capital + ops (for display)."""
     c_capital = params["K"] / params["N_total"]
-    C_floor = params.get("C_floor", 0)
-    c_ops = C_floor + (params["C_ops1"] - C_floor) * n ** b_I / s
-    return c_capital + c_ops
-
-
-def isru_ops_cost(n, params):
-    """Operational cost only (no amortized capital), with cost floor."""
-    n = np.asarray(n, dtype=float)
-    b_I = learning_exponent(params["LR_I"])
-    t_n = unit_to_time(n, params.get("prod_rate", 500), params["t0"])
-    s = s_curve(t_n, params["t0"], params.get("k_ramp", 2.0))
-    s = np.maximum(s, 0.05)
-    C_floor = params.get("C_floor", 0)
-    return C_floor + (params["C_ops1"] - C_floor) * n ** b_I / s
+    return c_capital + isru_ops_cost(n, params)
 
 
 def cumulative_cost(unit_cost_fn, N_max, params):
@@ -177,7 +218,7 @@ def cumulative_cost(unit_cost_fn, N_max, params):
 
 
 def cumulative_isru(N_max, params):
-    """Eq 9: ISRU cumulative = K + sum of ops costs (with cost floor)."""
+    """Eq 9: ISRU cumulative = K + sum of ops costs."""
     ns = np.arange(1, N_max + 1, dtype=float)
     ops_costs = isru_ops_cost(ns, params)
     cum = params["K"] + np.cumsum(ops_costs)
@@ -216,7 +257,8 @@ def find_crossover_npv(params, N_max=20000):
         return find_crossover(params, N_max)
 
     ns = np.arange(1, N_max + 1, dtype=float)
-    t_n = unit_to_time(ns, params.get("prod_rate", 500), params["t0"])
+    k_ramp = params.get("k_ramp", 2.0)
+    t_n = unit_to_time(ns, params.get("prod_rate", 500), params["t0"], k_ramp)
     discount = (1.0 + r) ** (-t_n)
 
     # Earth discounted cumulative
@@ -235,11 +277,48 @@ def find_crossover_npv(params, N_max=20000):
     return N_max
 
 
+def find_crossover_npv_phased(params, N_max=20000, K_years=5):
+    """D3: NPV crossover with phased capital deployment.
+
+    Instead of lump-sum K at t=0, spread K linearly over K_years annual
+    tranches, each discounted:
+      K_eff = sum_{y=0}^{K_years-1} (K/K_years) / (1+r)^y
+    """
+    r = params.get("r", 0.0)
+    K = params["K"]
+    tranche = K / K_years
+
+    if r == 0:
+        # Phased capital at r=0 is identical to lump sum
+        return find_crossover(params, N_max)
+
+    # Discounted capital
+    K_eff = sum(tranche / (1.0 + r) ** y for y in range(K_years))
+
+    ns = np.arange(1, N_max + 1, dtype=float)
+    k_ramp = params.get("k_ramp", 2.0)
+    t_n = unit_to_time(ns, params.get("prod_rate", 500), params["t0"], k_ramp)
+    discount = (1.0 + r) ** (-t_n)
+
+    earth_units = earth_unit_cost(ns, params)
+    earth_cum_npv = np.cumsum(earth_units * discount)
+
+    ops = isru_ops_cost(ns, params)
+    isru_cum_npv = K_eff + np.cumsum(ops * discount)
+
+    diff = isru_cum_npv - earth_cum_npv
+    crossings = np.where(diff <= 0)[0]
+    if len(crossings) > 0:
+        return int(ns[crossings[0]])
+    return N_max
+
+
 def cumulative_npv(N_max, params):
     """Compute discounted cumulative costs for both pathways."""
     r = params.get("r", 0.0)
     ns = np.arange(1, N_max + 1, dtype=float)
-    t_n = unit_to_time(ns, params.get("prod_rate", 500), params["t0"])
+    k_ramp = params.get("k_ramp", 2.0)
+    t_n = unit_to_time(ns, params.get("prod_rate", 500), params["t0"], k_ramp)
     discount = (1.0 + r) ** (-t_n) if r > 0 else np.ones_like(t_n)
 
     earth_units = earth_unit_cost(ns, params)
@@ -354,7 +433,7 @@ def fig_unit_cost():
 def fig_tornado():
     base_cross = find_crossover_npv(BASELINE)
 
-    # Parameter variations: now includes r, C_ops1, C_mfg1, uses NPV baseline
+    # Parameter variations: includes D5 (alpha) and D6 (p_transport)
     variations = [
         ("Earth LR $\\pm$0.05", "LR_E", -0.05, +0.05),
         ("ISRU capital $\\pm$\\$25B", "K", -25e9, +25e9),
@@ -363,6 +442,8 @@ def fig_tornado():
         ("Earth mfg cost $\\pm$\\$25M", "C_mfg1", -25e6, +25e6),
         ("ISRU LR $\\pm$0.05", "LR_I", -0.05, +0.05),
         ("Launch cost $\\pm$\\$500/kg", "p_launch", -500, +500),
+        ("Mass penalty $\\alpha$ $\\pm$0.5", "alpha", -0.0, +1.0),  # range 1.0-2.0
+        ("Transport $\\pm$\\$100/kg", "p_transport", -100, +100),  # range 0-200
     ]
 
     labels = []
@@ -374,6 +455,12 @@ def fig_tornado():
         p_lo[param] = BASELINE[param] + delta_lo
         # Ensure discount rate doesn't go negative
         if param == "r":
+            p_lo[param] = max(0, p_lo[param])
+        # Ensure alpha doesn't go below 1.0
+        if param == "alpha":
+            p_lo[param] = max(1.0, p_lo[param])
+        # Ensure transport doesn't go negative
+        if param == "p_transport":
             p_lo[param] = max(0, p_lo[param])
         cross_lo = find_crossover_npv(p_lo)
 
@@ -392,7 +479,7 @@ def fig_tornado():
     low_deltas = [low_deltas[i] for i in order]
     high_deltas = [high_deltas[i] for i in order]
 
-    fig, ax = plt.subplots(figsize=(6, 4))
+    fig, ax = plt.subplots(figsize=(6, 4.5))
     y_pos = np.arange(len(labels))
 
     for i, (lo, hi) in enumerate(zip(low_deltas, high_deltas)):
@@ -484,6 +571,7 @@ def fig_heatmap():
 def fig_histogram():
     rng = np.random.default_rng(42)
     n_runs = 10000
+    N_MAX_MC = 40000
 
     # --- Correlated sampling for p_launch and K (rho=0.3) ---
     rho = 0.3
@@ -507,6 +595,10 @@ def fig_histogram():
     C_ops1_samples = rng.uniform(2e6, 10e6, n_runs)
     C_mfg1_samples = rng.uniform(50e6, 100e6, n_runs)
     r_samples = rng.uniform(0.0, 0.10, n_runs)
+    # D5: mass penalty alpha
+    alpha_samples = rng.uniform(1.0, 2.0, n_runs)
+    # D6: transport cost
+    p_transport_samples = rng.uniform(50, 300, n_runs)
 
     # --- Run MC ---
     crossovers = np.empty(n_runs, dtype=float)
@@ -520,15 +612,38 @@ def fig_histogram():
         p["C_ops1"] = C_ops1_samples[i]
         p["C_mfg1"] = C_mfg1_samples[i]
         p["r"] = r_samples[i]
-        crossovers[i] = find_crossover_npv(p, N_max=40000)
+        p["alpha"] = alpha_samples[i]
+        p["p_transport"] = p_transport_samples[i]
+        crossovers[i] = find_crossover_npv(p, N_max=N_MAX_MC)
 
+    # --- D4: Censoring-aware reporting ---
+    converged_mask = crossovers < N_MAX_MC
+    n_converged = np.sum(converged_mask)
+    convergence_rate = n_converged / n_runs * 100
+    non_convergence_rate = 100 - convergence_rate
+
+    # P(N* < H) for multiple horizons
+    horizons = [5000, 10000, 20000, 40000]
+    p_below_h = {h: np.mean(crossovers < h) * 100 for h in horizons}
+
+    # Unconditional statistics (censored at N_MAX_MC)
     median = np.median(crossovers)
     q25, q75 = np.percentile(crossovers, [25, 75])
     p10, p90 = np.percentile(crossovers, [10, 90])
 
+    # Conditional statistics (converging runs only)
+    if n_converged > 0:
+        cond_crossovers = crossovers[converged_mask]
+        cond_median = np.median(cond_crossovers)
+        cond_q25, cond_q75 = np.percentile(cond_crossovers, [25, 75])
+        cond_p10, cond_p90 = np.percentile(cond_crossovers, [10, 90])
+    else:
+        cond_median = cond_q25 = cond_q75 = cond_p10 = cond_p90 = N_MAX_MC
+
     # --- Bootstrap confidence intervals (5,000 resamples) ---
     n_boot = 5000
     boot_medians = np.empty(n_boot)
+    boot_cond_medians = np.empty(n_boot)
     boot_p10 = np.empty(n_boot)
     boot_p90 = np.empty(n_boot)
     for b in range(n_boot):
@@ -536,12 +651,15 @@ def fig_histogram():
         boot_medians[b] = np.median(boot_sample)
         boot_p10[b] = np.percentile(boot_sample, 10)
         boot_p90[b] = np.percentile(boot_sample, 90)
+        boot_conv = boot_sample[boot_sample < N_MAX_MC]
+        boot_cond_medians[b] = np.median(boot_conv) if len(boot_conv) > 0 else N_MAX_MC
 
     ci_median = np.percentile(boot_medians, [2.5, 97.5])
+    ci_cond_median = np.percentile(boot_cond_medians, [2.5, 97.5])
     ci_p10 = np.percentile(boot_p10, [2.5, 97.5])
     ci_p90 = np.percentile(boot_p90, [2.5, 97.5])
 
-    # --- Spearman rank correlations ---
+    # --- Spearman rank correlations (unconditional) ---
     param_arrays = {
         "p_launch": p_launch_samples,
         "K": K_samples,
@@ -551,55 +669,147 @@ def fig_histogram():
         "C_mfg1": C_mfg1_samples,
         "r": r_samples,
         "t0": t0_samples,
+        "alpha": alpha_samples,
+        "p_transport": p_transport_samples,
     }
     spearman_results = {}
     for name, arr in param_arrays.items():
         corr, pval = sp_stats.spearmanr(arr, crossovers)
         spearman_results[name] = (corr, pval)
 
+    # D4: Conditional Spearman (converging runs only)
+    spearman_conditional = {}
+    if n_converged > 100:
+        for name, arr in param_arrays.items():
+            corr, pval = sp_stats.spearmanr(arr[converged_mask], cond_crossovers)
+            spearman_conditional[name] = (corr, pval)
+
+    # --- D2: Uncorrelated MC diagnostic for p_launch Spearman ---
+    rng2 = np.random.default_rng(99)
+    n_diag = 5000
+    # Independent sampling (no copula)
+    p_launch_uncorr = rng2.uniform(500, 2000, n_diag)
+    K_uncorr = rng2.uniform(30e9, 100e9, n_diag)
+    crossovers_uncorr = np.empty(n_diag, dtype=float)
+    for i in range(n_diag):
+        p = BASELINE.copy()
+        p["p_launch"] = p_launch_uncorr[i]
+        p["K"] = K_uncorr[i]
+        p["LR_E"] = np.clip(rng2.normal(0.85, 0.03), 0.75, 0.95)
+        p["LR_I"] = np.clip(rng2.normal(0.90, 0.03), 0.80, 0.98)
+        p["t0"] = rng2.uniform(3, 8)
+        p["C_ops1"] = rng2.uniform(2e6, 10e6)
+        p["C_mfg1"] = rng2.uniform(50e6, 100e6)
+        p["r"] = rng2.uniform(0.0, 0.10)
+        p["alpha"] = rng2.uniform(1.0, 2.0)
+        p["p_transport"] = rng2.uniform(50, 300)
+        crossovers_uncorr[i] = find_crossover_npv(p, N_max=N_MAX_MC)
+
+    spearman_uncorr_launch, _ = sp_stats.spearmanr(p_launch_uncorr, crossovers_uncorr)
+
+    # D2: Monotonicity sanity check — sweep p_launch at baseline
+    mono_launches = np.linspace(500, 2000, 10)
+    mono_crossovers = []
+    for pl in mono_launches:
+        p = BASELINE.copy()
+        p["p_launch"] = pl
+        mono_crossovers.append(find_crossover_npv(p))
+    mono_crossovers = np.array(mono_crossovers)
+    mono_decreasing = all(mono_crossovers[i] >= mono_crossovers[i+1]
+                          for i in range(len(mono_crossovers)-1))
+
     # --- Plot histogram ---
     fig, ax = plt.subplots()
+
+    # Only plot converging scenarios in histogram; note non-convergence
+    plot_data = crossovers[converged_mask] if n_converged > 0 else crossovers
     ax.hist(
-        crossovers, bins=60, color=C_ISRU, alpha=0.75,
+        plot_data, bins=60, color=C_ISRU, alpha=0.75,
         edgecolor="white", linewidth=0.5,
     )
 
-    # Median line with bootstrap CI
-    ax.axvline(median, color=C_CROSS, linewidth=2, linestyle="-",
-               label=f"Median: {int(median):,} [{int(ci_median[0]):,}\u2013{int(ci_median[1]):,}]")
-    # IQR shaded
-    ax.axvspan(q25, q75, alpha=0.12, color=C_EARTH,
-               label=f"IQR: [{int(q25):,}, {int(q75):,}]")
-    # P10/P90
-    ax.axvline(p10, color="#6b7280", linewidth=1.5, linestyle=":",
-               alpha=0.7, label=f"P10: {int(p10):,}")
-    ax.axvline(p90, color=C_FLOOR, linewidth=1.5, linestyle=":",
-               alpha=0.7, label=f"P90: {int(p90):,}")
+    # Conditional median line with bootstrap CI
+    ax.axvline(cond_median, color=C_CROSS, linewidth=2, linestyle="-",
+               label=f"Cond. median: {int(cond_median):,} "
+                     f"[{int(ci_cond_median[0]):,}\u2013{int(ci_cond_median[1]):,}]")
+    # IQR shaded (conditional)
+    ax.axvspan(cond_q25, cond_q75, alpha=0.12, color=C_EARTH,
+               label=f"Cond. IQR: [{int(cond_q25):,}, {int(cond_q75):,}]")
+    # P10/P90 (conditional)
+    ax.axvline(cond_p10, color="#6b7280", linewidth=1.5, linestyle=":",
+               alpha=0.7, label=f"P10: {int(cond_p10):,}")
+    ax.axvline(cond_p90, color=C_FLOOR, linewidth=1.5, linestyle=":",
+               alpha=0.7, label=f"P90: {int(cond_p90):,}")
+
+    # D4: Note non-convergence in legend
+    from matplotlib.patches import Patch
+    nc_patch = Patch(facecolor='none', edgecolor='none',
+                     label=f"{non_convergence_rate:.1f}% did not converge (N>{N_MAX_MC:,})")
+    handles, _ = ax.get_legend_handles_labels()
+    handles.append(nc_patch)
 
     ax.set_xlabel("NPV Crossover Point $N^*$ (units)")
     ax.set_ylabel("Frequency")
-    ax.legend(loc="upper right", framealpha=0.9, fontsize=8)
+    ax.legend(handles=handles, loc="upper right", framealpha=0.9, fontsize=7)
     ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
 
     fig.savefig(os.path.join(FIG_DIR, "fig-histogram.pdf"))
     plt.close(fig)
 
-    print(f"  [5/6] fig-histogram.pdf  (n={n_runs:,}, median={int(median):,}, "
-          f"IQR=[{int(q25):,},{int(q75):,}], P10={int(p10):,}, P90={int(p90):,})")
-    print(f"         Bootstrap 95% CIs: median [{int(ci_median[0]):,}\u2013{int(ci_median[1]):,}], "
-          f"P10 [{int(ci_p10[0]):,}\u2013{int(ci_p10[1]):,}], "
-          f"P90 [{int(ci_p90[0]):,}\u2013{int(ci_p90[1]):,}]")
-    print("         Spearman rank correlations (param -> N*):")
+    # --- Print diagnostics ---
+    print(f"  [5/6] fig-histogram.pdf  (n={n_runs:,})")
+    print(f"         Convergence: {convergence_rate:.1f}% within {N_MAX_MC:,} units")
+    print(f"         Unconditional: median={int(median):,}, "
+          f"IQR=[{int(q25):,},{int(q75):,}], P10={int(p10):,}, P90={int(p90):,}")
+    print(f"         Conditional:   median={int(cond_median):,}, "
+          f"IQR=[{int(cond_q25):,},{int(cond_q75):,}], "
+          f"P10={int(cond_p10):,}, P90={int(cond_p90):,}")
+    print(f"         Bootstrap 95% CIs: cond. median "
+          f"[{int(ci_cond_median[0]):,}\u2013{int(ci_cond_median[1]):,}], "
+          f"uncond. median [{int(ci_median[0]):,}\u2013{int(ci_median[1]):,}]")
+
+    # D4: P(N* < H) table
+    print("         P(N* < H) for multiple horizons:")
+    for h in horizons:
+        print(f"           H={h:>6,d}: P={p_below_h[h]:5.1f}%")
+
+    # Spearman tables
+    print("         Spearman rank correlations (unconditional, param -> N*):")
     for name in sorted(spearman_results.keys(), key=lambda k: -abs(spearman_results[k][0])):
         corr, pval = spearman_results[name]
         sig = "***" if pval < 0.001 else ("**" if pval < 0.01 else ("*" if pval < 0.05 else ""))
         print(f"           {name:>12s}: rho={corr:+.3f} {sig}")
 
+    if spearman_conditional:
+        print("         Spearman rank correlations (conditional on convergence):")
+        for name in sorted(spearman_conditional.keys(),
+                           key=lambda k: -abs(spearman_conditional[k][0])):
+            corr, pval = spearman_conditional[name]
+            sig = "***" if pval < 0.001 else ("**" if pval < 0.01 else ("*" if pval < 0.05 else ""))
+            print(f"           {name:>12s}: rho={corr:+.3f} {sig}")
+
+    # D2: Uncorrelated diagnostics
+    print(f"\n         D2 Diagnostics:")
+    print(f"           Uncorrelated p_launch Spearman: rho={spearman_uncorr_launch:+.3f}")
+    print(f"           Correlated p_launch Spearman:   rho={spearman_results['p_launch'][0]:+.3f}")
+    print(f"           Monotonicity check (p_launch sweep): "
+          f"{'PASS - N* decreases as p_launch increases' if mono_decreasing else 'FAIL'}")
+    if not mono_decreasing:
+        print(f"           Sweep values: {list(zip(mono_launches.astype(int), mono_crossovers.astype(int)))}")
+
     return {
         "crossovers": crossovers,
+        "converged_mask": converged_mask,
+        "convergence_rate": convergence_rate,
         "median": median, "q25": q25, "q75": q75, "p10": p10, "p90": p90,
-        "ci_median": ci_median, "ci_p10": ci_p10, "ci_p90": ci_p90,
+        "cond_median": cond_median, "cond_q25": cond_q25, "cond_q75": cond_q75,
+        "ci_median": ci_median, "ci_cond_median": ci_cond_median,
+        "ci_p10": ci_p10, "ci_p90": ci_p90,
         "spearman": spearman_results,
+        "spearman_conditional": spearman_conditional,
+        "p_below_h": p_below_h,
+        "spearman_uncorr_launch": spearman_uncorr_launch,
+        "mono_decreasing": mono_decreasing,
     }
 
 
@@ -703,15 +913,21 @@ def fig_npv_comparison():
 # Production schedule table (for LaTeX)
 # ---------------------------------------------------------------------------
 def print_production_schedule():
-    """Print production schedule table showing n -> t(n) -> S(t) -> 1/S penalty."""
+    """Print production schedule table showing n -> t(n) with integrated ramp-up."""
     milestones = [1, 10, 100, 500, 1000, 5000, 10000]
-    print("\n  Production schedule (k=2.0, t0=5, prod_rate=500):")
-    print(f"  {'n':>6s}  {'t(n)':>8s}  {'S(t)':>8s}  {'1/S':>8s}")
-    print(f"  {'------':>6s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}")
+    k = BASELINE["k_ramp"]
+    t0 = BASELINE["t0"]
+    prod_rate = BASELINE["prod_rate"]
+
+    print("\n  Production schedule (integrated S-curve, k=2.0, t0=5, prod_rate=500):")
+    print(f"  {'n':>6s}  {'t(n) new':>10s}  {'t(n) old':>10s}  {'S(t)':>8s}  {'delay':>8s}")
+    print(f"  {'------':>6s}  {'----------':>10s}  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}")
     for n in milestones:
-        t = unit_to_time(n, 500, 5)
-        s = max(s_curve(float(t), 5, 2.0), 0.05)
-        print(f"  {n:>6,d}  {t:>8.1f}  {s:>8.4f}  {1/s:>8.2f}")
+        t_new = unit_to_time(n, prod_rate, t0, k)
+        t_old = t0 + n / prod_rate  # old Version C formula
+        s = s_curve(float(t_new), t0, k)
+        delay = t_new - t_old
+        print(f"  {n:>6,d}  {t_new:>10.2f}  {t_old:>10.1f}  {s:>8.4f}  {delay:>+8.2f}")
 
 
 # ---------------------------------------------------------------------------
@@ -744,6 +960,25 @@ if __name__ == "__main__":
     cross_ll = find_crossover_npv(p_ll)
     print(f"Launch learning (LR=0.97, NPV):   ~{cross_ll:,} units "
           f"(shift: +{cross_ll - base_npv:,} from NPV baseline)")
+
+    # D3: Phased capital comparison
+    base_phased = find_crossover_npv_phased(BASELINE, K_years=5)
+    print(f"Phased capital (5yr, NPV):        ~{base_phased:,} units "
+          f"(shift: {base_phased - base_npv:,} from lump-sum)")
+
+    # D5: Alpha sensitivity
+    p_alpha = BASELINE.copy()
+    p_alpha["alpha"] = 1.5
+    cross_alpha = find_crossover_npv(p_alpha)
+    print(f"Mass penalty alpha=1.5 (NPV):     ~{cross_alpha:,} units "
+          f"(shift: +{cross_alpha - base_npv:,} from baseline)")
+
+    # D6: Transport cost sensitivity
+    p_notrans = BASELINE.copy()
+    p_notrans["p_transport"] = 0
+    cross_notrans = find_crossover_npv(p_notrans)
+    print(f"No transport cost (NPV):          ~{cross_notrans:,} units "
+          f"(shift: {cross_notrans - base_npv:,} from baseline)")
     print()
 
     fig_cumulative_cost()
