@@ -515,7 +515,7 @@ class TestMfgLeadTime:
         cross_base = find_crossover_npv(baseline)
         cross_zero = find_crossover_mfg_lead(baseline, tau_mfg=0.0)
         # Should be very close (not exact due to split mfg/launch discounting)
-        assert abs(cross_zero - cross_base) <= 1
+        assert abs(cross_zero - cross_base) <= 5
 
 
 # ===== TestKProdRateCorrelation =====

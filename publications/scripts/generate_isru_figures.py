@@ -1126,6 +1126,166 @@ def print_cashflow_timing_test():
 
 
 # ---------------------------------------------------------------------------
+# I1: Earth fixed-cost (K_E) sensitivity
+# ---------------------------------------------------------------------------
+def print_earth_capex_sensitivity():
+    """I1: Test effect of adding Earth-side factory capex."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print("\n  I1: Earth fixed-cost sensitivity (NPV, r=5%):")
+    print(f"    Baseline (K_E=0, Earth base pre-existing): N* = {base_npv:,}")
+
+    for k_e in [1e9, 5e9, 10e9]:
+        # Add Earth capex: subtract from Earth cumulative at t=0
+        # Equivalent to reducing ISRU advantage by K_E
+        from numpy import arange as np_arange, cumsum as np_cumsum, where as np_where3
+        r = BASELINE["r"]
+        ns = np_arange(1, 20001, dtype=float)
+        prod_rate = BASELINE["prod_rate"]
+        k_ramp = BASELINE["k_ramp"]
+
+        earth_units = earth_unit_cost(ns, BASELINE)
+        t_n_earth = earth_delivery_time(ns, prod_rate)
+        discount_earth = (1.0 + r) ** (-t_n_earth)
+        earth_cum = k_e + np_cumsum(earth_units * discount_earth)
+
+        ops = isru_ops_cost(ns, BASELINE)
+        t_n_isru = unit_to_time(ns, prod_rate, BASELINE["t0"], k_ramp)
+        discount_isru = (1.0 + r) ** (-t_n_isru)
+        isru_cum = BASELINE["K"] + np_cumsum(ops * discount_isru)
+
+        diff = isru_cum - earth_cum
+        crossings = np_where3(diff <= 0)[0]
+        cross = int(ns[crossings[0]]) if len(crossings) > 0 else 20000
+        shift = cross - base_npv
+        print(f"    K_E=${k_e/1e9:.0f}B:                          N* = {cross:,} "
+              f"(shift: {shift:+,})")
+
+
+# ---------------------------------------------------------------------------
+# I2: Extended C_floor sweep to find failure threshold
+# ---------------------------------------------------------------------------
+def print_cfloor_failure_threshold():
+    """I2: Find exact C_floor at which crossover fails."""
+    from numpy import linspace as np_linspace
+    n_max = 40000
+
+    print("\n  I2: C_floor failure threshold (NPV, r=5%, N_max=40,000):")
+    for cf in np_linspace(2.0e6, 10.0e6, 17):
+        p = BASELINE.copy()
+        p["C_floor"] = cf
+        cross = find_crossover(p, n_max=n_max, discount=True)
+        label = f"${cf/1e6:.1f}M"
+        if cross >= n_max:
+            print(f"    C_floor = {label:>7s}: NO CROSSOVER within {n_max:,} units  <-- threshold")
+            break
+        else:
+            print(f"    C_floor = {label:>7s}: N* = {cross:,}")
+
+
+# ---------------------------------------------------------------------------
+# I3: Additional correlation tests
+# ---------------------------------------------------------------------------
+def print_additional_correlations():
+    """I3: Test additional plausible correlations in MC."""
+    n_runs = 10000
+    n_max_mc = 40000
+    r_fixed = 0.05
+
+    print("\n  I3: Additional correlation sensitivity (r=5%, n=10,000):")
+    print(f"  {'Config':>30s}  {'Conv%':>8s}  {'Cond.Med':>10s}")
+    print(f"  {'------------------------------':>30s}  {'--------':>8s}  {'----------':>10s}")
+
+    configs = [
+        ("Baseline (rho_pK=0.3)", 0.3, 0.0),
+        ("+ rho(K,prod)=0.5", 0.3, 0.5),
+    ]
+
+    for label, rho_pk, rho_kp in configs:
+        rng = default_rng(42)
+        param_arrays = sample_mc_params(rng, n_runs, rho=rho_pk, rho_k_prod=rho_kp, correlated=True)
+        crossovers = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+        converged = crossovers[crossovers < n_max_mc]
+        conv_rate = len(converged) / n_runs * 100
+        cond_med = int(median(converged)) if len(converged) > 0 else n_max_mc
+        print(f"  {label:>30s}  {conv_rate:>7.1f}%  {cond_med:>10,d}")
+
+
+# ---------------------------------------------------------------------------
+# I4: Revenue breakeven calculation
+# ---------------------------------------------------------------------------
+def print_revenue_breakeven():
+    """I4: Calculate breakeven revenue rate where ISRU delay eliminates savings."""
+    prod_rate = BASELINE["prod_rate"]
+    t0 = BASELINE["t0"]
+    k_ramp = BASELINE["k_ramp"]
+    r = BASELINE["r"]
+
+    # At crossover, compute ISRU savings and delay cost
+    cross_npv = find_crossover_npv(BASELINE)
+    n_check = cross_npv * 2  # check at 2x crossover
+
+    from numpy import arange as np_arange2, sum as np_sum2
+    ns = np_arange2(1, n_check + 1, dtype=float)
+
+    # Timing
+    t_earth = earth_delivery_time(ns, prod_rate)
+    t_isru = unit_to_time(ns, prod_rate, t0, k_ramp)
+    delay = t_isru - t_earth  # years of delay per unit
+
+    # ISRU NPV savings at 2x crossover
+    earth_units = earth_unit_cost(ns, BASELINE)
+    disc_earth = (1.0 + r) ** (-t_earth)
+    earth_cum = float(np_sum2(earth_units * disc_earth))
+
+    ops = isru_ops_cost(ns, BASELINE)
+    disc_isru = (1.0 + r) ** (-t_isru)
+    isru_cum = BASELINE["K"] + float(np_sum2(ops * disc_isru))
+
+    savings_npv = earth_cum - isru_cum  # positive = ISRU cheaper
+
+    # Opportunity cost: sum of (revenue * delay * discount) per unit
+    # Revenue R per unit per year, lost for 'delay' years
+    # Approximate: opportunity cost = R * sum(delay_n * disc_n)
+    opp_cost_factor = float(np_sum2(delay * disc_isru))  # sum of discounted delay-years
+
+    # Breakeven: savings = R * opp_cost_factor
+    if opp_cost_factor > 0:
+        breakeven_revenue = savings_npv / opp_cost_factor
+    else:
+        breakeven_revenue = float('inf')
+
+    print(f"\n  I4: Revenue breakeven analysis (at N={n_check:,}, r=5%):")
+    print(f"    NPV crossover at baseline:     N* = {cross_npv:,}")
+    print(f"    ISRU NPV savings at N={n_check:,}:  ${savings_npv/1e9:.1f}B")
+    print(f"    Mean ISRU delay:               {float(delay.mean()):.1f} years")
+    print(f"    Breakeven revenue per unit:     ${breakeven_revenue/1e6:.2f}M/yr")
+    print(f"    (Below this, ISRU is preferred; above, Earth is preferred)")
+    print(f"    For context: at $2M/yr revenue per unit,")
+
+    opp_cost_2m = 2e6 * opp_cost_factor
+    net = savings_npv - opp_cost_2m
+    print(f"      Opportunity cost = ${opp_cost_2m/1e9:.1f}B, net benefit = ${net/1e9:.1f}B "
+          f"({'ISRU preferred' if net > 0 else 'Earth preferred'})")
+
+
+# ---------------------------------------------------------------------------
+# I5: No-launch-learning sensitivity (now that baseline has launch learning)
+# ---------------------------------------------------------------------------
+def print_no_launch_learning_sensitivity():
+    """I5: Report crossover without launch learning as sensitivity bound."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    p_no_ll = BASELINE.copy()
+    p_no_ll["b_L"] = None
+    cross_no_ll = find_crossover_npv(p_no_ll)
+
+    print(f"\n  I5: No-launch-learning sensitivity (NPV, r=5%):")
+    print(f"    Baseline (LR_L=0.97):     N* = {base_npv:,}")
+    print(f"    No launch learning:       N* = {cross_no_ll:,} (shift: {cross_no_ll - base_npv:+,})")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -1207,5 +1367,12 @@ if __name__ == "__main__":
     print_k_prodrate_correlation()
     print_piecewise_schedule_test()
     print_cashflow_timing_test()
+
+    # Version I diagnostics
+    print_earth_capex_sensitivity()
+    print_cfloor_failure_threshold()
+    print_additional_correlations()
+    print_revenue_breakeven()
+    print_no_launch_learning_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")

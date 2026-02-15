@@ -60,8 +60,15 @@ class TestCapitalSensitivity:
 
 class TestLaunchCostSensitivity:
     def test_higher_launch_earlier_crossover(self, baseline):
-        cross_low_launch = find_crossover_npv({**baseline, "p_launch": 500})
-        cross_high_launch = find_crossover_npv({**baseline, "p_launch": 2000})
+        """Higher launch cost makes Earth more expensive → ISRU crosses over earlier.
+
+        With the two-component baseline (b_L set), we vary the ops component
+        to simulate higher/lower effective launch cost.
+        """
+        low = {**baseline, "p_ops_launch": 400, "p_fuel": 100}
+        high = {**baseline, "p_ops_launch": 1600, "p_fuel": 400}
+        cross_low_launch = find_crossover_npv(low)
+        cross_high_launch = find_crossover_npv(high)
         assert cross_high_launch < cross_low_launch
 
 

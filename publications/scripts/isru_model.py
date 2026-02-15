@@ -32,7 +32,7 @@ BASELINE: Params = {
     "prod_rate": 500,       # units/year at full capacity
     "C_floor": 0.5e6,       # ISRU ops cost floor ($)
     "r": 0.05,              # discount rate (real)
-    "b_L": None,            # launch learning exponent (None = no learning)
+    "b_L": log(0.97) / log(2),  # launch learning exponent (LR_L=0.97 baseline)
     "p_fuel": 200,          # fuel component of launch cost ($/kg)
     "p_ops_launch": 800,    # ops component of launch cost ($/kg)
     "alpha": 1.0,           # D5: mass penalty factor for ISRU units
@@ -188,7 +188,15 @@ def find_crossover_mfg_lead(
     # Earth side — split mfg and launch timing
     b_E = learning_exponent(params["LR_E"])
     c_mfg = params["C_mfg1"] * ns ** b_E
-    c_launch = params["m"] * params["p_launch"] * ones_like(ns)
+
+    # Launch cost: optionally with learning on ops component
+    b_L = params.get("b_L", None)
+    if b_L is not None:
+        p_fuel = params.get("p_fuel", 200)
+        p_ops = params.get("p_ops_launch", 800)
+        c_launch = params["m"] * (p_fuel + p_ops * ns ** b_L)
+    else:
+        c_launch = params["m"] * params["p_launch"] * ones_like(ns)
 
     t_n_earth = earth_delivery_time(ns, prod_rate)
     t_mfg = maximum(t_n_earth - tau_mfg, 0.0)  # mfg cost paid earlier
