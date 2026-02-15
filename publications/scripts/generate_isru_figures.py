@@ -1306,6 +1306,45 @@ def print_fuel_floor_sensitivity():
 
 
 # ---------------------------------------------------------------------------
+# K1: Risk-adjusted discounting sensitivity
+# ---------------------------------------------------------------------------
+def print_risk_premium_sensitivity():
+    """K1: Apply risk premium to ISRU pathway only."""
+    from numpy import arange as np_arange3, cumsum as np_cumsum3, where as np_where4
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  K1: Risk-adjusted discounting (ISRU risk premium, r_base=5%):")
+    print(f"    Baseline (same rate both pathways): N* = {base_npv:,}")
+
+    for delta_r in [0.02, 0.03, 0.05]:
+        r_earth = BASELINE["r"]
+        r_isru = BASELINE["r"] + delta_r
+
+        ns = np_arange3(1, 40001, dtype=float)
+        prod_rate = BASELINE["prod_rate"]
+        k_ramp = BASELINE["k_ramp"]
+
+        # Earth side at base rate
+        earth_units = earth_unit_cost(ns, BASELINE)
+        t_n_earth = earth_delivery_time(ns, prod_rate)
+        discount_earth = (1.0 + r_earth) ** (-t_n_earth)
+        earth_cum = np_cumsum3(earth_units * discount_earth)
+
+        # ISRU side at elevated rate
+        ops = isru_ops_cost(ns, BASELINE)
+        t_n_isru = unit_to_time(ns, prod_rate, BASELINE["t0"], k_ramp)
+        discount_isru = (1.0 + r_isru) ** (-t_n_isru)
+        isru_cum = BASELINE["K"] + np_cumsum3(ops * discount_isru)
+
+        diff = isru_cum - earth_cum
+        crossings = np_where4(diff <= 0)[0]
+        cross = int(ns[crossings[0]]) if len(crossings) > 0 else 40000
+        shift = cross - base_npv
+        status = f"N* = {cross:,} (shift: {shift:+,})" if cross < 40000 else "NO CROSSOVER within 40,000"
+        print(f"    ISRU premium +{delta_r:.0%} (r_ISRU={r_isru:.0%}):  {status}")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -1395,5 +1434,6 @@ if __name__ == "__main__":
     print_revenue_breakeven()
     print_no_launch_learning_sensitivity()
     print_fuel_floor_sensitivity()
+    print_risk_premium_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")
