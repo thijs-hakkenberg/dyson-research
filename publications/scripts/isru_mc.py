@@ -76,6 +76,14 @@ class NonConvergenceProfile:
 
 
 @dataclass
+class SobolResult:
+    """First-order variance decomposition (rank-regression R² based)."""
+    param_r2: dict[str, float]           # individual R² for each parameter
+    top_k_cumulative_r2: list[tuple[str, float]]  # cumulative R² in order of importance
+    total_r2: float                       # full model R²
+
+
+@dataclass
 class MCResult:
     """Full result of a Monte Carlo run."""
     r_fixed: float
@@ -93,6 +101,8 @@ class MCResult:
     permanent_mask: NDFloat = field(default_factory=lambda: array([]))
     n_permanent: int = 0
     n_transient: int = 0
+    sobol: SobolResult | None = None
+    sobol_conditional: SobolResult | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -439,6 +449,88 @@ def compute_convergence_drivers(
 
 
 # ---------------------------------------------------------------------------
+# Variance decomposition (rank-regression R² approximation of Sobol S1)
+# ---------------------------------------------------------------------------
+def compute_variance_decomposition(
+    param_arrays: dict[str, NDFloat],
+    crossovers: NDFloat,
+    *,
+    mask: NDFloat | None = None,
+) -> SobolResult:
+    """Approximate first-order Sobol indices via rank-regression R².
+
+    For each parameter X_i, computes R² from a univariate rank regression
+    of rank(Y) on rank(X_i). Also fits a full multivariate rank regression
+    and reports total R² and cumulative contribution.
+
+    This is a computationally cheap approximation to Saltelli-style Sobol
+    analysis that works well when the model is monotonic in most parameters.
+    """
+    from numpy.linalg import lstsq
+
+    names = list(param_arrays.keys())
+    n_params = len(names)
+
+    if mask is not None:
+        arrays = {k: v[mask] for k, v in param_arrays.items()}
+        y = crossovers[mask]
+    else:
+        arrays = param_arrays
+        y = crossovers
+
+    n_obs = len(y)
+    if n_obs < n_params + 2:
+        return SobolResult(param_r2={}, top_k_cumulative_r2=[], total_r2=0.0)
+
+    rank_y = rankdata(y)
+    ss_total = float(((rank_y - rank_y.mean()) ** 2).sum())
+    if ss_total == 0:
+        return SobolResult(param_r2={}, top_k_cumulative_r2=[], total_r2=0.0)
+
+    # Individual R² (univariate rank regression)
+    param_r2: dict[str, float] = {}
+    for name in names:
+        rank_x = rankdata(arrays[name])
+        X = empty((n_obs, 2))
+        X[:, 0] = 1.0
+        X[:, 1] = rank_x
+        coef, _, _, _ = lstsq(X, rank_y, rcond=None)
+        resid = rank_y - X @ coef
+        ss_resid = float((resid ** 2).sum())
+        param_r2[name] = 1.0 - ss_resid / ss_total
+
+    # Full model R²
+    X_full = empty((n_obs, n_params + 1))
+    X_full[:, 0] = 1.0
+    for j, name in enumerate(names):
+        X_full[:, j + 1] = rankdata(arrays[name])
+    coef_full, _, _, _ = lstsq(X_full, rank_y, rcond=None)
+    resid_full = rank_y - X_full @ coef_full
+    ss_resid_full = float((resid_full ** 2).sum())
+    total_r2 = 1.0 - ss_resid_full / ss_total
+
+    # Cumulative R² in order of individual importance
+    sorted_params = sorted(param_r2.items(), key=lambda x: -x[1])
+    top_k: list[tuple[str, float]] = []
+    used_cols: list[int] = [0]  # intercept
+    for name, _ in sorted_params:
+        j = names.index(name)
+        used_cols.append(j + 1)
+        X_sub = X_full[:, used_cols]
+        coef_sub, _, _, _ = lstsq(X_sub, rank_y, rcond=None)
+        resid_sub = rank_y - X_sub @ coef_sub
+        ss_sub = float((resid_sub ** 2).sum())
+        cum_r2 = 1.0 - ss_sub / ss_total
+        top_k.append((name, cum_r2))
+
+    return SobolResult(
+        param_r2=param_r2,
+        top_k_cumulative_r2=top_k,
+        total_r2=total_r2,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Orchestrator
 # ---------------------------------------------------------------------------
 def run_mc(
@@ -488,6 +580,13 @@ def run_mc(
         else []
     )
 
+    sobol = compute_variance_decomposition(param_arrays, crossovers)
+    sobol_conditional = (
+        compute_variance_decomposition(param_arrays, crossovers, mask=converged_mask)
+        if n_converged > 100
+        else None
+    )
+
     return MCResult(
         r_fixed=r_fixed,
         crossovers=crossovers,
@@ -504,6 +603,8 @@ def run_mc(
         permanent_mask=permanent_mask,
         n_permanent=n_permanent,
         n_transient=n_transient,
+        sobol=sobol,
+        sobol_conditional=sobol_conditional,
     )
 
 

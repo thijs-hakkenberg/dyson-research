@@ -37,7 +37,7 @@ BASELINE: Params = {
     "p_ops_launch": 800,    # ops component of launch cost ($/kg)
     "alpha": 1.0,           # D5: mass penalty factor for ISRU units
     "p_transport": 100,     # D6: ISRU-to-orbit transport cost ($/kg)
-    "vitamin_frac": 0.0,    # G11: fraction of unit that must be Earth-sourced
+    "vitamin_frac": 0.05,   # G11: fraction of unit that must be Earth-sourced
     "c_vitamin_kg": 10000,  # M1: vitamin component mfg cost ($/kg, electronics ~$10k/kg)
     "launches_per_unit": 1.0,  # M2: launches per unit for launch learning index
     "K_maint_frac": 0.0,   # M3: fraction of K spent on maintenance per interval

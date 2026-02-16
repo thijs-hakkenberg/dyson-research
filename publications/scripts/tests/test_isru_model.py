@@ -187,6 +187,8 @@ class TestEarthUnitCost:
 
 class TestISRUOpsCost:
     def test_first_unit(self, baseline):
+        # Test with zero vitamin fraction for clean formula verification
+        baseline["vitamin_frac"] = 0.0
         cost = float(isru_ops_cost(1.0, baseline))
         alpha = baseline["alpha"]
         C_floor = baseline["C_floor"]
@@ -463,8 +465,10 @@ class TestVitaminTwoPartModel:
         p["b_L"] = None  # no launch learning
         n = 100.0
         cost_vf = float(isru_ops_cost(n, p))
-        # Expected: (1-0.10) * base_ops + 0.10 * 1850 * 1000
+        # Expected: (1-0.10) * base_ops_no_vf + 0.10 * 1850 * 1000
         p_no_vf = BASELINE.copy()
+        p_no_vf["vitamin_frac"] = 0.0  # explicitly zero for clean comparison
+        p_no_vf["b_L"] = None  # match the test config
         cost_base = float(isru_ops_cost(n, p_no_vf))
         expected = 0.90 * cost_base + 0.10 * 1850 * 1000
         assert cost_vf == pytest.approx(expected, rel=0.01)
@@ -630,10 +634,18 @@ class TestQACost:
 class TestPermanentCrossover:
     """V3: Verify permanent vs transient crossover classification."""
 
-    def test_baseline_is_permanent(self, baseline):
-        """Baseline C_floor=0.5M < threshold should be permanent."""
+    def test_zero_vitamin_is_permanent(self, baseline):
+        """With f_v=0, C_floor=0.5M < threshold should be permanent."""
         from isru_model import is_permanent_crossover
+        baseline["vitamin_frac"] = 0.0
         assert is_permanent_crossover(baseline) is True
+
+    def test_baseline_vitamin_is_transient(self, baseline):
+        """With f_v=0.05, vitamin component raises ISRU floor above Earth's."""
+        from isru_model import is_permanent_crossover
+        # vitamin_frac=0.05 with c_vitamin_kg=$10k/kg adds ~$943k asymptotic,
+        # pushing ISRU floor above Earth's C_mat + m*p_fuel
+        assert is_permanent_crossover(baseline) is False
 
     def test_high_cfloor_is_transient(self, baseline):
         """Very high C_floor should make crossover transient."""

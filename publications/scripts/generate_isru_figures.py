@@ -941,9 +941,9 @@ def print_rate_dependent_learning():
 def print_vitamin_sensitivity():
     """M1: Two-part vitamin model sensitivity (fraction and $/kg)."""
     base_npv = find_crossover_npv(BASELINE)
-    fracs = [0.0, 0.05, 0.10, 0.15]
+    fracs = [0.0, 0.05, 0.10, 0.15, 0.20]
 
-    print("\n  M1: Two-part vitamin model sensitivity (NPV, r=5%):")
+    print("\n  M1: Two-part vitamin model sensitivity (NPV, r=5%, baseline f_v=5%):")
     print(f"  {'Vitamin%':>10s}  {'c_vit$/kg':>10s}  {'N*':>8s}  {'Shift':>8s}")
     print(f"  {'----------':>10s}  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}")
 
@@ -1918,6 +1918,71 @@ def print_throughput_cap_sensitivity():
 
 # ---------------------------------------------------------------------------
 # ---------------------------------------------------------------------------
+# X1: Sobol variance decomposition diagnostic
+# ---------------------------------------------------------------------------
+def print_sobol_diagnostic():
+    """X1: Report first-order Sobol-like R² decomposition from MC results."""
+    rng = default_rng(42)
+    res = run_mc(0.05, rng)
+
+    print("\n  X1: Variance decomposition (rank-regression R², r=5%, n=10,000):")
+
+    if res.sobol:
+        print("    Unconditional (all runs):")
+        sorted_params = sorted(res.sobol.param_r2.items(), key=lambda x: -x[1])
+        for name, r2 in sorted_params:
+            print(f"      {name:>12s}: R²={r2:.4f} ({r2*100:.1f}%)")
+        print(f"      {'TOTAL':>12s}: R²={res.sobol.total_r2:.4f} ({res.sobol.total_r2*100:.1f}%)")
+        print("    Cumulative R² (adding parameters in order of importance):")
+        for name, cum_r2 in res.sobol.top_k_cumulative_r2[:5]:
+            print(f"      + {name:>12s}: cumulative R²={cum_r2:.4f} ({cum_r2*100:.1f}%)")
+
+    if res.sobol_conditional:
+        print("    Conditional (converging runs only):")
+        sorted_params = sorted(res.sobol_conditional.param_r2.items(), key=lambda x: -x[1])
+        for name, r2 in sorted_params:
+            print(f"      {name:>12s}: R²={r2:.4f} ({r2*100:.1f}%)")
+        print(f"      {'TOTAL':>12s}: R²={res.sobol_conditional.total_r2:.4f} "
+              f"({res.sobol_conditional.total_r2*100:.1f}%)")
+
+
+# ---------------------------------------------------------------------------
+# X2: ISRU propellant scenario
+# ---------------------------------------------------------------------------
+def print_isru_propellant_scenario():
+    """X2: Model scenario where ISRU propellant reduces Earth's p_fuel floor."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  X2: ISRU propellant scenario (NPV, r=5%, baseline N*={base_npv:,}):")
+    print(f"  {'Scenario':>35s}  {'p_fuel':>8s}  {'p_ops':>8s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'-----------------------------------':>35s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}")
+
+    scenarios = [
+        ("Baseline (Earth propellant)", 200, 800),
+        ("ISRU propellant (moderate)", 100, 800),
+        ("ISRU propellant (aggressive)", 50, 800),
+        ("ISRU propellant + ops learning", 50, 600),
+    ]
+
+    for label, p_fuel, p_ops in scenarios:
+        p = BASELINE.copy()
+        p["p_fuel"] = p_fuel
+        p["p_ops_launch"] = p_ops
+        cross = find_crossover_npv(p, N_max=40000)
+        shift = cross - base_npv
+        if cross >= 40000:
+            print(f"  {label:>35s}  {p_fuel:>7d}$  {p_ops:>7d}$  {'>40,000':>8s}  {'N/A':>8s}")
+        else:
+            print(f"  {label:>35s}  {p_fuel:>7d}$  {p_ops:>7d}$  {cross:>8,d}  {shift:>+8,d}")
+
+    # Key insight: even with ISRU propellant, the structural manufacturing crossover
+    # still holds because the advantage is in manufacturing cost amortization
+    print("    Insight: ISRU propellant lowers the Earth launch floor, shifting")
+    print("    crossover later, but structural manufacturing crossover persists")
+    print("    because the advantage is in capital amortization vs per-unit cost.")
+
+
+# ---------------------------------------------------------------------------
 # W3: Independent p_fuel sensitivity (total launch cost varies)
 # ---------------------------------------------------------------------------
 def print_pfuel_independent_sensitivity():
@@ -2061,5 +2126,9 @@ if __name__ == "__main__":
 
     # Version W diagnostics
     print_pfuel_independent_sensitivity()
+
+    # Version X diagnostics
+    print_sobol_diagnostic()
+    print_isru_propellant_scenario()
 
     print(f"\nDone. All figures saved to {fig_dir}")
