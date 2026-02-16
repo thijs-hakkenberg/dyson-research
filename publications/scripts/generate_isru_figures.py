@@ -104,6 +104,22 @@ c_isru = "#0891b2"      # cyan
 c_cross = "#16a34a"     # green
 c_floor = "#dc2626"     # red for launch cost floor
 
+# ---------------------------------------------------------------------------
+# AA2: Product archetype B (industrial structural, lower cost/mass)
+# ---------------------------------------------------------------------------
+ARCHETYPE_B: dict = {
+    **BASELINE,
+    "C_mfg1": 15e6,
+    "C_mat": 3e6,
+    "C_labor1": 12e6,
+    "m": 3000,
+    "vitamin_frac": 0.02,
+    "c_vitamin_kg": 5000,
+    "LR_E": 0.90,
+    "alpha": 1.3,
+    "p_transport": 150,
+}
+
 
 # ---------------------------------------------------------------------------
 # Figure 1: Cumulative Cost Comparison (undiscounted baseline)
@@ -2216,6 +2232,65 @@ def print_sigma_ln_sensitivity():
         print(f"  {sigma:>6.2f}  {conv_pct:>5.1f}%  {cond_med:>10,.0f}  {ratio:>10.2f}  {k_p10/1e9:>9.1f}B  {k_p90/1e9:>9.1f}B")
 
 
+# ---------------------------------------------------------------------------
+# AA2: Product archetype comparison (baseline vs archetype B)
+# ---------------------------------------------------------------------------
+def print_archetype_comparison():
+    """AA2: Deterministic crossover + MC for baseline vs archetype B."""
+    import numpy as np
+
+    print("\n  AA2: Product archetype comparison:")
+    print(f"  {'Archetype':>12s}  {'r':>4s}  {'Det N*':>8s}  {'Conv%':>6s}  {'Cond.Med':>10s}")
+    print(f"  {'----------':>12s}  {'----':>4s}  {'------':>8s}  {'------':>6s}  {'----------':>10s}")
+
+    for label, arch in [("A (baseline)", BASELINE), ("B (indust.)", ARCHETYPE_B)]:
+        # Deterministic crossovers at r=0 and r=5%
+        p0 = arch.copy()
+        p0["r"] = 0.0
+        det_r0 = find_crossover_npv(p0, N_max=40000)
+        det_r5 = find_crossover_npv(arch, N_max=40000)
+
+        for r_val in [0.0, 0.03, 0.05, 0.08]:
+            rng = default_rng(42)
+            res = run_mc(r_val, rng, n_runs=500, n_max_mc=40000,
+                         baseline_override=arch)
+            conv_pct = res.stats.convergence_rate
+            cond_med = res.stats.cond_median
+            det = det_r0 if r_val == 0.0 else (det_r5 if r_val == 0.05 else None)
+            det_str = f"{det:>8,d}" if det is not None else f"{'---':>8s}"
+            print(f"  {label:>12s}  {r_val:>4.0%}  {det_str}  {conv_pct:>5.1f}%  {cond_med:>10,.0f}")
+
+
+# ---------------------------------------------------------------------------
+# AA2: K-clip upper bound sensitivity
+# ---------------------------------------------------------------------------
+def print_k_clip_sensitivity():
+    """AA2: MC at r=5% with varying k_clip_upper bounds."""
+    import numpy as np
+
+    print("\n  AA2: K-clip upper bound sensitivity (500 runs, r=5%):")
+    print(f"  {'k_clip':>8s}  {'Conv%':>6s}  {'Cond.Med':>10s}  {'K P50':>8s}  {'K P90':>8s}  {'K P99':>8s}  {'K max':>8s}")
+    print(f"  {'--------':>8s}  {'------':>6s}  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}")
+
+    for k_clip in [200e9, 300e9, 500e9]:
+        rng = default_rng(42)
+        params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5,
+                                  correlated=True, k_clip_upper=k_clip)
+        crossovers, _ = run_mc_loop(params, 0.05, 40000)
+        converged = crossovers < 40000
+        n_conv = int(np.sum(converged))
+        conv_pct = n_conv / 10000 * 100
+        cond_med = float(np.median(crossovers[converged])) if n_conv > 0 else 40000.0
+        k_arr = params["K"]
+        k_p50 = float(np.median(k_arr))
+        k_p90 = float(np.percentile(k_arr, 90))
+        k_p99 = float(np.percentile(k_arr, 99))
+        k_max_val = float(np.max(k_arr))
+
+        print(f"  ${k_clip/1e9:>5.0f}B  {conv_pct:>5.1f}%  {cond_med:>10,.0f}  "
+              f"${k_p50/1e9:>5.1f}B  ${k_p90/1e9:>5.1f}B  ${k_p99/1e9:>5.1f}B  ${k_max_val/1e9:>5.1f}B")
+
+
 if __name__ == "__main__":
     print(f"Generating figures in: {fig_dir}\n")
 
@@ -2347,5 +2422,9 @@ if __name__ == "__main__":
     # Version Z diagnostics
     print_symmetric_plateau_sweep()
     print_sigma_ln_sensitivity()
+
+    # Version AA diagnostics
+    print_archetype_comparison()
+    print_k_clip_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")

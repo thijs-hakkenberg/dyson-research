@@ -243,3 +243,78 @@ class TestRunMCIntegration:
         res2 = run_mc(0.05, rng2, n_runs=200, n_max_mc=10000)
 
         np.testing.assert_array_equal(res1.crossovers, res2.crossovers)
+
+
+class TestBaselineOverride:
+    """AA1: Verify baseline_override kwarg in run_mc_loop and run_mc."""
+
+    def test_override_changes_nonsample_params(self, rng):
+        """Override with lower unit mass (non-sampled) should shift crossover."""
+        from isru_model import BASELINE
+        # Use same sampled params for both runs
+        rng1 = np.random.default_rng(42)
+        params1 = sample_mc_params(rng1, 200)
+        cross_default, _ = run_mc_loop(params1, 0.05, 20000)
+
+        # Override with higher unit mass (affects launch cost per unit)
+        override = BASELINE.copy()
+        override["m"] = 5000  # much heavier unit → costlier Earth launch
+        rng2 = np.random.default_rng(42)
+        params2 = sample_mc_params(rng2, 200)
+        cross_override, _ = run_mc_loop(params2, 0.05, 20000,
+                                        baseline_override=override)
+
+        # Heavier unit makes Earth pathway more expensive → earlier crossover
+        med_default = float(np.median(cross_default))
+        med_override = float(np.median(cross_override))
+        assert med_override < med_default
+
+    def test_none_override_matches_default(self, rng):
+        """None override should produce identical results to default."""
+        rng1 = np.random.default_rng(99)
+        params1 = sample_mc_params(rng1, 100)
+        cross1, perm1 = run_mc_loop(params1, 0.05, 10000)
+
+        rng2 = np.random.default_rng(99)
+        params2 = sample_mc_params(rng2, 100)
+        cross2, perm2 = run_mc_loop(params2, 0.05, 10000,
+                                    baseline_override=None)
+
+        np.testing.assert_array_equal(cross1, cross2)
+        np.testing.assert_array_equal(perm1, perm2)
+
+    def test_run_mc_with_override(self):
+        """run_mc should accept and pass through baseline_override."""
+        from isru_model import BASELINE
+        override = BASELINE.copy()
+        override["K"] = 20e9
+        rng = np.random.default_rng(42)
+        result = run_mc(0.05, rng, n_runs=100, n_max_mc=10000,
+                        baseline_override=override)
+        assert isinstance(result, MCResult)
+        assert len(result.crossovers) == 100
+
+
+class TestKClipUpper:
+    """AA1: Verify k_clip_upper kwarg in sample_mc_params."""
+
+    def test_custom_clip_allows_higher_k(self, rng):
+        """With k_clip_upper=500B, some K values should exceed 200B."""
+        rng1 = np.random.default_rng(42)
+        params = sample_mc_params(rng1, 5000, k_clip_upper=500e9)
+        assert np.any(params["K"] > 200e9), "Expected some K > 200B with 500B clip"
+
+    def test_default_clip_bounds_k(self, rng):
+        """Default clip (200B) should bound all K values."""
+        rng1 = np.random.default_rng(42)
+        params = sample_mc_params(rng1, 5000)
+        assert np.all(params["K"] <= 200e9)
+
+    def test_run_mc_passes_k_clip(self):
+        """run_mc should accept and pass through k_clip_upper."""
+        rng = np.random.default_rng(42)
+        result = run_mc(0.05, rng, n_runs=100, n_max_mc=10000,
+                        k_clip_upper=500e9)
+        assert isinstance(result, MCResult)
+        # Some K values should exceed 200B
+        assert np.any(result.param_arrays["K"] > 200e9)

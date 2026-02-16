@@ -117,6 +117,7 @@ def sample_mc_params(
     correlated: bool = True,
     k_distribution: str = "lognormal",
     sigma_ln: float = 0.70,
+    k_clip_upper: float = 200e9,
 ) -> dict[str, NDFloat]:
     """Sample MC parameter arrays.
 
@@ -138,6 +139,9 @@ def sample_mc_params(
     sigma_ln : float
         Log-normal standard deviation for K distribution (default 0.70).
         Higher values give heavier tails (Z5 sensitivity test).
+    k_clip_upper : float
+        Upper clip bound for K in dollars (default 200e9).
+        Used for K-clip sensitivity analysis (AA2).
     """
     if correlated:
         # 3D Gaussian copula: (p_launch, K, prod_rate)
@@ -163,7 +167,7 @@ def sample_mc_params(
             # Transform copula uniform to log-normal via inverse CDF
             ln_k = sp_norm.ppf(u_capital) * sigma_ln + mu_ln
             k_samples = np_exp(ln_k)
-            k_samples = clip(k_samples, 20e9, 200e9)
+            k_samples = clip(k_samples, 20e9, k_clip_upper)
         else:
             k_samples = 30e9 + u_capital * (100e9 - 30e9)
     else:
@@ -174,7 +178,7 @@ def sample_mc_params(
             mu_ln = float(np_log(65e9))
             ln_k = rng.normal(mu_ln, sigma_ln, n_runs)
             k_samples = np_exp(ln_k)
-            k_samples = clip(k_samples, 20e9, 200e9)
+            k_samples = clip(k_samples, 20e9, k_clip_upper)
         else:
             k_samples = rng.uniform(30e9, 100e9, n_runs)
 
@@ -210,6 +214,8 @@ def run_mc_loop(
     param_arrays: dict[str, NDFloat],
     r_fixed: float,
     n_max: int,
+    *,
+    baseline_override: dict[str, Any] | None = None,
 ) -> tuple[NDFloat, NDFloat]:
     """Execute the MC loop: for each sample, compute crossover at fixed r.
 
@@ -218,21 +224,28 @@ def run_mc_loop(
     value (irreducible propellant floor), and p_ops = p_launch - p_fuel
     captures the learnable operational component.
 
+    Parameters
+    ----------
+    baseline_override : dict or None
+        If provided, use this as the base parameter set instead of BASELINE.
+        Used for product archetype comparisons (AA2).
+
     Returns (crossovers, permanent_mask) where permanent_mask[i] is True
     if run i has a permanent (not transient) crossover.
     """
+    base = baseline_override if baseline_override is not None else BASELINE
     n_runs = len(next(iter(param_arrays.values())))
     crossovers = empty(n_runs, dtype=float)
     permanent = empty(n_runs, dtype=bool)
     for i in range(n_runs):
-        p = BASELINE.copy()
+        p = base.copy()
         for name, arr in param_arrays.items():
             p[name] = arr[i]
         p["r"] = r_fixed
         # Decompose sampled p_launch into fuel/ops when launch learning is active
         # Y2: p_fuel is now sampled stochastically; use sampled value if present
         if p.get("b_L") is not None:
-            p_fuel_val = p.get("p_fuel", BASELINE.get("p_fuel", 200))
+            p_fuel_val = p.get("p_fuel", base.get("p_fuel", 200))
             p_launch_sampled = p["p_launch"]
             p["p_fuel"] = p_fuel_val
             p["p_ops_launch"] = max(p_launch_sampled - p_fuel_val, 0)
@@ -548,14 +561,26 @@ def run_mc(
     rng: Generator,
     n_runs: int = 10000,
     n_max_mc: int = 40000,
+    *,
+    baseline_override: dict[str, Any] | None = None,
+    k_clip_upper: float = 200e9,
 ) -> MCResult:
     """Run full Monte Carlo at a fixed discount rate.
 
     This is the thin orchestrator that composes sampling, loop, stats,
     correlations, and non-convergence analysis.
+
+    Parameters
+    ----------
+    baseline_override : dict or None
+        If provided, use as base parameter set instead of BASELINE (AA2).
+    k_clip_upper : float
+        Upper clip bound for K (AA2 K-clip sensitivity).
     """
-    param_arrays = sample_mc_params(rng, n_runs, rho=0.3, rho_k_prod=0.5, correlated=True)
-    crossovers, permanent_mask = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+    param_arrays = sample_mc_params(rng, n_runs, rho=0.3, rho_k_prod=0.5,
+                                    correlated=True, k_clip_upper=k_clip_upper)
+    crossovers, permanent_mask = run_mc_loop(param_arrays, r_fixed, n_max_mc,
+                                             baseline_override=baseline_override)
 
     converged_mask = crossovers < n_max_mc
     n_converged = int(sum(converged_mask))
