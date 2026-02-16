@@ -1,0 +1,1083 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+% --- Packages ---
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{lineno}
+\usepackage{multirow}
+\usepackage{siunitx}
+
+% Enable line numbers for review
+\modulolinenumbers[5]
+
+% Figures are in figures/ subdirectory
+\graphicspath{{figures/}}
+
+\journal{Advances in Space Research}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Economic Inflection Points in Space Manufacturing:\\ Monte Carlo Analysis of In-Situ Resource Utilization vs.\ Earth Launch for Large-Scale Space Infrastructure}
+
+\author[dyson]{Thijs Hakkenberg\corref{cor1}}
+\cortext[cor1]{Corresponding author.}
+\ead{thijs@hakkenberg.com}
+\fntext[fn1]{This research was conducted using an AI-assisted methodology. Claude (Anthropic) was used for literature synthesis, editorial review, and peer review simulation. The Monte Carlo simulation code was written and validated by the human author in Python using NumPy and SciPy. All quantitative results were produced by deterministic and stochastic simulation code; parameter ranges were informed by published literature and engineering analogy. No AI-generated numerical outputs were used without independent verification against the simulation code.}
+
+\address[dyson]{Project Dyson, Open Research Initiative\fnref{fn1}}
+
+\begin{abstract}
+We present a parametric cost model with net present value (NPV) discounting and pathway-specific delivery schedules comparing Earth-launch and in-situ resource utilization (ISRU) pathways for serial production of passive structural modules in the 1{,}000--5{,}000~kg class. Under baseline assumptions (\$1{,}000/kg launch cost, \$50B ISRU capital, 5\% real discount rate), the NPV crossover occurs at approximately 4{,}500~units. A 10{,}000-run Monte Carlo simulation sampling twelve stochastic parameters at fixed discount rates of 3\%, 5\%, and 8\% finds crossover within a 40{,}000-unit horizon in 66\% of scenarios at $r = 5\%$ (77\% at 3\%, 51\% at 8\%); the conditional median (given crossover is achieved) is approximately 5{,}600~units, while the Kaplan-Meier median accounting for all runs including censored non-converging scenarios is $\sim$10{,}000---the former is appropriate for committed programs, the latter for portfolio-level planning. Robustness tests---including an Earth manufacturing cost floor, log-normal capital cost distribution, facility availability modeling, and 30+ additional sensitivity analyses spanning cost structure, scheduling, and financing assumptions---confirm that crossover is frequently observed under sampled assumptions, though not guaranteed. An expected-value analysis shows that a minimum technical success probability of $\sim$53--80\% is required for ISRU to be preferred (depending on the evaluation horizon), and crossover does not close under commercial discount rates above $\sim$12\%. A revenue breakeven analysis with finite asset lifetimes ($L = 10$--$30$~yr) shows that for revenue-generating infrastructure, the opportunity cost of ISRU's deployment delay may offset cost savings at revenue rates above $\sim$\$0.9M per unit per year. We propose a hybrid Earth--ISRU transition strategy and discuss implications for near-term space infrastructure policy.
+\end{abstract}
+
+\begin{keyword}
+in-situ resource utilization \sep space manufacturing \sep launch cost \sep Monte Carlo simulation \sep learning curves \sep net present value \sep space economics
+\end{keyword}
+
+\end{frontmatter}
+
+\linenumbers
+
+%% ============================================================
+\section{Introduction}
+\label{sec:introduction}
+%% ============================================================
+
+Any program of large-scale space infrastructure construction---whether solar power satellites, orbital habitats, or distributed energy collection architectures---eventually reaches a decision point that no amount of launch cost reduction can avoid: at what scale does it become cheaper to manufacture components in space rather than to build them on Earth and haul them up through the gravity well? This question has been posed qualitatively since at least the 1970s \cite{oneill1974,oneill1976}, and it has recently gained renewed urgency as launch costs decline precipitously \cite{jones2018}, lunar ISRU programs advance under the Artemis architecture \cite{sanders2015}, and private ventures pursue asteroid resource extraction \cite{elvis2012,andrews2015}.
+
+The intuition behind space manufacturing is rooted in a cost asymmetry that no technological advance in launch vehicles can fully eliminate. Earth's gravity well imposes an energy cost on every kilogram placed in orbit---a cost that translates directly into dollars per kilogram of delivered payload. Reusable launch vehicles have brought this figure down by roughly two orders of magnitude, from \$20{,}000/kg in the Space Shuttle era to projections below \$500/kg for Starship-class vehicles. But per-kilogram launch costs decline more slowly than manufacturing costs: the ten-thousandth kilogram launched costs nearly the same as the first in per-kg terms, abstracting from operational economies of scale, because the cost is dominated by propellant expenditure and operational overhead rather than by vehicle production. Even under aggressive launch-cost learning assumptions (LR$_L = 0.90$), the fuel component of launch cost ($\sim$\$200/kg for propellant and range operations) constitutes an assumed irreducible floor in this model that no amount of operational learning can breach---the learnable operations component declines, but the physics-driven propellant cost does not. ISRU manufacturing, by contrast, inverts this cost structure. It requires large fixed capital costs up front---prospecting, extraction, processing, and fabrication infrastructure---but each additional unit produced from local materials costs only the energy and labor to process it. The fixed costs get divided across a growing denominator; the marginal costs decline with experience.
+
+Despite the intuitive appeal of this argument, a quantitative gap persists in the literature. Existing ISRU economic analyses are overwhelmingly mission-specific: they evaluate the cost-effectiveness of producing lunar oxygen for propellant \cite{sanders2015}, extracting water ice for life support \cite{zubrin1996}, or mining asteroidal platinum-group metals for terrestrial markets \cite{sonter1997,elvis2012}. No prior work, to our knowledge, combines schedule-aware NPV crossover analysis with systematic uncertainty characterization for generic manufactured products.
+
+A second gap concerns the treatment of manufacturing learning. The Wright learning curve \cite{wright1936}, well established in aerospace production economics \cite{wertz2011}, predicts that unit manufacturing cost decreases as a power function of cumulative production volume. This effect has been extensively documented for Earth-based aerospace systems \cite{argote1990,nagy2013} but has not, to our knowledge, been combined with NPV timing analysis in a comparative Earth-versus-ISRU cost model for generic structural units. The omission matters because the two pathways exhibit fundamentally different learning dynamics: Earth manufacturing benefits from learning in fabrication but exhibits limited learning in launch (baseline $\mathrm{LR}_L = 0.97$; we sweep from 90\% to 100\% in \S\ref{sec:sensitivity}), while ISRU benefits from learning in both extraction and fabrication, albeit from a higher initial cost base and with a slower initial ramp-up. The long-run consequences of this asymmetry are not obvious without a quantitative model.
+
+This paper makes three contributions. First, we present a parametric cost model with net present value discounting and pathway-specific delivery schedules that expresses the total cost of producing $N$ units via the Earth-launch pathway and the ISRU pathway as explicit functions of production volume, with learning curves, an integrated production ramp-up schedule, ISRU mass penalty and transport costs, and financing costs applied to the appropriate components (\S\ref{sec:model}). Second, we embed this model in a 10{,}000-run Monte Carlo framework with correlated sampling that propagates uncertainty in twelve parameters---including the ISRU operational cost floor and production rate---at each of several fixed discount rates, yielding probability distributions, convergence analysis, and global sensitivity rankings rather than point estimates (\S\ref{sec:results}). Third, we propose a phased hybrid transition strategy and discuss its implications for near-term space policy (\S\ref{sec:discussion}).
+
+%% ============================================================
+\section{Related Work}
+\label{sec:related}
+%% ============================================================
+
+\subsection{ISRU economic analyses}
+
+The economic case for ISRU has been examined primarily in the context of NASA exploration architectures. Sanders and Larson \cite{sanders2015} provided a comprehensive cost-benefit analysis of lunar ISRU for propellant production, concluding that oxygen extraction from regolith becomes cost-effective after approximately five crewed missions to the lunar surface, but their model is specific to the propellant application and does not generalize to manufactured goods. Crawford \cite{crawford2015} provided a comprehensive review of lunar resources, cataloguing the mineralogical and volatile inventories available for ISRU, while Cilliers et al.\ \cite{cilliers2023} examined the mineralogical and chemical processing pathways for lunar regolith. Kornuta et al.\ \cite{kornuta2019} developed a commercial architecture for lunar propellant production under specific demand assumptions. The MOXIE experiment aboard the \textit{Perseverance} rover demonstrated in-situ oxygen production on Mars \cite{hecht2021}, providing empirical validation of the technological pathway, though at scales far below those required for manufacturing.
+
+Sowers \cite{sowers2021} presented a business case for lunar ice mining that incorporates net present value analysis, finding positive returns under optimistic demand scenarios; a broader cislunar economic framework \cite{sowers2023} extended this analysis to infrastructure-scale demand scenarios. The NASA Lunar Surface Innovation Consortium (LSIC) \cite{lsic2021} has developed technology roadmaps for ISRU systems that inform current estimates of readiness timelines and capital requirements. Metzger et al.\ \cite{metzger2013} proposed a bootstrapping approach to lunar industry in which an initial seed factory progressively builds out its own capacity, dramatically reducing the required Earth-launched mass. Asteroid mining economics have been studied by Sonter \cite{sonter1997}, Elvis \cite{elvis2012}, and Andrews et al.\ \cite{andrews2015}, who developed NPV frameworks for asteroidal resource extraction. Ishimatsu et al.\ \cite{ishimatsu2016} developed a multicommodity network flow model for Earth--Moon--Mars logistics. These analyses share a focus on resource extraction for resale or mission support rather than on manufacturing of structural components. Recent work on lunar additive manufacturing \cite{werkheiser2015,cesaretti2014} has demonstrated the feasibility of producing structural elements from regolith feedstock, providing empirical grounding for the ISRU manufacturing pathway assumed in our model.
+
+A notable exception is the early work of O'Neill \cite{oneill1974}, who argued on energetic grounds that lunar materials could be delivered to high Earth orbit more cheaply than terrestrial materials using electromagnetic launch; see also his subsequent elaboration \cite{oneill1976}. O'Neill's analysis was prescient but lacked a parametric cost model, assumed specific (now outdated) launch costs, and did not incorporate manufacturing learning curves. Hertzfeld \cite{hertzfeld2002} examined the economic returns from NASA technology transfer programs, noting the disconnect between standard cost-benefit techniques and the unique risk profiles of space investments. More generally, the real options framework \cite{dixit1994} provides a natural extension of NPV analysis for irreversible investments under uncertainty; Saleh et al.\ \cite{saleh2003} applied flexibility analysis to spacecraft design, while de~Weck et al.\ \cite{deweck2004} demonstrated the value of staged deployment architectures for space systems. Organizational forgetting \cite{benkard2000,thompson2012} has been documented in aerospace production lines where sustained production rates are necessary to maintain learning gains.
+
+\subsection{Launch cost trajectories}
+
+Reliable projection of future launch costs is essential to any Earth-versus-ISRU comparison. Jones \cite{jones2018} compiled historical data showing a roughly two-orders-of-magnitude reduction in cost per kilogram to low Earth orbit (LEO) over six decades, though with large variance driven by vehicle class, mission profile, and accounting methodology; subsequent analyses \cite{jones2020,jones2022} confirmed the continuation of this trend through the Falcon~9 era and examined its implications for space solar power architectures. Empirical analysis of Falcon~9 reuse economics \cite{zapata2019} demonstrates that per-launch costs decreased primarily through fixed-cost amortization at high flight rates rather than through per-unit manufacturing learning, supporting the distinction between vehicle production learning and per-kilogram delivery cost trends. Wertz \cite{wertz2011} provided a parametric cost-estimating framework for launch vehicles that treats recurring costs via learning curves, noting that the learning rate for launch vehicle production is approximately 85--90\%. The NASA Cost Estimating Handbook \cite{nasa2015handbook} provides standardized methodologies for parametric cost estimation that inform our parameter selection.
+
+A critical distinction, often elided in popular discussion, is between the cost of manufacturing a launch vehicle (which does follow a learning curve) and the cost per kilogram of payload delivered to orbit (which is dominated by propellant and operations costs that are largely independent of cumulative launches). The SpaceX Starship vehicle, with its projected \$500/kg or lower cost to LEO, derives its advantage primarily from full reusability and high flight rate rather than from production learning \cite{jones2020,jones2022}. For the purposes of our model, the baseline launch cost includes a two-component structure: an irreducible propellant floor plus a learnable operational component ($\mathrm{LR}_L = 0.97$); we sweep $\mathrm{LR}_L$ from 0.90 to 1.00 in \S\ref{sec:sensitivity}.
+
+\subsection{Manufacturing learning curves}
+
+Wright \cite{wright1936} observed that the labor hours required to produce an airframe decreased as a power function of cumulative production volume, a phenomenon now known as the learning curve or experience curve. Dutton and Thomas \cite{dutton1984} provided a management-oriented review of progress functions, while Argote and Epple \cite{argote1990} established the empirical foundations of learning curves in manufacturing across multiple industries. Nagy et al.\ \cite{nagy2013} demonstrated that the Wright model provides a statistically robust basis for predicting technological progress across a broad range of technologies. The canonical form is
+\begin{equation}
+  C(n) = C(1) \cdot n^{b}, \quad b = \frac{\ln(\text{LR})}{\ln 2},
+  \label{eq:wright}
+\end{equation}
+where $C(n)$ is the cost of the $n$th unit, $C(1)$ is the first-unit cost, and LR is the learning rate (the fraction by which cost is \emph{multiplied} with each doubling of cumulative production; a lower LR value means faster learning). Typical aerospace learning rates range from 0.80 to 0.95 \cite{wertz2011}. Baumers et al.\ \cite{baumers2016} documented learning rates of 0.85--0.92 for metal additive manufacturing processes during early production ramp-ups, providing direct empirical support for the ISRU learning rate range assumed in our model ($\mathrm{LR}_I = 0.90$ baseline). Semiconductor yield improvement during new process node introduction typically follows learning rates of 0.85--0.95 \cite{nagy2013}. The Wright model has been applied extensively to aircraft, satellites, and launch vehicles, but not, to our knowledge, to a comparative Earth-versus-ISRU manufacturing analysis.
+
+%% ============================================================
+\section{Model Description}
+\label{sec:model}
+%% ============================================================
+
+We model the total cost of producing $N$ identical structural modules (hereafter ``units'') via two pathways: an Earth-launch pathway and an ISRU pathway. Each unit has a reference mass $m = 1{,}850$~kg, representative of structural modules in the 1{,}000--5{,}000~kg class typical of solar collector or orbital habitat components, though the model is parameterizable to other mass ranges. We describe each pathway's cost model, then the Monte Carlo framework used to propagate parameter uncertainty.
+
+\paragraph{Reference orbit.} Throughout this paper, ``operational orbit'' refers to geostationary Earth orbit (GEO), consistent with space solar power and communications relay architectures. The launch cost $p_{\mathrm{launch}}$ represents delivery from Earth surface to GEO; the transport cost $p_{\mathrm{transport}}$ represents delivery from the lunar surface to GEO via low-energy trajectory ($\sim$6~km/s $\Delta v$). For other destinations (LEO, NRHO, cislunar), both cost terms would differ; the model is parameterizable to any orbit.
+
+\paragraph{Cost basis normalization.} All launch costs in this paper are quoted for delivery to GEO. Published Starship cost projections (\$200--500/kg) typically refer to LEO; delivery to GEO via an upper stage or electric tug adds a factor of $\sim$2--3$\times$, so \$500/kg to LEO corresponds to approximately \$1,000--1,500/kg to GEO, consistent with our baseline of \$1,000/kg. The ``\$200/kg propellant floor'' ($p_{\mathrm{fuel}}$) similarly refers to GEO delivery and includes the propellant mass fraction for the LEO-to-GEO transfer; the true physics-constrained propellant cost for LEO delivery alone is substantially lower ($\sim$\$2--5/kg of payload at Starship-class scales). The \$200/kg figure is therefore better understood as an \emph{operational asymptote}---the irreducible cost of propellant plus minimal ground operations for a GEO delivery---rather than a physics floor in the strict sense.
+
+\subsection{Earth-launch pathway}
+
+The cost of the $n$th unit produced on Earth and launched to the operational orbit is
+\begin{equation}
+  C_{\mathrm{Earth}}(n) = C_{\mathrm{mfg}}(n) + C_{\mathrm{launch}}(n),
+  \label{eq:earth_unit}
+\end{equation}
+where $C_{\mathrm{mfg}}(n)$ is the terrestrial manufacturing cost and $C_{\mathrm{launch}}(n)$ is the launch cost. Manufacturing follows the Wright learning curve:
+\begin{equation}
+  C_{\mathrm{mfg}}(n) = C_{\mathrm{mfg}}^{(1)} \cdot n^{\,b_E}, \quad b_E = \frac{\ln(\mathrm{LR}_E)}{\ln 2},
+  \label{eq:earth_mfg}
+\end{equation}
+with first-unit manufacturing cost $C_{\mathrm{mfg}}^{(1)} = \$75$M and Earth learning rate $\mathrm{LR}_E$. To capture the transition to commodity-like production at high volumes---where material costs dominate and labor learning saturates---we introduce an Earth manufacturing cost floor $C_{\mathrm{mfg}}^{\mathrm{floor}}$:
+\begin{equation}
+  C_{\mathrm{mfg}}(n) = \max\!\left(C_{\mathrm{mfg}}^{(1)} \cdot n^{\,b_E},\; C_{\mathrm{mfg}}^{\mathrm{floor}}\right).
+  \label{eq:earth_mfg_floor}
+\end{equation}
+The baseline uses $C_{\mathrm{mfg}}^{\mathrm{floor}} = 0$ (no floor); we sweep $C_{\mathrm{mfg}}^{\mathrm{floor}} \in \{0, \$2\text{M}, \$5\text{M}, \$10\text{M}\}$ in \S\ref{sec:sensitivity}. The baseline launch cost is treated as an exogenous parameter with no endogenous learning:
+\begin{equation}
+  C_{\mathrm{launch}}(n) = m \cdot p_{\mathrm{launch}},
+  \label{eq:earth_launch_baseline}
+\end{equation}
+i.e., a constant \$1{,}000/kg $\times$ 1{,}850~kg $=$ \$1.85M per unit. This is appropriate when the program's launch demand is a small fraction of total market demand, so launch cost reductions are driven by industry-wide experience rather than the program itself.
+
+As a sensitivity variant, we test a two-component model with program-indexed learning:
+\begin{equation}
+  C_{\mathrm{launch}}^{\mathrm{learn}}(n) = m \left[ p_{\mathrm{fuel}} + p_{\mathrm{ops}} \cdot n^{\,b_L} \right], \quad b_L = \frac{\ln(\mathrm{LR}_L)}{\ln 2},
+  \label{eq:earth_launch_learn}
+\end{equation}
+where $p_{\mathrm{fuel}} = \$200$/kg is the assumed irreducible floor in this model (propellant plus minimal GEO delivery operations) and $p_{\mathrm{ops}} = \$800$/kg is the learnable component, declining at $\mathrm{LR}_L = 0.97$ per doubling. This two-component model is reported in \S\ref{sec:sensitivity} (Table~\ref{tab:launch_learning}); it shifts the crossover by $+$206~units ($+$5\%) relative to the no-learning baseline, confirming that the model's conclusions are insensitive to the launch learning assumption. \textbf{Indexing convention.} The learning index $n$ counts cumulative program units. At the assumed program scale ($\sim$4{,}500--10{,}000 units), the program would constitute a substantial fraction of global launch demand, making program-indexed learning a reasonable proxy for market-indexed learning. Nevertheless, the no-learning baseline is the primary formulation because it avoids conflating endogenous program scale effects with exogenous market trends.
+
+The cumulative cost of producing $N$ units via the Earth pathway is therefore
+\begin{equation}
+  \Sigma_{\mathrm{Earth}}(N) = \sum_{n=1}^{N} \left[ \max\!\left(C_{\mathrm{mfg}}^{(1)} \cdot n^{\,b_E},\; C_{\mathrm{mfg}}^{\mathrm{floor}}\right) + m \cdot p_{\mathrm{launch}} \right].
+  \label{eq:earth_cum}
+\end{equation}
+When the launch learning sensitivity variant (Eq.~\ref{eq:earth_launch_learn}) is active, $m \cdot p_{\mathrm{launch}}$ is replaced by the two-component expression.
+
+\subsection{ISRU pathway}
+
+\subsubsection{Production schedule and ramp-up}
+
+A critical distinction between the two pathways is their delivery timing. Earth manufacturing can begin immediately upon program start, requiring no new infrastructure beyond existing terrestrial supply chains. The ISRU pathway, by contrast, requires construction and commissioning of an extraterrestrial facility before production can begin, followed by a logistic ramp-up to full capacity.
+
+\paragraph{Earth delivery schedule.} The Earth pathway delivers units at a constant rate from $t = 0$:
+\begin{equation}
+  t_{n,E} = \frac{n}{\dot{n}_{\max}},
+  \label{eq:earth_schedule}
+\end{equation}
+where $\dot{n}_{\max}$ is the full-capacity production rate (units/year). The first unit is delivered at $t_{1,E} = 1/\dot{n}_{\max} = 0.002$~yr at baseline---a modeling abstraction, since real procurement lead times would add weeks to months; however, this offset is negligible relative to the multi-year ISRU delay. The 1{,}000th unit arrives at $t = 2$~yr. This assumes Earth manufacturing capacity is either pre-existing or can scale with minimal delay relative to the multi-year ISRU timeline---a reasonable assumption given the maturity of terrestrial aerospace manufacturing. As a robustness check, we test an alternative Earth schedule with a logistic ramp-up (midpoint $t_{0,E} \in \{1, 2\}$~yr), using the same functional form as Eq.~\ref{eq:scurve}; results are reported in \S\ref{sec:earth_ramp}.
+
+\paragraph{ISRU delivery schedule.} The ISRU facility's instantaneous production rate follows a logistic ramp-up function:
+\begin{equation}
+  \dot{n}(t) = \dot{n}_{\max} \cdot S(t), \quad S(t) = \frac{1}{1 + e^{-k(t - t_0)}},
+  \label{eq:scurve}
+\end{equation}
+where $t_0$ is the ramp-up midpoint (years from program start) and $k = 2.0$ (fixed) controls steepness. Integrating the production rate yields the cumulative production function:
+\begin{equation}
+  N(t) = \frac{\dot{n}_{\max}}{k} \left[ \ln\!\left(1 + e^{k(t - t_0)}\right) - \ln 2 \right],
+  \label{eq:cumulative_production}
+\end{equation}
+The constant $-\ln 2$ ensures $N(t_0) = 0$, modeling commissioning and ramp-up as a continuous process. For $t < t_0$, the function yields $N(t) < 0$, which is physically meaningless; the model implicitly truncates $N(t) = \max(0, N(t))$ and $\dot{n}(t) = \max(0, \dot{n}(t))$. We verify in \S\ref{sec:piecewise_schedule} that an explicit piecewise formulation ($\dot{n}(t) = 0$ for $t < t_c$) produces identical crossover results, confirming that the continuous logistic with implicit truncation is numerically equivalent to the physically correct piecewise model. At $t = t_0$, cumulative production $N(t_0) = 0$ and the instantaneous rate is half-maximal ($\dot{n}(t_0) = \dot{n}_{\max}/2$); production exceeds 90\% capacity within ${\sim}1$~year thereafter. The first unit is produced at $t \approx t_0 + 0.004$~yr (under baseline parameters). The parameter $t_0$ thus represents the approximate completion of commissioning, after which production accelerates toward full capacity. Figure~\ref{fig:production_schedule} provides a visual validation of these schedules. The function has a closed-form inverse giving the calendar time at which the $n$th ISRU unit is produced:
+\begin{equation}
+  t_{n,I} = t_0 + \frac{1}{k} \ln\!\left(2\,e^{nk/\dot{n}_{\max}} - 1\right).
+  \label{eq:production_schedule}
+\end{equation}
+
+\paragraph{Timing gap.} The separation between these schedules is substantial. Table~\ref{tab:production_schedule} shows that when Earth has delivered its 1{,}000th unit (at $t = 2$~yr), the ISRU pathway has not yet produced any units (ISRU's 1{,}000th unit arrives at $t \approx 7.3$~yr). This gap has a counterintuitive NPV consequence: because Earth costs are incurred earlier, they are discounted \emph{less} (i.e., carry higher present value), making the Earth pathway more expensive in NPV terms than its nominal costs suggest. This effect partially offsets the ISRU pathway's heavy upfront capital burden.
+
+\begin{table}[htbp]
+\centering
+\caption{Pathway-specific delivery schedules. The gap column shows the additional time ISRU requires relative to Earth delivery of the same unit number.}
+\label{tab:production_schedule}
+\small
+\begin{tabular}{@{}rrrrr@{}}
+\toprule
+Unit $n$ & $t_{n,E}$ (yr) & $t_{n,I}$ (yr) & $S(t_{n,I})$ & Gap (yr) \\
+\midrule
+1      & 0.002 & 5.00  & 0.50 & $+$5.00 \\
+10     & 0.02  & 5.04  & 0.52 & $+$5.02 \\
+100    & 0.20  & 5.34  & 0.66 & $+$5.14 \\
+500    & 1.00  & 6.31  & 0.93 & $+$5.31 \\
+1{,}000  & 2.00  & 7.34  & 0.99 & $+$5.34 \\
+5{,}000  & 10.00 & 15.35 & 1.00 & $+$5.35 \\
+10{,}000 & 20.00 & 25.35 & 1.00 & $+$5.35 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Cost model}
+
+For illustrative comparison of per-unit costs, the ISRU cost of the $n$th unit can be expressed as an amortized capital component plus an operational component:
+\begin{equation}
+  C_{\mathrm{ISRU}}(n) = \frac{K}{N_{\mathrm{total}}} + C_{\mathrm{ops}}(n),
+  \label{eq:isru_unit}
+\end{equation}
+where $K$ is the total capital investment required to establish the ISRU infrastructure, and $N_{\mathrm{total}}$ is a planning horizon over which capital is amortized for display purposes. We set $N_{\mathrm{total}} = 10{,}000$ throughout; this choice affects the per-unit cost visualization (Figure~\ref{fig:unitcost}) but does not enter the crossover calculation, which uses the cumulative formulation below.
+
+The operational cost follows a Wright learning curve with a cost floor $C_{\mathrm{floor}}$ representing irreducible per-unit expenses (energy, consumables, remote operations overhead), scaled by a mass penalty factor $\alpha$ and augmented by a transport cost for delivering ISRU-manufactured units to the operational orbit:
+\begin{equation}
+  C_{\mathrm{ops}}(n) = \alpha \left[ C_{\mathrm{floor}} + \left(C_{\mathrm{ops}}^{(1)} - C_{\mathrm{floor}}\right) \cdot n^{\,b_I} \right] + m \cdot p_{\mathrm{transport}} \cdot \alpha,
+  \label{eq:isru_ops}
+\end{equation}
+where $b_I = \ln(\mathrm{LR}_I)/\ln 2$ with ISRU learning rate $\mathrm{LR}_I$, $C_{\mathrm{floor}}$ represents the asymptotic minimum operational cost per unit (energy, consumables, remote operations overhead), $\alpha \geq 1$ is the ISRU mass penalty factor representing the combined yield loss and mass penalty from in-situ manufacturing tolerances, and $p_{\mathrm{transport}}$ (\$/kg) is the cost of transporting an ISRU-manufactured unit from the production site to the operational orbit. The cost floor is sampled as $C_{\mathrm{floor}} \sim U[\$0.3\text{M}, \$2.0\text{M}]$ in the Monte Carlo; when $C_{\mathrm{floor}}$ exceeds the Earth pathway's per-unit launch cost floor ($m \cdot p_{\mathrm{launch}} = \$1.85$M at baseline), the per-unit cost advantage of ISRU is reduced, potentially preventing crossover within the planning horizon. This scenario is captured in the non-convergence statistics (\S\ref{sec:mc_robustness}).
+
+Note that the ramp-up function $S(t)$ no longer appears as a cost divisor in Eq.~\ref{eq:isru_ops}. In previous formulations, $S(t_n)$ penalized operational costs during ramp-up; this double-counted the ramp-up effect because the integrated production schedule (Eq.~\ref{eq:production_schedule}) already delays early units to later calendar times, which increases their discount factor. The ramp-up effect is now captured purely through timing: early units are produced later, and are therefore discounted more heavily in the NPV calculation.
+
+The cumulative cost of producing $N$ units via the ISRU pathway is
+\begin{equation}
+  \Sigma_{\mathrm{ISRU}}(N) = K + \sum_{n=1}^{N} C_{\mathrm{ops}}(n).
+  \label{eq:isru_cum}
+\end{equation}
+Note that the full capital cost $K$ is incurred upfront; the amortized per-unit formulation (Eq.~\ref{eq:isru_unit}) is used only for visualization.
+
+\subsubsection{Crossover and NPV formulation}
+
+The undiscounted crossover point $N^*_0$ is defined as the smallest $N$ such that $\Sigma_{\mathrm{ISRU}}(N) \leq \Sigma_{\mathrm{Earth}}(N)$. We use $N^*_0$ for the undiscounted crossover and $N^*_r$ (or simply $N^*$) for the NPV crossover at discount rate $r$. However, the ISRU pathway concentrates expenditure early (the capital investment $K$) while the Earth pathway distributes costs over time. A fair comparison requires discounting future cash flows to present value.
+
+Critically, each pathway's costs must be discounted according to its own delivery schedule. Earth costs at unit $n$ are incurred at time $t_{n,E} = n/\dot{n}_{\max}$ (Eq.~\ref{eq:earth_schedule}), while ISRU operational costs are incurred at time $t_{n,I}$ (Eq.~\ref{eq:production_schedule}). We define the NPV crossover as the smallest $N$ satisfying
+\begin{equation}
+  K + \sum_{n=1}^{N} \frac{C_{\mathrm{ops}}(n)}{(1+r)^{t_{n,I}}} \;\leq\; \sum_{n=1}^{N} \frac{C_{\mathrm{Earth}}(n)}{(1+r)^{t_{n,E}}},
+  \label{eq:crossover_npv}
+\end{equation}
+where $r$ is the real discount rate. In the baseline (lump-sum) formulation, $K$ is incurred at $t = 0$ (not discounted); in the phased formulation (\S\ref{sec:phased_capital}), $K$ is spread over five annual tranches, each discounted to its deployment year. All costs are in constant 2024 USD; $r$ is a real (inflation-adjusted) discount rate. Figures report values in \$B or \$M as labeled. The pathway-specific timing has two competing effects: (1)~Earth costs are incurred earlier ($t_{n,E} < t_{n,I}$) and therefore discounted \emph{less}---that is, they carry \emph{higher} present value, making the Earth pathway more expensive in NPV terms; (2)~ISRU operational costs are deferred further into the future, reducing their present value. The net effect is that the pathway-specific formulation yields a lower NPV crossover than a shared-schedule formulation (where both pathways use the ISRU delivery schedule), because the Earth pathway's costs carry greater present-value weight. When $r = 0$, Eq.~\ref{eq:crossover_npv} reduces to the undiscounted comparison.
+
+\subsubsection{Earth-sourced component fraction}
+\label{sec:vitamin}
+
+In practice, not all components of a structural module can be manufactured via ISRU, particularly during early production phases. High-precision items---optics, electronics, control systems, specialized fasteners---may require Earth-sourced materials even when the bulk structural mass is ISRU-derived. We model this as a ``vitamin fraction'' $f_v \in [0, 1]$ representing the mass fraction of each unit that must still be produced on Earth and launched. Because ISRU only processes the remaining $(1 - f_v)$ fraction, the operational cost is scaled accordingly. The vitamin portion incurs two costs: the launch cost to deliver the vitamin mass from Earth, and the manufacturing cost per kilogram of those high-value components:
+\begin{equation}
+  C_{\mathrm{ops}}^{\mathrm{vit}}(n) = (1 - f_v) \cdot C_{\mathrm{ops}}(n) + f_v \cdot m \cdot \bigl(p_{\mathrm{launch,eff}}(n) + c_{\mathrm{vit}}\bigr),
+  \label{eq:vitamin}
+\end{equation}
+where $C_{\mathrm{ops}}(n)$ is the base ISRU operational cost (Eq.~\ref{eq:isru_ops}), $p_{\mathrm{launch,eff}}(n)$ is the effective launch cost per kilogram (incorporating launch learning when active), and $c_{\mathrm{vit}}$ is the vitamin component manufacturing cost per kilogram. The baseline assumes $c_{\mathrm{vit}} = \$10{,}000$/kg, representative of space-qualified electronics and precision components. This two-part formulation avoids the overestimation that would result from applying the full Earth per-unit cost $C_{\mathrm{Earth}}(n)$ to the vitamin fraction: the earlier formulation ($f_v \cdot C_{\mathrm{Earth}}$) implicitly attributed the Earth manufacturing learning curve---which captures factory-scale economies for complete units---to what are actually discrete, high-value components procured separately. The corrected model assigns vitamin components their own cost structure: launch plus per-kilogram manufacturing. The $(1 - f_v)$ scaling on the ISRU component reflects the reduced processing burden when a fraction of the unit is Earth-sourced. The baseline assumes $f_v = 0$ (fully ISRU-manufactured structural modules); we test $f_v \in \{0.05, 0.10, 0.15\}$ and $c_{\mathrm{vit}} \in \{\$5{,}000, \$10{,}000, \$50{,}000\}$/kg in \S\ref{sec:sensitivity}.
+
+\subsection{Monte Carlo framework}
+
+To characterize the sensitivity of $N^*$ to parameter uncertainty, we embed the NPV cost model in a Monte Carlo simulation. Each of 10{,}000~runs samples twelve parameter values from the distributions specified in Table~\ref{tab:params} and computes the NPV crossover point via Eq.~\ref{eq:crossover_npv}. We define ``achieving crossover within horizon $H$'' as the event $N^* \leq H$; throughout this paper, $H = 40{,}000$ unless otherwise stated. Critically, the discount rate $r$ is \emph{not} treated as a stochastic parameter. Instead, the full Monte Carlo ensemble is run independently at each of several fixed discount rates ($r \in \{3\%, 5\%, 8\%\}$). This separation is motivated by the observation that the discount rate reflects the decision-maker's time preference and financing structure rather than technological uncertainty; conflating it with stochastic cost parameters obscures the distinct roles of economic policy and engineering risk \cite{arrow2014}. We report the median, interquartile range, and 10th/90th percentiles of the resulting crossover distribution at each rate, with 95\% bootstrap confidence intervals computed from 5{,}000 bootstrap resamples.
+
+\begin{table}[htbp]
+\centering
+\caption{Monte Carlo parameter distributions. Launch cost and ISRU capital are correlated ($\rho = 0.3$) via a Gaussian copula; all other parameters are sampled independently. The Monte Carlo is run at fixed discount rates $r \in \{3\%, 5\%, 8\%\}$. Achieving crossover is defined as $N^* \leq H$ where $H = 40{,}000$. Baseline values are rounded for exposition; the simulation uses exact values as specified in the code repository.}
+\label{tab:params}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Parameter & Baseline & Distribution & Range \\
+\midrule
+\multicolumn{4}{@{}l}{\emph{Stochastic parameters (12)}} \\
+Launch cost $p_{\mathrm{launch}}$ (\$/kg) & 1{,}000 & Uniform$^\dagger$ & [500, 2{,}000] \\
+ISRU capital $K$ (\$B) & 50 & Uniform$^\dagger$ & [30, 100] \\
+Earth learning rate $\mathrm{LR}_E$ & 0.85 & $\mathcal{N}(0.85, 0.03)$ & [0.75, 0.95] \\
+ISRU learning rate $\mathrm{LR}_I$ & 0.90 & $\mathcal{N}(0.90, 0.03)$ & [0.80, 0.98] \\
+Ramp-up time $t_0$ (years) & 5 & Uniform & [3, 8] \\
+First-unit ops.\ cost $C_{\mathrm{ops}}^{(1)}$ (\$M) & 5 & Uniform & [2, 10] \\
+First-unit mfg.\ cost $C_{\mathrm{mfg}}^{(1)}$ (\$M) & 75 & Uniform & [50, 100] \\
+Mass penalty $\alpha$ & 1.0 & Uniform & [1.0, 2.0] \\
+Transport cost $p_{\mathrm{transport}}$ (\$/kg) & 100 & Uniform & [50, 300] \\
+Ops cost floor $C_{\mathrm{floor}}$ (\$M) & 0.5 & Uniform & [0.3, 2.0] \\
+Production rate $\dot{n}_{\max}$ (units/yr) & 500 & Uniform & [250, 750] \\
+ISRU availability $A$ & 1.0 & Uniform & [0.70, 0.95] \\
+\midrule
+\multicolumn{4}{@{}l}{\emph{Fixed parameters}} \\
+Discount rate $r$ & 0.05 & Fixed per run & $\{0.03, 0.05, 0.08\}$ \\
+Unit mass $m$ (kg) & 1{,}850 & Fixed & --- \\
+S-curve steepness $k$ & 2.0 & Fixed & --- \\
+Amortization horizon $N_{\mathrm{total}}$ & 10{,}000 & Fixed & --- \\
+Launch--capital correlation $\rho_{p,K}$ & 0.3 & Fixed & --- \\
+\bottomrule
+\multicolumn{4}{@{}l}{\footnotesize $^\dagger$Correlated via Gaussian copula with $\rho = 0.3$.}
+\end{tabular}
+\end{table}
+
+The learning rate parameters $\mathrm{LR}_E$ and $\mathrm{LR}_I$ are sampled from clipped normal distributions: draws from $\mathcal{N}(\mu, \sigma)$ are generated and then clipped post-hoc to the interval $[\mathrm{lo}, \mathrm{hi}]$ specified in Table~\ref{tab:params}. To capture the plausible positive correlation between launch cost and ISRU capital investment---both are influenced by common factors such as regulatory environment, technology maturity, and material costs---we implement correlated sampling via a Gaussian copula. The procedure: draw $\mathbf{z} \sim \mathcal{N}(\mathbf{0}, \Sigma)$, transform to uniform marginals via $u_i = \Phi(z_i)$, then map to each parameter's marginal distribution via the inverse CDF. The correlation matrix $\Sigma$ specifies $\rho(p_{\mathrm{launch}}, K) = 0.3$; we additionally test $\rho(K, \dot{n}_{\max}) = 0.5$ in \S\ref{sec:k_prod_correlation} to reflect that higher-capacity facilities require larger capital investment. The baseline copula uses $\rho = 0.3$ for the $p_{\mathrm{launch}}$ and $K$ marginals with $\rho(K, \dot{n}_{\max}) = 0$ (independent). This correlation fattens the tails of the crossover distribution relative to independent sampling. We test $\rho \in \{0, 0.3, 0.6\}$ in \S\ref{sec:mc_robustness} and find that the conditional median is insensitive to the choice ($<$200~units variation). The uniform distributions for $K$ and $p_{\mathrm{launch}}$ were chosen to represent maximal ignorance within the specified bounds; a sensitivity test using triangular distributions (mode at baseline, same bounds) produced negligible change in the conditional median ($<200$~units; see \S\ref{sec:mc_robustness}).
+
+In the Monte Carlo, the sampled $p_{\mathrm{launch}}$ is decomposed per Eq.~\ref{eq:earth_launch_learn}: $p_{\mathrm{fuel}}$ is held at baseline (\$200/kg), $p_{\mathrm{ops}} = p_{\mathrm{launch}} - p_{\mathrm{fuel}}$.
+
+For global sensitivity analysis, we compute Spearman rank correlations between each input parameter and the resulting crossover point $N^*$, which capture monotonic nonlinear relationships without assuming a specific functional form.
+
+\subsection{Parameter justification}
+\label{sec:param_justification}
+
+The most consequential parameter values merit explicit justification.
+
+\emph{First-unit manufacturing cost $C_{\mathrm{mfg}}^{(1)} = \$75$M.} This reflects a one-off spacecraft-class structural module of 1{,}850~kg. For comparison, SpaceX Starlink satellites ($\sim$260~kg, electronics-heavy) are estimated at $\sim$\$250k/unit at volumes exceeding 6{,}000, implying a first-unit cost orders of magnitude higher on a Wright curve with $\mathrm{LR}_E = 0.85$. A 1{,}850~kg structural module is simpler (fewer electronic subsystems) but substantially more massive, placing the first-unit cost in the range of individual satellite instruments or small spacecraft. We sample $C_{\mathrm{mfg}}^{(1)} \sim U[\$50\text{M}, \$100\text{M}]$ in the Monte Carlo to span this uncertainty.
+
+\emph{First-unit ISRU operational cost $C_{\mathrm{ops}}^{(1)} = \$5$M.} This is derived from the energy and consumables budget for processing lunar regolith. Sintering or melting regolith requires approximately 1{,}000~kWh per tonne of processed material \cite{cilliers2023}; a 1{,}850~kg unit requiring $\sim$5~tonnes of raw feedstock (at $\sim$37\% structural yield, reflecting the combined efficiency of regolith-to-metal extraction and metal-to-structural-component fabrication; Cilliers et al.\ \cite{cilliers2023} report iron/aluminum extraction efficiencies of 40--60\% from ilmenite and anorthite processing, with additional losses in forming and finishing) thus consumes $\sim$5{,}000~kWh of processing energy. At lunar surface power costs of $\sim$\$100--200/kWh---reflecting amortized solar array and storage costs, consistent with estimates for early lunar surface power systems \cite{sanders2015,lsic2021}---the energy component alone is \$0.5--1.0M. Adding equipment wear, consumable replacement, remote operations overhead, and quality assurance yields a first-unit estimate of $\sim$\$5M under immature operational conditions. We sample $C_{\mathrm{ops}}^{(1)} \sim U[\$2\text{M}, \$10\text{M}]$ to bound this highly uncertain parameter.
+
+\emph{ISRU capital investment $K = \$50$B.} This covers the complete ISRU infrastructure chain: prospecting, extraction, material processing, fabrication, and quality control facilities, deployed without the benefit of an existing supply chain. Table~\ref{tab:k_decomposition} provides an indicative decomposition of the capital investment across subsystem categories, informed by NASA COMPASS and JPL Team~X studies \cite{sanders2015,nasa2015handbook} and LSIC technology roadmaps \cite{lsic2021}. For context, the International Space Station lifecycle cost is approximately \$150B; the Artemis program is budgeted at $\sim$\$93B through 2025. NASA studies of lunar surface infrastructure typically estimate \$5--15B for individual processing facilities \cite{sanders2015,nasa2015handbook}. A complete vertically-integrated manufacturing facility capable of producing 1{,}850~kg structural modules from raw regolith represents a substantially larger investment. We sample $K \sim U[\$30\text{B}, \$100\text{B}]$.
+
+As a cross-check: the capital cost per unit of annual throughput is $K / \dot{n}_{\max} = \$50\text{B} / 500 = \$100\text{M per unit/year}$. For comparison, a terrestrial semiconductor fabrication plant costs \$10--20B for a throughput of millions of units---but each ``unit'' is far simpler to produce. A more relevant analogy is an offshore oil platform (\$5--15B, processing $\sim$100,000 tonnes/year of a single commodity) or a nuclear power plant (\$10--25B, single-purpose infrastructure with extreme safety requirements). The ISRU facility must perform multiple sequential processes (excavation, beneficiation, reduction, forming, assembly, quality control) in an environment with no existing supply chain, no human maintenance, and round-trip communication delays of 2.6~seconds. The \$50B baseline and [\$30B, \$100B] range are consistent with these analogies, though the comparison is necessarily imprecise for a facility type that has never been built.
+
+\begin{table}[htbp]
+\centering
+\caption{Indicative decomposition of ISRU capital investment $K$, informed by NASA cost studies \cite{sanders2015,nasa2015handbook} and LSIC technology roadmaps \cite{lsic2021}. Ranges reflect uncertainty across facility architectures and technology maturity levels.}
+\label{tab:k_decomposition}
+\small
+\begin{tabular}{@{}lrl@{}}
+\toprule
+Subsystem & Range (\$B) & Key components \\
+\midrule
+Power systems           & 8--15 & Solar arrays, storage, distribution \\
+Excavation \& transport & 3--8  & Regolith mining, material handling \\
+Processing              & 5--12 & Electrolysis, smelting, refining \\
+Manufacturing           & 8--20 & Sintering, forming, assembly \\
+Autonomy \& operations  & 3--10 & Robotics, teleops, quality control \\
+Logistics \& infrastructure & 3--15 & Habitats, spares, launch \& deploy \\
+\midrule
+\textbf{Total}          & \textbf{30--80} & \\
+\bottomrule
+\multicolumn{3}{@{}l}{\footnotesize With contingency (25\%), upper bound extends to $\sim$\$100B.}
+\end{tabular}
+\end{table}
+
+\emph{Production rate $\dot{n}_{\max} = 500$~units/year (baseline), sampled $\dot{n}_{\max} \sim U[250, 750]$.} At 500~units/year of 1{,}850~kg modules, the ISRU facility must process approximately 925{,}000~kg/year of finished product---and several times that in raw feedstock at typical regolith-to-product yield ratios. For context, terrestrial cement plants process $\sim$10$^6$~tonnes/year; the relevant comparison is not absolute throughput but rather the energy and infrastructure required to achieve it in an extraterrestrial environment. Lunar regolith processing rates of 10{,}000--100{,}000~tonnes/year have been studied for oxygen extraction \cite{sanders2015}, suggesting that the feedstock throughput for 500~units/year ($\sim$5{,}000--10{,}000~tonnes of raw regolith) is within the range of proposed ISRU facility scales. The production rate enters the NPV calculation through the delivery schedule (Eqs.~\ref{eq:earth_schedule}--\ref{eq:production_schedule}) and is sampled as a stochastic parameter to capture uncertainty in ISRU facility scale.
+
+\emph{S-curve steepness $k = 2.0$.} This yields $S(t_0) = 0.5$ (by definition of the logistic midpoint), $S(t_0 + 1) = 0.88$, and $S(t_0 + 2) = 0.98$, yielding a ramp from 10\% to 90\% capacity in 2.2~years, consistent with industrial commissioning timelines for novel chemical processing facilities. Table~\ref{tab:production_schedule} shows the resulting production schedule under the integrated formulation.
+
+\emph{Empirical learning rates for aerospace hardware.} Table~\ref{tab:learning_rates} summarizes empirical learning rates for hardware classes relevant to the Earth manufacturing pathway, supporting the range $\mathrm{LR}_E \sim \mathcal{N}(0.85, 0.03)$.
+
+\begin{table}[htbp]
+\centering
+\caption{Empirical learning rates for aerospace hardware classes.}
+\label{tab:learning_rates}
+\small
+\begin{tabular}{@{}llr@{}}
+\toprule
+Hardware class & Source & LR \\
+\midrule
+Aircraft airframes & Wright \cite{wright1936} & 0.80--0.85 \\
+Satellites (structural/bus) & Wertz \cite{wertz2011} & 0.85--0.90 \\
+Launch vehicles (production) & Wertz \cite{wertz2011} & 0.85--0.90 \\
+Solar arrays & Nagy et al.\ \cite{nagy2013} & 0.80--0.85 \\
+General aerospace & Argote \& Epple \cite{argote1990} & 0.80--0.90 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+To anchor $\mathrm{LR}_E$ more concretely: at $\mathrm{LR}_E = 0.85$ (baseline), a 1,850-kg structural module's manufacturing cost declines from \$75M (unit~1) to \$14.5M (unit~1,000) to \$8.2M (unit~10,000). At \$8.2M for a 1,850-kg structure ($\sim$\$4,400/kg), the implied cost is comparable to production-run pricing for aerospace-grade composite and metallic structures in the 50--200 unit range \cite{wertz2011}. If these modules were commodity-like (structural steel at \$2/kg $\times$ 1,850~kg $= \$3,700/unit$), the actual production cost would be far lower---hence the Earth manufacturing cost floor (Eq.~\ref{eq:earth_mfg_floor}), which captures the transition to material-cost-dominated production. The key uncertainty is whether the learning curve at these volumes more closely resembles aircraft production ($\mathrm{LR}_E \sim 0.80$, reaching $\sim$\$4,200/kg by unit~10,000) or satellite bus production ($\mathrm{LR}_E \sim 0.90$, reaching $\sim$\$14,600/kg by unit~10,000)---a factor of $3.5\times$ difference that drives the model's sensitivity to this parameter.
+
+\emph{Empirical basis for ISRU learning rates.} The baseline ISRU learning rate $\mathrm{LR}_I = 0.90$ is informed by analogy to terrestrial manufacturing processes that share key characteristics with ISRU operations: novel materials, extreme operating environments, and limited initial production experience. Dutton and Thomas \cite{dutton1984} surveyed 108~studies across manufacturing sectors and found learning rates typically ranging from 0.75 to 0.98, with a median near 0.82. Argote and Epple \cite{argote1990} documented learning rates of 0.80--0.90 for complex aerospace systems. More recently, additive manufacturing of metallic components---a process analogous to regolith sintering in its feedstock-to-part workflow---has exhibited learning rates of approximately 0.85--0.92 during early-stage production ramp-ups. Semiconductor yield improvement during new process node introduction typically follows learning rates of 0.85--0.95 \cite{nagy2013}. Our baseline of 0.90 is higher (slower learning) than most of these analogies, reflecting the additional challenges of remote operations and the novelty of extraterrestrial materials processing. The normal sampling distribution $\mathrm{LR}_I \sim \mathcal{N}(0.90, 0.03)$ with truncation at [0.80, 0.98] spans the plausible range from pessimistic (near-semiconductor) to optimistic (near-aerospace) learning. We additionally test boundary scenarios with no learning ($\mathrm{LR}_I = 1.0$) and very slow learning ($\mathrm{LR}_I = 0.98$) in \S\ref{sec:sensitivity}.
+
+A more nuanced model would incorporate a ``pioneering phase'' for the first 50--100 ISRU units, during which learning might be slower (or costs might even increase temporarily due to debugging and rework) before transitioning to standard Wright-curve behavior. We do not implement this two-phase model because: (a)~the pioneering phase affects only the first $\sim$1\% of units before crossover, contributing negligibly to the cumulative cost difference; (b)~the ramp-up schedule (Eq.~\ref{eq:scurve}) already delays early units, further reducing their cost contribution; and (c)~the $\mathrm{LR}_I = 1.0$ (no learning) boundary test subsumes the worst-case pioneering scenario. Nevertheless, a pioneering-phase model would be valuable for detailed program planning during the first years of ISRU operations.
+
+\emph{Mass penalty factor $\alpha = 1.0$ (baseline), sampled $\alpha \sim U[1.0, 2.0]$.} The parameter $\alpha$ represents additional raw material and processing time required to achieve structural equivalence, not a quality penalty---ISRU and Earth units are assumed to meet identical structural specifications, but the ISRU pathway may require more feedstock mass per unit due to lower material purity, less optimized alloy compositions, and the need for thicker structural margins to compensate for material property uncertainty. Lunar regolith-derived metals (iron, aluminum, titanium) processed by sintering or electrolytic reduction are expected to have 80--95\% of the strength-to-weight ratio of aerospace-grade terrestrial alloys, implying a mass penalty of $\alpha \approx 1.05$--$1.25$ for structural equivalence. Higher values ($\alpha \approx 1.5$--$2.0$) represent scenarios with significant rework, material wastage, or conservative over-engineering during early ISRU production. The parameter multiplies both the operational cost and the transport cost, reflecting the additional processing and delivery burden.
+
+\emph{ISRU facility availability $A = 1.0$ (baseline), sampled $A \sim U[0.70, 0.95]$.} The availability factor represents the fraction of calendar time during which the ISRU facility is operational, accounting for equipment failures, dust contamination, thermal cycling, and limited maintenance access. The effective ISRU production rate is $\dot{n}_{\max,I} = A \cdot \dot{n}_{\max}$, which extends the delivery schedule: lower availability pushes ISRU units further into the future, reducing their present value. Deterministic sensitivity shows that availability has a modest direct effect on the crossover ($-$68~units at $A = 0.70$), but the interaction with production rate in the Monte Carlo (where both are stochastic) produces a meaningful effect on convergence probability. ISS achieves $\sim$95\% system availability with continuous human maintenance; an uncrewed ISRU facility might achieve 70--85\%. The baseline uses $A = 1.0$ for backward compatibility; the MC samples $A \sim U[0.70, 0.95]$.
+
+\emph{Transport cost $p_{\mathrm{transport}} = \$100$/kg (baseline), sampled $p_{\mathrm{transport}} \sim U[\$50, \$300]$/kg.} ISRU-manufactured units must be transported from the production site (e.g., lunar surface) to the operational orbit. For a lunar surface-to-GEO transfer requiring approximately 6~km/s of $\Delta v$ via low-energy trajectory \cite{ishimatsu2016}, the transport cost depends heavily on propellant source. With lunar-derived propellant (LOX/LH$_2$ from water ice), the cost may be as low as \$50/kg; with Earth-supplied propellant or electric propulsion, costs could reach \$200--300/kg. The baseline of \$100/kg assumes a mature lunar propellant supply chain. This simplified model treats transport cost as a constant per-kilogram charge, abstracting away the propellant mass fraction, staging architecture, and trajectory optimization that would determine the actual transport cost for a specific mission design. At $m = 1{,}850$~kg, the transport cost per unit is $m \cdot p_{\mathrm{transport}} \cdot \alpha = \$185{,}000$ at baseline---modest relative to the operational cost but non-negligible in aggregate.
+
+\subsection{Assumptions and limitations}
+
+\paragraph{Cash-flow timing model.} Both pathways use a ``pay-at-milestone'' timing model. Earth costs (manufacturing and launch) are incurred at the delivery time $t_{n,E}$; in practice, manufacturing costs precede launch by weeks to months. We test this via a manufacturing lead-time sensitivity (\S\ref{sec:cashflow_timing}), finding that a 0.5--1.0~year lead time shifts the crossover by $-$3.6\% to $-$6.6\% (i.e., the pay-at-delivery simplification is conservative). ISRU capital is either lump-sum at $t = 0$ or phased over five annual tranches (\S\ref{sec:phased_capital}); operational costs are incurred at production time $t_{n,I}$. In practice, ISRU operational costs would include advance procurement of consumables and spare parts, incurred before production. This timing simplification is conservative for the ISRU pathway (it underestimates the present value of ISRU ops costs) and approximately symmetric in its conservatism across pathways.
+
+\paragraph{Component-level scope.} This analysis models crossover for \emph{passive structural modules} only---the bulk-mass, structurally simple components of space infrastructure. Complete systems (solar power satellites, habitats, communication relays) include additional subsystems (electronics, thermal management, power conditioning, attitude control) that may have different cost structures and ISRU amenability. If structural mass constitutes a fraction $f_s$ of total system mass and structural cost a fraction $f_c$ of total system cost, the system-level crossover occurs later than the component-level crossover reported here by approximately a factor of $1/f_c$. For illustrative purposes: if structural components are 60\% of system mass but 30\% of system cost, the system-level crossover would be roughly $2\times$ the component-level crossover. All quantitative results in this paper should be interpreted as applying to the structural component specifically, with system-level implications contingent on the structural cost fraction of the target architecture.
+
+Several simplifying assumptions merit explicit statement. First, we treat unit mass as fixed, neglecting design evolution over the production run. Second, we assume quality parity between Earth-manufactured and ISRU-manufactured units---an assumption that is optimistic for early ISRU production and that should be relaxed in future models incorporating reject rates and rework costs. Third, we treat the production environment as technologically static: no disruptive innovations alter either pathway's cost structure during the production horizon. Fourth, our model considers a single product type; multi-product ISRU facilities with shared infrastructure would shift the crossover earlier due to capital amortization across product lines. Fifth, our NPV formulation uses a constant real discount rate applied uniformly to both pathways; more sophisticated financing models (e.g., risk-adjusted rates that differ between pathways) would alter the crossover dynamics. We present phased capital deployment---in which the \$50B is invested over five annual tranches---as the primary financing scenario (\S\ref{sec:phased_capital}), with lump-sum capital as a conservative bound. The phased scenario reduces the NPV crossover by approximately 700~units relative to lump-sum. Note that the phased capital model does not shift the production schedule; in practice, commissioning might begin during the final deployment tranche, introducing a coupling between capital timing and ramp-up onset. This coupling is left for future work. Sixth, the Earth delivery schedule assumes in the baseline case that terrestrial manufacturing can scale at the required rate from program start; we test the sensitivity of this assumption via Earth ramp-up robustness checks in \S\ref{sec:earth_ramp}. Finally, the baseline model treats launch cost as constant (Eq.~\ref{eq:earth_launch_baseline}); a sensitivity variant with program-indexed launch learning at $\mathrm{LR}_L = 0.97$ (Eq.~\ref{eq:earth_launch_learn}) is tested in \S\ref{sec:sensitivity}, shifting the crossover by only $+$5\%.
+
+%% ============================================================
+\section{Results}
+\label{sec:results}
+%% ============================================================
+
+\subsection{Baseline crossover}
+
+Under baseline parameter values (Table~\ref{tab:params}), the undiscounted cumulative cost curves ($r = 0$) intersect at approximately $N^* = 3{,}700$ units. Figure~\ref{fig:cumcost} shows these trajectories. The ISRU pathway begins with a steep initial outlay (the \$50B capital investment plus operational and transport costs during ramp-up), while the Earth pathway accumulates cost at a rate dominated by the constant launch cost per unit. The Earth curve is approximately linear at large $N$ because the learning-curve reduction in manufacturing cost is small relative to the constant launch cost per unit (\$1.85M/unit at \$1{,}000/kg for a 1{,}850~kg unit). The ISRU curve, by contrast, flattens as operational learning drives per-unit costs toward the cost floor plus the transport cost.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-cumulative-cost.pdf}
+  \caption{Undiscounted cumulative cost (\$B) vs.\ production volume for the Earth-launch and ISRU pathways under baseline assumptions ($r = 0$). The crossover occurs at approximately 3{,}700~units. The shaded region indicates cumulative ISRU savings.}
+  \label{fig:cumcost}
+\end{figure}
+
+Applying NPV discounting at a 5\% real rate with pathway-specific delivery schedules (Eq.~\ref{eq:crossover_npv}) shifts the crossover to approximately $N^* = 4{,}500$ units---a 22\% increase over the undiscounted result. This is substantially lower than the $\sim$7{,}200-unit crossover obtained under a shared-schedule formulation (where both pathways use the ISRU delivery schedule), because the Earth pathway's costs are now discounted according to their actual (earlier) delivery times, increasing their present value. Figure~\ref{fig:npv_comparison} shows the cumulative cost curves at discount rates of 0\%, 3\%, 5\%, and 10\%, illustrating how the crossover migrates with increasing $r$. At $r = 10\%$, the crossover reaches approximately 6{,}100~units under baseline assumptions.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{fig-npv-comparison.pdf}
+  \caption{Left: Discounted cumulative cost curves at four discount rates with pathway-specific delivery schedules, with crossover points marked. Right: NPV crossover point as a continuous function of discount rate. The pathway-specific formulation yields lower crossover points than earlier analyses because Earth costs carry greater present-value weight.}
+  \label{fig:npv_comparison}
+\end{figure}
+
+Table~\ref{tab:scenarios} summarizes the crossover point under representative scenarios at both $r = 0$ and $r = 5\%$.
+
+\begin{table}[htbp]
+\centering
+\caption{Crossover points under representative scenarios at two discount rates, using pathway-specific delivery schedules.}
+\label{tab:scenarios}
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+ & & & \multicolumn{2}{c}{Undiscounted} & \multicolumn{2}{c}{NPV ($r = 5\%$)} \\
+\cmidrule(lr){4-5} \cmidrule(lr){6-7}
+Scenario & \$/kg & $K$ (\$B) & $N^*$ & Time & $N^*$ & Time \\
+\midrule
+Optimistic   & 500     & 30  & $\sim$2{,}100 & $\sim$9~yr  & $\sim$2{,}200 & $\sim$9~yr \\
+Baseline     & 1{,}000 & 50  & $\sim$3{,}700 & $\sim$12~yr & $\sim$4{,}500 & $\sim$14~yr \\
+Conservative & 2{,}000 & 100 & $\sim$7{,}200 & $\sim$19~yr & $\sim$13{,}000 & $\sim$30~yr \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The per-unit cost comparison (Figure~\ref{fig:unitcost}) illustrates the per-unit cost dynamics. The Earth per-unit cost is bounded below by the launch cost floor $m \cdot p_{\mathrm{launch}}$, which manufacturing learning cannot reduce. The ISRU per-unit cost, after ramp-up, continues to decline toward the operational cost floor $C_{\mathrm{floor}} = \$0.5$M. This divergence in asymptotic behavior is the structural reason why, under the model's assumptions, the crossover is expected at sufficient production scale. However, as the Monte Carlo analysis shows (\S\ref{sec:mc_robustness}), crossover is achieved in 51--77\% of stochastic scenarios (depending on discount rate), not in all cases. The primary uncertainty is \emph{whether} ISRU achieves crossover within a reasonable planning horizon---contingent on the discount rate, learning rates, capital costs, and production rate---and, conditional on crossover occurring, at what production volume.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-unit-cost.pdf}
+  \caption{Per-unit cost (\$M) vs.\ cumulative production for the Earth-launch and ISRU pathways. The Earth pathway is bounded below by the launch cost floor ($m \cdot p_{\mathrm{launch}} = \$1.85$M), while the ISRU pathway declines toward the operational cost floor ($C_{\mathrm{floor}} = \$0.5$M).}
+  \label{fig:unitcost}
+\end{figure}
+
+\paragraph{Earth pathway sanity check.} As a validation of the Earth cost model, we compare its outputs against known satellite production economics. At $n = 1{,}000$ (after substantial learning), the model predicts an Earth unit cost of \$16.3M for a 1,850-kg structural module, of which \$14.5M is manufacturing and \$1.85M is launch. For comparison, Starlink satellites ($\sim$260~kg, electronics-heavy) cost $\sim$\$250k at volumes exceeding 6,000, implying $\sim$\$960/kg at mature production. Our model predicts $\sim$\$8,800/kg at $n = 1{,}000$ for a larger, structurally simpler module---roughly $10\times$ the Starlink unit cost, which is reasonable given the 7$\times$ higher mass, the one-off (vs.\ mass-produced) production context, and the inclusion of launch cost. The cumulative Earth cost for 1,000 units is \$20.9B (average \$20.9M/unit). These figures are consistent with aerospace production economics for low-volume structural hardware \cite{wertz2011}.
+
+\subsection{Sensitivity analysis}
+\label{sec:sensitivity}
+
+Figure~\ref{fig:tornado} summarizes one-at-a-time sensitivity of the NPV crossover ($r = 5\%$) to nine parameters.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-tornado.pdf}
+  \caption{Tornado diagram showing the ranked sensitivity of the NPV crossover point ($r = 5\%$ baseline, pathway-specific timing) to each input parameter.}
+  \label{fig:tornado}
+\end{figure}
+
+The Earth manufacturing learning rate remains the most influential parameter in absolute range, with a strongly asymmetric effect: a \emph{higher} learning rate (LR$_E = 0.90$, i.e., slower learning---each doubling reduces cost by only 10\%) shifts the crossover earlier because the Earth pathway retains higher costs for longer, while a \emph{lower} rate (LR$_E = 0.80$, faster learning) delays crossover because Earth manufacturing costs decline rapidly. ISRU capital investment is the second most influential parameter. The discount rate $r$ remains important but its effect is moderated under pathway-specific timing because the timing gap between pathways partially offsets the discounting penalty.
+
+The mass penalty factor $\alpha$ (varied from 1.0 to 2.0) shifts the crossover by approximately $+$500~units. Transport cost $p_{\mathrm{transport}}$ has a smaller effect, consistent with transport being a modest fraction of total ISRU cost at baseline parameters. First-unit costs ($C_{\mathrm{ops}}^{(1)}$, $C_{\mathrm{mfg}}^{(1)}$) exert moderate influence. ISRU learning rate and launch cost remain relatively weak individual drivers, though their effects compound with other parameters in the Monte Carlo analysis.
+
+The two-dimensional parameter space of launch cost versus ISRU capital is shown in the heat map of Figure~\ref{fig:heatmap}, now computed using the NPV crossover at $r = 5\%$ with pathway-specific timing.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-heatmap.pdf}
+  \caption{NPV crossover point $N^*$ ($r = 5\%$, pathway-specific timing) as a function of launch cost (\$/kg) and ISRU capital investment (\$B). The star marks the baseline scenario.}
+  \label{fig:heatmap}
+\end{figure}
+
+\paragraph{Launch cost learning sweep.} The baseline model uses constant launch cost (Eq.~\ref{eq:earth_launch_baseline}). As a sensitivity variant, we test the two-component learning model (Eq.~\ref{eq:earth_launch_learn}) with $\mathrm{LR}_L$ ranging from 0.90 (aggressive: 10\% cost reduction per doubling) to 0.97 (moderate). Table~\ref{tab:launch_learning} reports the results. Even at the aggressive $\mathrm{LR}_L = 0.90$---where the ops component falls to $\sim$\$334/kg by $n = 10{,}000$---the crossover shifts by only $+$343 units from the no-learning baseline (+8\%). The baseline no-learning case ($\mathrm{LR}_L = 1.00$) gives $N^* = 4{,}265$. The reason launch learning cannot eliminate the ISRU advantage is structural: even at $\mathrm{LR}_L = 0.90$, the fuel component (\$200/kg) constitutes an assumed irreducible floor in this model that no operational learning can breach. At $n = 10{,}000$, the ops component has fallen to $\sim$\$334/kg, but the combined launch cost (\$534/kg $\times$ 1{,}850~kg $=$ \$0.99M per unit) remains far above the ISRU operational cost floor (\$0.5M). This floor asymmetry---physics-driven propellant costs versus experience-driven operational costs---is the fundamental reason that launch learning, regardless of its rate, cannot fully close the gap at high production volumes.
+
+\begin{table}[htbp]
+\centering
+\caption{Launch cost learning sweep (NPV, $r = 5\%$). The fuel component (\$200/kg) is held constant; the operational component (\$800/kg) follows a Wright learning curve. Baseline: $\mathrm{LR}_L = 0.97$.}
+\label{tab:launch_learning}
+\small
+\begin{tabular}{@{}rrrrl@{}}
+\toprule
+$\mathrm{LR}_L$ & $b_L$ & $N^*$ & Shift & Note \\
+\midrule
+1.00 & 0.000  & 4{,}265 & $-$206 & No learning (sensitivity bound) \\
+0.99 & $-$0.014 & 4{,}338 & $-$133 & Minimal learning \\
+0.97 & $-$0.044 & 4{,}471 & ---    & Baseline \\
+0.95 & $-$0.074 & 4{,}589 & $+$118 & Moderate learning \\
+0.93 & $-$0.105 & 4{,}690 & $+$219 & \\
+0.90 & $-$0.152 & 4{,}814 & $+$343 & Aggressive learning \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Fuel floor sensitivity.} The propellant cost floor ($p_{\mathrm{fuel}} = \$200$/kg) is held constant in the baseline. To test the sensitivity of the crossover to this assumption, we sweep $p_{\mathrm{fuel}}$ from \$50/kg (optimistic next-generation methalox) to \$400/kg (conservative including range operations overhead), adjusting $p_{\mathrm{ops}}$ to keep the first-unit launch cost fixed at \$1{,}000/kg. The crossover shifts by only $\pm$54~units across this range, confirming that the model's conclusions are insensitive to the precise fuel-vs-operations decomposition. The irreducible floor enters only through the asymptotic behavior at very high production volumes; for the crossover volumes relevant to this analysis ($\sim$4{,}000--6{,}000 units), the total launch cost (not its decomposition) is what matters.
+
+\paragraph{ISRU learning rate boundary scenarios.} To bound the sensitivity of the crossover to the ISRU learning rate---an assumption with limited empirical grounding (see \S\ref{sec:param_justification})---we test two extreme scenarios. With \emph{no ISRU learning} ($\mathrm{LR}_I = 1.0$, operational costs remain constant at $C_{\mathrm{ops}}^{(1)}$), the NPV crossover shifts to $\sim$6{,}100 units ($+$1{,}629 from baseline). With \emph{very slow learning} ($\mathrm{LR}_I = 0.98$), the crossover shifts to $\sim$5{,}500 units ($+$1{,}029). In both cases the crossover still occurs, demonstrating that the ISRU economic advantage does not depend on optimistic learning assumptions---it is driven primarily by the amortization of fixed capital against a declining per-unit cost, even in the absence of experience-curve effects.
+
+\paragraph{Rate-dependent learning (organizational forgetting).} The baseline model assumes that learning proceeds smoothly regardless of production rate. In practice, organizational forgetting \cite{benkard2000,thompson2012} can erode learning gains during periods of low production activity. To test this, we implement a rate-dependent learning modifier that freezes the learning curve when the instantaneous production rate $\dot{n}(t)$ falls below a threshold fraction of full capacity (20\% and 30\% of $\dot{n}_{\max}$). Under baseline parameters, the rate-dependent modifier has no effect on the crossover ($N^* = 4{,}471$ at both threshold levels)---an artifact of the fast baseline ramp-up ($k = 2.0$ reaches 20\% capacity within ${\sim}1.2$~years of commissioning start), after which learning proceeds normally. Slower commissioning (lower $k$ or higher $t_0$) would produce meaningful cost penalties from organizational forgetting.
+
+\paragraph{Earth-sourced component fraction.} Using the two-part vitamin model (Eq.~\ref{eq:vitamin}), which separates the vitamin cost into launch and per-kilogram manufacturing components, we test the sensitivity of the crossover to both the vitamin fraction $f_v$ and the vitamin manufacturing cost $c_{\mathrm{vit}}$. At the baseline $c_{\mathrm{vit}} = \$10{,}000$/kg: $f_v = 5\%$ shifts the crossover to $\sim$4{,}881 ($+$410); $f_v = 10\%$ to $\sim$5{,}389 ($+$918); $f_v = 15\%$ to $\sim$6{,}039 ($+$1{,}568). Sweeping $c_{\mathrm{vit}}$ at $f_v = 10\%$: \$5{,}000/kg gives $N^* \approx 4{,}862$ ($+$391); \$10{,}000/kg gives $N^* \approx 5{,}389$ ($+$918); \$50{,}000/kg eliminates the crossover within the 40{,}000-unit horizon. The $c_{\mathrm{vit}} = \$50{,}000$/kg scenario (military-grade radiation-hardened electronics) represents an extreme; at representative space-qualified component costs (\$5{,}000--\$10{,}000/kg), crossover remains achievable with modest delay. The crossover is preserved even at 15\% vitamin fraction, confirming that ISRU need not produce \emph{all} components to achieve economic advantage---structural bulk mass is sufficient.
+
+\paragraph{Earth manufacturing cost floor.} To test whether the Wright learning curve overestimates cost reduction at high volumes (where Earth manufacturing may transition to commodity-like production with material-dominated costs), we sweep $C_{\mathrm{mfg}}^{\mathrm{floor}} \in \{0, \$2\text{M}, \$5\text{M}, \$10\text{M}\}$. The crossover is unaffected at all tested floor values ($N^* = 4{,}471$ throughout). This is because at the crossover volume ($\sim$4{,}500 units), the unfloored Earth mfg cost ($C_{\mathrm{mfg}}^{(1)} \cdot n^{b_E} \approx \$8$M) is already above even the highest floor tested. At $n = 10{,}000$: with no floor, Earth unit cost is \$10.0M; with $C_{\mathrm{mfg}}^{\mathrm{floor}} = \$10$M, it rises to \$11.4M. The floor would matter only for production volumes well beyond 10{,}000 units, where the learning curve would have driven mfg cost below the floor. This confirms that the model's crossover results are robust to the specific functional form of Earth manufacturing cost decline.
+
+\paragraph{S-curve steepness sensitivity.} The baseline S-curve steepness $k = 2.0$ yields a 10\%-to-90\% ramp-up time of 2.2~years. Sweeping $k \in \{0.5, 1.0, 2.0, 3.0, 4.0\}$ produces crossover shifts of only $\pm$40~units from baseline, despite the ramp-up duration ranging from 1.1~years ($k = 4$) to 8.8~years ($k = 0.5$). The insensitivity arises because the crossover occurs at volumes ($\sim$4{,}500 units) well past the ramp-up phase, where the production schedule has converged to the same linear regime regardless of $k$. The steepness parameter primarily affects the timing and discounting of the first few hundred units, which constitute a small fraction of the cumulative cost at crossover.
+
+\paragraph{Launch learning re-indexing.} The baseline launch learning model indexes experience to cumulative units ($n$), implicitly assuming one launch per unit. In practice, the launch industry's cumulative experience may differ from the program's unit count: co-manifesting multiple units per launch ($\lambda = 0.5$) reduces the launch learning index, while dedicated launches or multi-launch assemblies ($\lambda = 2.0$) increase it. Testing $\lambda \in \{0.5, 1.0, 2.0\}$ shifts the crossover by only $\pm$18~units, confirming that the model is insensitive to the launch-vs-unit indexing assumption at the baseline learning rate ($\mathrm{LR}_L = 0.97$).
+
+\subsection{Monte Carlo robustness}
+\label{sec:mc_robustness}
+
+The full Monte Carlo simulation (10{,}000~runs per rate) samples all twelve stochastic parameters simultaneously from the distributions in Table~\ref{tab:params}, with correlated sampling of $p_{\mathrm{launch}}$ and $K$ via a Gaussian copula ($\rho = 0.3$), and computes the NPV crossover at each of three fixed discount rates. Table~\ref{tab:mc_summary} summarizes the results across rates.
+
+\begin{table}[htbp]
+\centering
+\caption{Monte Carlo results at fixed discount rates (10{,}000 runs each, planning horizon $H = 40{,}000$ units). ``Conv.''\ refers to the fraction of scenarios achieving crossover within $H$.}
+\label{tab:mc_summary}
+\small
+\begin{tabular}{@{}rrrrrr@{}}
+\toprule
+$r$ & Conv.\ \% & Cond.\ median & Cond.\ IQR & Cond.\ P10 & Cond.\ P90 \\
+\midrule
+3\%  & 76.5\% & 5{,}838 & [3{,}461, 10{,}239] & 2{,}206 & 16{,}757 \\
+5\%  & 66.3\% & 5{,}620 & [3{,}343, 9{,}887]  & 2{,}145 & 15{,}985 \\
+8\%  & 51.0\% & 5{,}103 & [3{,}097, 8{,}579]  & 2{,}061 & 13{,}588 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+First, the probability of achieving crossover within $H$ decreases monotonically with $r$: 77\% at $r = 3\%$ versus 51\% at $r = 8\%$, reflecting the increasing NPV penalty on the ISRU pathway's upfront capital. Second, the conditional median is stable across rates ($\sim$5{,}100--5{,}900), indicating that among scenarios that do achieve crossover, the crossover point is relatively insensitive to the discount rate. The discount rate primarily affects \emph{whether} crossover is achieved rather than \emph{where} it occurs---high rates push marginal scenarios past the planning horizon.
+
+Table~\ref{tab:convergence} presents the empirical cumulative distribution function $P(N^* \leq H)$ at selected production horizons, providing a survival-analysis-style characterization of the crossover distribution.
+
+\begin{table}[htbp]
+\centering
+\caption{Probability of achieving crossover at or below production horizon $H$, $P(N^* \leq H)$.}
+\label{tab:convergence}
+\small
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+Horizon $H$ (units) & $r = 3\%$ & $r = 5\%$ & $r = 8\%$ \\
+\midrule
+1{,}000  & 0.3\% & 0.3\% & 0.2\% \\
+2{,}000  & 5.8\% & 5.3\% & 4.6\% \\
+5{,}000  & 31.2\% & 28.1\% & 23.9\% \\
+10{,}000 & 54.6\% & 48.2\% & 39.5\% \\
+20{,}000 & 69.0\% & 59.8\% & 47.5\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Bootstrap confidence intervals (5{,}000~resamples) on the conditional median at $r = 5\%$ yield a 95\% CI of [5{,}471, 5{,}753]. The distribution (Figure~\ref{fig:histogram}) is heavily right-skewed at all rates.
+
+\paragraph{MC convergence diagnostic.} To verify that 10{,}000 runs are sufficient, we examine how the convergence rate and conditional median stabilize as sample size increases from 100 to 10{,}000 (at $r = 5\%$, $\rho = 0.3$). The conditional median is $\sim$5{,}300 at $n = 100$, fluctuates at $n = 1{,}000$--$2{,}000$, and stabilizes within $\pm$2\% of the final value by $n = 5{,}000$ (conditional median 5{,}538 at $n = 5{,}000$ vs.\ 5{,}615 at $n = 10{,}000$). The convergence rate similarly stabilizes at $\sim$66\% by $n = 5{,}000$. This confirms that 10{,}000~runs provide adequate statistical power.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{fig-histogram.pdf}
+  \caption{Distribution of NPV crossover points ($N^*$) across 10{,}000~Monte Carlo runs at three fixed discount rates. Each panel shows scenarios achieving crossover within $H = 40{,}000$; the title reports the fraction achieving crossover and the conditional median. The vertical line marks the conditional median; the shaded band shows the conditional IQR.}
+  \label{fig:histogram}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{fig-production-schedule.pdf}
+  \caption{Production schedule validation. (a)~Instantaneous production rate for both pathways: Earth produces at full rate from $t = 0$, while ISRU follows a logistic ramp-up with $t_0 = 5$~yr. (b)~Cumulative production, showing the timing gap between pathways (5.3~yr at $n = 1{,}000$). The ISRU facility reaches half-maximal rate at $t_0$ and 90\% capacity by $t_0 + 1.1$~yr.}
+  \label{fig:production_schedule}
+\end{figure}
+
+Table~\ref{tab:spearman} presents Spearman rank correlations between each input parameter and $N^*$ at $r = 5\%$, computed both unconditionally and conditional on achieving crossover.
+\begin{table}[htbp]
+\centering
+\caption{Spearman rank correlations ($\rho_S$) between input parameters and $N^*$ at $r = 5\%$. ``Uncond.'' includes all 10{,}000~runs with non-achieving capped at $H = 40{,}000$ (a diagnostic measure subject to censoring bias; see text); ``Cond.'' includes only the 66.3\% achieving crossover (the preferred sensitivity ranking). The conditional rankings, supplemented by censoring-aware Cohen's $d$ analysis (text), provide the primary sensitivity conclusions. All correlations with $|\rho_S| > 0.03$ are significant at $p < 0.001$.}
+\label{tab:spearman}
+\begin{tabular}{@{}lrrp{4.5cm}@{}}
+\toprule
+Parameter & $\rho_S$ (unc.) & $\rho_S$ (cond.) & Interpretation \\
+\midrule
+LR$_E$     & $-$0.66 & $-$0.50 & Slower Earth learning $\rightarrow$ earlier crossover \\
+$K$               & $+$0.50 & $+$0.52 & Higher capital delays crossover \\
+$C_{\mathrm{mfg}}^{(1)}$ & $-$0.34 & $-$0.23 & Higher Earth cost $\rightarrow$ earlier \\
+$\dot{n}_{\max}$ & $-$0.17 & $+$0.09 & Sign reversal; see footnote \\
+$C_{\mathrm{ops}}^{(1)}$ & $+$0.14 & $+$0.03 & Higher ISRU ops delays \\
+$\alpha$          & $+$0.10 & $+$0.04 & Mass penalty delays crossover \\
+LR$_I$      & $+$0.09 & $+$0.03 & Slower ISRU learning delays \\
+$p_{\mathrm{launch}}$   & $+$0.15 & $+$0.16 & Copula artifact; see text \\
+$C_{\mathrm{floor}}$ & $+$0.06 & $+$0.00 & Higher floor delays crossover \\
+$t_0$             & $-$0.04 & $-$0.01 & Minor effect \\
+$p_{\mathrm{transport}}$ & $+$0.03 & $-$0.00 & Negligible \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+With $r$ removed from the stochastic parameter set, the parameter rankings are unambiguous. \emph{The conditional analysis (right column) provides the preferred sensitivity ranking}, as it avoids the censoring bias inherent in capping non-achieving runs at $H$. The Earth manufacturing learning rate and ISRU capital are the dominant conditional drivers ($|\rho_S| \approx 0.50$). The unconditional column is reported as a diagnostic; its rankings can differ from the conditional and Cohen's $d$ analyses due to censoring effects. For a fully censoring-robust treatment, Cox proportional hazards or accelerated failure time regression would be appropriate \cite{kaplan1958}; we leave this for future work and rely on the conditional Spearman and Cohen's $d$ rankings as the primary sensitivity conclusions.
+
+\paragraph{Censoring-aware convergence analysis.} Because non-achieving runs are right-censored at $H = 40{,}000$, Spearman correlations computed on the full sample can be distorted. To complement the conditional Spearman analysis, we compute standardized mean differences (Cohen's $d$) between the parameter values of achieving versus non-achieving scenarios, treating the binary outcome directly. At $r = 5\%$, the dominant convergence drivers are: LR$_E$ ($d = +1.39$, lower Earth learning rate strongly favors convergence), $K$ ($d = -0.76$, higher capital strongly favors non-convergence), $C_{\mathrm{mfg}}^{(1)}$ ($d = +0.63$), $\dot{n}_{\max}$ ($d = +0.59$), and $C_{\mathrm{ops}}^{(1)}$ ($d = -0.33$). These rankings are consistent with the conditional Spearman analysis, confirming that the sensitivity rankings are robust to the censoring treatment.
+
+\paragraph{Non-convergence characterization.} The 33.7\% of non-achieving scenarios at $r = 5\%$ are strongly associated with high ISRU capital: the non-convergence rate is 16\% for $K \in [\$30\text{B}, \$50\text{B}]$, 33\% for $K \in [\$50\text{B}, \$75\text{B}]$, and 55\% for $K \in [\$75\text{B}, \$100\text{B}]$. The mean ISRU capital among non-achieving scenarios (\$75B) is substantially higher than among achieving scenarios (\$60B). This confirms that the primary drivers of non-convergence are large ISRU capital investment and low throughput capacity.
+
+\paragraph{Distribution and copula sensitivity.} A diagnostic comparison of uniform versus triangular distributions for $K$ and $p_{\mathrm{launch}}$ (triangular with mode at baseline, same bounds; 5{,}000 runs at $r = 5\%$) produced a conditional median shift of approximately $-$177~units. This shift is small relative to the IQR, supporting the use of uniform distributions as a reasonable representation of current uncertainty.
+
+\paragraph{Log-normal capital cost distribution.} First-of-kind space systems routinely experience cost growth of 50--200\% relative to initial estimates \cite{wertz2011}; this asymmetric risk is not captured by the symmetric uniform distribution. To test this, we replace the uniform distribution $K \sim U[\$30\text{B}, \$100\text{B}]$ with a log-normal distribution calibrated to median $= \$65$B (matching the uniform's median) with $\sigma_{\ln} = 0.48$ (yielding P90 $\approx \$120$B), clipped to $[\$20\text{B}, \$200\text{B}]$. The log-normal K has mean \$73B $>$ median \$65B, reflecting the right-skewed cost growth risk. Running 10{,}000 MC iterations at $r = 5\%$ with the correlated copula: the convergence rate decreases from 66.3\% (uniform) to 61.8\% (log-normal), the conditional median shifts from 5{,}620 to 5{,}366 ($-$254 units), and the conditional IQR narrows slightly. The convergence rate decrease is expected: the log-normal's heavier right tail produces more high-$K$ scenarios that fail to converge. The conditional median decrease reflects the log-normal's higher density near the median (fewer extreme low-$K$ outliers that pull the conditional median upward). These shifts are modest relative to the overall MC uncertainty, confirming that the crossover results are not sensitive to the choice between uniform and log-normal capital cost distributions.
+
+To assess the sensitivity to the assumed correlation structure, we run the MC at $r = 5\%$ with $\rho \in \{0, 0.3, 0.6\}$. The convergence rate is stable across values ($\sim$66\%), and the conditional median varies from 5{,}515 ($\rho = 0$) to 5{,}710 ($\rho = 0.6$)---a shift of only $\sim$200 units, confirming that the results are not sensitive to the copula correlation assumption.
+
+\paragraph{Kaplan-Meier survival analysis.} The conditional median reported throughout this paper excludes non-converging runs ($N^* = H$), which may bias the estimate downward by ignoring right-censored observations. To quantify this bias, we apply the Kaplan-Meier (KM) product-limit estimator \cite{kaplan1958}---the standard nonparametric method for right-censored data---treating non-convergence as censoring at $H = 40{,}000$. Table~\ref{tab:kaplan_meier} compares the KM median with the conditional median at three discount rates.
+
+\begin{table}[htbp]
+\centering
+\caption{Kaplan-Meier median vs.\ conditional median for the crossover distribution at three discount rates (10{,}000 MC runs, $H = 40{,}000$). The KM estimator accounts for right-censored observations; divergence quantifies the bias from ignoring censoring.}
+\label{tab:kaplan_meier}
+\small
+\begin{tabular}{@{}rrrrr@{}}
+\toprule
+$r$ & Conv.\ \% & Cond.\ median & KM median & Divergence \\
+\midrule
+3\%  & 76.5\% & 5{,}838 & 8{,}131  & 39\% \\
+5\%  & 66.3\% & 5{,}620 & 9{,}966  & 77\% \\
+8\%  & 51.0\% & 5{,}103 & 24{,}231 & 375\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The divergence between the KM and conditional medians increases sharply with the censoring rate: at $r = 3\%$ (24\% censoring), the KM median is 39\% higher; at $r = 8\%$ (49\% censoring), 375\% higher. The two metrics answer different decision questions:
+\begin{itemize}
+  \item \textbf{Conditional median} ($\sim$5{,}600 at $r = 5\%$): ``Given that we commit to ISRU and it works, when does it pay off?'' This is the relevant metric for a committed program that has already decided to pursue ISRU and needs to plan production milestones.
+  \item \textbf{KM median} ($\sim$10{,}000 at $r = 5\%$): ``Across all plausible futures---including those where ISRU never achieves crossover---what is the typical crossover volume?'' This is the relevant metric for portfolio-level decisions (e.g., a government agency deciding whether to fund ISRU technology development across uncertain cost scenarios).
+\end{itemize}
+Both metrics are reported throughout this paper. The conditional median is used as the primary planning statistic in sections discussing crossover location (consistent with its ``conditional on achievability'' interpretation), while the convergence probability $P(N^* \leq H)$ (Figure~\ref{fig:convergence_curve}) and KM analysis provide the portfolio-level view.
+
+\paragraph{Launch cost Spearman sign.} The positive unconditional Spearman coefficient for launch cost ($\rho_S = +0.15$) appears to contradict the expected relationship: higher launch costs should make the Earth pathway more expensive and thus \emph{accelerate} crossover. A one-at-a-time sweep confirms the expected monotonicity: increasing $p_{\mathrm{launch}}$ from \$500 to \$2{,}000/kg monotonically decreases $N^*$. The sign is explained by the Gaussian copula: $p_{\mathrm{launch}}$ and $K$ are positively correlated ($\rho = 0.3$), so draws with high launch cost tend to also have high ISRU capital, and the capital effect ($\rho_S = +0.50$) overwhelms the direct launch cost effect. A diagnostic uncorrelated Monte Carlo (5{,}000~runs, independent sampling) yields $\rho_S = +0.009$ for $p_{\mathrm{launch}}$---essentially zero---confirming that the positive correlated-sample coefficient is driven by the copula rather than a direct effect.
+
+\subsection{Cumulative economics}
+
+To contextualize the crossover in absolute terms, Table~\ref{tab:cumulative} presents the undiscounted cumulative expenditure under each pathway at five-year intervals under baseline assumptions, with production following the ISRU S-curve ramp-up profile. Note that units produced are counted from the ISRU production schedule; the Earth pathway could deliver the same units earlier (per the pathway-specific schedules in Table~\ref{tab:production_schedule}), but for a like-for-like comparison we tabulate both pathways at the same production volume.
+
+\begin{table}[htbp]
+\centering
+\caption{Cumulative cost comparison under baseline assumptions, both undiscounted and NPV-discounted ($r = 5\%$). Units produced follow the ISRU S-curve schedule. Production is negligible before year~7 ($t < t_0 + 2$); see Table~\ref{tab:production_schedule} for the delivery schedule.}
+\label{tab:cumulative}
+\begin{tabular}{@{}rr|rrr|rrr@{}}
+\toprule
+ & & \multicolumn{3}{c|}{Undiscounted} & \multicolumn{3}{c}{NPV ($r = 5\%$)} \\
+Year & Units & Earth & ISRU & Net & Earth & ISRU & Net \\
+ & & (\$B) & (\$B) & (\$B) & (\$B) & (\$B) & (\$B) \\
+\midrule
+10 & $\sim$2{,}300 & 41.3  & 55.4   & $-$14.1 & 37.4  & 53.7  & $-$16.3 \\
+15 & $\sim$4{,}800 & 73.6  & 60.4   & $+$13.2 & 60.4  & 56.5  & $+$3.9  \\
+20 & $\sim$7{,}300 & 102.6 & 65.1   & $+$37.5 & 76.4  & 58.5  & $+$18.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Note that the ``Time'' column in Table~\ref{tab:scenarios} uses the ISRU delivery schedule (Eq.~\ref{eq:production_schedule}); the Earth pathway delivers the same number of units earlier (per Table~\ref{tab:production_schedule}). The asymmetry between the optimistic ($+5\%$ NPV shift relative to undiscounted) and conservative ($+80\%$ NPV shift) scenarios reflects the nonlinear interaction between discount rate and the ISRU timing gap: at high $K$, the crossover occurs later in calendar time, where discounting has a stronger compounding effect.
+
+The ISRU pathway requires greater expenditure through approximately year~12--13 (the ``investment valley''), driven primarily by the \$50B upfront capital. After the crossover, cumulative savings grow monotonically. By year~20, the ISRU pathway has saved approximately \$38B in undiscounted terms (\$18B in NPV terms at $r = 5\%$). ISRU savings compound beyond 10{,}000~units. The NPV investment valley extends further than the undiscounted one---ISRU achieves positive net savings only at year~15 in NPV terms versus year~12--13 undiscounted---reinforcing that the ISRU decision requires a long planning horizon and patient capital.
+
+\subsection{Phased capital deployment}
+\label{sec:phased_capital}
+
+In practice, ISRU infrastructure would be deployed incrementally rather than as a lump sum. We present phased capital as the primary financing scenario, with lump-sum capital ($K$ at $t = 0$) as a conservative bound. In the phased scenario, $K$ is spread uniformly over five annual tranches, each discounted to its deployment year:
+\begin{equation}
+  K_{\mathrm{eff}} = \sum_{y=0}^{4} \frac{K/5}{(1+r)^y}.
+  \label{eq:phased_capital}
+\end{equation}
+At $r = 5\%$, $K_{\mathrm{eff}} = \$45.3$B (a 9.4\% reduction from the \$50B lump sum). This reduces the NPV crossover from $\sim$4{,}500 to $\sim$3{,}800~units---a shift of $-$700~units, or 16\%. The 16\% shift confirms that financing structure materially affects the crossover. The phased capital scenario is reported in Table~\ref{tab:scenarios}.
+
+\paragraph{Capex--schedule coupling.} The phased capital analysis above holds $t_0$ fixed while spreading $K$ over time. In practice, a longer deployment may delay the commissioning of full production capacity. We test this coupling via $t_{0,\mathrm{eff}} = t_0 + \beta(K_{\mathrm{years}} - 1)$ where $\beta$ controls the strength of the coupling. At $\beta = 0.5$ ($t_{0,\mathrm{eff}} = 7$~yr), the phased crossover shifts to $\sim$3{,}758 ($-$713 from lump-sum baseline); at $\beta = 1.0$ ($t_{0,\mathrm{eff}} = 9$~yr), to $\sim$3{,}698 ($-$773). Perhaps counter-intuitively, the phased crossover is \emph{earlier} than the lump-sum baseline even with coupling. This occurs because the NPV reduction in capital ($K_{\mathrm{eff}} < K$) outweighs the additional discounting of delayed ISRU operational costs. The coupling sensitivity is modest: the crossover shifts by less than 100 units across $\beta \in [0, 1]$.
+
+\paragraph{Ongoing capital maintenance.} The baseline model treats ISRU capital $K$ as a one-time investment. In practice, extraterrestrial manufacturing infrastructure would require periodic maintenance and component replacement. We model this as a recurring cost of $\phi_K \cdot K$ every $\Delta t_K$ years, discounted to present value:
+\begin{equation}
+  C_{\mathrm{maint}} = \sum_{j=1}^{\lfloor T/\Delta t_K \rfloor} \frac{\phi_K \cdot K}{(1+r)^{j \cdot \Delta t_K}},
+\end{equation}
+where $T$ is the production horizon and $\phi_K$ is the maintenance fraction. With $\Delta t_K = 5$~yr: $\phi_K = 5\%$ shifts the crossover to $\sim$5{,}949 ($+$1{,}478); $\phi_K = 10\%$ to $\sim$7{,}797 ($+$3{,}326); $\phi_K = 15\%$ to $\sim$10{,}214 ($+$5{,}743). Maintenance has a meaningful effect---more so than most single-parameter sensitivities---because it converts a one-time cost into a recurring stream. The crossover remains within the Monte Carlo range for $\phi_K \leq 10\%$ but becomes strained at 15\%, where it enters the tail of the MC distribution. The effective cost floor rises when maintenance is included: with $\phi_K = 10\%$, the annualized capital maintenance alone is \$1B/yr, which must be amortized across annual production.
+
+\subsection{Earth ramp-up robustness}
+\label{sec:earth_ramp}
+
+The baseline Earth delivery schedule (Eq.~\ref{eq:earth_schedule}) assumes production at full rate from $t = 0$. To test the sensitivity of this assumption, we replace the Earth schedule with a logistic ramp-up (same functional form as the ISRU schedule, Eq.~\ref{eq:scurve}) with midpoints of $t_{0,E} = 1$ and $t_{0,E} = 2$~years. Adding an Earth ramp-up delays Earth costs in time, reducing their present value and making the Earth pathway appear cheaper in NPV terms. At $r = 5\%$:
+
+\begin{itemize}
+\item $t_{0,E} = 1$~yr: $N^* = 5{,}035$ (shift: $+$564 from baseline, $+$12.6\%)
+\item $t_{0,E} = 2$~yr: $N^* = 5{,}536$ (shift: $+$1{,}065, $+$23.8\%)
+\end{itemize}
+
+The crossover remains well within the Monte Carlo range for both scenarios. Even with a two-year Earth ramp-up, the baseline deterministic crossover shifts by less than one standard deviation of the Monte Carlo distribution. This confirms that the instant-start Earth schedule does not materially bias the crossover.
+
+\subsection{Convergence as a function of planning horizon}
+\label{sec:convergence_curve}
+
+The choice of planning horizon $H = 40{,}000$ units is somewhat arbitrary. Figure~\ref{fig:convergence_curve} presents the empirical CDF $P(N^* \leq H)$ as a continuous function of $H$ for three discount rates, removing the dependence on any single horizon choice. At $H = 10{,}000$, convergence is 48\% ($r = 5\%$); at $H = 20{,}000$, 60\%; results plateau beyond $H \approx 30{,}000$ as marginal scenarios are exhausted. The figure provides a decision tool: a program planner can read off the probability of achieving crossover given their specific production horizon.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-convergence-curve.pdf}
+  \caption{Probability of achieving crossover $P(N^* \leq H)$ as a continuous function of planning horizon $H$, for three discount rates ($r = 3\%, 5\%, 8\%$). Based on 10{,}000 MC runs per rate. Vertical dashed lines mark $H = 10{,}000$ and $H = 20{,}000$.}
+  \label{fig:convergence_curve}
+\end{figure}
+
+\subsection{Capital--production rate correlation}
+\label{sec:k_prod_correlation}
+
+The baseline Monte Carlo treats ISRU capital $K$ and production rate $\dot{n}_{\max}$ as independent. In practice, higher-capacity facilities require larger capital investment, suggesting a positive correlation. We test $\rho(K, \dot{n}_{\max}) = 0.5$ via the extended Gaussian copula (\S\ref{sec:model}). This correlation eliminates implausible corner cases (e.g., $K = \$100$B with $\dot{n}_{\max} = 250$ units/yr) and shifts the conditional median by $+$208~units ($+$4\%): the convergence rate increases slightly from 66.3\% to 66.4\% (because the cheapest-capital scenarios are paired with lower throughput, but the expensive-capital scenarios now have higher throughput to compensate). The conditional median moves from 5{,}615 to 5{,}823. These results confirm that the independence assumption is not a material driver of the conclusions.
+
+\subsection{Piecewise construction schedule}
+\label{sec:piecewise_schedule}
+
+The continuous logistic schedule (Eq.~\ref{eq:scurve}) implicitly allows nonzero (though exponentially small) production for $t < t_0$. To test whether this is material, we implement a piecewise schedule in which $\dot{n}(t) = 0$ for $t < t_c$ (explicit construction delay), followed by logistic ramp-up for $t \geq t_c$. With $t_c = t_0 - 1 = 4$~yr (construction ends one year before the logistic midpoint), the crossover is unchanged ($N^* = 4{,}471$, shift $= 0$). Even with $t_c = t_0 - 2 = 3$~yr, the result is identical. This confirms that the continuous logistic is an adequate approximation---the exponentially small production during early ramp-up contributes negligibly to the cumulative cost.
+
+\subsection{Cash-flow timing sensitivity}
+\label{sec:cashflow_timing}
+
+Both pathways use the pay-at-milestone timing model (\S\ref{sec:model}): Earth costs at delivery ($t_{n,E}$), ISRU capital at $t = 0$ (or phased over 5~years), operational costs at production ($t_{n,I}$). To test the sensitivity of the Earth timing assumption, we split the Earth cost into manufacturing (discounted at $t_{n,E} - \tau_{\mathrm{mfg}}$) and launch (discounted at $t_{n,E}$), with manufacturing lead times of $\tau_{\mathrm{mfg}} \in \{0.5, 1.0\}$~years. Introducing a 0.5-year lead time shifts the crossover by $-$160~units ($-$3.6\%), and a 1.0-year lead time by $-$295~units ($-$6.6\%). The shift is negative (crossover moves earlier) because Earth manufacturing costs paid earlier carry higher present value, making the Earth pathway more expensive. This confirms that the pay-at-delivery simplification has a modest impact and, if anything, the baseline model is slightly conservative (overestimates the crossover point). The ISRU pathway's timing model is conservative in the opposite direction: operational costs are discounted at production time, but some costs (maintenance, consumables procurement) would be incurred earlier, which would increase their present value and delay the crossover slightly.
+
+\subsection{Earth-side fixed costs}
+\label{sec:earth_capex}
+
+The Earth pathway assumes an existing industrial base with zero incremental factory capital---a reasonable assumption given the maturity of terrestrial aerospace manufacturing and the existence of production lines capable of satellite-class structural modules. Nevertheless, a greenfield production facility for 1{,}850~kg units might require \$1--10B in tooling, NRE, and factory infrastructure. To bound this effect, we add an Earth-side capital cost $K_E$ incurred at $t = 0$. At $K_E = \$1$B, the crossover shifts by $-$147~units; at $K_E = \$5$B, by $-$708~units; at $K_E = \$10$B, by $-$1{,}344~units. Including Earth-side capex uniformly favors ISRU, confirming that the zero-$K_E$ assumption is conservative (it makes the crossover harder to achieve, not easier).
+
+\subsection{Risk-adjusted discounting}
+\label{sec:risk_premium}
+
+\emph{Interpretive note.} Risk-adjusted discounting in this model operates as a narrow proxy that captures only the \emph{time-value} dimension of risk. It does not model the most economically significant ISRU risks: capital cost overruns, schedule delays, and outright technical failure---all of which would \emph{increase} the effective cost of the ISRU pathway and push the crossover later. We include this analysis for completeness but caution against interpreting the results as evidence that ``risk favors ISRU.''
+
+The ISRU pathway carries substantially higher technology risk (TRL~3--5 for most subsystems) than the Earth pathway (TRL~9). Applying a risk premium $\Delta r$ to the ISRU pathway's discount rate while keeping the Earth pathway at the base rate ($r_E = 5\%$, $r_I = 5\% + \Delta r$), we find that the risk premium counterintuitively \emph{reduces} the crossover: at $\Delta r = +2\%$, $N^* = 4{,}333$ ($-$138~units); at $+3\%$, $N^* = 4{,}276$ ($-$195); at $+5\%$, $N^* = 4{,}184$ ($-$287). This occurs because a higher discount rate on ISRU cash flows reduces the present value of future operational costs, which are deferred relative to the Earth pathway. However, this effect captures only cash-flow timing risk. Capital-side risks---which are the dominant concern for ISRU---operate through different mechanisms: (1)~cost overruns on $K$ would increase the upfront investment (see the tornado diagram sensitivity to $K$); (2)~schedule overruns would extend $t_0$ and delay the accumulation of learning; (3)~outright failure would strand the capital investment entirely (see \S\ref{sec:success_probability}). These capital risks would \emph{reverse} the direction of the risk-adjusted discounting effect. A full treatment would require a real-options framework \cite{dixit1994} incorporating stochastic $K$ and $t_0$ with abandonment optionality, which we leave for future work.
+
+\subsection{Cost floor and production rate sensitivity}
+\label{sec:cfloor_prodrate}
+
+\paragraph{ISRU cost floor threshold.} With $C_{\mathrm{floor}}$ now sampled stochastically, we additionally perform a deterministic sweep to identify the threshold at which crossover fails. At baseline parameters ($r = 5\%$), crossover is achieved for all tested values of $C_{\mathrm{floor}}$ up to \$3.0M. At $C_{\mathrm{floor}} = \$2.0$M (the upper bound of the stochastic range), $N^* = 4{,}886$---a modest shift of $+$415 from the baseline of $C_{\mathrm{floor}} = \$0.5$M. This confirms that the crossover result is robust across the sampled cost floor range. Extending the deterministic sweep beyond the stochastic range, crossover is achieved for $C_{\mathrm{floor}}$ up to \$10M (at $N^* = 24{,}170$) under otherwise-baseline parameters. No failure threshold exists within the 40,000-unit horizon for any tested $C_{\mathrm{floor}}$ value \emph{under baseline assumptions for other parameters}. Analytically, crossover requires that the asymptotic ISRU per-unit cost ($C_{\mathrm{floor}} + m \cdot p_{\mathrm{transport}} \cdot \alpha$) be less than the asymptotic Earth per-unit cost ($m \cdot p_{\mathrm{launch}}$); at baseline values, this yields $C_{\mathrm{floor}} < m \cdot p_{\mathrm{launch}} - m \cdot p_{\mathrm{transport}} \cdot \alpha = \$1{,}850 \times \$1{,}000 - \$1{,}850 \times \$100 = \$1.67$M. The crossover nonetheless persists for $C_{\mathrm{floor}}$ up to \$10M in our tests because the capital amortization effect operates long before the asymptotic regime is reached. When vitamin fraction, maintenance, and elevated transport costs are included simultaneously, the effective asymptotic floor rises and a failure threshold can emerge at lower $C_{\mathrm{floor}}$ values. To illustrate the distinction: at $C_{\mathrm{floor}} = \$10$M, the asymptotic ISRU per-unit cost (\$10M + \$185k transport $= \$10.2$M) exceeds the Earth per-unit cost at high volumes (\$1.85M launch), so the per-unit cost curves never cross. But the cumulative crossover still occurs at $N^* \approx 24{,}000$ because the Earth pathway's cumulative cost includes high early-unit manufacturing costs (\$75M at $n = 1$) that the ISRU pathway avoids. This is a finite-horizon amortization effect, not a long-run equilibrium.
+
+\paragraph{Production rate sensitivity.} Production rate affects both the delivery schedule timing and the total production capacity. At $r = 5\%$ (baseline):
+
+\begin{itemize}
+\item $\dot{n}_{\max} = 250$ units/yr: $N^* = 6{,}506$ (shift: $+$2{,}035)
+\item $\dot{n}_{\max} = 500$ units/yr: $N^* = 4{,}471$ (baseline)
+\item $\dot{n}_{\max} = 750$ units/yr: $N^* = 4{,}106$ (shift: $-$365)
+\item $\dot{n}_{\max} = 1{,}000$ units/yr: $N^* = 3{,}952$ (shift: $-$519)
+\end{itemize}
+
+The large crossover shift at low production rates ($+$2{,}035~units at 250/yr) reflects the extended ISRU ramp-up delay at lower throughput, which pushes ISRU costs further into the future and increases the capital amortization burden per time unit. The diminishing sensitivity at high rates ($>$500 units/yr) reflects the fact that the logistic ramp-up approaches a step function, and the timing gap between pathways saturates.
+
+\subsection{Technical success probability}
+\label{sec:success_probability}
+
+The preceding analysis conditions on the ISRU system working as designed. In practice, ISRU for structural manufacturing at the scale assumed here is TRL~3--5; the probability of successful deployment is substantially less than unity. We model this via a simple expected-value framework: ISRU succeeds with probability $p_s$, yielding savings $S$ relative to the Earth pathway; with probability $(1 - p_s)$, it fails entirely and the sunk capital $K$ is lost (the program reverts to Earth-only). The ISRU pathway is preferred when $p_s \cdot S > (1 - p_s) \cdot K$, which gives a minimum success probability:
+\begin{equation}
+  p_s^{\min} = \frac{K}{S + K}.
+  \label{eq:p_success}
+\end{equation}
+At the baseline ($K = \$50$B, $S = \$22.4$B NPV savings at $2N^*$ units), $p_s^{\min} = 69\%$. Critically, this threshold depends on the evaluation horizon. Table~\ref{tab:ps_horizon} shows how $p_s^{\min}$ varies with the production volume used to evaluate savings.
+
+\begin{table}[htbp]
+\centering
+\caption{Minimum technical success probability $p_s^{\min}$ as a function of evaluation horizon ($r = 5\%$, $K = \$50$B).}
+\label{tab:ps_horizon}
+\small
+\begin{tabular}{@{}rrr@{}}
+\toprule
+Evaluation horizon & NPV savings & $p_s^{\min}$ \\
+\midrule
+5{,}000 units            & \$3.4B   & 93.6\% \\
+$1.5 N^*$ ($\sim$6{,}700) & \$12.8B  & 79.6\% \\
+$2 N^*$ ($\sim$8{,}900)   & \$22.4B  & 69.1\% \\
+10{,}000 units           & \$26.0B  & 65.8\% \\
+$3 N^*$ ($\sim$13{,}400)  & \$35.2B  & 58.7\% \\
+20{,}000 units           & \$45.3B  & 52.5\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The threshold ranges from 94\% (near the crossover, where savings are small) to 52\% (at $5N^*$, where savings are large). The 69\% value at $2N^*$ represents a moderate evaluation horizon; programs planning for longer-term production benefit from a lower success probability threshold. This variation reflects the all-or-nothing failure model: with partial success, salvage value, or parallel Earth production, $p_s^{\min}$ would be lower at all horizons. Below this threshold, the expected cost of ISRU failure exceeds the expected savings. For comparison: the probability of a comparable-scale engineering program succeeding on its first attempt---analogous to TRL~6 to~9 transition for a novel manufacturing system in an extreme environment---is historically in the 30--70\% range for first-of-kind space systems \cite{wertz2011}. At $p_s = 50\%$, the expected net cost is $+$\$13.8B (Earth preferred); at $p_s = 80\%$, it is $-$\$7.9B (ISRU preferred). This analysis underscores that ISRU is not a free option: the capital at risk is substantial, and a realistic assessment of technical risk is essential to any investment decision.
+
+\subsection{Commercial discount rate}
+\label{sec:commercial_rate}
+
+Government space programs typically evaluate investments at social discount rates ($r = 3$--$5\%$). Private or commercial ventures may require substantially higher hurdle rates to attract capital. At $r = 10\%$, the deterministic crossover extends to $N^* \approx 6{,}108$; at $r = 12\%$, to $N^* \approx 7{,}602$. At $r = 15\%$ (a typical commercial hurdle rate for infrastructure projects), \emph{no crossover is achieved within the 40{,}000-unit horizon}. This finding has important implications: the ISRU economic case is viable under government or quasi-government financing structures but may not close under purely commercial terms at current technology readiness levels. A 15\% hurdle rate imposes such severe time-value penalties on the deferred ISRU operational savings that the upfront capital investment cannot be recovered within a plausible production horizon. This does not mean ISRU is commercially unviable---it means that commercial ISRU will likely require either (a)~a reduction in capital costs through technology maturation, (b)~risk mitigation through phased deployment and technology demonstration, or (c)~blended public-private financing structures that reduce the effective discount rate.
+
+%% ============================================================
+\section{Discussion}
+\label{sec:discussion}
+%% ============================================================
+
+Under the model assumptions presented here, ISRU achieves economic crossover with a probability of 51--77\% depending on the discount rate, with a conditional median of $\sim$5{,}100--5{,}900 units; 23--49\% of stochastic scenarios do not achieve crossover within the 40{,}000-unit planning horizon, driven primarily by high ISRU capital requirements and low production throughput. A minimum technical success probability of $\sim$69\% is required for ISRU to be preferred in expectation at the baseline (\S\ref{sec:success_probability}), and the crossover does not close under commercial discount rates above $\sim$12\% (\S\ref{sec:commercial_rate}). The following discussion contextualizes these results.
+
+\subsection{The throughput constraint}
+\label{sec:throughput}
+
+The analysis thus far has treated ISRU as an economic optimization problem, but at megastructure scales a different constraint emerges that economic models alone cannot capture: the physical throughput of Earth-to-orbit delivery. Even if launch were free, terrestrial supply chains would face hard limits on the rate at which mass can reach orbit. Launch cadence is bounded by pad turnaround times, range safety windows, and orbital debris management. Fairing volume constrains the size of deliverable components. Ground infrastructure---manufacturing plants, integration facilities, transport networks---creates bottlenecks that scale sublinearly with investment.
+
+To make this concrete: at 500 Starship launches per year at 100{,}000~kg payload capacity (assuming no increase in per-launch payload capacity, which is unlikely over a multi-decade horizon), Earth can deliver 50{,}000~tonnes/year to orbit. Producing 10{,}000 units of 1{,}850~kg each (18{,}500~tonnes total) would require approximately 370 Starship-equivalent launches---less than one year at this cadence. However, scaling to $10^5$~units (185{,}000~tonnes) would require $\sim$3.7~years of dedicated capacity, and a $10^6$-unit program ($1.85 \times 10^9$~kg) would require 18{,}500~launches over 37~years at this rate---and this neglects the additional mass of support infrastructure, propellant depots, and assembly equipment that any real program would require. For context, total global launch mass to orbit in 2023 was approximately 1{,}200~tonnes \cite{jones2022}; the throughput required for a $10^5$-unit program (185{,}000~tonnes) would exceed current global capacity by two orders of magnitude.
+
+ISRU substantially relaxes these constraints. Lunar or asteroidal feedstock requires no ascent through Earth's gravity well, no fairing packaging, and no pad infrastructure. The throughput of an ISRU facility is limited only by its installed processing capacity, which can be expanded incrementally by deploying additional extraction and fabrication modules---modules that can themselves be produced via ISRU once the system reaches sufficient capability \cite{metzger2013}. At scales of $10^5$~units and beyond, the throughput argument for ISRU may prove even more decisive than the economic argument.
+
+\paragraph{Demand context.} Table~\ref{tab:demand_scenarios} maps the crossover volume to illustrative infrastructure architectures, providing the demand context needed to assess whether the crossover is reachable within specific programmatic horizons.
+
+\begin{table}[htbp]
+\centering
+\caption{Illustrative demand scenarios mapping infrastructure architectures to approximate structural module counts (1,850~kg modules). Mass estimates are order-of-magnitude, derived from published architecture concepts \cite{jones2022,oneill1976}; actual counts depend on module design, structural mass fraction, and architecture specifics. The crossover analysis is decision-relevant only for programs with total demand exceeding $\sim$4,500~units.}
+\label{tab:demand_scenarios}
+\small
+\begin{tabular}{@{}lrrrl@{}}
+\toprule
+Architecture & Struct.\ mass & Units & Timeline & Crossover? \\
+\midrule
+1~GW SPS demo & 5,000~t & 2,700 & 10--15~yr & Below $N^*$ \\
+10~GW SPS constellation & 50,000~t & 27,000 & 20--30~yr & Well above $N^*$ \\
+O'Neill cylinder (Island~1) & 500,000~t & 270,000 & 30--50~yr & Far above $N^*$ \\
+LEO manufacturing platform & 500~t & 270 & 5--10~yr & Far below $N^*$ \\
+\bottomrule
+\multicolumn{5}{@{}l}{\footnotesize Mass estimates based on published architecture studies \cite{jones2022,oneill1976}.}
+\end{tabular}
+\end{table}
+
+The crossover volume ($\sim$4,500 units, or $\sim$8,300~tonnes of structural mass) corresponds roughly to a 1--2~GW space solar power installation. Programs below this scale---single demonstration satellites, small platforms---would not reach crossover and should use Earth manufacturing exclusively. Programs at the 10~GW scale and above would be well past crossover and would benefit strongly from ISRU. The model's findings are therefore most decision-relevant for programs in the 1--10~GW range, where the crossover falls within the production plan.
+
+\subsection{Optimal transition strategy}
+
+The results suggest a phased hybrid strategy that balances the near-term availability of Earth manufacturing against the long-term advantages of ISRU.
+
+\textbf{Phase~1a (Years~1--5):} Earth-based manufacturing produces the first 1{,}000--2{,}000~units while an ISRU seed factory is deployed and commissioned. The seed factory investment (\$10--15B, representing the initial processing plant and power systems; see Table~\ref{tab:k_decomposition}) is incurred during this phase. The remainder of $K$ covers capacity expansion, power upgrades, redundancy, and logistics infrastructure deployed during Phase~1b. Earth-manufactured units provide immediate operational capability and generate engineering data (failure modes, degradation rates) that inform ISRU design requirements.
+
+\textbf{Phase~1b (Years~5--10):} Hybrid production, with Earth manufacturing declining and ISRU production ramping along its S-curve. The crossover occurs within this window under baseline assumptions. Earth manufacturing is retained for ``vitamin'' components---high-precision items (optics, electronics, control systems) that are low-mass but high-complexity and not amenable to early ISRU production.
+
+\textbf{Phase~2 and beyond (Years~10+):} Full ISRU production of structural components, with per-unit costs falling below \$5M and continuing to decrease. Earth supply is limited to specialty components constituting less than 5\% of unit mass. Cumulative savings relative to the all-Earth pathway grow at approximately \$35--50B per year.
+
+This hybrid strategy is a qualitative recommendation motivated by the model outputs, not a formally optimized transition plan. It reduces the programmatic risk of ISRU---which remains technologically immature for structural manufacturing---while capturing its economic advantages as the technology matures. The critical strategic implication is that ISRU investment should begin during Phase~1a, well before the crossover, to ensure that ISRU capacity is available when the economics favor it.
+
+\paragraph{Opportunity cost of delay.} This caveat deserves more weight than a typical sensitivity test. An important limitation of the cost-minimization framework is that it does not account for the value of early delivery. For revenue-generating infrastructure (e.g., space solar power), the ISRU delay may prevent crossover on a utility-maximizing basis even when it crosses over on a cost-minimizing basis. The ISRU pathway's multi-year ramp-up delay (Table~\ref{tab:production_schedule}) means that, for a given production volume, Earth-manufactured units are available years earlier. If each unit generates revenue or provides strategic value (e.g., in a space solar power architecture), the opportunity cost of the ISRU delay could outweigh the manufacturing cost savings. Our model minimizes cost for a fixed production volume but does not maximize utility; when revenue per unit is high, the Earth pathway may be preferred even at volumes above the cost crossover point. As a back-of-envelope illustration: if each unit generates \$2M/year in revenue (e.g., as a component of a space solar power system), and the ISRU pathway delays delivery of the first 1{,}000 units by $\sim$5 years relative to Earth, the opportunity cost of that delay is $\sim$\$10B---comparable to the ISRU capital cost savings at the crossover. A full cost-benefit analysis incorporating time-dependent revenue would be a valuable extension.
+
+More precisely, if each unit generates revenue $R$ (\$/year) beginning at delivery for a finite asset lifetime $L$ years, the NPV of revenue from the Earth pathway exceeds that from the ISRU pathway by the opportunity cost of the delay. For unit $n$, the discounted lost revenue is $R \cdot \min(\delta_n, L) \cdot (1+r)^{-t_{n,I}}$, where $\delta_n = t_{n,I} - t_{n,E}$ and the $\min$ cap ensures that lost revenue does not exceed one asset lifetime. Summing over $N$ units and equating with the NPV cost savings yields the breakeven revenue rate:
+\begin{equation}
+  R^*(L) = \frac{\Sigma_{\mathrm{Earth}}^{\mathrm{NPV}}(N) - \Sigma_{\mathrm{ISRU}}^{\mathrm{NPV}}(N)}{\sum_{n=1}^{N} \min(\delta_n, L) \cdot (1+r)^{-t_{n,I}}},
+  \label{eq:revenue_breakeven}
+\end{equation}
+i.e., the ratio of NPV cost savings to discounted delay-years. Table~\ref{tab:revenue_breakeven} reports $R^*$ for multiple asset lifetimes at twice the crossover volume ($N \approx 9{,}000$, $r = 5\%$).
+
+\begin{table}[htbp]
+\centering
+\caption{Revenue breakeven rate $R^*$ as a function of asset lifetime $L$ ($N \approx 9{,}000$, $r = 5\%$, ISRU savings $= \$22.4$B). Below $R^*$, the ISRU pathway is preferred; above, Earth is preferred on a utility-maximizing basis.}
+\label{tab:revenue_breakeven}
+\small
+\begin{tabular}{@{}rrl@{}}
+\toprule
+Lifetime $L$ (yr) & $R^*$ (\$M/unit/yr) & Note \\
+\midrule
+3   & 1.62  & $L < \bar{\delta}$: cap binds for early units \\
+5   & 0.97  & $L \approx \bar{\delta}$: cap binds marginally \\
+10  & 0.91  & $L > \bar{\delta}$: cap does not bind \\
+20  & 0.91  & Baseline assumption \\
+30  & 0.91  & Extended lifetime \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The $R^*$ is insensitive to $L$ for $L \geq 10$~years because the ISRU delay ($\bar{\delta} \approx 5.3$~years for most units, per Table~\ref{tab:production_schedule}) is well below these lifetimes, so the $\min(\delta_n, L)$ cap never binds. At $L = 3$~years ($L < \bar{\delta}$), the cap binds for early units whose delay exceeds the asset lifetime; the lost-revenue opportunity cost increases, raising $R^*$ to \$1.62M/yr (1.8$\times$ the $L \geq 10$ value). At $L = 5$~years ($L \approx \bar{\delta}$), the cap binds marginally. This transition matters for short-lived consumable components but is irrelevant for the structural infrastructure modules assumed in this model (expected lifetime $>$20~years).
+
+At \$2M/yr revenue per unit (plausible for space solar power components), the opportunity cost (\$49B) exceeds the ISRU savings (\$22B), and the Earth pathway is preferred on a utility-maximizing basis despite being more expensive on a cost-minimizing basis. This finding underscores that the ISRU decision depends critically on whether the infrastructure is cost-driven (patient capital, no time pressure) or revenue-driven (commercial, time-to-market matters).
+
+\subsection{Implications for near-term space policy}
+
+Several policy implications follow from the analysis:
+
+\emph{ISRU technology demonstrations are high-value investments.} The dominance of the Earth manufacturing learning rate in the sensitivity analysis implies that the crossover depends critically on whether terrestrial production achieves the expected cost reductions. ISRU investment hedges against a future in which Earth manufacturing learning stalls---a scenario that would bring the crossover earlier by thousands of units. Current investments in lunar ISRU (Artemis program, CLPS payloads) and Mars ISRU (MOXIE follow-ons) should be evaluated not only for their direct mission benefits but for their contribution to de-risking the ISRU production pathway.
+
+\emph{Launch cost reduction and ISRU investment are complementary, not competing, strategies.} A persistent misconception frames cheap launch as an alternative to ISRU: if Starship achieves \$200/kg, why invest in space manufacturing at all? Our analysis suggests that even at low launch costs, ISRU crossover is frequently observed within the model's parameter range, because per-kilogram launch costs exhibit limited learning compared to manufacturing---a structural asymmetry that persists regardless of the absolute launch cost level. The launch learning sweep (Table~\ref{tab:launch_learning}) tests rates from 90\% to 100\%; even at the aggressive $\mathrm{LR}_L = 0.90$, the crossover shifts by only $+$343 units ($+$8\%) from baseline. Moreover, cheap launch is essential for deploying the ISRU infrastructure itself. The two capabilities are mutually reinforcing, not mutually exclusive.
+
+\emph{The ISRU decision threshold depends on discount rate---but primarily through convergence probability, not crossover location.} A key finding from the per-rate Monte Carlo analysis is that the conditional median crossover is stable across discount rates ($\sim$5{,}100--5{,}900 units for $r \in [3\%, 8\%]$), while the probability of achieving crossover varies substantially (77\% at $r = 3\%$, 51\% at $r = 8\%$). This means that the discount rate primarily determines \emph{whether} crossover is achievable for a given set of cost parameters, not \emph{where} it occurs. Programs with access to patient, low-cost capital (consistent with public infrastructure or sovereign wealth investment) face a higher probability of achieving crossover across a wider range of cost scenarios. The gap between $r = 3\%$ (sovereign/multilateral financing) and $r = 8\%$ (commercial equity) spans the difference between a viable program (77\% convergence) and a marginal one (51\%), suggesting that public-private partnership is the natural financing structure for ISRU infrastructure.
+
+\subsection{Limitations and future work}
+
+Several limitations of the present model invite future refinement. We organize these by category, indicating which extensions would most meaningfully affect the paper's quantitative conclusions.
+
+\paragraph{Facility availability and reliability.} This version incorporates a stochastic ISRU facility availability factor $A \sim U[0.70, 0.95]$ that reduces the effective ISRU production rate. Deterministic sensitivity shows a modest shift ($-$68~units at $A = 0.70$), because the NPV timing effect (lower availability pushes ISRU costs further into the future, reducing their present value) partially offsets the throughput reduction. The interaction with other stochastic parameters in the Monte Carlo is captured through the correlated sampling framework. The assumption of quality parity between Earth and ISRU manufacturing remains optimistic; incorporating reject rates and rework costs would further delay the crossover during ramp-up but would not affect the long-run equilibrium.
+
+\paragraph{Earth manufacturing learning rate structure.} The Earth manufacturing learning rate LR$_E$ is the dominant driver of both crossover location ($\rho_S = -0.66$) and convergence probability ($d = +1.39$). The present model applies a single Wright learning curve with an optional manufacturing cost floor (Eq.~\ref{eq:earth_mfg_floor}). The floor captures the transition to commodity-like production at high volumes, where material costs dominate; our sensitivity sweep shows the crossover is insensitive to floors up to \$10M (\S\ref{sec:sensitivity}). A more detailed two-component Earth cost model (materials at fixed cost $+$ labor/overhead with learning) would provide finer resolution but is unlikely to change the crossover results given the floor's insensitivity. The LR$_E$ distribution ($\mathcal{N}(0.85, 0.03)$, clipped to $[0.75, 0.95]$) is supported by documented aerospace learning rates \cite{wertz2011}, but the assumed product type (passive structural module) may learn faster than integrated spacecraft, meaning our assumption is conservative with respect to the crossover. Mapping LR$_E$ to comparable terrestrial serial production programs (modular building components at $\sim$0.80, wind turbine nacelles at $\sim$0.85, satellite bus structures at $\sim$0.90) would narrow the distribution.
+
+\paragraph{ISRU capital cost distribution.} The uniform distribution $K \sim U[\$30\text{B}, \$100\text{B}]$ is the second-strongest driver of model outcomes but lacks bottom-up engineering justification for a vertically integrated structural manufacturing facility. We now test a log-normal alternative (median $= \$65$B, $\sigma_{\ln} = 0.48$, capturing the right-skewed cost overrun risk documented in first-of-kind space systems \cite{wertz2011}); the convergence rate decreases modestly from 66\% to 62\%, and the conditional median shifts by $-$254 units (\S\ref{sec:mc_robustness}). Anchoring $K$ to a specific reference architecture (e.g., lunar regolith sintering per the LSIC technology roadmap \cite{lsic2021}) with subsystem-level cost estimates would dramatically strengthen the engineering traceability of this parameter. We note, however, that even under the most conservative capital assumptions tested ($K = \$100$B), crossover is achievable at volumes below 20{,}000 units at $r = 5\%$---the question is probability, not possibility.
+
+\paragraph{Global sensitivity analysis: variance decomposition.} The current sensitivity analysis combines one-at-a-time tornado diagrams (Fig.~\ref{fig:tornado}), Spearman rank correlations (Table~\ref{tab:spearman}), and censoring-aware Cohen's $d$ comparisons. While these three methods provide consistent rankings, they cannot capture parameter interactions. Sobol variance decomposition---which partitions output variance into first-order indices (main effects) and total-effect indices (main effects $+$ all interactions)---would provide a rigorous, model-free sensitivity ranking. With the existing 10{,}000-run Monte Carlo framework, a Saltelli sampling scheme requiring $\sim$24{,}000 model evaluations (for 11 parameters) is computationally tractable. We expect the first-order Sobol indices to confirm the LR$_E$ and $K$ dominance found by our current methods, but interactions (e.g., between LR$_E$ and $K$, or between $K$ and $\dot{n}_{\max}$) may account for non-negligible output variance currently attributed to individual parameters.
+
+\paragraph{Censoring-aware regression for non-convergence.} The 34\% non-convergence rate at $r = 5\%$ means that one-third of the parameter space produces right-censored observations (no crossover within $H = 40{,}000$). The current treatment---conditional statistics on converging runs, supplemented by Cohen's $d$ for the convergence/non-convergence binary outcome---is statistically defensible but not optimal. An accelerated failure time (AFT) regression model (e.g., log-normal or Weibull) with right-censoring at $H$ would provide standardized regression coefficients for each parameter while properly handling censored observations. Alternatively, a Cox proportional hazards model treating ``crossover by unit $N$'' as a survival event would yield hazard ratios that are directly interpretable as ``by what factor does a one-unit change in parameter $X$ accelerate or delay crossover?'' Both approaches are standard in reliability engineering and would strengthen the methodological rigor of the parameter importance claims.
+
+\paragraph{Throughput constraint integration.} The throughput argument (\S\ref{sec:throughput}) is presented qualitatively but is not integrated into the quantitative model. Capping the Earth delivery rate at a maximum annual launch mass to the target orbit---parameterized as total Starship-equivalent launches per year---would connect the qualitative argument to the cost model and would likely strengthen the ISRU case at production volumes above $\sim$10{,}000 units. At 500 launches per year at 100{,}000~kg each, the Earth pathway can deliver $\sim$27{,}000 units of 1{,}850~kg per year; beyond this cadence, a queueing delay would appear that the current model does not capture.
+
+\paragraph{Revenue breakeven and success probability refinement.} The expected-value analysis (\S\ref{sec:success_probability}) assumes all-or-nothing technical failure with no parallel Earth production during the ISRU attempt, no schedule delay cost upon failure, and no salvage value for the sunk capital. These assumptions make the 69\% threshold ($\pm$10 pp sensitivity band) a conservative lower bound (parallel production and salvage would reduce $p_s^{\min}$). A two-stage decision tree incorporating hybrid production, failure delay, and partial salvage ($sK$) would provide a more realistic assessment; a full real options framework \cite{dixit1994} incorporating stochastic $K$ and $t_0$ with abandonment optionality represents the most complete treatment but is substantially more complex. The revenue breakeven analysis (\S\ref{sec:discussion}) now formalizes the revenue stream as constant annual revenue $R$ for $L$ years post-delivery (Eq.~\ref{eq:revenue_breakeven}); Table~\ref{tab:revenue_breakeven} shows that $R^*$ is insensitive to $L$ because the ISRU delay is short relative to typical asset lifetimes.
+
+\paragraph{Additional extensions.} The ISRU learning rate ($\mathrm{LR}_I = 0.90$ baseline) is supported by analogy to additive manufacturing, semiconductor yield learning, and aerospace production (\S\ref{sec:param_justification}), but no direct empirical data exists for extraterrestrial manufacturing. Decomposing ISRU operations into subsystem-level learning curves (excavation, processing, fabrication, assembly) would capture bottleneck effects not represented by a single aggregate rate. Our boundary tests show that crossover occurs even at $\mathrm{LR}_I = 1.0$, bounding this uncertainty, but the conditional median and convergence rate are sensitive to this parameter. Dedicated technology demonstration programs would provide the data needed to constrain the distribution.
+
+While this revision introduces pathway-specific delivery schedules and separates the discount rate from the stochastic parameter set, our formulation still uses a constant real discount rate applied uniformly to both pathways (except in the risk-premium sensitivity test). Real options analysis, which values the flexibility to expand or abandon ISRU investment as technology matures, represents a particularly promising extension for capturing the value of staged commitment.
+
+The model treats a single product type, but real ISRU facilities would produce multiple components with shared capital infrastructure. Multi-product modeling would likely shift the crossover earlier by distributing fixed costs across product lines. Similarly, our model does not capture the self-replication potential of ISRU \cite{metzger2013}: if ISRU facilities can produce components for additional ISRU facilities, the effective capital cost per unit of capacity decreases exponentially, a dynamic that could accelerate the crossover substantially.
+
+The uniform distributions used for key parameters ($K$, $p_{\mathrm{launch}}$, $C_{\mathrm{ops}}^{(1)}$, $C_{\mathrm{floor}}$, $\dot{n}_{\max}$) represent maximal ignorance within specified bounds. Our diagnostic comparisons with triangular distributions (\S\ref{sec:mc_robustness}) showed negligible impact on the conditional median ($<200$~units), and a log-normal distribution for $K$ (capturing asymmetric cost growth risk) reduces convergence by 4.5 percentage points with a modest shift in conditional median ($-$254 units; \S\ref{sec:mc_robustness}), confirming robustness to distributional assumptions.
+
+We intend to release the simulation code as an open-source tool for community exploration. Several of the extensions described above---Sobol decomposition and AFT regression---are computationally tractable additions to the existing Monte Carlo framework and are planned for subsequent versions of this analysis.
+
+%% ============================================================
+\section{Conclusion}
+\label{sec:conclusion}
+%% ============================================================
+
+We have presented a parametric model with net present value analysis and pathway-specific delivery schedules for the economic crossover between Earth-based manufacturing with orbital launch and in-situ resource utilization for serial production of space infrastructure components. The model embeds Wright learning curves in both cost pathways, assigns each pathway its own delivery schedule (Earth: constant rate from $t = 0$; ISRU: integrated logistic ramp-up), incorporates ISRU mass penalty and transport costs, and propagates uncertainty through a 10{,}000-run Monte Carlo simulation sampling twelve stochastic parameters---including the ISRU operational cost floor and production rate---at multiple fixed discount rates.
+
+The central finding is probabilistic: under the model's assumptions, the probability of achieving ISRU economic crossover within a 40{,}000-unit planning horizon ranges from 51\% (at $r = 8\%$) to 77\% (at $r = 3\%$), with 66\% at the reference rate of $r = 5\%$. Conditional on achieving crossover, the median crossover point is approximately 5{,}600~units at $r = 5\%$ (IQR [3{,}300, 9{,}800]). A Kaplan-Meier survival analysis accounting for censored non-converging runs yields a higher median of $\sim$10{,}000 at $r = 5\%$, quantifying the bias from ignoring censored observations; the conditional median remains the more operationally relevant statistic for planning purposes. Replacing the uniform capital cost distribution with a log-normal ($\mu = \$65$B, right-skewed) reduces convergence to 62\% with a conditional median shift of $-$254 units, confirming robustness to distributional assumptions. Under baseline deterministic assumptions, the NPV crossover occurs at approximately 4{,}500~units; phased capital deployment over five years reduces this to $\sim$3{,}800.
+
+The Earth manufacturing learning rate and ISRU capital investment are the dominant drivers of both crossover location (Spearman $\rho_S = -0.66$ and $+0.50$ respectively) and convergence probability (Cohen's $d = +1.39$ and $-0.76$). Non-convergence is driven primarily by high ISRU capital and low production throughput. Robustness tests confirm that crossover is frequently observed across a wide range of assumptions: it persists under Earth manufacturing cost floors up to \$10M (no shift), Earth delivery ramp-up delays ($+$12--24\% shift), high ISRU cost floors ($C_{\mathrm{floor}}$ up to \$3M), low production rates (250 units/yr), pessimistic ISRU learning (including no learning at all), launch cost learning rates from 90\% to 100\% ($+$8\% maximum shift from baseline), rate-dependent organizational forgetting, correlated capital--production-rate sampling ($+$4\% shift), log-normal capital cost distribution ($-$4\% convergence, $-$254 unit conditional median shift), piecewise construction schedules (no shift), manufacturing lead-time cash-flow adjustments ($-$4\% to $-$7\%), S-curve steepness $k \in [0.5, 4.0]$ ($\pm$40 units), two-part vitamin component fractions up to 15\% ($+$1{,}568 units), launch learning re-indexing ($\pm$18 units), and ongoing capital maintenance at 10\% every 5~years ($+$3{,}326 units). However, three factors can eliminate the crossover: vitamin component costs above $\sim$\$50{,}000/kg, commercial discount rates above $\sim$12\%, or technical success probability below $\sim$53--80\% (depending on the evaluation horizon; Table~\ref{tab:ps_horizon}).
+
+The practical implication is that the ISRU investment decision is as much a financial structuring problem as a technological one. Programs with access to patient capital at low discount rates will find ISRU compelling at production volumes as low as 2{,}000--4{,}000~units, while programs facing higher financing costs may require volumes of 5{,}000--10{,}000~units; at commercial hurdle rates ($r \geq 15\%$), the crossover does not close. The ISRU pathway requires a minimum technical success probability of $\sim$53--80\% to be preferred in expectation (Table~\ref{tab:ps_horizon}), depending on the evaluation horizon; this range reflects the sensitivity of the expected-value framework to the assumed production volume, with shorter horizons requiring higher confidence. Ongoing capital maintenance adds a meaningful cost stream: at 10\% of $K$ every 5~years, the crossover extends to $\sim$7{,}800 units. Our analysis supports a hybrid strategy in which Earth manufacturing provides initial capability while ISRU infrastructure is deployed and commissioned. Launch cost reduction and ISRU investment are complementary pursuits: cheap launch accelerates ISRU deployment, while ISRU eliminates the throughput bottleneck that launch cannot overcome at megastructure scales. A critical caveat: for revenue-generating infrastructure with asset lifetimes of 10--30~years, the opportunity cost of the multi-year ISRU deployment delay may exceed the cost savings at revenue rates above ${\sim}$\$0.9M per unit per year; this threshold is insensitive to the asset lifetime because the ISRU delay ($\sim$5.3~years) is short relative to even the shortest lifetime tested. The ISRU advantage is strongest for non-revenue infrastructure where deployment speed is secondary to total cost.
+
+The simulation code and data underlying this analysis are available as open-source software, and we invite the community to extend the model with multi-product architectures, self-replicating ISRU dynamics, and real options analysis.
+
+\section*{Code Availability}
+
+The Python simulation code (\texttt{isru\_model.py}, \texttt{isru\_mc.py}, \texttt{generate\_isru\_figures.py}) and associated test suite are available at \url{https://github.com/project-dyson} under an open-source license. Results in this paper were generated from version~T of the codebase.
+
+%% ============================================================
+%% References
+%% ============================================================
+
+\section*{Acknowledgments}
+
+This research was conducted as part of Project Dyson, a non-profit open research initiative. The simulation code is available at \url{https://github.com/project-dyson}.
+
+\section*{Conflicts of Interest}
+
+The authors declare no competing interests. This research received no external funding.
+
+\begin{thebibliography}{99}
+
+\bibitem{andrews2015}
+D.~Andrews, K.~Bonner, A.~Butterworth, H.~Calber, B.~Craddock, S.~Diber, et~al.,
+\newblock Defining a successful commercial asteroid mining program,
+\newblock Acta Astronautica 108 (2015) 106--118.
+
+\bibitem{argote1990}
+L.~Argote, D.~Epple,
+\newblock Learning curves in manufacturing,
+\newblock Science 247~(4945) (1990) 920--924.
+
+\bibitem{arrow2014}
+K.~J.~Arrow, M.~L.~Cropper, C.~Gollier, B.~Groom, G.~M.~Heal, R.~G.~Newell, et~al.,
+\newblock Should governments use a declining discount rate in project analysis?,
+\newblock Review of Environmental Economics and Policy 8~(2) (2014) 145--163.
+
+\bibitem{baumers2016}
+M.~Baumers, P.~Dickens, C.~Tuck, R.~Hague,
+\newblock The cost of additive manufacturing: Machine productivity, economies of scale and technology-push,
+\newblock Technological Forecasting and Social Change 102 (2016) 193--201.
+
+\bibitem{benkard2000}
+C.~L.~Benkard,
+\newblock Learning and forgetting: The dynamics of aircraft production,
+\newblock American Economic Review 90~(4) (2000) 1034--1054.
+
+\bibitem{cesaretti2014}
+G.~Cesaretti, E.~Dini, X.~De~Kestelier, V.~Colla, L.~Pambaguian,
+\newblock Building components for an outpost on the lunar soil by means of a novel 3D printing technology,
+\newblock Acta Astronautica 93 (2014) 430--450.
+
+\bibitem{cilliers2023}
+J.~Cilliers, A.~Rasera, S.~Hadler,
+\newblock Mineralogical and chemical processing of lunar regolith for ISRU,
+\newblock Minerals Engineering 194 (2023) 108023.
+
+\bibitem{crawford2015}
+I.~A.~Crawford,
+\newblock Lunar resources: A review,
+\newblock Progress in Physical Geography 39~(2) (2015) 137--167.
+
+\bibitem{deweck2004}
+O.~L.~de~Weck, R.~de~Neufville, M.~Chaize,
+\newblock Staged deployment of communications satellite constellations in low Earth orbit,
+\newblock Journal of Aerospace Computing, Information, and Communication 1~(3) (2004) 119--136.
+
+\bibitem{dixit1994}
+A.~K.~Dixit, R.~S.~Pindyck,
+\newblock Investment Under Uncertainty,
+\newblock Princeton University Press, Princeton, NJ, 1994.
+
+\bibitem{dutton1984}
+J.~M.~Dutton, A.~Thomas,
+\newblock Treating progress functions as a managerial opportunity,
+\newblock Academy of Management Review 9~(2) (1984) 235--247.
+
+\bibitem{elvis2012}
+M.~Elvis,
+\newblock Let's mine asteroids---for science and profit,
+\newblock Nature 485 (2012) 549.
+
+\bibitem{hertzfeld2002}
+H.~R.~Hertzfeld,
+\newblock Measuring the economic returns from successful NASA life sciences technology transfers,
+\newblock Journal of Technology Transfer 27~(4) (2002) 311--320.
+
+\bibitem{hecht2021}
+M.~Hecht, J.~Hoffman, D.~Rapp, et~al.,
+\newblock Mars Oxygen ISRU Experiment (MOXIE),
+\newblock Space Science Reviews 217 (2021) 9.
+
+\bibitem{ishimatsu2016}
+T.~Ishimatsu, O.~L.~de~Weck, J.~A.~Hoffman, Y.~Ohkami, R.~Shishko,
+\newblock Generalized multicommodity network flow model for the Earth--Moon--Mars logistics system,
+\newblock Journal of Spacecraft and Rockets 53~(1) (2016) 25--38.
+
+\bibitem{kaplan1958}
+E.~L.~Kaplan, P.~Meier,
+\newblock Nonparametric estimation from incomplete observations,
+\newblock Journal of the American Statistical Association 53~(282) (1958) 457--481.
+
+\bibitem{jones2018}
+H.~W.~Jones,
+\newblock The recent large reduction in space launch cost,
+\newblock in: 48th International Conference on Environmental Systems, ICES-2018-81, 2018.
+
+\bibitem{jones2020}
+H.~W.~Jones,
+\newblock The cost of space launch: History and outlook,
+\newblock in: 50th International Conference on Environmental Systems, ICES-2020-415, 2020.
+
+\bibitem{jones2022}
+H.~W.~Jones,
+\newblock The cost and weight of space launch for space solar power,
+\newblock in: 51st International Conference on Environmental Systems, ICES-2022-164, 2022.
+
+\bibitem{kornuta2019}
+D.~Kornuta, A.~Abbud-Madrid, J.~Atkinson, et~al.,
+\newblock Commercial lunar propellant architecture: A collaborative study of lunar propellant production,
+\newblock REACH 13 (2019) 100026.
+
+\bibitem{lsic2021}
+Lunar Surface Innovation Consortium,
+\newblock Lunar ISRU Technology Roadmap,
+\newblock Johns Hopkins Applied Physics Laboratory, 2021.
+
+\bibitem{metzger2013}
+P.~T.~Metzger, A.~Muscatello, R.~P.~Mueller, J.~Mantovani,
+\newblock Affordable, rapid bootstrapping of the space industry and solar system civilization,
+\newblock Journal of Aerospace Engineering 26~(1) (2013) 18--29.
+
+\bibitem{nagy2013}
+B.~Nagy, J.~D.~Farmer, Q.~M.~Bui, J.~E.~Trancik,
+\newblock Statistical basis for predicting technological progress,
+\newblock PLoS ONE 8~(2) (2013) e52669.
+
+\bibitem{nasa2015handbook}
+NASA,
+\newblock NASA Cost Estimating Handbook, Version 4.0,
+\newblock NASA Office of the Chief Financial Officer, Washington, DC, 2015.
+
+\bibitem{oneill1974}
+G.~K.~O'Neill,
+\newblock The colonization of space,
+\newblock Physics Today 27~(9) (1974) 32--40.
+
+\bibitem{oneill1976}
+G.~K.~O'Neill,
+\newblock The High Frontier: Human Colonies in Space,
+\newblock William Morrow, New York, 1976.
+
+\bibitem{saleh2003}
+J.~H.~Saleh, D.~E.~Hastings, D.~J.~Newman,
+\newblock Flexibility in system design and implications for aerospace systems,
+\newblock Acta Astronautica 53~(12) (2003) 927--944.
+
+\bibitem{sanders2015}
+G.~B.~Sanders, W.~E.~Larson,
+\newblock Progress made in lunar in situ resource utilization under NASA's Exploration Technology and Development Program,
+\newblock Journal of Aerospace Engineering 28~(1) (2015) 04014075.
+
+\bibitem{sonter1997}
+M.~J.~Sonter,
+\newblock The technical and economic feasibility of mining the near-Earth asteroids,
+\newblock Acta Astronautica 41~(4--10) (1997) 637--647.
+
+\bibitem{sowers2021}
+G.~F.~Sowers,
+\newblock The business case for lunar ice mining,
+\newblock New Space 9~(2) (2021) 77--94.
+
+\bibitem{sowers2023}
+G.~F.~Sowers,
+\newblock A cislunar economic framework,
+\newblock New Space 11~(1) (2023) 5--18.
+
+\bibitem{thompson2012}
+P.~Thompson,
+\newblock The relationship between unit cost and cumulative quantity and the evidence for organizational learning-by-doing,
+\newblock Journal of Economic Perspectives 26~(3) (2012) 203--224.
+
+\bibitem{werkheiser2015}
+N.~Werkheiser, J.~Dunn, M.~Snyder, J.~Edmunson, K.~Cooper, M.~Johnston,
+\newblock 3D printing in zero-G ISS technology demonstration,
+\newblock in: AIAA SPACE 2015, AIAA-2015-4585, 2015.
+
+\bibitem{wertz2011}
+J.~R.~Wertz, D.~F.~Everett, J.~J.~Puschell (Eds.),
+\newblock Space Mission Engineering: The New SMAD,
+\newblock Microcosm Press, Hawthorne, CA, 2011.
+
+\bibitem{wright1936}
+T.~P.~Wright,
+\newblock Factors affecting the cost of airplanes,
+\newblock Journal of the Aeronautical Sciences 3~(4) (1936) 122--128.
+
+\bibitem{zapata2019}
+E.~Zapata,
+\newblock An assessment of cost improvements in the NASA COTS/CRS program and implications for future NASA missions,
+\newblock in: AIAA SPACE and Astronautics Forum, AIAA-2019-4268, 2019.
+
+\bibitem{zubrin1996}
+R.~Zubrin, R.~Wagner,
+\newblock The Case for Mars: The Plan to Settle the Red Planet and Why We Must,
+\newblock Free Press, New York, 1996.
+
+\end{thebibliography}
+
+\end{document}
