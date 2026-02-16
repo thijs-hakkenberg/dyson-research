@@ -1519,6 +1519,59 @@ def print_capex_coupling():
 
 
 # ---------------------------------------------------------------------------
+# O1: p_s_min vs evaluation horizon
+# ---------------------------------------------------------------------------
+def print_ps_min_vs_horizon():
+    """O1: Compute minimum success probability as function of evaluation horizon."""
+    from numpy import arange as np_ar, sum as np_sum
+    prod_rate = BASELINE["prod_rate"]
+    k_ramp = BASELINE["k_ramp"]
+    r = BASELINE["r"]
+    K = BASELINE["K"]
+    cross_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  O1: p_s_min vs evaluation horizon (NPV, r=5%, N*={cross_npv:,}):")
+    print(f"  {'Horizon':>10s}  {'Mult':>6s}  {'Savings($B)':>12s}  {'p_s_min':>10s}")
+    print(f"  {'----------':>10s}  {'------':>6s}  {'------------':>12s}  {'----------':>10s}")
+
+    for mult in [1.5, 2.0, 3.0, 5.0]:
+        n_check = int(cross_npv * mult)
+        ns = np_ar(1, n_check + 1, dtype=float)
+
+        t_earth = earth_delivery_time(ns, prod_rate)
+        t_isru = unit_to_time(ns, prod_rate, BASELINE["t0"], k_ramp)
+
+        earth_units = earth_unit_cost(ns, BASELINE)
+        disc_earth = (1.0 + r) ** (-t_earth)
+        earth_cum = float(np_sum(earth_units * disc_earth))
+
+        ops = isru_ops_cost(ns, BASELINE)
+        disc_isru = (1.0 + r) ** (-t_isru)
+        isru_cum = K + float(np_sum(ops * disc_isru))
+
+        savings = earth_cum - isru_cum
+        p_s_min = K / (savings + K) if (savings + K) > 0 else 1.0
+        print(f"  {n_check:>8,d}N  {mult:>5.1f}x  {savings/1e9:>11.1f}B  {p_s_min:>9.1%}")
+
+    # Also compute at fixed unit counts
+    print(f"\n  {'Units':>10s}  {'Savings($B)':>12s}  {'p_s_min':>10s}")
+    print(f"  {'----------':>10s}  {'------------':>12s}  {'----------':>10s}")
+    for n_fix in [5000, 10000, 20000]:
+        ns = np_ar(1, n_fix + 1, dtype=float)
+        t_earth = earth_delivery_time(ns, prod_rate)
+        t_isru = unit_to_time(ns, prod_rate, BASELINE["t0"], k_ramp)
+        earth_units = earth_unit_cost(ns, BASELINE)
+        disc_earth = (1.0 + r) ** (-t_earth)
+        earth_cum = float(np_sum(earth_units * disc_earth))
+        ops = isru_ops_cost(ns, BASELINE)
+        disc_isru = (1.0 + r) ** (-t_isru)
+        isru_cum = K + float(np_sum(ops * disc_isru))
+        savings = earth_cum - isru_cum
+        p_s_min = K / (savings + K) if (savings + K) > 0 else 1.0
+        print(f"  {n_fix:>8,d}  {savings/1e9:>11.1f}B  {p_s_min:>9.1%}")
+
+
+# ---------------------------------------------------------------------------
 # N1: Earth manufacturing cost floor sensitivity
 # ---------------------------------------------------------------------------
 def print_earth_mfg_floor_sensitivity():
@@ -1796,5 +1849,8 @@ if __name__ == "__main__":
     print_kaplan_meier_diagnostic()
     print_k_ramp_sensitivity()
     print_revenue_breakeven_with_lifetime()
+
+    # Version O diagnostics
+    print_ps_min_vs_horizon()
 
     print(f"\nDone. All figures saved to {fig_dir}")
