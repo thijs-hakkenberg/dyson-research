@@ -605,6 +605,123 @@ class TestMaintenanceCost:
         assert cross_15 >= cross_5
 
 
+# ===== TestEarthMfgFloor =====
+
+class TestEarthMfgFloor:
+    """N1: Verify Earth manufacturing cost floor behavior."""
+
+    def test_zero_floor_matches_baseline(self, baseline):
+        """C_mfg_floor=0 should match original behavior."""
+        ns = np.array([1.0, 100.0, 1000.0, 10000.0])
+        cost_default = earth_unit_cost(ns, baseline)
+        baseline["C_mfg_floor"] = 0
+        cost_explicit = earth_unit_cost(ns, baseline)
+        np.testing.assert_allclose(cost_default, cost_explicit)
+
+    def test_floor_respected(self, baseline):
+        """Earth mfg cost should never go below floor."""
+        baseline["C_mfg_floor"] = 5e6
+        ns = np.arange(1, 20001, dtype=float)
+        costs = earth_unit_cost(ns, baseline)
+        # Total cost includes launch, so floor only applies to mfg component
+        # At high n, mfg component dominates and should be >= floor
+        # The total cost should be >= floor + launch_cost
+        launch_floor = baseline["m"] * baseline["p_launch"]
+        # At n=20000, the learning curve mfg would be well below 5M,
+        # so cost should be floor + launch
+        cost_high_n = float(costs[-1])
+        assert cost_high_n >= 5e6 + launch_floor * 0.99
+
+    def test_crossover_shifts(self, baseline):
+        """Floor should delay crossover (Earth stays more expensive)."""
+        cross_base = find_crossover_npv(baseline)
+        baseline["C_mfg_floor"] = 5e6
+        cross_floor = find_crossover(baseline, n_max=40000, discount=True)
+        assert cross_floor >= cross_base
+
+    def test_first_unit_unaffected(self, baseline):
+        """First unit mfg cost > any reasonable floor, so no change."""
+        cost_base = float(earth_unit_cost(1.0, baseline))
+        baseline["C_mfg_floor"] = 5e6
+        cost_floor = float(earth_unit_cost(1.0, baseline))
+        # C_mfg1 = $75M >> $5M floor
+        assert cost_base == pytest.approx(cost_floor)
+
+
+# ===== TestLogNormalK =====
+
+class TestLogNormalK:
+    """N1b: Verify log-normal K distribution properties."""
+
+    def test_right_skewed(self):
+        """Log-normal K should have mean > median (right-skewed)."""
+        from isru_mc import sample_mc_params
+        rng = np.random.default_rng(42)
+        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True,
+                                  k_distribution="lognormal")
+        k = params["K"]
+        assert np.mean(k) > np.median(k)
+
+    def test_median_near_65b(self):
+        """Log-normal K median should be near $65B."""
+        from isru_mc import sample_mc_params
+        rng = np.random.default_rng(42)
+        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True,
+                                  k_distribution="lognormal")
+        k_median = float(np.median(params["K"]))
+        assert 55e9 < k_median < 75e9  # within ~15% of $65B
+
+    def test_clipped_bounds(self):
+        """Log-normal K should be clipped to [20B, 200B]."""
+        from isru_mc import sample_mc_params
+        rng = np.random.default_rng(42)
+        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True,
+                                  k_distribution="lognormal")
+        assert np.all(params["K"] >= 20e9)
+        assert np.all(params["K"] <= 200e9)
+
+    def test_uniform_default(self):
+        """Default k_distribution should be uniform."""
+        from isru_mc import sample_mc_params
+        rng = np.random.default_rng(42)
+        params = sample_mc_params(rng, 1000, rho=0.3, correlated=True)
+        # Uniform [30B, 100B] — check bounds
+        assert np.all(params["K"] >= 30e9 - 1)
+        assert np.all(params["K"] <= 100e9 + 1)
+
+
+# ===== TestKaplanMeier =====
+
+class TestKaplanMeier:
+    """N1c: Verify Kaplan-Meier estimator."""
+
+    def test_all_converged_matches_median(self):
+        """When all runs converge, KM median should equal sample median."""
+        from isru_mc import compute_kaplan_meier
+        crossovers = np.array([100, 200, 300, 400, 500], dtype=float)
+        n_max = 1000
+        km_med, _, _ = compute_kaplan_meier(crossovers, n_max)
+        assert km_med == pytest.approx(300.0)
+
+    def test_censored_shifts_median(self):
+        """With censored observations, KM median should be >= conditional median."""
+        from isru_mc import compute_kaplan_meier
+        # 5 converged, 5 censored at H
+        crossovers = np.array([100, 200, 300, 400, 500, 1000, 1000, 1000, 1000, 1000], dtype=float)
+        n_max = 1000
+        km_med, _, _ = compute_kaplan_meier(crossovers, n_max)
+        cond_med = float(np.median(crossovers[crossovers < n_max]))
+        # KM accounts for censoring; conditional median ignores it
+        assert km_med >= cond_med or km_med == float('inf')
+
+    def test_survival_starts_at_one(self):
+        """Survival function should start at 1.0."""
+        from isru_mc import compute_kaplan_meier
+        crossovers = np.array([100, 200, 500, 1000], dtype=float)
+        _, _, km_surv = compute_kaplan_meier(crossovers, 1000)
+        assert km_surv[0] == pytest.approx(1.0)
+
+
 # ===== TestKProdRateCorrelation =====
 
 class TestKProdRateCorrelation:

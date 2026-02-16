@@ -63,7 +63,7 @@ from isru_model import (  # noqa: E402
     unit_to_time_piecewise,
     _cumulative_production,
 )
-from isru_mc import run_mc, sample_mc_params, run_mc_loop, compute_convergence_stats  # noqa: E402
+from isru_mc import run_mc, sample_mc_params, run_mc_loop, compute_convergence_stats, compute_kaplan_meier  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Output directory
@@ -1519,6 +1519,179 @@ def print_capex_coupling():
 
 
 # ---------------------------------------------------------------------------
+# N1: Earth manufacturing cost floor sensitivity
+# ---------------------------------------------------------------------------
+def print_earth_mfg_floor_sensitivity():
+    """N1: Sweep C_mfg_floor to show effect of Earth manufacturing cost floor."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  N1: Earth mfg cost floor sensitivity (NPV, r=5%):")
+    print(f"  {'C_mfg_floor':>12s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'------------':>12s}  {'--------':>8s}  {'--------':>8s}")
+
+    for floor in [0, 2e6, 5e6, 10e6]:
+        p = BASELINE.copy()
+        p["C_mfg_floor"] = floor
+        cross = find_crossover(p, n_max=40000, discount=True)
+        shift = cross - base_npv
+        label = f"${floor/1e6:.0f}M" if floor > 0 else "$0 (none)"
+        if cross >= 40000:
+            print(f"  {label:>12s}  {'>40,000':>8s}  {'N/A':>8s}")
+        else:
+            print(f"  {label:>12s}  {cross:>8,d}  {shift:>+8,d}")
+
+    # Show what happens to Earth unit cost at n=10000
+    n_test = 10000.0
+    base_cost = float(earth_unit_cost(n_test, BASELINE))
+    for floor in [5e6, 10e6]:
+        p = BASELINE.copy()
+        p["C_mfg_floor"] = floor
+        cost = float(earth_unit_cost(n_test, p))
+        print(f"    Earth unit cost at n={int(n_test):,} with floor=${floor/1e6:.0f}M: "
+              f"${cost/1e6:.2f}M (baseline: ${base_cost/1e6:.2f}M)")
+
+
+# ---------------------------------------------------------------------------
+# N1b: Log-normal K MC comparison
+# ---------------------------------------------------------------------------
+def print_lognormal_k_comparison():
+    """N1b: Compare uniform vs log-normal K distribution in MC."""
+    n_runs = 10000
+    n_max_mc = 40000
+    r_fixed = 0.05
+
+    print(f"\n  N1b: Log-normal K distribution comparison (r=5%, n={n_runs:,}):")
+    print(f"  {'K dist':>12s}  {'Conv%':>8s}  {'Cond.Med':>10s}  {'Cond.IQR':>20s}  {'K median':>10s}  {'K mean':>10s}")
+    print(f"  {'------------':>12s}  {'--------':>8s}  {'----------':>10s}  {'--------------------':>20s}  {'----------':>10s}  {'----------':>10s}")
+
+    for k_dist in ["uniform", "lognormal"]:
+        rng = default_rng(42)
+        param_arrays = sample_mc_params(rng, n_runs, rho=0.3, correlated=True,
+                                         k_distribution=k_dist)
+        crossovers = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+        converged = crossovers[crossovers < n_max_mc]
+        conv_rate = len(converged) / n_runs * 100
+        if len(converged) > 0:
+            cond_med = int(median(converged))
+            q25 = int(percentile(converged, 25))
+            q75 = int(percentile(converged, 75))
+        else:
+            cond_med = q25 = q75 = n_max_mc
+
+        k_med = float(median(param_arrays["K"])) / 1e9
+        k_mean = float(param_arrays["K"].mean()) / 1e9
+        print(f"  {k_dist:>12s}  {conv_rate:>7.1f}%  {cond_med:>10,d}  [{q25:>8,d}, {q75:>8,d}]  ${k_med:>8.1f}B  ${k_mean:>8.1f}B")
+
+
+# ---------------------------------------------------------------------------
+# N1c: Kaplan-Meier survival diagnostic
+# ---------------------------------------------------------------------------
+def print_kaplan_meier_diagnostic():
+    """N1c: Compare KM median with conditional median across discount rates."""
+    mc_rates = [0.03, 0.05, 0.08]
+    n_runs = 10000
+    n_max_mc = 40000
+
+    print(f"\n  N1c: Kaplan-Meier survival analysis (n={n_runs:,}):")
+    print(f"  {'Rate':>6s}  {'Conv%':>8s}  {'Cond.Med':>10s}  {'KM Med':>10s}  {'Divergence':>12s}")
+    print(f"  {'------':>6s}  {'--------':>8s}  {'----------':>10s}  {'----------':>10s}  {'------------':>12s}")
+
+    for r_fixed in mc_rates:
+        rng = default_rng(42)
+        res = run_mc(r_fixed, rng, n_runs=n_runs, n_max_mc=n_max_mc)
+        km_med, km_times, km_surv = compute_kaplan_meier(res.crossovers, n_max_mc)
+        cond_med = res.stats.cond_median
+        if km_med < float('inf') and cond_med < n_max_mc:
+            divergence = abs(km_med - cond_med) / cond_med * 100
+            div_label = f"{divergence:.1f}%"
+        else:
+            div_label = "N/A"
+        km_label = f"{int(km_med):,}" if km_med < float('inf') else ">H"
+        conv_pct = res.stats.convergence_rate
+        print(f"  {r_fixed:.0%}  {conv_pct:>7.1f}%  {int(cond_med):>10,d}  {km_label:>10s}  {div_label:>12s}")
+
+    print("    (Divergence measures bias from ignoring censored observations)")
+
+
+# ---------------------------------------------------------------------------
+# N1d: S-curve k_ramp sensitivity
+# ---------------------------------------------------------------------------
+def print_k_ramp_sensitivity():
+    """N1d: Sweep k_ramp to show effect of S-curve steepness on crossover."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  N1d: S-curve steepness (k_ramp) sensitivity (NPV, r=5%):")
+    print(f"  {'k_ramp':>8s}  {'N*':>8s}  {'Shift':>8s}  {'Ramp 10-90% (yr)':>18s}")
+    print(f"  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'------------------':>18s}")
+
+    for k in [0.5, 1.0, 2.0, 3.0, 4.0]:
+        p = BASELINE.copy()
+        p["k_ramp"] = k
+        cross = find_crossover(p, n_max=40000, discount=True)
+        shift = cross - base_npv
+        # Time for S-curve to go from 10% to 90%: t(0.9) - t(0.1)
+        # S(t) = 0.1 → t = t0 + ln(0.1/0.9)/k; S(t)=0.9 → t = t0 + ln(9)/k
+        import math
+        ramp_time = 2 * math.log(9) / k
+        if cross >= 40000:
+            print(f"  {k:>8.1f}  {'>40,000':>8s}  {'N/A':>8s}  {ramp_time:>17.1f}yr")
+        else:
+            print(f"  {k:>8.1f}  {cross:>8,d}  {shift:>+8,d}  {ramp_time:>17.1f}yr")
+
+
+# ---------------------------------------------------------------------------
+# N1e: Revenue breakeven with finite asset lifetime
+# ---------------------------------------------------------------------------
+def print_revenue_breakeven_with_lifetime():
+    """N1e: Revenue breakeven R* for multiple asset lifetimes L."""
+    from numpy import arange as np_ar, sum as np_sum, minimum as np_min
+    prod_rate = BASELINE["prod_rate"]
+    t0 = BASELINE["t0"]
+    k_ramp = BASELINE["k_ramp"]
+    r = BASELINE["r"]
+
+    cross_npv = find_crossover_npv(BASELINE)
+    n_check = cross_npv * 2
+
+    ns = np_ar(1, n_check + 1, dtype=float)
+    t_earth = earth_delivery_time(ns, prod_rate)
+    t_isru = unit_to_time(ns, prod_rate, t0, k_ramp)
+    delay = t_isru - t_earth
+
+    # Compute ISRU NPV savings
+    earth_units = earth_unit_cost(ns, BASELINE)
+    disc_earth = (1.0 + r) ** (-t_earth)
+    earth_cum = float(np_sum(earth_units * disc_earth))
+
+    ops = isru_ops_cost(ns, BASELINE)
+    disc_isru = (1.0 + r) ** (-t_isru)
+    isru_cum = BASELINE["K"] + float(np_sum(ops * disc_isru))
+    savings_npv = earth_cum - isru_cum
+
+    print(f"\n  N1e: Revenue breakeven with finite asset lifetime (N={n_check:,}, r=5%):")
+    print(f"    ISRU NPV savings: ${savings_npv/1e9:.1f}B")
+    print(f"  {'Lifetime':>10s}  {'R* ($/yr/unit)':>16s}  {'R* ($M/yr)':>12s}  {'Note':>30s}")
+    print(f"  {'----------':>10s}  {'----------------':>16s}  {'------------':>12s}  {'------------------------------':>30s}")
+
+    for L in [10, 20, 30, 1000]:
+        # Opportunity cost factor: sum of min(delay_n, L) * discount per unit
+        effective_delay = np_min(delay, L)
+        opp_cost_factor = float(np_sum(effective_delay * disc_isru))
+
+        if opp_cost_factor > 0:
+            r_star = savings_npv / opp_cost_factor
+        else:
+            r_star = float('inf')
+
+        note = ""
+        if L == 1000:
+            note = "(infinite lifetime approx)"
+        elif L == 20:
+            note = "(baseline assumption)"
+        print(f"  {L:>8d}yr  {r_star:>16,.0f}  {r_star/1e6:>11.2f}M  {note:>30s}")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -1616,5 +1789,12 @@ if __name__ == "__main__":
     print_success_probability()
     print_commercial_rate()
     print_capex_coupling()
+
+    # Version N diagnostics
+    print_earth_mfg_floor_sensitivity()
+    print_lognormal_k_comparison()
+    print_kaplan_meier_diagnostic()
+    print_k_ramp_sensitivity()
+    print_revenue_breakeven_with_lifetime()
 
     print(f"\nDone. All figures saved to {fig_dir}")

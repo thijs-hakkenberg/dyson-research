@@ -42,6 +42,7 @@ BASELINE: Params = {
     "launches_per_unit": 1.0,  # M2: launches per unit for launch learning index
     "K_maint_frac": 0.0,   # M3: fraction of K spent on maintenance per interval
     "K_maint_interval": 5,  # M3: years between maintenance overhauls
+    "C_mfg_floor": 0,      # N1: Earth mfg cost floor ($/unit, 0 = no floor)
 }
 
 # ---------------------------------------------------------------------------
@@ -193,6 +194,11 @@ def find_crossover_mfg_lead(
     b_E = learning_exponent(params["LR_E"])
     c_mfg = params["C_mfg1"] * ns ** b_E
 
+    # N1: Earth manufacturing cost floor
+    C_mfg_floor = params.get("C_mfg_floor", 0)
+    if C_mfg_floor > 0:
+        c_mfg = maximum(c_mfg, C_mfg_floor)
+
     # Launch cost: optionally with learning on ops component
     b_L = params.get("b_L", None)
     if b_L is not None:
@@ -230,6 +236,11 @@ def earth_unit_cost(n: float | NDFloat, params: Params) -> NDFloat:
     n = asarray(n, dtype=float)
     b_E = learning_exponent(params["LR_E"])
     c_mfg = params["C_mfg1"] * n ** b_E
+
+    # N1: Earth manufacturing cost floor
+    C_mfg_floor = params.get("C_mfg_floor", 0)
+    if C_mfg_floor > 0:
+        c_mfg = maximum(c_mfg, C_mfg_floor)
 
     # Launch cost: optionally with learning on ops component
     # M2: launches_per_unit re-indexes learning to cumulative launches

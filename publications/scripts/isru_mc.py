@@ -7,9 +7,13 @@ analysis as composable functions. No matplotlib, no prints.
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
-from numpy import floating, array, clip, empty, percentile, sum, mean, median, std as np_std, sqrt as np_sqrt
+from numpy import (
+    floating, array, clip, empty, exp as np_exp, log as np_log,
+    percentile, sum, mean, median, std as np_std, sqrt as np_sqrt,
+    argsort, unique, zeros_like, inf,
+)
 from numpy.random import Generator
-from numpy.linalg import cholesky 
+from numpy.linalg import cholesky
 from numpy.typing import NDArray
 from scipy.stats import norm as sp_norm, spearmanr
 
@@ -85,6 +89,7 @@ def sample_mc_params(
     rho: float = 0.3,
     rho_k_prod: float = 0.0,
     correlated: bool = True,
+    k_distribution: str = "uniform",
 ) -> dict[str, NDFloat]:
     """Sample MC parameter arrays.
 
@@ -99,6 +104,9 @@ def sample_mc_params(
         Reflects that higher-capacity facilities require larger capital.
     correlated : bool
         If False, sample p_launch, K, and prod_rate independently (uniform).
+    k_distribution : str
+        "uniform" (default) or "lognormal". Log-normal calibrated to
+        median=$65B with right-skewed tail (P90~$120B), clipped to [20B, 200B].
     """
     if correlated:
         # 3D Gaussian copula: (p_launch, K, prod_rate)
@@ -114,12 +122,31 @@ def sample_mc_params(
         u_capital = sp_norm.cdf(corr_normals[:, 1])
         u_prod = sp_norm.cdf(corr_normals[:, 2])
         p_launch_samples = 500 + u_launch * (2000 - 500)
-        k_samples = 30e9 + u_capital * (100e9 - 30e9)
         prod_rate_samples = 250 + u_prod * (750 - 250)
+
+        if k_distribution == "lognormal":
+            # N1b: Log-normal K calibrated: median=$65B, P90~$120B
+            # sigma = (ln(120e9) - ln(65e9)) / 1.2816 ≈ 0.48
+            mu_ln = float(np_log(65e9))
+            sigma_ln = 0.48
+            # Transform copula uniform to log-normal via inverse CDF
+            ln_k = sp_norm.ppf(u_capital) * sigma_ln + mu_ln
+            k_samples = np_exp(ln_k)
+            k_samples = clip(k_samples, 20e9, 200e9)
+        else:
+            k_samples = 30e9 + u_capital * (100e9 - 30e9)
     else:
         p_launch_samples = rng.uniform(500, 2000, n_runs)
-        k_samples = rng.uniform(30e9, 100e9, n_runs)
         prod_rate_samples = rng.uniform(250, 750, n_runs)
+
+        if k_distribution == "lognormal":
+            mu_ln = float(np_log(65e9))
+            sigma_ln = 0.48
+            ln_k = rng.normal(mu_ln, sigma_ln, n_runs)
+            k_samples = np_exp(ln_k)
+            k_samples = clip(k_samples, 20e9, 200e9)
+        else:
+            k_samples = rng.uniform(30e9, 100e9, n_runs)
 
     return {
         "p_launch": p_launch_samples,
@@ -362,3 +389,55 @@ def run_mc(
         N_MAX_MC=n_max_mc,
         convergence_drivers=conv_drivers,
     )
+
+
+# ---------------------------------------------------------------------------
+# N1c: Kaplan-Meier survival estimator for right-censored crossover data
+# ---------------------------------------------------------------------------
+def compute_kaplan_meier(
+    crossovers: NDFloat,
+    n_max_mc: int,
+) -> tuple[float, NDFloat, NDFloat]:
+    """Kaplan-Meier product-limit estimator for right-censored crossover data.
+
+    Runs that did not converge within n_max_mc are treated as right-censored.
+    Returns (km_median, km_times, km_survival).
+    """
+    event = crossovers < n_max_mc  # True = event observed (converged)
+    order = argsort(crossovers)
+    times = crossovers[order]
+    events = event[order]
+    n = len(times)
+
+    # Unique event times (only where events actually occurred)
+    unique_event_times = unique(times[events])
+
+    survival = 1.0
+    km_times = [0.0]
+    km_survival = [1.0]
+    at_risk = n
+
+    for t in unique_event_times:
+        # Count censored observations strictly before this event time
+        # (they leave the risk set before this time)
+        mask_t = times == t
+        d = int(sum(mask_t & events))       # events at t
+        c = int(sum(mask_t & ~events))       # censored at t
+
+        # Remove subjects censored at earlier times from risk set
+        # (handled by decrementing at_risk after each unique time)
+        survival *= (at_risk - d) / at_risk
+        km_times.append(float(t))
+        km_survival.append(survival)
+        at_risk -= (d + c)
+        if at_risk <= 0:
+            break
+
+    # KM median = smallest t where S(t) <= 0.5
+    km_median = float(inf)
+    for t_val, s_val in zip(km_times, km_survival):
+        if s_val <= 0.5:
+            km_median = t_val
+            break
+
+    return km_median, array(km_times), array(km_survival)
