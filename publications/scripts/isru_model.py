@@ -38,6 +38,10 @@ BASELINE: Params = {
     "alpha": 1.0,           # D5: mass penalty factor for ISRU units
     "p_transport": 100,     # D6: ISRU-to-orbit transport cost ($/kg)
     "vitamin_frac": 0.0,    # G11: fraction of unit that must be Earth-sourced
+    "c_vitamin_kg": 10000,  # M1: vitamin component mfg cost ($/kg, electronics ~$10k/kg)
+    "launches_per_unit": 1.0,  # M2: launches per unit for launch learning index
+    "K_maint_frac": 0.0,   # M3: fraction of K spent on maintenance per interval
+    "K_maint_interval": 5,  # M3: years between maintenance overhauls
 }
 
 # ---------------------------------------------------------------------------
@@ -194,7 +198,9 @@ def find_crossover_mfg_lead(
     if b_L is not None:
         p_fuel = params.get("p_fuel", 200)
         p_ops = params.get("p_ops_launch", 800)
-        c_launch = params["m"] * (p_fuel + p_ops * ns ** b_L)
+        launches_per_unit = params.get("launches_per_unit", 1.0)
+        n_launches = ns * launches_per_unit
+        c_launch = params["m"] * (p_fuel + p_ops * n_launches ** b_L)
     else:
         c_launch = params["m"] * params["p_launch"] * ones_like(ns)
 
@@ -226,11 +232,14 @@ def earth_unit_cost(n: float | NDFloat, params: Params) -> NDFloat:
     c_mfg = params["C_mfg1"] * n ** b_E
 
     # Launch cost: optionally with learning on ops component
+    # M2: launches_per_unit re-indexes learning to cumulative launches
     b_L = params.get("b_L", None)
     if b_L is not None:
         p_fuel = params.get("p_fuel", 200)
         p_ops = params.get("p_ops_launch", 800)
-        c_launch = params["m"] * (p_fuel + p_ops * n ** b_L)
+        launches_per_unit = params.get("launches_per_unit", 1.0)
+        n_launches = n * launches_per_unit
+        c_launch = params["m"] * (p_fuel + p_ops * n_launches ** b_L)
     else:
         c_launch = params["m"] * params["p_launch"]
 
@@ -276,11 +285,25 @@ def isru_ops_cost(n: float | NDFloat, params: Params) -> NDFloat:
         c_ops = c_ops + c_transport
 
     # Vitamin fraction: Earth-sourced components that ISRU cannot produce.
-    # ISRU only processes (1 - fv) of the unit, so ops cost is scaled down;
-    # the vitamin portion pays Earth cost for that fraction.
+    # Two-part model (M1): ISRU processes (1-fv) of the unit; the vitamin
+    # portion must be launched from Earth and has its own mfg cost per kg.
+    # c_vitamin = fv * m * (p_launch_effective + c_vitamin_kg)
     vitamin_frac = params.get("vitamin_frac", 0.0)
     if vitamin_frac > 0:
-        c_ops = (1.0 - vitamin_frac) * c_ops + vitamin_frac * earth_unit_cost(n, params)
+        c_vitamin_kg = params.get("c_vitamin_kg", 10000)
+        # Effective launch cost for vitamins (with learning if active)
+        b_L = params.get("b_L", None)
+        if b_L is not None:
+            p_fuel = params.get("p_fuel", 200)
+            p_ops = params.get("p_ops_launch", 800)
+            launches_per_unit = params.get("launches_per_unit", 1.0)
+            n_launches = n * launches_per_unit
+            p_launch_eff = p_fuel + p_ops * n_launches ** b_L
+        else:
+            p_launch_eff = params.get("p_launch", 1000)
+        c_vitamin_launch = vitamin_frac * params["m"] * p_launch_eff
+        c_vitamin_mfg = vitamin_frac * params["m"] * c_vitamin_kg
+        c_ops = (1.0 - vitamin_frac) * c_ops + c_vitamin_launch + c_vitamin_mfg
 
     return c_ops
 
@@ -331,10 +354,22 @@ def isru_ops_cost_rate_dependent(
     if p_transport > 0:
         c_ops = c_ops + params["m"] * p_transport * alpha
 
-    # Vitamin fraction (same corrected formula as isru_ops_cost)
+    # Vitamin fraction (same two-part model as isru_ops_cost)
     vitamin_frac = params.get("vitamin_frac", 0.0)
     if vitamin_frac > 0:
-        c_ops = (1.0 - vitamin_frac) * c_ops + vitamin_frac * earth_unit_cost(n, params)
+        c_vitamin_kg = params.get("c_vitamin_kg", 10000)
+        b_L = params.get("b_L", None)
+        if b_L is not None:
+            p_fuel = params.get("p_fuel", 200)
+            p_ops = params.get("p_ops_launch", 800)
+            launches_per_unit = params.get("launches_per_unit", 1.0)
+            n_launches = n * launches_per_unit
+            p_launch_eff = p_fuel + p_ops * n_launches ** b_L
+        else:
+            p_launch_eff = params.get("p_launch", 1000)
+        c_vitamin_launch = vitamin_frac * params["m"] * p_launch_eff
+        c_vitamin_mfg = vitamin_frac * params["m"] * c_vitamin_kg
+        c_ops = (1.0 - vitamin_frac) * c_ops + c_vitamin_launch + c_vitamin_mfg
 
     return c_ops
 
@@ -454,7 +489,18 @@ def find_crossover(
     else:
         K_eff = K
 
-    isru_cum = K_eff + isru_ops_cum
+    # M3: Ongoing capital maintenance — periodic injection of K_maint_frac * K
+    K_maint_frac = params.get("K_maint_frac", 0.0)
+    maint_cost = 0.0
+    if K_maint_frac > 0 and discount:
+        K_maint_interval = params.get("K_maint_interval", 5)
+        t_horizon = float(unit_to_time(n_max, prod_rate, params["t0"], k_ramp))
+        maint_cost = sum(
+            (K * K_maint_frac) / (1.0 + r) ** t
+            for t in range(K_maint_interval, int(t_horizon) + 1, K_maint_interval)
+        )
+
+    isru_cum = K_eff + maint_cost + isru_ops_cum
 
     # Find crossover
     diff = isru_cum - earth_cum

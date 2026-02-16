@@ -431,35 +431,56 @@ class TestRateDependentLearning:
         assert cross_50 >= cross_20
 
 
-# ===== TestVitaminFractionCorrected =====
+# ===== TestVitaminTwoPartModel =====
 
-class TestVitaminFractionCorrected:
-    """Verify the corrected (1-fv)*c_ops + fv*c_earth formula."""
+class TestVitaminTwoPartModel:
+    """M1: Verify the two-part vitamin model: (1-fv)*c_ops + fv*m*(p_launch_eff + c_vit_kg)."""
 
-    def test_reduces_isru_ops_component(self, baseline):
-        """With fv>0, the ISRU-ops portion is scaled down by (1-fv)."""
+    def test_increases_cost(self, baseline):
+        """With fv>0, cost should increase (vitamin launch + mfg added)."""
         ns = np.array([100.0, 1000.0])
         cost_base = isru_ops_cost(ns, baseline)
         baseline["vitamin_frac"] = 0.10
         cost_vf = isru_ops_cost(ns, baseline)
-        # The ISRU ops component is reduced (multiplied by 0.9),
-        # but Earth cost is added. Net should still be > baseline
-        # because Earth unit cost >> ISRU ops cost.
         assert np.all(cost_vf > cost_base)
 
-    def test_less_penalty_than_additive(self):
-        """Corrected formula gives lower cost than naive additive formula."""
+    def test_c_vitamin_kg_scales(self):
+        """Higher c_vitamin_kg should give higher cost."""
         p = BASELINE.copy()
-        ns = np.array([100.0, 1000.0])
-        # Compute with corrected formula
         p["vitamin_frac"] = 0.10
-        cost_corrected = isru_ops_cost(ns, p)
-        # Compute naive additive: c_ops + 0.10 * c_earth
+        n = 500.0
+        p["c_vitamin_kg"] = 5000
+        cost_low = float(isru_ops_cost(n, p))
+        p["c_vitamin_kg"] = 50000
+        cost_high = float(isru_ops_cost(n, p))
+        assert cost_high > cost_low
+
+    def test_vitamin_launch_component(self):
+        """Vitamin launch cost should equal fv * m * p_launch for no-learning case."""
+        p = BASELINE.copy()
+        p["vitamin_frac"] = 0.10
+        p["c_vitamin_kg"] = 0  # zero mfg cost to isolate launch
+        p["b_L"] = None  # no launch learning
+        n = 100.0
+        cost_vf = float(isru_ops_cost(n, p))
+        # Expected: (1-0.10) * base_ops + 0.10 * 1850 * 1000
+        p_no_vf = BASELINE.copy()
+        cost_base = float(isru_ops_cost(n, p_no_vf))
+        expected = 0.90 * cost_base + 0.10 * 1850 * 1000
+        assert cost_vf == pytest.approx(expected, rel=0.01)
+
+    def test_differs_from_old_formula(self):
+        """Two-part model should differ from old fv*earth_unit_cost formula."""
+        p = BASELINE.copy()
+        n = 100.0  # early units where Earth mfg cost is high
+        p["vitamin_frac"] = 0.10
+        cost_new = float(isru_ops_cost(n, p))
+        # Old formula: (1-fv)*c_ops + fv*c_earth (which included full Earth mfg + launch)
         p["vitamin_frac"] = 0.0
-        cost_base = isru_ops_cost(ns, p)
-        cost_naive = cost_base + 0.10 * earth_unit_cost(ns, p)
-        # Corrected should be less than naive (by 0.10 * c_ops)
-        assert np.all(cost_corrected < cost_naive)
+        cost_base = float(isru_ops_cost(n, p))
+        cost_old = (1.0 - 0.10) * cost_base + 0.10 * float(earth_unit_cost(n, p))
+        # The two models should produce different values
+        assert cost_new != pytest.approx(cost_old, rel=0.01)
 
 
 # ===== TestPiecewiseSchedule =====
@@ -516,6 +537,72 @@ class TestMfgLeadTime:
         cross_zero = find_crossover_mfg_lead(baseline, tau_mfg=0.0)
         # Should be very close (not exact due to split mfg/launch discounting)
         assert abs(cross_zero - cross_base) <= 5
+
+
+# ===== TestLaunchesPerUnit =====
+
+class TestLaunchesPerUnit:
+    """M2: Verify launches_per_unit re-indexing of launch learning."""
+
+    def test_default_unchanged(self, baseline):
+        """launches_per_unit=1.0 should match original behavior."""
+        baseline["b_L"] = np.log(0.97) / np.log(2)
+        ns = np.array([100.0, 1000.0])
+        cost_default = earth_unit_cost(ns, baseline)
+        baseline["launches_per_unit"] = 1.0
+        cost_explicit = earth_unit_cost(ns, baseline)
+        np.testing.assert_allclose(cost_default, cost_explicit)
+
+    def test_higher_lpu_cheaper(self, baseline):
+        """More launches per unit = more cumulative launches = more learning = lower cost."""
+        baseline["b_L"] = np.log(0.97) / np.log(2)
+        n = 100.0
+        baseline["launches_per_unit"] = 1.0
+        cost_1 = float(earth_unit_cost(n, baseline))
+        baseline["launches_per_unit"] = 2.0
+        cost_2 = float(earth_unit_cost(n, baseline))
+        # More launches means the ops component has learned more → lower cost
+        assert cost_2 < cost_1
+
+    def test_crossover_shifts_with_lpu(self, baseline):
+        """Higher launches_per_unit should shift crossover earlier (Earth learns faster)."""
+        baseline["b_L"] = np.log(0.97) / np.log(2)
+        baseline["launches_per_unit"] = 1.0
+        cross_1 = find_crossover_npv(baseline, N_max=40000)
+        baseline["launches_per_unit"] = 2.0
+        cross_2 = find_crossover_npv(baseline, N_max=40000)
+        # More launch learning → Earth gets cheaper faster → harder for ISRU → later crossover
+        assert cross_2 >= cross_1
+
+
+# ===== TestMaintenanceCost =====
+
+class TestMaintenanceCost:
+    """M3: Verify ongoing capital maintenance delays crossover."""
+
+    def test_zero_maint_unchanged(self, baseline):
+        """K_maint_frac=0 should match baseline crossover."""
+        baseline["K_maint_frac"] = 0.0
+        cross_maint = find_crossover(baseline, discount=True)
+        cross_base = find_crossover_npv(baseline)
+        assert cross_maint == cross_base
+
+    def test_positive_maint_delays(self, baseline):
+        """Positive maintenance fraction should delay crossover."""
+        cross_base = find_crossover(baseline, discount=True)
+        baseline["K_maint_frac"] = 0.10
+        baseline["K_maint_interval"] = 5
+        cross_maint = find_crossover(baseline, n_max=40000, discount=True)
+        assert cross_maint >= cross_base
+
+    def test_higher_maint_more_delay(self, baseline):
+        """Higher maintenance fraction should delay crossover more."""
+        baseline["K_maint_interval"] = 5
+        baseline["K_maint_frac"] = 0.05
+        cross_5 = find_crossover(baseline, n_max=40000, discount=True)
+        baseline["K_maint_frac"] = 0.15
+        cross_15 = find_crossover(baseline, n_max=40000, discount=True)
+        assert cross_15 >= cross_5
 
 
 # ===== TestKProdRateCorrelation =====

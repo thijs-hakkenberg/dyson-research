@@ -471,7 +471,15 @@ def fig_npv_comparison():
 
     fig, (ax1, ax2) = subplots(1, 2, figsize=(12, 4.5))
 
-    for rate, label, color, ls in zip(rates, rate_labels, colors_r, linestyles_r):
+    # Stagger annotation offsets to avoid overlap
+    annotation_offsets = [
+        (400, 30),   # r=0%
+        (400, 15),   # r=3%
+        (600, -25),  # r=5%
+        (400, -15),  # r=10%
+    ]
+
+    for idx, (rate, label, color, ls) in enumerate(zip(rates, rate_labels, colors_r, linestyles_r)):
         p = BASELINE.copy()
         p["r"] = rate
         ns, earth_cum, isru_cum = cumulative_npv(n_max, p)
@@ -486,9 +494,10 @@ def fig_npv_comparison():
             cross_val = interp(cross_n, ns, earth_cum)
             ax1.plot(cross_n, cross_val / 1e9, "o", color=color,
                      markersize=7, zorder=5)
+            dx, dy = annotation_offsets[idx]
             ax1.annotate(f"r={label}\nN*={cross_n:,}",
                          xy=(cross_n, cross_val / 1e9),
-                         xytext=(cross_n + 400, cross_val / 1e9 + 15),
+                         xytext=(cross_n + dx, cross_val / 1e9 + dy),
                          fontsize=7, color=color,
                          arrowprops=dict(arrowstyle="->", color=color, lw=0.8))
 
@@ -909,23 +918,39 @@ def print_rate_dependent_learning():
 # G1f: Vitamin fraction sensitivity
 # ---------------------------------------------------------------------------
 def print_vitamin_sensitivity():
-    """G1f: Sweep vitamin fraction and report crossover shift."""
+    """M1: Two-part vitamin model sensitivity (fraction and $/kg)."""
     base_npv = find_crossover_npv(BASELINE)
     fracs = [0.0, 0.05, 0.10, 0.15]
 
-    print("\n  G1f: Vitamin fraction sensitivity (NPV, r=5%):")
-    print(f"  {'Vitamin%':>10s}  {'N*':>8s}  {'Shift':>8s}")
-    print(f"  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}")
+    print("\n  M1: Two-part vitamin model sensitivity (NPV, r=5%):")
+    print(f"  {'Vitamin%':>10s}  {'c_vit$/kg':>10s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'----------':>10s}  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}")
 
     for vf in fracs:
         p = BASELINE.copy()
         p["vitamin_frac"] = vf
         cross = find_crossover_npv(p, N_max=40000)
         shift = cross - base_npv
+        c_vit = int(p.get("c_vitamin_kg", 10000))
         if cross >= 40000:
-            print(f"  {vf*100:>9.0f}%  {'>40,000':>8s}  {'N/A':>8s}")
+            print(f"  {vf*100:>9.0f}%  {c_vit:>9,d}$  {'>40,000':>8s}  {'N/A':>8s}")
         else:
-            print(f"  {vf*100:>9.0f}%  {cross:>8,d}  {shift:>+8,d}")
+            print(f"  {vf*100:>9.0f}%  {c_vit:>9,d}$  {cross:>8,d}  {shift:>+8,d}")
+
+    # Sweep c_vitamin_kg at fixed vitamin_frac=10%
+    print(f"\n  M1b: c_vitamin_kg sweep at vitamin_frac=10% (NPV, r=5%):")
+    print(f"  {'c_vit$/kg':>10s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}")
+    for cvk in [5000, 10000, 50000]:
+        p = BASELINE.copy()
+        p["vitamin_frac"] = 0.10
+        p["c_vitamin_kg"] = cvk
+        cross = find_crossover_npv(p, N_max=40000)
+        shift = cross - base_npv
+        if cross >= 40000:
+            print(f"  {cvk:>9,d}$  {'>40,000':>8s}  {'N/A':>8s}")
+        else:
+            print(f"  {cvk:>9,d}$  {cross:>8,d}  {shift:>+8,d}")
 
 
 # ---------------------------------------------------------------------------
@@ -1345,6 +1370,155 @@ def print_risk_premium_sensitivity():
 
 
 # ---------------------------------------------------------------------------
+# M2: Launch learning re-indexing sensitivity
+# ---------------------------------------------------------------------------
+def print_launches_per_unit_sensitivity():
+    """M2: Sweep launches_per_unit to show effect of re-indexing launch learning."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  M2: Launch learning re-indexing (launches_per_unit, NPV, r=5%):")
+    print(f"  {'L/unit':>8s}  {'N*':>8s}  {'Shift':>8s}  {'Note':>30s}")
+    print(f"  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'------------------------------':>30s}")
+
+    for lpu in [0.5, 1.0, 2.0]:
+        p = BASELINE.copy()
+        p["launches_per_unit"] = lpu
+        cross = find_crossover_npv(p, N_max=40000)
+        shift = cross - base_npv
+        note = ""
+        if lpu == 0.5:
+            note = "(co-manifesting, 2 units/launch)"
+        elif lpu == 1.0:
+            note = "(baseline, 1:1)"
+        elif lpu == 2.0:
+            note = "(dedicated, 2 launches/unit)"
+        if cross >= 40000:
+            print(f"  {lpu:>8.1f}  {'>40,000':>8s}  {'N/A':>8s}  {note:>30s}")
+        else:
+            print(f"  {lpu:>8.1f}  {cross:>8,d}  {shift:>+8,d}  {note:>30s}")
+
+
+# ---------------------------------------------------------------------------
+# M3: Capital maintenance sensitivity
+# ---------------------------------------------------------------------------
+def print_maintenance_sensitivity():
+    """M3: Sweep K_maint_frac to show effect of ongoing capital maintenance."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  M3: Capital maintenance sensitivity (NPV, r=5%):")
+    print(f"  {'K_maint%':>10s}  {'Interval':>10s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'----------':>10s}  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}")
+
+    for frac in [0.0, 0.05, 0.10, 0.15]:
+        p = BASELINE.copy()
+        p["K_maint_frac"] = frac
+        p["K_maint_interval"] = 5
+        cross = find_crossover(p, n_max=40000, discount=True)
+        shift = cross - base_npv
+        if cross >= 40000:
+            print(f"  {frac*100:>9.0f}%  {5:>8d}yr  {'>40,000':>8s}  {'N/A':>8s}")
+        else:
+            print(f"  {frac*100:>9.0f}%  {5:>8d}yr  {cross:>8,d}  {shift:>+8,d}")
+
+
+# ---------------------------------------------------------------------------
+# M4: Technical success probability
+# ---------------------------------------------------------------------------
+def print_success_probability():
+    """M4: Expected value analysis as function of technical success probability."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    # At 2x crossover, compute ISRU savings
+    n_check = base_npv * 2
+    ns = arange(1, n_check + 1, dtype=float)
+    prod_rate = BASELINE["prod_rate"]
+    k_ramp = BASELINE["k_ramp"]
+    r = BASELINE["r"]
+
+    t_earth = earth_delivery_time(ns, prod_rate)
+    t_isru = unit_to_time(ns, prod_rate, BASELINE["t0"], k_ramp)
+
+    earth_units = earth_unit_cost(ns, BASELINE)
+    disc_earth = (1.0 + r) ** (-t_earth)
+    earth_cum = float(sum(earth_units * disc_earth))
+
+    ops = isru_ops_cost(ns, BASELINE)
+    disc_isru = (1.0 + r) ** (-t_isru)
+    isru_cum = BASELINE["K"] + float(sum(ops * disc_isru))
+
+    savings = earth_cum - isru_cum  # positive = ISRU cheaper
+    K = BASELINE["K"]
+
+    # p_s * savings > (1-p_s) * K  →  p_s > K / (savings + K)
+    p_s_min = K / (savings + K) if (savings + K) > 0 else 1.0
+
+    print(f"\n  M4: Technical success probability (NPV, r=5%, N={n_check:,}):")
+    print(f"    ISRU NPV savings at N={n_check:,}: ${savings/1e9:.1f}B")
+    print(f"    ISRU capital at risk:           ${K/1e9:.0f}B")
+    print(f"    Minimum p_success for ISRU preference: {p_s_min:.2%}")
+
+    print(f"\n  {'p_success':>12s}  {'E[NPV_ISRU]-E[NPV_Earth]':>25s}  {'Preferred':>12s}")
+    print(f"  {'------------':>12s}  {'-------------------------':>25s}  {'------------':>12s}")
+    for ps in [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
+        # E[ISRU cost] = ps * isru_cum + (1-ps) * (K + earth_cum)  [failure: sunk K + revert to Earth]
+        # E[Earth cost] = earth_cum
+        # Net = E[ISRU] - E[Earth] = ps*(isru_cum - earth_cum) + (1-ps)*K
+        net = ps * (isru_cum - earth_cum) + (1 - ps) * K
+        pref = "ISRU" if net < 0 else "Earth"
+        print(f"  {ps:>11.0%}  {net/1e9:>+24.1f}B  {pref:>12s}")
+
+
+# ---------------------------------------------------------------------------
+# M5: Commercial discount rate (r=15%)
+# ---------------------------------------------------------------------------
+def print_commercial_rate():
+    """M5: Report crossover at r=15% (commercial hurdle rate)."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  M5: Commercial discount rate (r=15%):")
+    p = BASELINE.copy()
+    p["r"] = 0.15
+    cross = find_crossover(p, n_max=40000, discount=True)
+    if cross >= 40000:
+        print(f"    r=15%: NO CROSSOVER within 40,000 units")
+    else:
+        print(f"    r=15%: N* = {cross:,}")
+
+    # Also report at r=10% and r=12% for reference
+    for rate in [0.10, 0.12, 0.15, 0.20]:
+        p["r"] = rate
+        cross = find_crossover(p, n_max=40000, discount=True)
+        status = f"N* = {cross:,}" if cross < 40000 else "NO CROSSOVER"
+        print(f"    r={rate:.0%}: {status}")
+
+
+# ---------------------------------------------------------------------------
+# M6: Capex-schedule coupling
+# ---------------------------------------------------------------------------
+def print_capex_coupling():
+    """M6: Test phased capex coupling to deployment schedule."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  M6: Capex-schedule coupling (phased K over 5yr, NPV, r=5%):")
+    print(f"    Baseline (lump-sum K, t0=5yr): N* = {base_npv:,}")
+
+    base_phased = find_crossover(BASELINE, n_max=40000, discount=True, phased_k_years=5)
+    print(f"    Phased K (5yr, no coupling):   N* = {base_phased:,}")
+
+    # Coupling: t0 = t0_base + beta * (K_years - 1)
+    for beta in [0.0, 0.5, 1.0]:
+        t0_eff = BASELINE["t0"] + beta * (5 - 1)
+        p = BASELINE.copy()
+        p["t0"] = t0_eff
+        cross = find_crossover(p, n_max=40000, discount=True, phased_k_years=5)
+        shift = cross - base_npv
+        if cross >= 40000:
+            print(f"    beta={beta:.1f} (t0_eff={t0_eff:.0f}yr):          NO CROSSOVER")
+        else:
+            print(f"    beta={beta:.1f} (t0_eff={t0_eff:.0f}yr):          N* = {cross:,} (shift: {shift:+,})")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -1435,5 +1609,12 @@ if __name__ == "__main__":
     print_no_launch_learning_sensitivity()
     print_fuel_floor_sensitivity()
     print_risk_premium_sensitivity()
+
+    # Version M diagnostics
+    print_launches_per_unit_sensitivity()
+    print_maintenance_sensitivity()
+    print_success_probability()
+    print_commercial_rate()
+    print_capex_coupling()
 
     print(f"\nDone. All figures saved to {fig_dir}")
