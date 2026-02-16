@@ -12,157 +12,163 @@ reviewers:
 
 # Comparative Peer Review Synthesis
 
-## Manuscript: "Economic Inflection Points in Space Manufacturing: Monte Carlo Analysis of ISRU vs. Earth Launch for Large-Scale Space Infrastructure"
+**Manuscript:** "Economic Inflection Points in Space Manufacturing: Monte Carlo Analysis of In-Situ Resource Utilization vs. Earth Launch for Large-Scale Space Infrastructure"
+
+**Reviews Synthesized:** Claude Opus 4.6 (Version O), Gemini 3 Pro (Version O), GPT-5.2 (Version O)
 
 ---
 
 ## Version Comparison
 
-**Note:** All three reviewers provided reviews only for Version N (a single version). No reviewer submitted separate reviews for Version A (formal academic voice) vs. Version B (humanized voice). Therefore, a direct A/B voice-style comparison cannot be performed from the available materials. All reviews appear to evaluate the same manuscript version, and the ratings below are replicated across the A/B columns accordingly, reflecting this limitation.
+All three reviews were conducted on **Version O only** (the formal academic voice). No Version A/B comparison is possible from the provided materials, as all reviewers evaluated the same manuscript version. Consequently, no direct assessment of voice-style trade-offs (rigor vs. readability, formal vs. humanized) can be made.
 
-Despite the absence of a true A/B comparison, the reviews themselves exhibit varying tonal registers that offer indirect insight: Claude Opus 4.6 adopts the most granular, line-by-line academic tone (11 minor issues, detailed equation-level scrutiny); Gemini 3 Pro is the most concise and policy-oriented, emphasizing actionable recommendations and structural contributions; GPT-5.2 is the most methodologically skeptical, pressing hardest on internal consistency and statistical framing. If the manuscript were to be revised in two voices, the Claude and GPT reviews suggest that formal academic precision would be valued for methodological credibility, while the Gemini review suggests that clear policy framing and accessibility would strengthen impact—implying that a hybrid voice (rigorous but readable) would best satisfy the full reviewer pool.
+That said, the reviews collectively provide indirect evidence about how the formal academic voice was received. **Gemini** praised the writing as "exceptionally well-written" (Clarity: 5/5), while **Claude** rated clarity at 4/5 but noted the paper is "too long" and "reads more like a technical report than a journal article." **GPT** similarly rated clarity at 4/5 and described it as a "version-controlled technical report." This convergence suggests that the formal voice succeeds in precision and rigor but may sacrifice conciseness—a trade-off that a humanized version might partially address by streamlining narrative sections, though at potential cost to technical specificity.
+
+If a Version B (humanized) exists or is planned, the reviews suggest it should prioritize **condensing the sensitivity analysis narrative** and **improving accessibility of key distinctions** (e.g., conditional vs. KM medians) while preserving the mathematical precision that all reviewers valued.
 
 ---
 
 ## Consensus Strengths
 
-1. **Pathway-specific NPV formulation is a genuine methodological contribution.** All three reviewers identified the schedule-aware, pathway-specific discounting (Eq. 13–16) as the paper's strongest and most novel element. Claude called it "non-obvious and analytically valuable"; Gemini rated it as a key component of the paper's "Excellent" novelty score; GPT described it as "a meaningful contribution relative to much of the prior qualitative discussion." The insight that Earth costs are discounted at earlier delivery times, materially changing the crossover relative to shared-schedule formulations, was universally recognized as advancing the ISRU economics literature.
+**1. Novel integration of pathway-specific NPV timing with Monte Carlo uncertainty propagation.**
+All three reviewers identified the schedule-aware NPV crossover framework as the paper's core contribution. Claude called it "a meaningful conceptual advance over deterministic crossover analyses." Gemini noted the "distinct lack of rigorous, parametric cost modeling for generic structural manufacturing that incorporates learning curves and NPV properly." GPT highlighted that "many crossover analyses implicitly compare costs at equal calendar time or equal unit number without correctly discounting cash flows at the time they occur."
 
-2. **Probabilistic framing with honest uncertainty reporting.** All reviewers praised the paper's use of crossover probability ranges (51–77%) rather than deterministic point estimates, and the inclusion of Kaplan-Meier censoring analysis to address non-convergent Monte Carlo trials. Claude called this "appropriate and refreshing for this literature"; GPT noted the "unusually transparent uncertainty treatment (including censoring)"; Gemini highlighted the careful avoidance of claiming ISRU is "inevitably cheaper."
+**2. Exceptionally thorough sensitivity analysis.**
+All reviewers acknowledged the breadth and rigor of the robustness testing. Gemini stated the analyses are "exhaustive" and that "the author has proactively addressed potential criticisms." Claude described them as "extraordinarily thorough." GPT noted the "well structured" separation between deterministic baseline, one-at-a-time sensitivity, and Monte Carlo global uncertainty propagation.
 
-3. **Exhaustive sensitivity analysis demonstrating intellectual honesty.** The breadth of robustness testing (~28 sensitivity analyses) was acknowledged by all reviewers as a strength, even as all three also noted it creates presentation challenges. Claude praised the "intellectual honesty about the model's limitations"; Gemini rated the sensitivity coverage as part of its "Excellent" validity score; GPT acknowledged the "strong and fairly novel methodological package."
+**3. Kaplan-Meier treatment of censored (non-converging) Monte Carlo runs.**
+All three reviewers singled out this statistical choice as a distinctive strength. Claude called it "a strong methodological choice." Gemini described it as "a high-quality statistical touch rarely seen in engineering cost models." GPT called the exposition "one of the clearer I've seen in this niche."
 
-4. **Exemplary AI-assisted methodology disclosure.** All three reviewers gave the ethical compliance dimension the highest possible rating (5/5), specifically commending the footnote's granularity in distinguishing AI-assisted tasks from human-authored quantitative work. Claude called it "exemplary in its specificity" and noted it "exceeds current journal norms"; GPT described it as "unusually transparent."
+**4. Transparent and exemplary AI-assisted methodology disclosure.**
+All reviewers rated Ethical Compliance at 5/5. Claude called the disclosure "appropriately specific." Gemini said it "sets a high standard for AI disclosure in academic publishing." GPT described it as "unusually thorough and appropriate."
 
-5. **Clear mathematical exposition and consistent notation.** Despite individual notation quibbles (Claude flagged N* vs. N*_r inconsistency; GPT flagged Table 3 rounding), all reviewers found the equations well-presented and the pathway-specific subscript convention (E for Earth, I for ISRU) helpful. The production schedule table (Table 2/3) was specifically praised by Claude and Gemini as effective at conveying the timing gap.
+**5. Revenue breakeven analysis reframing the ISRU decision from cost minimization to utility maximization.**
+Claude identified this as "a particularly valuable addition" with "practical policy relevance." Gemini called it "a profound insight for commercial space solar power proponents" and recommended elevating it in the abstract. GPT implicitly endorsed it by engaging with the schedule-delay implications throughout.
 
-6. **Revenue breakeven and technical success probability analyses add decision-theoretic depth.** Claude and Gemini both highlighted the revenue breakeven analysis (§5.2, Eq. 18/31) as elevating the paper beyond pure cost engineering. Gemini noted it captures a nuance "often missed in techno-optimist literature." GPT acknowledged the success probability framework but pressed for stronger justification of its parameters.
+**6. Two-component launch cost model separating learnable operations from physics-limited propellant.**
+Both Claude and Gemini explicitly praised this decomposition. GPT engaged with it critically but acknowledged the structural argument that "Earth-to-orbit delivery retains a marginal cost floor tied to energy and operations."
 
 ---
 
 ## Consensus Weaknesses
 
-1. **The $200/kg launch cost "physics floor" is inadequately justified and potentially mischaracterized.** Claude provided the most detailed critique (Major Issue #1), demonstrating that actual propellant costs translate to ~$2–5/kg of payload, meaning the $200/kg figure bundles substantial learnable operational costs. GPT flagged that "$200/kg propellant and range operations is not a universally accepted floor across architectures and accounting conventions." Gemini did not flag this as a major issue but noted the need for stronger cost justification generally. The paper's central structural argument—that launch has an irreducible physics floor while ISRU costs are fully learnable—is overstated if the "floor" is primarily operational.
+**1. Absence of ISRU facility availability/reliability modeling.**
+All three reviewers flagged this as a critical omission. Claude called it "a notable gap" given that the authors themselves identify it as a "first-order physical constraint" (§5.4). GPT listed it as a major issue, noting it "may systematically overstate ISRU's ability to achieve $\dot{n}_{\max}$." Gemini did not list it as a major issue but implicitly endorsed its importance through the "throughput constraint" discussion. All agreed that implementing $A \sim U[0.70, 0.95]$ as a multiplicative factor on ISRU throughput would require minimal effort and materially improve credibility.
 
-2. **No demand model or programmatic context for the crossover volume.** Claude (Major Issue #2) and Gemini (Major Issue #1, throughput constraint) both identified the absence of any demand scenario to justify the production of 4,500–40,000 structural modules. GPT implicitly raised this through concerns about the "model compendium" character of the paper. Without connecting the crossover volume to specific infrastructure architectures (e.g., space solar power satellites, orbital habitats), the crossover point remains a mathematical abstraction rather than a decision-relevant finding.
+**2. Shared production rate parameter ($\dot{n}_{\max}$) conflating Earth and ISRU capacity.**
+Claude identified this as a major issue: "Earth manufacturing capacity for structural modules is essentially unconstrained at the rates considered... while ISRU throughput is the binding constraint." GPT raised the same concern through the lens of cash-flow asymmetry, noting that Earth-side capacity and ISRU capacity are "independent engineering parameters." Gemini did not flag this explicitly but recommended contextualizing throughput via a "Launch Mass Equivalent" calculation, which implicitly acknowledges the asymmetry.
 
-3. **ISRU learning rate (LR_I = 0.90) lacks sufficient empirical grounding for extraterrestrial manufacturing.** All three reviewers questioned the baseline ISRU learning rate. Claude (Major Issue #4) detailed why extraterrestrial manufacturing differs fundamentally from the terrestrial additive manufacturing and semiconductor analogies used to justify the parameter. GPT noted the conceptual issue of learning curve indexing. Gemini suggested broadening to terrestrial mining and chemical processing analogies. The epistemic uncertainty in this parameter is not adequately conveyed.
+**3. Gap between component-level and system-level crossover not quantified.**
+Claude raised this as a major issue: "If electronics, thermal management, and power systems constitute 40–60% of total system cost despite being <20% of mass, the crossover for the *system* may be far later." GPT raised the same concern through the vitamin model and radiation-hardened electronics discussion. Gemini touched on it indirectly by noting the model applies to "aerospace-grade structures, not necessarily the commoditized structures envisioned by some futurists."
 
-4. **Kaplan-Meier median is underreported relative to the conditional median.** Claude (Major Issue #3) and GPT (Major Issue #4) both identified that the abstract and conclusions primarily report the conditional median (~5,600 units at r=5%), while the KM median (~10,000 at r=5%) is arguably more representative for portfolio-level decisions. At r=8%, the divergence is 375% (KM: 24,231 vs. conditional: 5,103). Both reviewers recommended dual reporting with explicit framing of which metric answers which decision question.
+**4. Ambiguity in what is included in ISRU capital cost $K$ and cost boundary definitions.**
+GPT was most explicit: "$K$ is not explicit whether it includes: Earth launch of factory mass, development cost, program management, integration/test, on-orbit commissioning, and spares." Claude raised the related issue of Earth first-unit cost potentially double-counting NRE. Gemini did not flag this directly but the concern is implicit in the sensitivity testing of $K$ distributions.
 
-5. **Excessive breadth of sensitivity analyses without clear prioritization.** All three reviewers noted that the ~28 robustness checks, while individually valuable, collectively create readability and focus problems. Claude described a "kitchen sink" impression; GPT warned the paper "risks being perceived as a 'model compendium'"; Gemini was more positive but still recommended visualization improvements. A consolidated summary table and/or movement of secondary tests to supplementary material was recommended by all.
+**5. Paper length and structural bloat from exhaustive sensitivity reporting.**
+Claude recommended consolidating sensitivity results into a summary table and moving detailed narratives to supplementary material, estimating ~3,000 words could be cut. GPT similarly recommended moving "secondary checks (fuel/ops decomposition, launch re-indexing, steepness $k$ sweep) to supplementary material." Gemini did not flag length as an issue, but this likely reflects a higher tolerance for thoroughness rather than disagreement about the paper's density.
 
-6. **Cash-flow timing model is coarse relative to the paper's central NPV claim.** GPT (Major Issue #2) pressed hardest on this, arguing that since pathway-specific discounting is the paper's primary novelty claim, the cost-incurrence timing should be more realistic and symmetric across pathways (e.g., milestone payments for Earth manufacturing, phased capital deployment for ISRU). Claude raised the related point about staged capital deployment with decision gates (§3, Validity). Gemini noted that standard launch payment structures would shift the crossover.
+**6. Probabilistic claims risk over-interpretation given dependence on assumed prior distributions.**
+GPT was most forceful: "the reported convergence probabilities are conditional on the chosen prior ranges rather than objective frequencies." Claude noted "the model is fundamentally a parametric exercise with assumed distributions rather than an empirically grounded cost model." Gemini acknowledged this implicitly by noting the crossover insensitivity to the Earth floor "relies heavily on the assumption that Earth manufacturing starts at a very high first-unit cost."
 
 ---
 
 ## Divergent Opinions
 
-1. **Overall recommendation severity.**
-   - **Claude Opus 4.6:** Minor Revision — "None of these are fatal flaws—they can be addressed through targeted revisions without re-running the core analysis."
-   - **Gemini 3 Pro:** Minor Revision — "The 'Major Issues' listed above are primarily requests for stronger justification or slight model enhancements... rather than fundamental flaws."
-   - **GPT-5.2:** Major Revision — "Several core modeling choices (launch learning indexing, cash-flow timing symmetry, and the decision-analytic framing of 'success probability') need revision to meet high-impact journal standards."
+**1. Overall publication readiness.**
+- **Gemini: Accept.** "This is a high-quality manuscript that makes a substantive contribution... The 'Major Issues' section is empty because the author has proactively addressed potential criticisms."
+- **Claude: Major Revision.** "None of these issues invalidate the paper's core findings, but they collectively represent a level of revision that goes beyond minor corrections."
+- **GPT: Major Revision.** "The manuscript is promising and contains several strong, publishable ideas... However, for a high-impact space systems/economics journal, key elements need strengthening."
 
-2. **Launch learning curve indexing.**
-   - **GPT-5.2** identified this as a Major Issue, arguing that indexing launch learning to program-specific cumulative units (rather than industry-wide launch cadence) is "conceptually problematic" and "can be viewed as double-counting program scale effects." GPT recommended recasting launch cost as exogenous.
-   - **Claude Opus 4.6** noted the issue tangentially (the fuel floor sensitivity shows ±54 units, suggesting limited impact) but did not elevate it to a major concern.
-   - **Gemini 3 Pro** did not flag this issue at all.
+**2. Severity of the cash-flow asymmetry between pathways.**
+- **GPT** treated this as a major issue requiring a "unified cash-flow convention" with NRE/tooling, recurring fixed overhead, and variable per-unit costs modeled symmetrically for both pathways.
+- **Claude** raised the related but narrower concern about Earth first-unit cost / NRE treatment (Major Issue #4), recommending separation of NRE from recurring first-unit cost.
+- **Gemini** did not identify cash-flow asymmetry as problematic, implicitly accepting the current formulation as adequate.
 
-3. **Technical success probability analysis (§4.11/§3.11).**
-   - **GPT-5.2** flagged this as a Major Issue, calling the 69% headline number "under-justified" due to the arbitrary evaluation horizon (2N* units), the all-or-nothing failure model, and the absence of salvage value or partial success modes.
-   - **Claude Opus 4.6** found the framework "meaningful" and a positive addition, noting only that it should cross-reference the risk-adjusted discounting section (Minor Issue #6).
-   - **Gemini 3 Pro** did not raise concerns about this analysis.
+**3. Whether the sensitivity analysis is a strength or a structural problem.**
+- **Gemini** viewed the exhaustive sensitivity testing as an unqualified strength that preemptively addresses reviewer concerns.
+- **Claude** and **GPT** both viewed the thoroughness as a double-edged sword: valuable for rigor but detrimental to readability and journal fit, recommending substantial condensation.
 
-4. **Significance and novelty rating.**
-   - **Gemini 3 Pro** rated significance as 5/5 (Excellent), viewing the integration of Wright learning curves, pathway-specific NPV, and Monte Carlo as a highly novel package.
-   - **Claude Opus 4.6** and **GPT-5.2** both rated significance as 4/5 (Good), with Claude noting that the hybrid transition strategy contribution is "somewhat generic" and GPT noting that novelty is "diluted by the manuscript's breadth."
+**4. Need for Sobol sensitivity analysis.**
+- **Claude** explicitly recommended implementing Sobol indices (first-order and total-effect) as a replacement for several one-at-a-time tests, noting the computational cost is modest (~24,000 evaluations).
+- **GPT** and **Gemini** did not raise this, implicitly accepting Spearman rank correlations as adequate for the paper's purposes.
 
-5. **Throughput constraint integration.**
-   - **Gemini 3 Pro** elevated this to a Major Issue, arguing the model should incorporate a launch capacity cap or queueing delay, or at minimum state in the abstract that the economic crossover underestimates the ISRU advantage.
-   - **Claude Opus 4.6** noted the throughput discussion is "entirely qualitative and somewhat disconnected from the quantitative model" but treated it as a clarity/structure issue rather than a major methodological flaw.
-   - **GPT-5.2** did not specifically flag the throughput constraint.
+**5. Treatment of the risk-adjusted discounting section (§4.11).**
+- **Claude** recommended either removing §4.11 entirely or restructuring it as a cautionary example, noting it "could mislead readers who skim past the caveat."
+- **GPT** and **Gemini** did not flag this section as problematic.
 
-6. **ISRU capital cost justification.**
-   - **Gemini 3 Pro** flagged the $50B baseline capital cost as a Major Issue, requesting comparison to terrestrial analogues (semiconductor fabs, offshore platforms) for a "sanity check."
-   - **Claude Opus 4.6** and **GPT-5.2** did not elevate capital cost justification to a major concern, though both noted the parameter's dominance in sensitivity analysis.
+**6. Adequacy of the learning curve model for ISRU operations.**
+- **GPT** raised a substantive concern that "excavation, beneficiation, reduction, additive manufacturing, finishing, QA, and transport are different processes with different learning and different floors," making a single $\text{LR}_I$ a "meta-parameter" with limited interpretability.
+- **Claude** and **Gemini** accepted the single learning rate as a reasonable reduced-form model, with Claude focusing instead on the learning curve application to *launch* costs as the more problematic assumption.
 
 ---
 
 ## Aggregated Ratings
 
-| Criterion | Claude N | Claude N* | Gemini N | Gemini N* | GPT N | GPT N* |
-|-----------|----------|-----------|----------|-----------|-------|--------|
-| Significance & Novelty | 4 | 4 | 5 | 5 | 4 | 4 |
-| Methodological Soundness | 3 | 3 | 4 | 4 | 3 | 3 |
-| Validity & Logic | 4 | 4 | 5 | 5 | 3 | 3 |
-| Clarity & Structure | 4 | 4 | 5 | 5 | 4 | 4 |
-| Ethical Compliance | 5 | 5 | 5 | 5 | 5 | 5 |
-| Scope & Referencing | 3 | 3 | 4 | 4 | 4 | 4 |
+Since all three reviewers evaluated only Version O, the table below reflects a single version per reviewer. Columns for a hypothetical Version B are left blank.
 
-*\*Note: Only one version (N) was reviewed by all models. Columns are duplicated to maintain the requested table format. No A/B version distinction exists in the provided reviews.*
+| Criterion | Claude O | Claude B | Gemini O | Gemini B | GPT O | GPT B |
+|-----------|----------|----------|----------|----------|-------|-------|
+| Significance & Novelty | 4 | — | 5 | — | 4 | — |
+| Methodological Soundness | 3 | — | 5 | — | 3 | — |
+| Validity & Logic | 3 | — | 4 | — | 3 | — |
+| Clarity & Structure | 4 | — | 5 | — | 4 | — |
+| Ethical Compliance | 5 | — | 5 | — | 5 | — |
+| Scope & Referencing | 4 | — | 4 | — | 4 | — |
+| **Overall Recommendation** | **Major Revision** | — | **Accept** | — | **Major Revision** | — |
 
-**Cross-reviewer averages (Version N):**
-| Criterion | Mean | Range |
-|-----------|------|-------|
-| Significance & Novelty | 4.3 | 4–5 |
-| Methodological Soundness | 3.3 | 3–4 |
-| Validity & Logic | 4.0 | 3–5 |
-| Clarity & Structure | 4.3 | 4–5 |
-| Ethical Compliance | 5.0 | 5–5 |
-| Scope & Referencing | 3.7 | 3–4 |
+**Cross-reviewer averages (Version O):**
+- Significance & Novelty: 4.3
+- Methodological Soundness: 3.7
+- Validity & Logic: 3.3
+- Clarity & Structure: 4.3
+- Ethical Compliance: 5.0
+- Scope & Referencing: 4.0
 
 ---
 
 ## Priority Action Items
 
-### 1. Rederive and reframe the launch cost floor from first principles
-**Flagged by:** Claude (Major Issue #1), GPT (Scope & Referencing), Gemini (implicitly via cost justification)
-**Applies to:** Both versions / core model
+**1. Implement ISRU facility availability/reliability in the Monte Carlo.** *(Highest priority)*
+- **Flagged by:** Claude (Major Issue #2), GPT (Major Issue #3); implicitly supported by Gemini.
+- **Applies to:** Both versions.
+- **Action:** Add $A \sim U[0.70, 0.95]$ as a multiplicative factor on $\dot{n}_{\max,I}$. Report impact on convergence probability and conditional/KM medians. This is a single additional stochastic parameter requiring minimal code changes but addressing what the authors themselves identify as a first-order constraint.
 
-Replace the assumed $200/kg "physics floor" with a transparent bottom-up decomposition: propellant mass fraction × propellant unit cost ÷ payload capacity, yielding the true physics-constrained floor (~$2–5/kg), plus an explicit operational floor (pad ops, range safety, refurbishment, insurance) acknowledged as learnable but slow-learning. Alternatively, reframe the $200/kg as an *operational asymptote* rather than a physics constraint. This is the single most important revision because it underpins the paper's central structural argument about pathway asymmetry.
+**2. Decouple Earth and ISRU production rate parameters.** *(High priority)*
+- **Flagged by:** Claude (Major Issue #1), GPT (implicitly through cash-flow asymmetry discussion).
+- **Applies to:** Both versions.
+- **Action:** Introduce $\dot{n}_{\max,E}$ (fixed or narrowly distributed, e.g., 500 units/yr) and $\dot{n}_{\max,I}$ (stochastic, e.g., $U[250, 750]$). At minimum, test as a sensitivity variant; ideally adopt as the new baseline. This more accurately represents the physical reality that terrestrial aerospace manufacturing capacity is not the binding constraint.
 
-### 2. Add a demand scenario section connecting crossover volume to specific infrastructure architectures
-**Flagged by:** Claude (Major Issue #2), Gemini (Major Issue #1, throughput), GPT (implicitly via "model compendium" concern)
-**Applies to:** Both versions
+**3. Clarify cost boundary definitions for $K$ and implement symmetric cash-flow treatment.** *(High priority)*
+- **Flagged by:** GPT (Major Issues #1 and #4), Claude (Major Issue #4).
+- **Applies to:** Both versions.
+- **Action:** Add an explicit "Cost Boundary & Accounting Conventions" subsection or table specifying what is included/excluded in $K$ (development, Earth launch of factory, spares, commissioning, program management, contingency). Separate Earth NRE/tooling ($K_E$) from recurring first-unit cost ($T_1$) in the baseline formulation, not just as a sensitivity test. Consider implementing a unified milestone-based cash-flow convention for both pathways as an alternative main case.
 
-Add 1–2 pages mapping the crossover volume (4,500–10,000 units of 1,850 kg modules) to one or two specific infrastructure programs (e.g., a 2 GW space solar power satellite, an O'Neill-class habitat). Include a simple demand timeline showing whether the crossover volume is reachable within a plausible programmatic horizon. This transforms the crossover from a mathematical abstraction into a decision-relevant finding.
+**4. Condense the paper by moving secondary sensitivity analyses to supplementary material.** *(Medium-high priority)*
+- **Flagged by:** Claude (Clarity §4), GPT (Clarity §4).
+- **Applies to:** Both versions.
+- **Action:** Create a single summary table (parameter, range, baseline crossover, shifted crossover, % shift, conclusion) for the main text. Retain tornado diagram, Spearman table, convergence curve, and the 4–5 most decision-relevant sensitivity tests in the body. Move detailed narratives for secondary tests (S-curve steepness, fuel/ops decomposition, launch re-indexing, pay-at-milestone timing) to an appendix or online supplement. Target ~3,000-word reduction.
 
-### 3. Report KM and conditional medians with equal prominence throughout, including the abstract
-**Flagged by:** Claude (Major Issue #3), GPT (Major Issue #4)
-**Applies to:** Both versions
+**5. Address the gap between component-level and system-level crossover.** *(Medium priority)*
+- **Flagged by:** Claude (Major Issue #3), GPT (implicitly through vitamin/radiation discussion).
+- **Applies to:** Both versions.
+- **Action:** Add a parametric extension showing how crossover scales with structural mass fraction ($f_s$) and cost fraction ($f_c$) of the total system. Even a simple analytical approximation (e.g., $N^*_{\text{system}} \approx N^*_{\text{component}} / f_c$) with a brief discussion would help readers translate component-level results to system-level applications. Alternatively, explicitly scope all claims to structural components only with a prominent caveat.
 
-Frame the two metrics as answering different questions: conditional median for committed ISRU programs ("given that we build it, when does it pay off?") and KM median for portfolio-level decisions ("across all plausible futures, what is the expected crossover?"). The current abstract and conclusions overweight the conditional median, which is severely biased at high discount rates (375% divergence at r=8%).
+**6. Strengthen framing of probabilistic claims as conditional on assumed priors.** *(Medium priority)*
+- **Flagged by:** GPT (Major Issue #2), Claude (Significance §1).
+- **Applies to:** Both versions.
+- **Action:** Add explicit language in the abstract, results, and conclusion that convergence probabilities (e.g., "66% at $r = 5\%$") are conditional on the chosen parameter distributions and planning horizon, not objective frequencies. Consider adding a "prior stress test" with a deliberately pessimistic parameter set (higher $K$ mean, lower $\dot{n}_{\max}$, higher vitamin fraction, lower availability) to demonstrate robustness of qualitative conclusions even as numeric probabilities shift.
 
-### 4. Strengthen ISRU learning rate justification and widen the uncertainty range
-**Flagged by:** Claude (Major Issue #4), GPT (minor issue on distributions), Gemini (referencing gap on terrestrial mining)
-**Applies to:** Both versions
-
-Add explicit discussion of why ISRU learning might be slower than terrestrial analogues (no human intervention, extreme environment, communication delays, no supply chain). Consider widening the LR_I distribution (e.g., U[0.85, 1.00] or β-distribution) and adding terrestrial mining/chemical processing learning rates as additional analogues. Report conditional median and convergence rate as explicit functions of LR_I.
-
-### 5. Consolidate sensitivity analyses: create a summary table and move secondary tests to supplementary material
-**Flagged by:** Claude (Clarity), GPT (Clarity), Gemini (implicitly via recommendation to visualize)
-**Applies to:** Both versions
-
-Create a single table listing all ~28 sensitivity tests with columns for: parameter, range tested, baseline crossover, shifted crossover, shift magnitude, and convergence impact. Move secondary robustness checks (e.g., organizational forgetting, alternative copula structures, minor schedule variants) to an appendix. Focus the main text on the 4–5 dominant drivers.
-
-### 6. Address launch learning curve indexing concern
-**Flagged by:** GPT (Major Issue #1); Claude and Gemini did not elevate this
-**Applies to:** Both versions
-
-Either (a) justify why program-specific unit count is an acceptable proxy for industry-wide launch cadence (e.g., if the program dominates the launch market at the assumed scale), or (b) recast launch cost as an exogenous time-dependent trajectory with uncertainty bounds, using program-indexed learning only as a secondary sensitivity. Given that two of three reviewers did not flag this as major, option (a) with a clear justification paragraph may suffice.
-
-### 7. Improve cash-flow timing model symmetry
-**Flagged by:** GPT (Major Issue #2), Claude (Validity, staged capital), Gemini (Minor Issue #3 on launch payments)
-**Applies to:** Both versions
-
-Implement at minimum a phased ISRU capital deployment (spread over [0, t₀] rather than lump-sum at t=0) and acknowledge that Earth manufacturing payments typically precede delivery (milestone payments). If a full milestone model is too complex for this revision, add a robustness test showing the crossover shift under a 2-stage payment model for both pathways, and explicitly state the direction and approximate magnitude of the bias introduced by the current simplification.
+**7. Add permanent archival link (Zenodo DOI) for code repository.** *(Low priority but important for publication)*
+- **Flagged by:** GPT (Ethical Compliance §5), Claude (Scope §6).
+- **Applies to:** Both versions.
+- **Action:** Archive the GitHub repository to Zenodo (or equivalent) and include the DOI in the manuscript. Include version tag/commit hash corresponding to the published results. Verify repository URL is functional before submission.
 
 ---
 
 ## Overall Assessment
 
-The manuscript addresses a genuine and important gap in the ISRU economics literature with a well-motivated, schedule-aware NPV framework that represents a meaningful methodological advance over prior work. The probabilistic framing, extensive sensitivity analysis, and transparent uncertainty reporting (including censoring-aware statistics) reflect strong analytical practice. The AI disclosure is exemplary. Two of three reviewers recommend Minor Revision; one recommends Major Revision, primarily due to concerns about launch learning indexing, cash-flow timing symmetry, and the success probability framing.
+This manuscript makes a genuinely valuable contribution to the ISRU economics literature by providing the first probabilistic, schedule-aware NPV framework for the Earth-vs-ISRU manufacturing decision at scale. The core methodology is sound, the sensitivity analysis is extraordinarily thorough, and the writing quality is high. The Kaplan-Meier treatment of censored Monte Carlo runs, the revenue breakeven analysis, and the two-component launch cost model are particular strengths that distinguish this work from prior deterministic crossover analyses.
 
-The consensus view is that the paper is publishable with targeted revisions that do not require fundamental model redesign. The most critical revisions are: (1) rederiving/reframing the launch cost floor, (2) adding a demand scenario, (3) elevating the KM median to equal prominence, and (4) consolidating the sensitivity presentation. These can be accomplished within a single revision cycle.
+However, two of three reviewers recommend **major revision**, and the consensus weaknesses are substantive: the absence of facility availability modeling, the shared production rate parameter, ambiguous cost boundaries, and the gap between component-level and system-level claims all require attention before the paper meets the standards of a high-impact journal. Importantly, none of these issues invalidate the paper's core findings or require fundamental restructuring—they are feasible extensions that would strengthen an already promising framework.
 
-Since only one version (N) was reviewed, no A/B voice comparison is possible. The manuscript as reviewed is written in a formal academic register that all reviewers found clear and well-organized. The recommendation is to proceed with this version, incorporating the priority action items above, and to target *Advances in Space Research* or *Acta Astronautica* as the primary venue. The paper's interdisciplinary positioning (space engineering × economics) is a strength for these journals but may require careful reviewer selection to ensure both dimensions are evaluated by appropriate experts.
+The paper should proceed with **Version O (formal academic voice)** as the base, incorporating the priority action items above. The most impactful revisions—implementing availability, decoupling production rates, and clarifying cost boundaries—are computationally modest and would likely shift quantitative results by amounts the authors can characterize within one revision cycle. Condensing the sensitivity analysis for journal fit is equally important for acceptance. With these changes, the paper would be a strong candidate for publication in *Advances in Space Research*, *Acta Astronautica*, or *New Space*.
