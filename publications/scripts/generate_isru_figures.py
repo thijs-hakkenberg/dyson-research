@@ -54,6 +54,8 @@ from isru_model import (  # noqa: E402
     find_crossover_npv,
     find_crossover_npv_phased,
     find_crossover_rate_dependent,
+    find_recrossing_volume,
+    is_permanent_crossover,
     isru_ops_cost,
     isru_ops_cost_rate_dependent,
     isru_unit_cost,
@@ -2291,6 +2293,174 @@ def print_k_clip_sensitivity():
               f"${k_p50/1e9:>5.1f}B  ${k_p90/1e9:>5.1f}B  ${k_p99/1e9:>5.1f}B  ${k_max_val/1e9:>5.1f}B")
 
 
+# ---------------------------------------------------------------------------
+# Version AB diagnostics
+# ---------------------------------------------------------------------------
+def print_recrossing_analysis():
+    """AB1: Re-crossing volume analysis for transient crossovers."""
+    import numpy as np
+
+    print("\n  AB1: Re-crossing volume analysis (10,000 MC runs, r=5%):")
+    rng = default_rng(42)
+    params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5, correlated=True)
+    crossovers, perm_flags = run_mc_loop(params, 0.05, 40000)
+
+    converged = crossovers < 40000
+    transient = converged & ~perm_flags.astype(bool)
+    n_converged = int(np.sum(converged))
+    n_transient = int(np.sum(transient))
+    n_permanent = int(np.sum(converged & perm_flags.astype(bool)))
+
+    print(f"    Converged: {n_converged} ({n_converged/10000*100:.1f}%)")
+    print(f"    Permanent: {n_permanent} ({n_permanent/10000*100:.1f}%)")
+    print(f"    Transient: {n_transient} ({n_transient/10000*100:.1f}%)")
+
+    if n_transient > 0:
+        recross_ns = []
+        peak_ns = []
+        peak_savings_list = []
+        trans_indices = np.where(transient)[0]
+        for idx in trans_indices:
+            p_i = {k: float(v[idx]) for k, v in params.items()}
+            p_i.update({k: v for k, v in BASELINE.items() if k not in params})
+            p_i["r"] = 0.05
+            cross_n = int(crossovers[idx])
+            recross_n, peak_n, peak_sav = find_recrossing_volume(p_i, cross_n, N_max=200000)
+            recross_ns.append(recross_n)
+            peak_ns.append(peak_n)
+            peak_savings_list.append(peak_sav)
+
+        recross_arr = np.array(recross_ns)
+        peak_arr = np.array(peak_ns)
+        savings_arr = np.array(peak_savings_list)
+
+        med_recross = float(np.median(recross_arr))
+        iqr_lo = float(np.percentile(recross_arr, 25))
+        iqr_hi = float(np.percentile(recross_arr, 75))
+        med_peak_n = float(np.median(peak_arr))
+        med_peak_sav = float(np.median(savings_arr))
+
+        print(f"    Median N**: {med_recross:,.0f} units")
+        print(f"    N** IQR: [{iqr_lo:,.0f}, {iqr_hi:,.0f}]")
+        print(f"    Median peak savings volume: {med_peak_n:,.0f} units")
+        print(f"    Median peak savings: ${med_peak_sav/1e9:.2f}B")
+    else:
+        print("    No transient crossovers found.")
+
+
+def print_earth_n0_sensitivity():
+    """AB1: Earth learning offset sensitivity sweep."""
+    print("\n  AB1: Earth learning curve offset sensitivity (deterministic, r=5%):")
+    print(f"  {'earth_n0':>10s}  {'N* (r=5%)':>12s}  {'Shift':>8s}")
+    print(f"  {'----------':>10s}  {'------------':>12s}  {'--------':>8s}")
+
+    base_cross = find_crossover_npv(BASELINE)
+    for n0 in [0, 10, 50, 100, 200]:
+        p = BASELINE.copy()
+        p["earth_n0"] = n0
+        cross_n = find_crossover(p, discount=True, n_max=40000)
+        shift = cross_n - base_cross
+        pct = shift / base_cross * 100 if base_cross > 0 else 0
+        print(f"  {n0:>10d}  {cross_n:>12,d}  {shift:>+7d} ({pct:>+.1f}%)")
+
+
+def fig_decision_tree():
+    """AB1: Generate decision-tree summary figure."""
+    fig, ax = subplots(figsize=(10, 6))
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 7)
+    ax.axis("off")
+
+    box_props = dict(boxstyle="round,pad=0.4", facecolor="#f0f4f8", edgecolor="#374151", linewidth=1.5)
+    leaf_yes = dict(boxstyle="round,pad=0.3", facecolor="#dcfce7", edgecolor="#16a34a", linewidth=1.2)
+    leaf_no = dict(boxstyle="round,pad=0.3", facecolor="#fef3c7", edgecolor="#d97706", linewidth=1.2)
+    leaf_red = dict(boxstyle="round,pad=0.3", facecolor="#fee2e2", edgecolor="#dc2626", linewidth=1.2)
+
+    # Root
+    ax.text(5, 6.5, "Infrastructure type?", ha="center", va="center", fontsize=11,
+            fontweight="bold", bbox=box_props)
+
+    # Level 1 branches
+    ax.annotate("", xy=(2.5, 5.7), xytext=(4.2, 6.2),
+                arrowprops=dict(arrowstyle="->", lw=1.2))
+    ax.text(3.3, 6.05, "Revenue-\ngenerating", ha="center", fontsize=7, color="#6b7280")
+    ax.annotate("", xy=(7.5, 5.7), xytext=(5.8, 6.2),
+                arrowprops=dict(arrowstyle="->", lw=1.2))
+    ax.text(6.7, 6.05, "Non-revenue", ha="center", fontsize=7, color="#6b7280")
+
+    # Revenue branch
+    ax.text(2.5, 5.4, "Revenue > $0.9M/unit/yr?", ha="center", va="center", fontsize=9,
+            bbox=box_props)
+    ax.annotate("", xy=(1.2, 4.5), xytext=(1.8, 5.1),
+                arrowprops=dict(arrowstyle="->", lw=1.0))
+    ax.text(1.4, 4.85, "Yes", fontsize=7, color="#6b7280")
+    ax.text(1.2, 4.2, "Earth preferred\n(opportunity cost\ndominates)", ha="center", fontsize=8,
+            bbox=leaf_no)
+    ax.annotate("", xy=(3.5, 4.5), xytext=(3.0, 5.1),
+                arrowprops=dict(arrowstyle="->", lw=1.0))
+    ax.text(3.3, 4.85, "No", fontsize=7, color="#6b7280")
+    ax.text(3.5, 4.2, "Consider ISRU\n(evaluate below)", ha="center", fontsize=8,
+            bbox=leaf_yes)
+
+    # Non-revenue branch
+    ax.text(7.5, 5.4, "Discount rate regime?", ha="center", va="center", fontsize=9,
+            bbox=box_props)
+
+    # Discount rate sub-branches
+    ax.annotate("", xy=(6.0, 4.5), xytext=(6.8, 5.1),
+                arrowprops=dict(arrowstyle="->", lw=1.0))
+    ax.text(6.3, 4.85, "r < 5%", fontsize=7, color="#6b7280")
+    ax.text(6.0, 4.2, "79% converge\nMedian ~5k", ha="center", fontsize=8,
+            bbox=leaf_yes)
+
+    ax.annotate("", xy=(7.5, 4.5), xytext=(7.5, 5.1),
+                arrowprops=dict(arrowstyle="->", lw=1.0))
+    ax.text(7.6, 4.85, "5-8%", fontsize=7, color="#6b7280")
+    ax.text(7.5, 4.2, "54-68% converge\nHigher N*", ha="center", fontsize=8,
+            bbox=leaf_no)
+
+    ax.annotate("", xy=(9.0, 4.5), xytext=(8.2, 5.1),
+                arrowprops=dict(arrowstyle="->", lw=1.0))
+    ax.text(8.7, 4.85, "r > 20%", fontsize=7, color="#6b7280")
+    ax.text(9.0, 4.2, "No crossover\n(ISRU NPV\ntoo costly)", ha="center", fontsize=8,
+            bbox=leaf_red)
+
+    # Production scale branch (below the converging paths)
+    ax.text(5, 3.0, "Production scale?", ha="center", va="center", fontsize=9,
+            bbox=box_props)
+
+    ax.annotate("", xy=(3.0, 2.1), xytext=(4.2, 2.7),
+                arrowprops=dict(arrowstyle="->", lw=1.0))
+    ax.text(3.4, 2.5, "< N*", fontsize=7, color="#6b7280")
+    ax.text(3.0, 1.7, "Below crossover\nEarth preferred", ha="center", fontsize=8,
+            bbox=leaf_no)
+
+    ax.annotate("", xy=(5, 2.1), xytext=(5, 2.7),
+                arrowprops=dict(arrowstyle="->", lw=1.0))
+    ax.text(5.2, 2.5, "N*-10k", fontsize=7, color="#6b7280")
+    ax.text(5, 1.7, "Crossover zone\nISRU advantage", ha="center", fontsize=8,
+            bbox=leaf_yes)
+
+    ax.annotate("", xy=(7.0, 2.1), xytext=(5.8, 2.7),
+                arrowprops=dict(arrowstyle="->", lw=1.0))
+    ax.text(6.5, 2.5, "> 10k", fontsize=7, color="#6b7280")
+
+    # Crossover type
+    ax.text(7.0, 1.7, "Crossover type?", ha="center", fontsize=8, bbox=box_props)
+    ax.annotate("", xy=(6.2, 0.9), xytext=(6.5, 1.4),
+                arrowprops=dict(arrowstyle="->", lw=1.0))
+    ax.text(6.0, 0.6, "Permanent (~6%)\nISRU always\ncheaper", ha="center", fontsize=7.5,
+            bbox=leaf_yes)
+    ax.annotate("", xy=(7.8, 0.9), xytext=(7.5, 1.4),
+                arrowprops=dict(arrowstyle="->", lw=1.0))
+    ax.text(7.8, 0.6, "Transient (~62%)\nSavings window\n[N*, N**]", ha="center", fontsize=7.5,
+            bbox=leaf_no)
+
+    fig.savefig(join(fig_dir, "fig-decision-tree.pdf"))
+    close(fig)
+    print("  [AB] fig-decision-tree.pdf")
+
+
 if __name__ == "__main__":
     print(f"Generating figures in: {fig_dir}\n")
 
@@ -2426,5 +2596,10 @@ if __name__ == "__main__":
     # Version AA diagnostics
     print_archetype_comparison()
     print_k_clip_sensitivity()
+
+    # Version AB diagnostics
+    print_recrossing_analysis()
+    print_earth_n0_sensitivity()
+    fig_decision_tree()
 
     print(f"\nDone. All figures saved to {fig_dir}")

@@ -14,11 +14,14 @@ from isru_model import (
     earth_delivery_time,
     earth_delivery_time_ramped,
     earth_unit_cost,
+    earth_unit_cost_plateau,
     find_crossover,
     find_crossover_mfg_lead,
     find_crossover_npv,
     find_crossover_npv_phased,
     find_crossover_rate_dependent,
+    find_recrossing_volume,
+    is_permanent_crossover,
     isru_ops_cost,
     isru_ops_cost_rate_dependent,
     isru_unit_cost,
@@ -1103,3 +1106,98 @@ class TestStochasticPFuel:
         assert np.all(params["p_fuel"] <= 400)
         # Mean should be near 250
         assert 230 < np.mean(params["p_fuel"]) < 270
+
+
+# ===== TestRecrossingVolume =====
+
+class TestRecrossingVolume:
+    """AB1: Verify re-crossing volume computation."""
+
+    def test_transient_gives_finite_recrossing(self, baseline):
+        """Transient case with parameters that force re-crossing within N_max."""
+        p = baseline.copy()
+        p["vitamin_frac"] = 0.05
+        p["c_vitamin_kg"] = 50000
+        p["C_floor"] = 2.0e6
+        p["alpha"] = 1.5
+        p["r"] = 0.0  # undiscounted makes re-crossing detectable sooner
+        # First confirm it's transient
+        assert is_permanent_crossover(p) is False
+        # Find crossover (undiscounted)
+        cross_n = find_crossover(p, n_max=40000, discount=False)
+        assert cross_n < 40000, "Need a crossover to test re-crossing"
+        # Find re-crossing
+        N_max = 100000
+        recross_n, peak_n, peak_savings = find_recrossing_volume(p, cross_n, N_max)
+        assert recross_n < N_max, "Transient crossover should re-cross"
+        assert recross_n > cross_n, "Re-crossing must be after crossover"
+
+    def test_permanent_gives_n_max(self, baseline):
+        """Permanent case (f_v=0) → returns N_max (no re-crossing)."""
+        p = baseline.copy()
+        p["vitamin_frac"] = 0.0
+        p["r"] = 0.05
+        assert is_permanent_crossover(p) is True
+        cross_n = find_crossover(p, n_max=20000, discount=True)
+        assert cross_n < 20000
+        N_max = 50000
+        recross_n, _, _ = find_recrossing_volume(p, cross_n, N_max)
+        assert recross_n == N_max
+
+    def test_peak_savings_positive(self, baseline):
+        """Peak savings should be positive when crossover exists."""
+        p = baseline.copy()
+        p["r"] = 0.05
+        cross_n = find_crossover(p, n_max=20000, discount=True)
+        assert cross_n < 20000
+        _, _, peak_savings = find_recrossing_volume(p, cross_n)
+        assert peak_savings > 0
+
+    def test_recrossing_after_crossover(self, baseline):
+        """N** must always be > crossover_n."""
+        p = baseline.copy()
+        p["r"] = 0.05
+        cross_n = find_crossover(p, n_max=20000, discount=True)
+        recross_n, _, _ = find_recrossing_volume(p, cross_n)
+        assert recross_n > cross_n
+
+
+# ===== TestEarthN0Offset =====
+
+class TestEarthN0Offset:
+    """AB1: Verify earth_n0 learning curve offset."""
+
+    def test_zero_offset_matches_baseline(self, baseline):
+        """earth_n0=0 should match current baseline exactly."""
+        ns = np.array([1.0, 100.0, 1000.0, 10000.0])
+        cost_base = earth_unit_cost(ns, baseline)
+        p = baseline.copy()
+        p["earth_n0"] = 0
+        cost_n0 = earth_unit_cost(ns, p)
+        np.testing.assert_allclose(cost_n0, cost_base)
+
+    def test_positive_offset_lowers_first_unit(self, baseline):
+        """earth_n0=100 → lower Earth cost at n=1 (prior experience)."""
+        cost_base = float(earth_unit_cost(1.0, baseline))
+        p = baseline.copy()
+        p["earth_n0"] = 100
+        cost_n0 = float(earth_unit_cost(1.0, p))
+        assert cost_n0 < cost_base
+
+    def test_offset_delays_crossover(self, baseline):
+        """earth_n0>0 → Earth cheaper → later crossover."""
+        cross_base = find_crossover(baseline, discount=True)
+        p = baseline.copy()
+        p["earth_n0"] = 100
+        cross_n0 = find_crossover(p, n_max=40000, discount=True)
+        assert cross_n0 >= cross_base
+
+    def test_offset_in_plateau(self, baseline):
+        """earth_n0 works with earth_unit_cost_plateau too."""
+        ns = np.array([1.0, 100.0, 1000.0])
+        cost_base = earth_unit_cost_plateau(ns, baseline, n_break=500, damping=0.5)
+        p = baseline.copy()
+        p["earth_n0"] = 100
+        cost_n0 = earth_unit_cost_plateau(ns, p, n_break=500, damping=0.5)
+        # With offset, costs should be lower (more prior experience)
+        assert np.all(cost_n0 <= cost_base)

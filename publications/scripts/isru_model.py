@@ -46,6 +46,7 @@ BASELINE: Params = {
     "availability": 1.0,   # O2: ISRU facility availability factor (0-1)
     "C_mat": 1e6,          # U1: per-unit material cost (non-learnable, $/unit)
     "C_labor1": 74e6,      # U1: first-unit labor+overhead cost (learnable, $/unit)
+    "earth_n0": 0,         # AB1: Earth learning curve starting offset (prior production units)
 }
 
 # ---------------------------------------------------------------------------
@@ -195,12 +196,14 @@ def find_crossover_mfg_lead(
 
     # Earth side — split mfg and launch timing
     b_E = learning_exponent(params["LR_E"])
+    earth_n0 = params.get("earth_n0", 0)
+    ns_eff = ns + earth_n0  # AB1: prior production offset
     C_mat = params.get("C_mat", 0)
     if C_mat > 0:
         C_labor1 = params.get("C_labor1", params["C_mfg1"] - C_mat)
-        c_mfg = C_mat + C_labor1 * ns ** b_E
+        c_mfg = C_mat + C_labor1 * ns_eff ** b_E
     else:
-        c_mfg = params["C_mfg1"] * ns ** b_E
+        c_mfg = params["C_mfg1"] * ns_eff ** b_E
 
     # N1: Earth manufacturing cost floor
     C_mfg_floor = params.get("C_mfg_floor", 0)
@@ -213,7 +216,7 @@ def find_crossover_mfg_lead(
         p_fuel = params.get("p_fuel", 200)
         p_ops = params.get("p_ops_launch", 800)
         launches_per_unit = params.get("launches_per_unit", 1.0)
-        n_launches = ns * launches_per_unit
+        n_launches = ns * launches_per_unit + earth_n0
         c_launch = params["m"] * (p_fuel + p_ops * n_launches ** b_L)
     else:
         c_launch = params["m"] * params["p_launch"] * ones_like(ns)
@@ -246,17 +249,24 @@ def earth_unit_cost(n: float | NDFloat, params: Params) -> NDFloat:
     where C_mat is non-learnable material cost and C_labor1 is first-unit
     labor/overhead cost. Falls back to single Wright curve (C_mfg1 * n^b_E)
     when C_mat is not in params or is zero.
+
+    AB1: earth_n0 offsets the learning index to model prior production
+    experience (e.g., units manufactured for other programs).
     """
     n = asarray(n, dtype=float)
     b_E = learning_exponent(params["LR_E"])
+    earth_n0 = params.get("earth_n0", 0)
+
+    # AB1: Effective learning index accounts for prior production
+    n_eff = n + earth_n0
 
     # U1: Two-component model (material + labor) or single Wright curve
     C_mat = params.get("C_mat", 0)
     if C_mat > 0:
         C_labor1 = params.get("C_labor1", params["C_mfg1"] - C_mat)
-        c_mfg = C_mat + C_labor1 * n ** b_E
+        c_mfg = C_mat + C_labor1 * n_eff ** b_E
     else:
-        c_mfg = params["C_mfg1"] * n ** b_E
+        c_mfg = params["C_mfg1"] * n_eff ** b_E
 
     # N1: Earth manufacturing cost floor
     C_mfg_floor = params.get("C_mfg_floor", 0)
@@ -270,7 +280,7 @@ def earth_unit_cost(n: float | NDFloat, params: Params) -> NDFloat:
         p_fuel = params.get("p_fuel", 200)
         p_ops = params.get("p_ops_launch", 800)
         launches_per_unit = params.get("launches_per_unit", 1.0)
-        n_launches = n * launches_per_unit
+        n_launches = n * launches_per_unit + earth_n0
         c_launch = params["m"] * (p_fuel + p_ops * n_launches ** b_L)
     else:
         c_launch = params["m"] * params["p_launch"]
@@ -688,6 +698,70 @@ def is_permanent_crossover(params: Params) -> bool:
     return isru_asymp < earth_asymp
 
 
+def find_recrossing_volume(
+    params: Params,
+    crossover_n: int,
+    N_max: int = 200000,
+) -> tuple[int, int, float]:
+    """AB1: Find the re-crossing volume N** where ISRU becomes more expensive again.
+
+    For transient crossovers, after the initial crossover at N*, the ISRU
+    cumulative cost eventually re-crosses the Earth cumulative cost at N**.
+    The savings window is [N*, N**].
+
+    Returns
+    -------
+    recross_n : int
+        The re-crossing volume N** (or N_max if no re-crossing found).
+    peak_savings_n : int
+        The production volume where earth_cum - isru_cum is maximized.
+    peak_savings : float
+        The peak cumulative savings (earth_cum - isru_cum) in dollars.
+    """
+    r = params.get("r", 0.05)
+    ns = arange(1, N_max + 1, dtype=float)
+    prod_rate = params.get("prod_rate", 500)
+    k_ramp = params.get("k_ramp", 2.0)
+
+    availability = params.get("availability", 1.0)
+    isru_prod_rate = prod_rate * availability
+
+    # Earth side
+    earth_units = earth_unit_cost(ns, params)
+    earth_cap = params.get("earth_max_units_per_year", None)
+    t_n_earth = earth_delivery_time(ns, prod_rate, earth_cap)
+    discount_earth = (1.0 + r) ** (-t_n_earth)
+    earth_cum = cumsum(earth_units * discount_earth)
+
+    # ISRU side
+    ops = isru_ops_cost(ns, params)
+    t_n_isru = unit_to_time_piecewise(ns, isru_prod_rate, params["t0"], k_ramp)
+    discount_isru = (1.0 + r) ** (-t_n_isru)
+    isru_ops_cum = cumsum(ops * discount_isru)
+    isru_cum = params["K"] + isru_ops_cum
+
+    # Savings = earth_cum - isru_cum (positive means ISRU is cheaper)
+    savings = earth_cum - isru_cum
+
+    # Find peak savings in the window after crossover
+    post_cross = savings[crossover_n:]  # indices after crossover_n
+    if len(post_cross) == 0:
+        return N_max, crossover_n, 0.0
+
+    peak_idx_rel = int(post_cross.argmax())
+    peak_savings_n = crossover_n + peak_idx_rel + 1  # +1 for 1-based unit number
+    peak_savings = float(post_cross[peak_idx_rel])
+
+    # Find re-crossing: first index after crossover where savings becomes negative
+    recross_candidates = np_where(post_cross < 0)[0]
+    if len(recross_candidates) > 0:
+        recross_n = crossover_n + int(recross_candidates[0]) + 1
+    else:
+        recross_n = N_max
+
+    return recross_n, peak_savings_n, peak_savings
+
+
 def earth_unit_cost_plateau(
     n: float | NDFloat,
     params: Params,
@@ -703,9 +777,14 @@ def earth_unit_cost_plateau(
     cumulative volumes (Argote & Epple 1990, Benkard 2000).
 
     damping=1.0 reproduces the standard model (no plateau).
+    AB1: earth_n0 offsets the learning index for prior production.
     """
     n = asarray(n, dtype=float)
     b_E = learning_exponent(params["LR_E"])
+    earth_n0 = params.get("earth_n0", 0)
+
+    # AB1: Effective learning index
+    n_eff = n + earth_n0
 
     C_mat = params.get("C_mat", 0)
     C_labor1 = params.get("C_labor1", params["C_mfg1"] - C_mat) if C_mat > 0 else params["C_mfg1"]
@@ -713,23 +792,20 @@ def earth_unit_cost_plateau(
     b_E2 = b_E * damping  # reduced exponent after break
 
     if C_mat > 0:
-        # Before break: C_mat + C_labor1 * n^b_E
-        # After break: C_mat + C_labor1 * n_break^b_E * (n/n_break)^b_E2
-        #   = C_mat + C_labor1 * n_break^(b_E - b_E2) * n^b_E2
-        cost_at_break = C_labor1 * n_break ** b_E
+        # Before break: C_mat + C_labor1 * n_eff^b_E
+        # After break: C_mat + C_labor1 * n_break^(b_E - b_E2) * n_eff^b_E2
         scale_factor = C_labor1 * n_break ** (b_E - b_E2)
         c_mfg = np_where(
             n <= n_break,
-            C_mat + C_labor1 * n ** b_E,
-            C_mat + scale_factor * n ** b_E2,
+            C_mat + C_labor1 * n_eff ** b_E,
+            C_mat + scale_factor * n_eff ** b_E2,
         )
     else:
-        cost_at_break = C_labor1 * n_break ** b_E
         scale_factor = C_labor1 * n_break ** (b_E - b_E2)
         c_mfg = np_where(
             n <= n_break,
-            C_labor1 * n ** b_E,
-            scale_factor * n ** b_E2,
+            C_labor1 * n_eff ** b_E,
+            scale_factor * n_eff ** b_E2,
         )
 
     # N1: Earth manufacturing cost floor
@@ -743,7 +819,7 @@ def earth_unit_cost_plateau(
         p_fuel = params.get("p_fuel", 200)
         p_ops = params.get("p_ops_launch", 800)
         launches_per_unit = params.get("launches_per_unit", 1.0)
-        n_launches = n * launches_per_unit
+        n_launches = n * launches_per_unit + earth_n0
         c_launch = params["m"] * (p_fuel + p_ops * n_launches ** b_L)
     else:
         c_launch = params["m"] * params["p_launch"]
