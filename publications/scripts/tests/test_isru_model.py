@@ -1027,6 +1027,60 @@ class TestLearningPlateau:
         assert cross_05 <= cross_07 <= cross_10
 
 
+# ===== TestSymmetricPlateau =====
+
+class TestSymmetricPlateau:
+    """Z2: Verify symmetric ISRU+Earth learning plateau."""
+
+    def test_isru_damping_one_matches_baseline(self, baseline):
+        """damping_isru=1.0 should reproduce standard isru_ops_cost."""
+        ns = np.array([1.0, 100.0, 500.0, 1000.0, 5000.0])
+        cost_base = isru_ops_cost(ns, baseline)
+        cost_plateau = isru_ops_cost(ns, baseline, n_break_isru=500, damping_isru=1.0)
+        np.testing.assert_allclose(cost_plateau, cost_base, rtol=1e-10)
+
+    def test_isru_plateau_increases_cost(self, baseline):
+        """damping_isru=0.5 should increase cost at n > n_break (learning slows)."""
+        ns = np.array([1000.0, 5000.0, 10000.0])
+        cost_base = isru_ops_cost(ns, baseline)
+        cost_plateau = isru_ops_cost(ns, baseline, n_break_isru=500, damping_isru=0.5)
+        assert np.all(cost_plateau >= cost_base)
+
+    def test_before_break_matches_baseline(self, baseline):
+        """Units before n_break_isru should match standard model."""
+        ns = np.array([1.0, 50.0, 100.0, 499.0])
+        cost_base = isru_ops_cost(ns, baseline)
+        cost_plateau = isru_ops_cost(ns, baseline, n_break_isru=500, damping_isru=0.5)
+        np.testing.assert_allclose(cost_plateau, cost_base, rtol=1e-10)
+
+    def test_continuity_at_break(self, baseline):
+        """Cost should be continuous at n_break_isru."""
+        n_break = 500
+        ns = np.array([float(n_break) - 0.01, float(n_break), float(n_break) + 0.01])
+        costs = isru_ops_cost(ns, baseline, n_break_isru=n_break, damping_isru=0.5)
+        assert abs(costs[0] - costs[1]) < 100
+        assert abs(costs[1] - costs[2]) < 100
+
+    def test_symmetric_crossover_later_than_earth_only(self, baseline):
+        """Symmetric plateau should give later crossover than Earth-only plateau.
+
+        Earth plateau → earlier crossover (Earth stays expensive).
+        ISRU plateau → later crossover (ISRU stays expensive).
+        Symmetric = both effects. Net: ISRU plateau hurts the ISRU case,
+        so symmetric should be >= Earth-only.
+        """
+        from isru_model import find_crossover_plateau, find_crossover_plateau_symmetric
+        cross_earth_only = find_crossover_plateau(
+            baseline, n_max=40000, n_break=500, damping=0.5
+        )
+        cross_symmetric = find_crossover_plateau_symmetric(
+            baseline, n_max=40000,
+            n_break_earth=500, damping_earth=0.5,
+            n_break_isru=500, damping_isru=0.5,
+        )
+        assert cross_symmetric >= cross_earth_only
+
+
 # ===== TestStochasticPFuel =====
 
 class TestStochasticPFuel:

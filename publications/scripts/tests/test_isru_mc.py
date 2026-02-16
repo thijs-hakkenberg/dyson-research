@@ -27,13 +27,14 @@ class TestSampleMCParams:
             "p_launch", "K", "LR_E", "LR_I", "t0", "C_ops1", "C_mfg1",
             "C_mat", "C_labor1",
             "alpha", "p_transport", "C_floor", "prod_rate", "availability",
+            "p_fuel",
         }
         assert set(params.keys()) == expected
 
     def test_ranges_respected(self, rng):
         params = sample_mc_params(rng, 10000)
         assert np.all(params["p_launch"] >= 500) and np.all(params["p_launch"] <= 2000)
-        assert np.all(params["K"] >= 30e9) and np.all(params["K"] <= 100e9)
+        assert np.all(params["K"] >= 20e9) and np.all(params["K"] <= 200e9)
         assert np.all(params["LR_E"] >= 0.75) and np.all(params["LR_E"] <= 0.95)
         assert np.all(params["LR_I"] >= 0.80) and np.all(params["LR_I"] <= 0.98)
         assert np.all(params["t0"] >= 3) and np.all(params["t0"] <= 8)
@@ -43,6 +44,7 @@ class TestSampleMCParams:
         assert np.all(params["p_transport"] >= 50) and np.all(params["p_transport"] <= 300)
         assert np.all(params["C_floor"] >= 0.3e6) and np.all(params["C_floor"] <= 2.0e6)
         assert np.all(params["prod_rate"] >= 250) and np.all(params["prod_rate"] <= 750)
+        assert np.all(params["p_fuel"] >= 100) and np.all(params["p_fuel"] <= 400)
 
     def test_correlated_vs_uncorrelated(self, rng):
         """Correlated samples should have positive correlation between p_launch and K."""
@@ -59,6 +61,40 @@ class TestSampleMCParams:
         assert r_corr > 0.15
         # Uncorrelated should be near zero
         assert abs(r_uncorr) < 0.1
+
+
+class TestSigmaLn:
+    """Z5: Verify sigma_ln parameter controls K tail heaviness."""
+
+    def test_default_sigma_matches(self, rng):
+        """Default sigma_ln=0.70 should match hardcoded behavior."""
+        rng1 = np.random.default_rng(42)
+        params1 = sample_mc_params(rng1, 1000, rho=0.3, correlated=True)
+        rng2 = np.random.default_rng(42)
+        params2 = sample_mc_params(rng2, 1000, rho=0.3, correlated=True, sigma_ln=0.70)
+        np.testing.assert_array_equal(params1["K"], params2["K"])
+
+    def test_higher_sigma_wider_spread(self, rng):
+        """Higher sigma_ln should give wider K spread (P90/P10 ratio)."""
+        rng1 = np.random.default_rng(42)
+        params_narrow = sample_mc_params(rng1, 5000, rho=0.3, correlated=True, sigma_ln=0.70)
+        rng2 = np.random.default_rng(42)
+        params_wide = sample_mc_params(rng2, 5000, rho=0.3, correlated=True, sigma_ln=1.3)
+
+        k_narrow = params_narrow["K"]
+        k_wide = params_wide["K"]
+
+        ratio_narrow = float(np.percentile(k_narrow, 90)) / float(np.percentile(k_narrow, 10))
+        ratio_wide = float(np.percentile(k_wide, 90)) / float(np.percentile(k_wide, 10))
+
+        assert ratio_wide > ratio_narrow
+
+    def test_sigma_works_uncorrelated(self, rng):
+        """sigma_ln should also work with uncorrelated sampling."""
+        rng1 = np.random.default_rng(42)
+        params = sample_mc_params(rng1, 1000, correlated=False, sigma_ln=1.0)
+        assert np.all(params["K"] >= 20e9)
+        assert np.all(params["K"] <= 200e9)
 
 
 class TestRunMCLoop:
@@ -196,7 +232,7 @@ class TestRunMCIntegration:
         assert result.r_fixed == 0.05
         assert len(result.crossovers) == 500
         assert 0 <= result.stats.convergence_rate <= 100
-        assert len(result.spearman) == 14  # 14 parameters (incl. C_mat, C_labor1)
+        assert len(result.spearman) == 15  # 15 parameters (incl. C_mat, C_labor1, p_fuel)
 
     @pytest.mark.slow
     def test_reproducible_with_same_seed(self):

@@ -63,6 +63,7 @@ from isru_model import (  # noqa: E402
     unit_to_time_piecewise,
     earth_unit_cost_plateau,
     find_crossover_plateau,
+    find_crossover_plateau_symmetric,
     _cumulative_production,
 )
 from isru_mc import run_mc, sample_mc_params, run_mc_loop, compute_convergence_stats, compute_kaplan_meier, compute_prcc  # noqa: E402
@@ -2148,6 +2149,73 @@ def print_earth_validation():
             print(f"    C_mfg1=${c_mfg1/1e6:.0f}M → no solution in [0.50, 0.99]")
 
 
+# ---------------------------------------------------------------------------
+# Z2: Symmetric learning plateau sweep (Earth + ISRU)
+# ---------------------------------------------------------------------------
+def print_symmetric_plateau_sweep():
+    """Z2: 3×3 grid of Earth n_break × ISRU n_break with fixed damping=0.5."""
+    base_npv = find_crossover_npv(BASELINE)
+    earth_only = find_crossover_plateau(BASELINE, n_break=500, damping=0.5)
+
+    print(f"\n  Z2: Symmetric learning plateau (damping=0.5 both sides, baseline N*={base_npv:,}):")
+    print(f"    Earth-only plateau (n_break=500): N*={earth_only:,} (shift: {earth_only - base_npv:+,d})")
+    print()
+
+    header = f"  {'Earth\\ISRU':>12s}"
+    for nb_i in [200, 500, 1000]:
+        header += f"  {'ISRU ' + str(nb_i):>12s}"
+    print(header)
+    print(f"  {'':>12s}" + f"  {'------------':>12s}" * 3)
+
+    for nb_e in [200, 500, 1000]:
+        row = f"  {'Earth ' + str(nb_e):>12s}"
+        for nb_i in [200, 500, 1000]:
+            cross = find_crossover_plateau_symmetric(
+                BASELINE, n_max=40000,
+                n_break_earth=nb_e, damping_earth=0.5,
+                n_break_isru=nb_i, damping_isru=0.5,
+            )
+            shift = cross - base_npv
+            if cross >= 40000:
+                row += f"  {'>40k':>12s}"
+            else:
+                row += f"  {cross:>6,d} ({shift:+,d})".rjust(14)
+            row = row  # keep formatting
+        print(row)
+
+    print("    Key: Earth plateau → earlier crossover; ISRU plateau → later crossover")
+    print("    Net effect depends on relative break points and learning rates")
+
+
+# ---------------------------------------------------------------------------
+# Z5: σ_ln sensitivity for K tails
+# ---------------------------------------------------------------------------
+def print_sigma_ln_sensitivity():
+    """Z5: Test heavier K tails: σ_ln ∈ {0.70, 1.0, 1.3}."""
+    import numpy as np
+
+    print(f"\n  Z5: K tail sensitivity (σ_ln variation, 10k runs, r=5%):")
+    print(f"  {'σ_ln':>6s}  {'Conv%':>6s}  {'Cond.Med':>10s}  {'P90/P50(K)':>10s}  {'K_P10 ($B)':>10s}  {'K_P90 ($B)':>10s}")
+    print(f"  {'------':>6s}  {'------':>6s}  {'----------':>10s}  {'----------':>10s}  {'----------':>10s}  {'----------':>10s}")
+
+    for sigma in [0.70, 1.0, 1.3]:
+        rng = default_rng(42)
+        params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5,
+                                  correlated=True, sigma_ln=sigma)
+        crossovers, _ = run_mc_loop(params, 0.05, 40000)
+        converged = crossovers < 40000
+        n_conv = int(np.sum(converged))
+        conv_pct = n_conv / 10000 * 100
+        cond_med = float(np.median(crossovers[converged])) if n_conv > 0 else 40000.0
+        k_arr = params["K"]
+        k_p10 = float(np.percentile(k_arr, 10))
+        k_p50 = float(np.median(k_arr))
+        k_p90 = float(np.percentile(k_arr, 90))
+        ratio = k_p90 / k_p50
+
+        print(f"  {sigma:>6.2f}  {conv_pct:>5.1f}%  {cond_med:>10,.0f}  {ratio:>10.2f}  {k_p10/1e9:>9.1f}B  {k_p90/1e9:>9.1f}B")
+
+
 if __name__ == "__main__":
     print(f"Generating figures in: {fig_dir}\n")
 
@@ -2275,5 +2343,9 @@ if __name__ == "__main__":
     print_pfuel_stochastic_impact()
     print_learning_plateau_sensitivity()
     print_earth_validation()
+
+    # Version Z diagnostics
+    print_symmetric_plateau_sweep()
+    print_sigma_ln_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")

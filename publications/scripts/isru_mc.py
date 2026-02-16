@@ -116,6 +116,7 @@ def sample_mc_params(
     rho_k_prod: float = 0.5,
     correlated: bool = True,
     k_distribution: str = "lognormal",
+    sigma_ln: float = 0.70,
 ) -> dict[str, NDFloat]:
     """Sample MC parameter arrays.
 
@@ -132,8 +133,11 @@ def sample_mc_params(
         If False, sample p_launch, K, and prod_rate independently (uniform).
     k_distribution : str
         "lognormal" (default) or "uniform". Log-normal calibrated to
-        median=$65B with σ_ln=0.70 (Flyvbjerg megaproject reference class),
+        median=$65B with σ_ln (Flyvbjerg megaproject reference class),
         clipped to [20B, 200B].
+    sigma_ln : float
+        Log-normal standard deviation for K distribution (default 0.70).
+        Higher values give heavier tails (Z5 sensitivity test).
     """
     if correlated:
         # 3D Gaussian copula: (p_launch, K, prod_rate)
@@ -153,10 +157,9 @@ def sample_mc_params(
 
         if k_distribution == "lognormal":
             # Y1: Log-normal K calibrated to Flyvbjerg megaproject data:
-            # median=$65B, σ_ln=0.70 (P90/P50≈2.5×, conservative end of
-            # Flyvbjerg's 2-4× range for large infrastructure)
+            # median=$65B, σ_ln parameterized (default 0.70, P90/P50≈2.5×,
+            # conservative end of Flyvbjerg's 2-4× range for large infrastructure)
             mu_ln = float(np_log(65e9))
-            sigma_ln = 0.70
             # Transform copula uniform to log-normal via inverse CDF
             ln_k = sp_norm.ppf(u_capital) * sigma_ln + mu_ln
             k_samples = np_exp(ln_k)
@@ -169,7 +172,6 @@ def sample_mc_params(
 
         if k_distribution == "lognormal":
             mu_ln = float(np_log(65e9))
-            sigma_ln = 0.70
             ln_k = rng.normal(mu_ln, sigma_ln, n_runs)
             k_samples = np_exp(ln_k)
             k_samples = clip(k_samples, 20e9, 200e9)

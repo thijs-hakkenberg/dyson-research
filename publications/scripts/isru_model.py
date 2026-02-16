@@ -294,7 +294,13 @@ def earth_unit_cost_launch_learning(
     return params["m"] * (p_fuel + p_ops * n ** b_L)
 
 
-def isru_ops_cost(n: float | NDFloat, params: Params) -> NDFloat:
+def isru_ops_cost(
+    n: float | NDFloat,
+    params: Params,
+    *,
+    n_break_isru: int | None = None,
+    damping_isru: float = 1.0,
+) -> NDFloat:
     """Operational cost only (no amortized capital).
 
     Ramp-up effect is through production schedule timing (unit_to_time
@@ -306,14 +312,31 @@ def isru_ops_cost(n: float | NDFloat, params: Params) -> NDFloat:
     pioneer_gamma to model negative learning (debugging, rework, failures).
     V2: QA cost — per-unit quality assurance cost C_QA added, declining
     with its own learning curve (LR_QA).
+    Z2: ISRU learning plateau — when n_break_isru is set, the ISRU
+    learning exponent is damped for n > n_break_isru, mirroring the
+    Earth plateau model (earth_unit_cost_plateau).
     """
     n = asarray(n, dtype=float)
     b_i = learning_exponent(params["LR_I"])
     alpha = params.get("alpha", 1.0)
     c_floor = params.get("C_floor", 0)
 
-    # Learning curve ops cost
-    c_ops = alpha * (c_floor + (params["C_ops1"] - c_floor) * n ** b_i)
+    # Z2: Piecewise ISRU learning plateau (symmetric to Earth plateau)
+    if n_break_isru is not None and damping_isru != 1.0:
+        b_i2 = b_i * damping_isru
+        # Continuity-preserving piecewise: at n_break, both branches give same value.
+        # Before break: C_ops1 * n^b_i
+        # After break: C_ops1 * n_break^(b_i - b_i2) * n^b_i2
+        scale = (params["C_ops1"] - c_floor) * n_break_isru ** (b_i - b_i2)
+        c_learn = np_where(
+            n <= n_break_isru,
+            (params["C_ops1"] - c_floor) * n ** b_i,
+            scale * n ** b_i2,
+        )
+        c_ops = alpha * (c_floor + c_learn)
+    else:
+        # Standard learning curve ops cost
+        c_ops = alpha * (c_floor + (params["C_ops1"] - c_floor) * n ** b_i)
 
     # V1: Pioneering phase — elevated costs for first n_p units
     pioneer_gamma = params.get("pioneer_gamma", 1.0)
@@ -752,6 +775,52 @@ def find_crossover_plateau(
 
     # ISRU side (unchanged)
     ops = isru_ops_cost(ns, params)
+    t_n_isru = unit_to_time_piecewise(ns, isru_prod_rate, params["t0"], k_ramp)
+    discount_isru = (1.0 + r) ** (-t_n_isru)
+    isru_ops_cum = cumsum(ops * discount_isru)
+    isru_cum = params["K"] + isru_ops_cum
+
+    diff = isru_cum - earth_cum
+    crossings = np_where(diff <= 0)[0]
+    if len(crossings) > 0:
+        return int(ns[crossings[0]])
+    return n_max
+
+
+def find_crossover_plateau_symmetric(
+    params: Params,
+    n_max: int = 40000,
+    *,
+    n_break_earth: int = 500,
+    damping_earth: float = 0.5,
+    n_break_isru: int = 500,
+    damping_isru: float = 0.5,
+) -> int:
+    """Z2: Find NPV crossover with learning plateau on BOTH pathways.
+
+    Earth side uses earth_unit_cost_plateau (Y3 model).
+    ISRU side uses isru_ops_cost with n_break_isru/damping_isru.
+    """
+    r = params.get("r", 0.05)
+    ns = arange(1, n_max + 1, dtype=float)
+    prod_rate = params.get("prod_rate", 500)
+    k_ramp = params.get("k_ramp", 2.0)
+
+    availability = params.get("availability", 1.0)
+    isru_prod_rate = prod_rate * availability
+
+    # Earth side with plateau learning
+    earth_units = earth_unit_cost_plateau(
+        ns, params, n_break=n_break_earth, damping=damping_earth
+    )
+    t_n_earth = earth_delivery_time(ns, prod_rate)
+    discount_earth = (1.0 + r) ** (-t_n_earth)
+    earth_cum = cumsum(earth_units * discount_earth)
+
+    # ISRU side with plateau learning
+    ops = isru_ops_cost(
+        ns, params, n_break_isru=n_break_isru, damping_isru=damping_isru
+    )
     t_n_isru = unit_to_time_piecewise(ns, isru_prod_rate, params["t0"], k_ramp)
     discount_isru = (1.0 + r) ** (-t_n_isru)
     isru_ops_cum = cumsum(ops * discount_isru)
