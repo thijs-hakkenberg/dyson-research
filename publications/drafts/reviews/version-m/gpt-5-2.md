@@ -9,138 +9,136 @@ recommendation: "Unknown"
 
 ## 1. Significance & Novelty — **4/5 (Good)**
 
-The manuscript addresses a genuinely important decision problem in space systems economics: at what production scale does in-space manufacturing (via ISRU) become economically preferable to Earth manufacture + launch, once timing (deployment delay) and discounting are treated properly. The paper’s most meaningful novelty is not the idea of “crossover” itself (which is long-standing), but the explicit *schedule-aware* NPV comparison with *pathway-specific delivery schedules* (Eq. 21) combined with learning curves and uncertainty propagation. That combination—especially the emphasis that discounting affects the *probability of convergence* more than the *conditional crossover location* (Table 9)—is a useful conceptual contribution.
+The manuscript addresses a long-standing and practically important question in space systems economics: at what scale does in-space manufacturing via ISRU become economically preferable to Earth manufacturing plus launch, once schedule and the time value of money are treated explicitly. The paper’s emphasis on *pathway-specific delivery schedules* inside an NPV framework is a meaningful step beyond many prior “static” crossover calculations, and the Monte Carlo framing usefully shifts the discussion from a single deterministic crossover to a probability of crossover within a planning horizon.
 
-The Monte Carlo framing with censored outcomes (“no crossover within horizon”) is also a valuable step beyond deterministic breakeven charts that dominate much of the popular and some academic discourse. The paper’s attempt to connect results to policy/financing structure (social vs commercial discount rates; Sec. 4.12) is appropriate for *Advances in Space Research* and helps translate modeling into implications.
+The novelty is strongest in (i) integrating learning curves on *both* pathways while (ii) discounting with distinct delivery schedules (Eq. 24) and (iii) reporting convergence/non-convergence statistics under uncertainty (Tables 9–10; Fig. 10). The manuscript also provides a commendably broad robustness suite (vitamin fraction, maintenance, schedule variants, launch learning indexing, etc.), which is unusual for this topic and increases confidence that the main qualitative claims do not hinge on one “knife-edge” assumption.
 
-That said, the novelty is somewhat limited by the high level of aggregation: the model is intentionally generic and not anchored to a specific architecture (e.g., a particular lunar regolith metal extraction + forming chain). This is defensible as a first-pass “generic structural module” analysis, but it also makes it harder to argue that the paper decisively advances *engineering-economic practice* rather than providing an illustrative parametric exploration. The paper would read as more “high-impact” if it more clearly positioned itself as either (i) a general methodological framework with transferable structure, or (ii) an application to a specific reference system with traceable subsystem cost bases.
+That said, the core question and many components (learning curves, ISRU capex vs. launch $/kg$, NPV comparisons) have clear antecedents in the ISRU/space infrastructure literature. The paper is therefore best positioned as a *synthesis + methodological strengthening* contribution rather than a wholly new conceptual result. The significance would further increase if the model were anchored more tightly to one or two reference architectures (e.g., lunar regolith metals + specific transport mode to GEO) so that the results could be interpreted as decision-relevant rather than primarily illustrative.
 
 ---
 
 ## 2. Methodological Soundness — **3/5 (Adequate)**
 
-The overall methodology—Wright learning curves (Eq. 3), two-part launch cost (Eq. 5), logistic ramp-up with analytic inverse schedule (Eq. 10), and pathway-specific discounting (Eq. 21)—is coherent and generally appropriate for the research question. The paper is also unusually thorough in robustness checks (vitamin model, Earth ramp-up, phased capex, maintenance, lead-time timing, etc.), which is a strength.
+The overall modeling approach is appropriate for the stated question: parametric cost functions with Wright learning, explicit schedule models, and NPV discounting, wrapped in a Monte Carlo uncertainty propagation. The separation of the discount rate as a scenario variable rather than a stochastic parameter (MC run at fixed $r$ values) is methodologically defensible and improves interpretability. The discussion of right-censoring/non-convergence and the inclusion of both conditional and unconditional sensitivity measures (Spearman + Cohen’s $d$) show good statistical awareness.
 
-However, there are several methodological choices that require stronger justification or adjustment:
+However, several modeling choices materially affect inference and need stronger justification or restructuring to meet “high-impact journal” standards:
 
-1) **Learning curve application and summation**: The model uses unit-cost learning curves indexed by cumulative unit number and then sums unit costs (Eq. 6). That is standard, but it implicitly assumes continuous learning with no lot structure, no minimum cost floor on Earth manufacturing, and no separation between recurring and non-recurring costs (NRE/tooling). You partly address Earth-side capex later (Sec. 4.10), but the core Earth manufacturing model still risks overstating learning-driven reductions for a “structural module” that might be closer to commodity fabrication than spacecraft production. Conversely, ISRU “ops learning” is treated as a single Wright curve over the entire chain (excavate → process → fabricate), which may be optimistic unless bottlenecks are modeled (you acknowledge this in limitations). Given that LR\_E emerges as the dominant driver (Table 11), the paper is particularly sensitive to how LR\_E is conceptualized and bounded.
+1) **Schedule/cash-flow mapping is not fully consistent across pathways.** Earth costs are discounted at unit delivery times (Eq. 24), with only later sensitivity checks for manufacturing lead time (§4.12). ISRU capex is treated as all-at-$t=0$ (baseline) or as 5 annual tranches (Eq. 33) but *without* coupling to the production schedule except via an ad hoc $\beta$ test. In capital-intensive projects, the timing of capex and commissioning is often the dominant driver of NPV. The model should make a clear baseline cash-flow model for both pathways (e.g., capex profile, working capital, pre-production ops) rather than treating these as secondary robustness checks.
 
-2) **Schedule modeling and cost-incurrence timing**: The pathway-specific discounting is a key contribution, but the cost-incurrence timing assumptions remain simplified. Earth costs are initially assumed to occur at delivery time (then tested with manufacturing lead time in Sec. 4.9). ISRU capex is assumed at \(t=0\) (then phased in Sec. 4.5). These are good robustness steps, but the base case still mixes “cost at delivery” for Earth with “capex at start” for ISRU, which structurally disadvantages ISRU in NPV terms—yet your results still favor ISRU in many cases. That is fine, but the paper should be clearer about what is treated as *payment timing* vs *resource consumption timing*, and should consider whether ISRU capex should be tied to the same construction schedule parameters \(t_0\) or \(t_c\) more systematically than the current linear coupling test.
+2) **Parameter distributions are largely “maximal ignorance” uniforms** (Table 1), including for variables that are known to be heavy-tailed (capex, schedule). The paper itself acknowledges that a lognormal for $K$ is more realistic, but the Monte Carlo results and the headline convergence rates are still based on uniform $K$. Because non-convergence is strongly driven by high $K$, the assumed tail behavior is not a detail—it can change the implied probability of crossover.
 
-3) **Uncertainty modeling and sensitivity metrics**: The Monte Carlo is competently described (copula, clipping, bootstrap CI). But the use of **uniform distributions** for several key parameters is a strong modeling choice. You call it “maximal ignorance,” but uniform priors over very wide ranges (e.g., \(K\in[30,100]\) B$) can overweight extremes and interact with censoring. Also, Spearman correlations on censored \(N^*\) (with capping at \(H\)) can mislead; you do provide conditional correlations and Cohen’s \(d\), which helps, but the paper would be methodologically stronger if it adopted a censoring-aware regression/survival model for the main sensitivity claims (you mention Cox/AFT as future work). Given that sensitivity ranking is central to your interpretation (LR\_E dominance), this is not just a “nice-to-have.”
+3) **Learning curve specification is simplified in ways that may bias crossover frequency.** A single Wright curve applied to Earth manufacturing of large structural modules over thousands to tens of thousands of units may be reasonable, but the manuscript also asserts that Earth per-kg launch costs have limited learning while manufacturing has more. That qualitative claim can be true, yet the quantitative implementation (Earth manufacturing learning applied to a very large $C_{\mathrm{mfg}}^{(1)}$, while launch is dominated by a large constant $p_{\mathrm{fuel}}$ floor) can structurally predispose the model toward eventual ISRU advantage. A more defensible approach would separate Earth manufacturing into materials + labor/overhead with different learning/floors, and similarly separate ISRU ops into energy, consumables, spares, and labor/teleops, at least in a coarse two- or three-component form.
 
-Reproducibility is promising (code availability), but the manuscript references “version l” (lowercase L) of the codebase in the conclusion, while the prompt says “Version M” of the paper; ensure exact versioning, commit hash, and DOI/archival link for review-grade reproducibility.
+Reproducibility is generally strong (code availability, tests), but for reviewability the paper should include (in-text or supplement) enough detail to replicate results without the repository: exact baseline numeric values used in code (you note rounding), the crossover-finding algorithm, and how censoring is handled computationally (e.g., do you cap $N^*$ at $H$, do you record “no crossover” separately, etc.).
 
 ---
 
-## 3. Validity & Logic — **4/5 (Good)**
+## 3. Validity & Logic — **3/5 (Adequate)**
 
-Most conclusions are directionally supported by the presented analysis and are generally stated with appropriate caution (e.g., “probabilistic finding, not a certainty”; non-convergence fractions; discount-rate dependence). The paper does a good job distinguishing deterministic baseline crossover (~4,500 units at 5% real) from Monte Carlo conditional medians (~5,600 units) and from convergence probability. The distinction between “where crossover occurs” and “whether it occurs within horizon” is a valuable interpretive frame.
+Most conclusions are directionally supported by the presented results: baseline crossovers, discount-rate effects, and the finding that discounting changes *convergence probability* more than *conditional median* (Table 9) are plausible given the censoring structure. The manuscript is also appropriately cautious in multiple places (e.g., “frequently observed under sampled assumptions, though not guaranteed”; caveats on risk-adjusted discounting in §4.14). The explicit acknowledgement that “risk-adjusted discounting” is not a substitute for failure/overrun modeling is a welcome correction to a common misuse.
 
-The discussion of the counterintuitive effect of pathway-specific timing (Earth costs earlier → higher PV → Earth looks worse in NPV) is logically correct and well explained (Sec. 3.2.3 and Fig. 5). The paper also appropriately flags that “risk-adjusted discounting” is not a proper proxy for technical failure risk (Sec. 4.11), which is an important clarification often missed in similar work.
+There are, however, several internal logic tensions and interpretive risks:
 
-Two areas weaken validity:
+- **Timing-gap interpretation:** The text claims the timing gap makes Earth NPV costs higher because they are discounted less (true), and that this “partially offsets” ISRU’s upfront burden. But the magnitude of this effect depends strongly on whether Earth is modeled as “pay at delivery” vs “pay during manufacturing” and on whether ISRU capex is staged with a realistic schedule. Since these are treated as sensitivities rather than core structure, the baseline crossover (and especially the *probability of crossover*) may be less stable than implied.
 
-* **Success probability expected-value model (Sec. 4.14)**: Eq. 30 assumes that on failure the program “reverts to Earth-only” and loses sunk \(K\), but it does not incorporate the *delay cost* of the failed attempt (years lost before reverting), nor any partial salvage value, nor the possibility that Earth manufacturing/launch proceeds in parallel during ISRU development (which you later advocate as a hybrid strategy). The computed \(p_s^{\min}\approx 69\%\) therefore depends strongly on an assumed “all-or-nothing, no-parallelism” failure structure and on the chosen savings evaluation point (“at \(2N^*\) units”). This is a useful illustrative calculation, but it is currently presented with more numerical specificity than the underlying structure supports.
+- **Success probability threshold (Eq. 38):** The expected-value model assumes (i) all-or-nothing failure, (ii) immediate reversion to Earth-only with no schedule penalty, and (iii) savings $S$ computed at “$2N^*$ units” (stated in §4.18). This is not wrong as a toy model, but it is easy for readers to over-interpret the 69% number as decision-grade. Because $S$ depends on the chosen evaluation point and because failure usually induces both delay and extra cost, the threshold is highly model-dependent. This section should be reframed as illustrative and accompanied by a sensitivity on evaluation horizon and salvage value.
 
-* **Revenue breakeven (Sec. 5.2, Eq. 29)**: The opportunity-cost framing is sensible, but the derivation uses a linearized “delay-years” approximation \(\sum \delta_n (1+r)^{-t_{n,I}}\). In a rigorous revenue model, revenue is a stream over time (annuity-like) beginning at delivery, not a single-year lump. Your back-of-envelope \(R^*\sim \$0.9\)M per unit-year at \(N\approx 9000\) may be in the right ballpark, but the model needs clearer definition of revenue duration, lifetime, and whether revenue is perpetual, fixed horizon, or decays. As written, the revenue analysis is suggestive rather than decision-grade.
+- **Revenue breakeven (Eq. 40):** The opportunity cost calculation is potentially valuable, but the formulation is currently under-specified (e.g., asset lifetime, ramp of revenue, whether revenue starts at partial functionality, whether revenue is pathway-dependent due to performance/quality differences). As written, the $\sim$“$1M per unit-year” threshold could be misleadingly precise.
 
-Overall, the logic is strong for the core cost-crossover claim; the auxiliary decision analyses (success probability, revenue) should be tightened or more explicitly labeled as illustrative.
+Overall, the paper’s conclusions are mostly consistent with its analysis, but several headline quantitative thresholds (crossover units, 69% success probability, ~12% discount rate limit, ~$1M/unit-year revenue threshold) need clearer framing as *model-conditional* and more thoroughly stress-tested.
 
 ---
 
 ## 4. Clarity & Structure — **4/5 (Good)**
 
-The manuscript is well organized, with clear sectioning, consistent notation, and an abstract that accurately reflects the key quantitative outputs (baseline crossover, Monte Carlo convergence rates, conditional median, discount-rate threshold, success probability threshold, revenue-delay caveat). The inclusion of many robustness checks is handled better than typical: each sensitivity has a succinct quantitative effect statement, which makes the paper readable despite length.
+The manuscript is generally well organized and readable for an interdisciplinary space systems audience. The Introduction motivates the question effectively; the Model section is detailed and explicit about equations; and the Results section is structured around baseline → sensitivities → Monte Carlo → robustness variants, which mirrors how many readers will consume the work. The abstract is information-dense and largely consistent with the paper’s content (including the conditional median and convergence rates).
 
-Equations are generally well presented and interpretable. The pathway-specific schedule and NPV formulation are clearly explained and are likely understandable to a non-specialist with some quantitative background. Tables 8–11 are particularly effective in summarizing Monte Carlo outcomes and sensitivity rankings.
+Figures and tables are used appropriately, and I particularly appreciate: the schedule validation figure (Fig. 11), the separation of unconditional vs conditional sensitivity (Table 12), and the convergence curve (Fig. 12), which is a good decision-support visualization. The manuscript also does a good job flagging counterintuitive results (e.g., the sign on launch cost Spearman under correlated sampling) and explaining them.
 
-Clarity issues that remain:
+Improvements needed for clarity:
 
-* **Terminology around learning rates**: You correctly define LR as the multiplicative factor per doubling (Eq. 1), but later narrative occasionally risks confusing “higher learning rate” with “faster learning” (you usually clarify, but not always). Given LR\_E is dominant, consider standardizing phrasing: “lower LR = faster learning.”
-
-* **Internal consistency of numerical statements**: Some numbers are very specific (e.g., “±18 units”, “<200 units variation”) relative to the coarse parameter ranges; this is fine if deterministic, but readers may perceive false precision unless you consistently label these as “under baseline parameterization.”
-
-* **Figure dependence**: Several key claims reference figures that are not visible in the LaTeX source review (e.g., tornado, heatmap). Ensure captions are self-contained and that axes/units are unambiguous. For a journal submission, consider adding a small table of baseline parameter values (not only distributions) near the baseline results section for quick reference.
+- Some sections contain *very strong claims stated as structural facts* (e.g., “no amount of launch cost reduction can avoid” in the Introduction) that should be softened or conditioned on the model’s assumptions (destination orbit, product type, propellant sourcing, etc.).
+- The manuscript sometimes mixes “unit-count crossover” with “time-to-crossover” in ways that could confuse readers. Tables that report both $N^*$ and the calendar time at which $N^*$ is reached should specify which schedule is used (you do this in places, but it’s easy to miss).
+- Several robustness checks are described textually with numeric shifts but without a compact summary table. Given the breadth of tests, a single “robustness matrix” table (assumption → $N^*$ shift → crossover lost?) would help.
 
 ---
 
 ## 5. Ethical Compliance — **5/5 (Excellent)**
 
-The AI-assisted methodology disclosure is unusually explicit and appropriately bounded: it states what AI was used for (literature synthesis, editorial review, peer review simulation) and what it was not used for (numerical outputs), and it asserts human authorship/validation of simulation code. This is aligned with emerging publication norms.
+The AI-assisted methodology disclosure is unusually transparent and specific (frontmatter footnote), distinguishing literature/editorial assistance from quantitative generation, and stating that numerical outputs were verified against human-written simulation code. This is aligned with emerging journal expectations.
 
-Conflicts of interest are declared, and funding is stated as none. Code availability is provided. From an ethics standpoint, the manuscript is strong.
+Conflicts of interest and funding are explicitly addressed. Code availability is provided with filenames and a repository link, which supports transparency and reproducibility. I see no ethical red flags specific to the research content.
 
-One improvement: provide a permanent archival link (e.g., Zenodo DOI) and a specific commit hash to ensure the disclosed “validated by the human author” claim is auditable.
+One minor point: because the paper states “peer review simulation” was performed with AI, some journals may request that this be clarified as *internal pre-submission review* rather than implying substitution for formal peer review. The current phrasing is probably fine but could be tightened.
 
 ---
 
 ## 6. Scope & Referencing — **4/5 (Good)**
 
-The topic and framing are appropriate for a space systems/economics journal, including *Advances in Space Research*. The references cover key historical vision (O’Neill), ISRU mission economics (Sanders/Larson; Sowers), learning curves (Wright; Argote/Epple; Nagy), and some launch cost literature (Jones; Zapata). The paper also appropriately cites real options as an extension.
+The manuscript fits well within space systems engineering / space policy / space resource economics venues (Advances in Space Research is plausible; Acta Astronautica or New Space would also be plausible). The references cover foundational learning-curve literature and a reasonable spread of ISRU/space logistics/launch cost sources. The paper appropriately acknowledges O’Neill, Sanders & Larson, Sowers, and others.
 
-Gaps/limitations in referencing:
+Gaps to address:
 
-* **Cost modeling literature**: The manuscript would benefit from more direct engagement with established space cost-estimating relationships (CERs) and parametric models beyond SMAD and the NASA handbook—e.g., NAFCOM-related discussions, TRANSCOST (Koelle), or broader aerospace cost-estimation literature. Even if not used, citing them helps situate why a simplified parametric model is chosen.
-
-* **ISRU system architecture cost bases**: You cite LSIC and Sanders/Larson, but the paper’s assumed \(K\) and \(C_{\mathrm{ops}}^{(1)}\) would be more convincing if tied to more explicit architecture studies (even if approximate), including recent Artemis-era industry studies where available.
-
-Overall referencing is adequate and mostly up-to-date, but could be strengthened in cost-estimation and lunar surface industrial systems literature.
+- **Cost modeling references:** Given the heavy reliance on parametric cost and learning curves, consider adding standard space cost-estimating literature beyond SMAD and the NASA handbook (e.g., TRANSCOST by Koelle; or other established CER/NAFCOM-related discussions if appropriate/allowed).
+- **ISRU manufacturing economics literature:** The cited ISRU works skew toward propellant and general reviews. If there are recent studies specifically on lunar construction/additive manufacturing cost or industrial ecology/bootstrapping economics, those would strengthen the “gap” claim.
+- **Finance/real options:** Dixit & Pindyck is good; if you keep the success-probability and staged deployment framing, adding a small number of canonical real-options applications in aerospace infrastructure would help position future work and justify why NPV is used here.
 
 ---
 
 ## Major Issues
 
-1. **Dominance of LR\_E requires stronger conceptual and empirical justification**  
-   LR\_E is the strongest driver in both tornado and Spearman (Table 11). Yet LR\_E is treated as a clipped normal around 0.85 with relatively narrow sigma (0.03) and broad clipping bounds. For a “1,850 kg passive structural module,” it is not obvious that aerospace-like learning rates apply, nor that learning persists over thousands of units without design changes, automation shifts, or commodity-like cost floors. This is a central validity risk: if LR\_E is mischaracterized, the crossover distribution and convergence probability could shift materially.  
-   **Required revision**: provide a more defensible mapping from product type to LR\_E (and potentially a manufacturing cost floor for Earth), or reframe the main sensitivity claims to acknowledge that LR\_E dominance is conditional on this modeling choice.
+1. **Baseline cash-flow timing is not symmetric or fully specified across pathways (Eq. 24 and surrounding text).**  
+   - Earth costs are effectively “pay-on-delivery” in the baseline, while ISRU capex is “pay-at-$t=0$” (or 5 equal tranches) with no baseline coupling to commissioning/production readiness. This asymmetry can materially affect NPV crossover.  
+   **Required revision:** Define a baseline cash-flow model for both pathways: (i) Earth manufacturing lead time and payment profile (e.g., progress payments), (ii) ISRU capex profile tied to schedule (construction, commissioning), and (iii) when ops costs begin. Then re-run baseline and MC under that consistent structure.
 
-2. **Censored-output sensitivity analysis is not yet decision-grade**  
-   You correctly note censoring distortion (Sec. 4.3) and add conditional Spearman and Cohen’s \(d\). But key interpretive claims (parameter importance, sign reversals, etc.) still rely on metrics that are not fully censoring-aware.  
-   **Required revision**: add a primary censoring-aware model (even a simple AFT regression on \(\log N^*\) with right-censoring at \(H\), or a Cox model on “hazard of crossover vs N”) and use it to confirm the parameter ranking and key interactions. This would substantially strengthen methodological credibility.
+2. **Monte Carlo headline probabilities depend strongly on distributional tail assumptions for $K$ (Table 1; §5 Limitations).**  
+   Uniform $K$ is unlikely for first-of-kind lunar industrial infrastructure; heavy right tails are typical. Because non-convergence is driven by high $K$, the convergence rate (51–77%) is not robust without testing lognormal/PERT distributions for $K$ (and arguably for $t_0$).  
+   **Required revision:** Add at least one alternative MC ensemble with a right-skewed $K$ distribution calibrated to plausible cost-growth factors, and report how convergence and conditional median change.
 
-3. **Expected-value “technical success probability” model is oversimplified relative to its use**  
-   Eq. 30 and the reported 69% threshold depend on (i) all-or-nothing failure, (ii) no parallel Earth production during ISRU attempt, (iii) no schedule delay cost of failure, (iv) savings evaluated at “\(2N^*\) units.”  
-   **Required revision**: either (a) expand to a simple two-stage decision tree with explicit time delay and hybrid production (consistent with your Phase 1/1b strategy), or (b) clearly demote this to an illustrative sidebar with uncertainty bounds and avoid a single-point threshold.
+3. **Earth manufacturing learning rate dominates results but is weakly anchored to the specific product class.**  
+   LR\_E is sampled as $\mathcal{N}(0.85,0.03)$ clipped, based on aerospace hardware broadly. But the “unit” is described as “passive structural modules,” which may learn faster (more like industrial structures) or hit a materials cost floor earlier.  
+   **Required revision:** Provide a stronger mapping from the unit definition to LR\_E and to a plausible Earth manufacturing cost floor (materials + energy). Add an Earth manufacturing floor or two-component model and show impact on crossover and convergence.
 
-4. **Revenue/opportunity-cost analysis needs clearer revenue stream assumptions**  
-   Eq. 29 uses “delay-years” but does not define revenue duration, lifetime, or whether revenue is annual for a fixed period. The conclusion “above ~$1M per unit per year” is sensitive to these assumptions.  
-   **Required revision**: specify revenue model (e.g., constant annual revenue for L years after delivery), and compute \(R^*\) under at least two lifetimes (e.g., 10-year and 30-year) to show robustness.
+4. **Several quantitative thresholds are presented with undue precision given model-dependence** (success probability 69%, discount-rate cutoff ~12%, revenue threshold ~$1M/unit-year).  
+   **Required revision:** Reframe these as scenario-conditional and add sensitivity bands (e.g., vary evaluation horizon for $S$, salvage fraction, revenue lifetime).
 
 ---
 
 ## Minor Issues
 
-- **Code versioning inconsistency**: “Version l of the codebase” in Code Availability should be a commit hash/tag; also reconcile “Version M” manuscript labeling with code versioning.
-- **Eq. 8 / logistic integration constant**: You state “The constant \(-\ln 2\) ensures \(N(t_0)=0\).” That implies *no cumulative production* at midpoint, which is a modeling choice but slightly unintuitive (logistic midpoint usually corresponds to 50% of asymptote, not zero production). Consider rewording to emphasize this is a *commissioning reference time* definition, not a standard logistic cumulative.
-- **Table 2 (production schedule)**: For unit \(n=1\), \(t_{n,I}=5.00\) yr and \(S(t_{n,I})=0.50\). This is consistent with your definition but may confuse readers (“first unit produced exactly at midpoint where rate is 50%”). A brief note that this is an artifact of the chosen normalization would help.
-- **Launch cost decomposition**: You hold \(p_\mathrm{fuel}\) fixed at \$200/kg and set \(p_\mathrm{ops}=p_\mathrm{launch}-p_\mathrm{fuel}\). For sampled \(p_\mathrm{launch}\) near \$500/kg, this implies ops \$300/kg; fine. But if a future sensitivity ever goes below \$200/kg, the model breaks. Add a constraint statement \(p_\mathrm{launch}\ge p_\mathrm{fuel}\).
-- **Units and symbols**: In Eq. 14, the vitamin term uses \(p_{\mathrm{launch,eff}}(n)\) but this symbol is not defined elsewhere; it should explicitly map to Eq. 5 with learning and decomposition.
-- **Typos/wording**: “results were generated from version~l” likely meant “version~1” or a tag; avoid ambiguous “l/1”.
+- **Eq. 12 / Table 2 consistency:** You state the first ISRU unit is produced at $t \approx t_0 + 0.004$ yr, but Table 2 lists unit 1 at exactly 5.00 yr with $S(t)=0.50$. This suggests the “unit 1” time is being approximated as $t_0$ in the table. Clarify whether Table 2 uses $t_0$ as a proxy for early units or whether rounding hides the offset.
+
+- **Terminology around “propellant floor”** (§2.2, Eq. 3): $p_{\mathrm{fuel}}$ includes “propellant and range operations” in one place, but range ops are not physics-driven. Consider renaming to “non-learnable floor” or splitting into propellant vs regulatory/range fees if you keep the argument.
+
+- **Spearman sign discussion** (§4.3): Good explanation, but the table label “Copula artifact” could be misread as “error.” Consider stating “induced by modeled correlation structure” rather than “artifact.”
+
+- **Vitamin model (Eq. 25):** You scale ISRU ops by $(1-f_v)$, but also apply $\alpha$ inside $C_{\mathrm{ops}}(n)$. Ensure there is no double scaling if $C_{\mathrm{ops}}(n)$ already includes mass penalty and transport; a short clarification sentence would prevent misinterpretation.
+
+- **Units and notation:** Use consistent notation for millions/billions in equations vs text (e.g., $C_{\mathrm{floor}}$ in \$M but $K$ in \$B). It’s readable, but a notation table would help.
+
+- **Reference orbit choice (GEO):** Because most near-term ISRU architectures focus on cislunar space (NRHO, L1/L2, LEO), a short justification for GEO as the operational orbit (beyond “space solar power”) would help readers generalize.
 
 ---
 
 ## Overall Recommendation — **Major Revision**
 
-The paper has strong potential and a solid core contribution (schedule-aware NPV crossover with uncertainty). However, several central quantitative claims hinge on modeling choices that need stronger justification and more statistically appropriate treatment of censoring, and two “decision add-ons” (success probability and revenue delay) are currently too simplified relative to the specificity of the thresholds reported. Addressing these items would substantially improve credibility and make the manuscript suitable for a high-impact space systems/economics venue.
+The manuscript is promising and contains several strong, publishable ideas (pathway-specific NPV timing, probabilistic convergence framing, extensive robustness testing, and open code). However, key headline results—especially the reported probability of crossover and several threshold values—are not yet sufficiently robust to baseline cash-flow timing assumptions and to realistic heavy-tailed capex uncertainty. Addressing the major issues above would substantially strengthen the paper’s credibility and decision relevance.
 
 ---
 
 ## Constructive Suggestions
 
-1. **Add a censoring-aware global sensitivity model as a main result**  
-   Implement an AFT (log-normal or Weibull) model for \(N^*\) with right-censoring at \(H\), or a Cox model on “crossover by N.” Report standardized coefficients / hazard ratios and compare with Spearman/Cohen’s \(d\). This can be a concise subsection but will materially strengthen methodological soundness.
+1. **Make a single “baseline cash-flow model” section and align both pathways to it.**  
+   Specify payment timing for Earth manufacturing (progress payments/lead time), launch payment timing, ISRU capex drawdown tied to construction/commissioning, and ops start. Then treat deviations as sensitivities.
 
-2. **Revisit Earth manufacturing learning modeling (LR\_E) with at least one alternative structure**  
-   Add (i) an Earth manufacturing cost floor (analogous to ISRU \(C_\mathrm{floor}\)), or (ii) a two-component Earth cost (materials + labor/overhead) where only part learns, or (iii) a sensitivity case where LR\_E is broader/triangular and justified via comparable terrestrial serial structures (e.g., satellite buses vs commodity trusses). Then show how the Monte Carlo convergence and median shift. This directly addresses the dominant-driver concern.
+2. **Add a right-skewed capex uncertainty case and re-report convergence.**  
+   Keep the uniform case, but add (at minimum) a lognormal or PERT distribution for $K$ (and possibly $t_0$) calibrated to historical cost growth of first-of-kind space infrastructure. Report how convergence at $H=40{,}000$ and the convergence curve (Fig. 12) change.
 
-3. **Replace the single-point “69% success probability” with a small decision-tree sensitivity band**  
-   For example: include parallel Earth production during ISRU development (hybrid strategy), include a failure delay of \(t_0\) years before reverting, and allow salvage fraction \(sK\). Then show \(p_s^{\min}\) as a function of salvage and delay (a small contour plot/table). This will make the risk discussion more defensible without requiring full real-options modeling.
+3. **Introduce an Earth manufacturing cost floor (materials/energy) or a two-component Earth manufacturing model.**  
+   This directly addresses the dominance of LR\_E and prevents unrealistic extrapolation of Wright curves. Re-run the tornado and MC sensitivity rankings to show whether LR\_E remains dominant.
 
-4. **Formalize the revenue-delay model with a defined revenue stream horizon**  
-   Define revenue as \(R\) per year for \(L\) years post-delivery (or as an annuity with degradation). Recompute \(R^*\) for \(L=\{10,20,30\}\) years. This will prevent overinterpretation of the “\$1M per unit-year” threshold.
+4. **Upgrade the censoring-aware analysis to a survival/AFT model (even as a supplement).**  
+   Since you already frame convergence vs horizon, a Cox or AFT regression would provide clearer parameter effects while handling right-censoring properly, strengthening the parameter-importance claims beyond Spearman-with-capping.
 
-5. **Improve reproducibility and auditability**  
-   Provide a specific Git commit hash, environment file (requirements.txt/poetry/conda), and ideally a Zenodo DOI snapshot. Also ensure all baseline values used in deterministic runs are listed explicitly in one table (not only “baseline” column in Table 3, which mixes with distributions).
-
-If you want, I can also provide a short “editorial checklist” of the exact figures/tables that should be added or modified to support the revisions above.
+5. **Reframe “threshold” results as bands and add minimal sensitivity.**  
+   For $p_s^{\min}$: vary salvage fraction (0–50%), failure delay (0–5 years), and evaluation horizon (e.g., savings at $N^*$, $2N^*$, $3N^*$). For revenue breakeven: include asset lifetime and revenue duration explicitly and show $R^*$ ranges rather than a point estimate.
