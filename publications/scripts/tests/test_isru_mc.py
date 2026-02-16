@@ -7,6 +7,7 @@ from isru_mc import (
     MCResult,
     characterize_nonconvergence,
     compute_convergence_stats,
+    compute_prcc,
     compute_spearman_correlations,
     run_mc,
     run_mc_loop,
@@ -20,10 +21,11 @@ class TestSampleMCParams:
         for name, arr in params.items():
             assert arr.shape == (100,), f"{name} has wrong shape"
 
-    def test_all_twelve_params_present(self, rng):
+    def test_all_params_present(self, rng):
         params = sample_mc_params(rng, 10)
         expected = {
             "p_launch", "K", "LR_E", "LR_I", "t0", "C_ops1", "C_mfg1",
+            "C_mat", "C_labor1",
             "alpha", "p_transport", "C_floor", "prod_rate", "availability",
         }
         assert set(params.keys()) == expected
@@ -132,6 +134,43 @@ class TestSpearmanCorrelations:
         assert len(results) == 2
 
 
+class TestPRCC:
+    """U2: Verify PRCC computation."""
+
+    def test_returns_results(self, rng):
+        """PRCC should return one result per parameter."""
+        K = rng.uniform(30e9, 100e9, 200)
+        other = rng.uniform(0, 1, 200)
+        crossovers = 3000 + K / 1e9 * 50 + rng.normal(0, 500, 200)
+        param_arrays = {"K": K, "other": other}
+        results = compute_prcc(param_arrays, crossovers)
+        assert len(results) == 2
+
+    def test_k_positive(self, rng):
+        """K should have positive PRCC (higher K -> later crossover)."""
+        K = rng.uniform(30e9, 100e9, 500)
+        other = rng.uniform(0, 1, 500)
+        crossovers = 3000 + K / 1e9 * 50 + rng.normal(0, 500, 500)
+        param_arrays = {"K": K, "other": other}
+        results = compute_prcc(param_arrays, crossovers)
+        k_result = next(r for r in results if r.name == "K")
+        assert k_result.prcc > 0
+
+    def test_resolves_confounding(self, rng):
+        """PRCC should resolve confounding from correlations."""
+        n = 500
+        # Create correlated X1 and X2
+        X1 = rng.uniform(0, 1, n)
+        X2 = 0.5 * X1 + 0.5 * rng.uniform(0, 1, n)
+        # Y depends only on X1 (not X2)
+        Y = 10 * X1 + rng.normal(0, 1, n)
+        results = compute_prcc({"X1": X1, "X2": X2}, Y)
+        x1_prcc = next(r for r in results if r.name == "X1").prcc
+        x2_prcc = next(r for r in results if r.name == "X2").prcc
+        # X1's PRCC should be much larger than X2's
+        assert abs(x1_prcc) > abs(x2_prcc) * 2
+
+
 class TestNonconvergenceRate:
     def test_higher_K_more_nonconvergence(self, rng):
         """Higher K should lead to more non-convergence."""
@@ -156,7 +195,7 @@ class TestRunMCIntegration:
         assert result.r_fixed == 0.05
         assert len(result.crossovers) == 500
         assert 0 <= result.stats.convergence_rate <= 100
-        assert len(result.spearman) == 12  # 12 parameters (incl. availability)
+        assert len(result.spearman) == 14  # 14 parameters (incl. C_mat, C_labor1)
 
     @pytest.mark.slow
     def test_reproducible_with_same_seed(self):

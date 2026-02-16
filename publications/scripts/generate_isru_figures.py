@@ -63,7 +63,7 @@ from isru_model import (  # noqa: E402
     unit_to_time_piecewise,
     _cumulative_production,
 )
-from isru_mc import run_mc, sample_mc_params, run_mc_loop, compute_convergence_stats, compute_kaplan_meier  # noqa: E402
+from isru_mc import run_mc, sample_mc_params, run_mc_loop, compute_convergence_stats, compute_kaplan_meier, compute_prcc  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Output directory
@@ -409,6 +409,16 @@ def print_mc_diagnostics(all_results, mc_rates):
             print("         Non-convergence rate by K bucket:")
             for label, rate in ncp.non_conv_by_K.items():
                 print(f"           K={label}: {rate:.1f}% non-converge")
+
+        if res.prcc:
+            print("         PRCC (unconditional):")
+            for pr in sorted(res.prcc, key=lambda x: -abs(x.prcc)):
+                print(f"           {pr.name:>12s}: PRCC={pr.prcc:+.3f} {pr.stars}")
+
+        if res.prcc_conditional:
+            print("         PRCC (conditional):")
+            for pr in sorted(res.prcc_conditional, key=lambda x: -abs(x.prcc)):
+                print(f"           {pr.name:>12s}: PRCC={pr.prcc:+.3f} {pr.stars}")
 
         if res.convergence_drivers:
             print("         Convergence drivers (Cohen's d, converged vs non-converged):")
@@ -1768,6 +1778,38 @@ def print_revenue_breakeven_with_lifetime():
 
 
 # ---------------------------------------------------------------------------
+# U3: Earth launch throughput cap sensitivity
+# ---------------------------------------------------------------------------
+def print_throughput_cap_sensitivity():
+    """U3: Sweep Earth delivery rate cap and report crossover shift."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  U3: Earth launch throughput cap sensitivity (NPV, r=5%):")
+    print(f"  {'Cap (units/yr)':>16s}  {'N*':>8s}  {'Shift':>8s}  {'Note':>35s}")
+    print(f"  {'----------------':>16s}  {'--------':>8s}  {'--------':>8s}  {'-----------------------------------':>35s}")
+
+    configs = [
+        (None, "(no cap, baseline)"),
+        (27000, "(~50M tonnes/yr, ~500 Starship/yr)"),
+        (10000, "(~18.5M tonnes/yr, ~185 Starship/yr)"),
+        (5000, "(~9.25M tonnes/yr, ~93 Starship/yr)"),
+        (2000, "(~3.7M tonnes/yr, ~37 Starship/yr)"),
+    ]
+
+    for cap, note in configs:
+        p = BASELINE.copy()
+        if cap is not None:
+            p["earth_max_units_per_year"] = cap
+        cross = find_crossover(p, n_max=40000, discount=True)
+        shift = cross - base_npv
+        cap_label = f"{cap:,}" if cap else "Unlimited"
+        if cross >= 40000:
+            print(f"  {cap_label:>16s}  {'>40,000':>8s}  {'N/A':>8s}  {note:>35s}")
+        else:
+            print(f"  {cap_label:>16s}  {cross:>8,d}  {shift:>+8,d}  {note:>35s}")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -1876,5 +1918,8 @@ if __name__ == "__main__":
     # Version O diagnostics
     print_ps_min_vs_horizon()
     print_availability_sensitivity()
+
+    # Version U diagnostics
+    print_throughput_cap_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")

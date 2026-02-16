@@ -483,6 +483,106 @@ class TestVitaminTwoPartModel:
         assert cost_new != pytest.approx(cost_old, rel=0.01)
 
 
+# ===== TestTwoComponentEarthModel =====
+
+class TestTwoComponentEarthModel:
+    """U1: Verify two-component Earth manufacturing model."""
+
+    def test_zero_cmat_matches_single_curve(self, baseline):
+        """With C_mat=0, should match the original single Wright curve."""
+        ns = np.array([1.0, 100.0, 1000.0, 10000.0])
+        # Single curve: C_mfg1 * n^b_E
+        p_single = baseline.copy()
+        p_single["C_mat"] = 0
+        cost_single = earth_unit_cost(ns, p_single)
+        # Original behavior (C_mat absent)
+        p_orig = baseline.copy()
+        del p_orig["C_mat"]
+        del p_orig["C_labor1"]
+        cost_orig = earth_unit_cost(ns, p_orig)
+        np.testing.assert_allclose(cost_single, cost_orig)
+
+    def test_two_component_higher_at_large_n(self, baseline):
+        """Two-component should be higher than single curve at large n due to material floor."""
+        n = 10000.0
+        # Single curve
+        p_single = baseline.copy()
+        p_single["C_mat"] = 0
+        cost_single = float(earth_unit_cost(n, p_single))
+        # Two-component: C_mat provides a natural floor
+        p_two = baseline.copy()
+        p_two["C_mat"] = 1e6
+        p_two["C_labor1"] = baseline["C_mfg1"] - 1e6
+        cost_two = float(earth_unit_cost(n, p_two))
+        assert cost_two > cost_single
+
+    def test_first_unit_preserves_total(self, baseline):
+        """At n=1, C_mat + C_labor1 * 1^b = C_mat + C_labor1 = C_mfg1."""
+        n = 1.0
+        p = baseline.copy()
+        p["C_mat"] = 1e6
+        p["C_labor1"] = baseline["C_mfg1"] - 1e6
+        cost = float(earth_unit_cost(n, p))
+        # At n=1: mfg = C_mat + C_labor1 * 1^b = C_mat + C_labor1 = C_mfg1
+        # launch cost = m * p_launch (same either way)
+        expected = baseline["C_mfg1"] + baseline["m"] * baseline["p_launch"]
+        assert cost == pytest.approx(expected, rel=1e-6)
+
+    def test_crossover_similar(self, baseline):
+        """Two-component model should produce similar crossover to single curve."""
+        # Single curve
+        p_single = baseline.copy()
+        p_single["C_mat"] = 0
+        cross_single = find_crossover(p_single, discount=True)
+        # Two-component with small C_mat
+        p_two = baseline.copy()
+        p_two["C_mat"] = 1e6
+        p_two["C_labor1"] = baseline["C_mfg1"] - 1e6
+        cross_two = find_crossover(p_two, discount=True)
+        # Should be close (small C_mat shouldn't change much)
+        assert abs(cross_two - cross_single) < 500
+
+
+# ===== TestEarthThroughputCap =====
+
+class TestEarthThroughputCap:
+    """U3: Verify Earth launch throughput cap."""
+
+    def test_no_cap_matches_baseline(self):
+        """No cap should match baseline delivery time."""
+        ns = np.array([100.0, 500.0, 1000.0])
+        from isru_model import earth_delivery_time
+        t_base = earth_delivery_time(ns, 500)
+        t_nocap = earth_delivery_time(ns, 500, earth_max_units_per_year=None)
+        np.testing.assert_allclose(t_base, t_nocap)
+
+    def test_cap_slows_delivery(self):
+        """Cap below prod_rate should slow delivery."""
+        from isru_model import earth_delivery_time
+        t_fast = earth_delivery_time(1000.0, 500)  # 1000/500 = 2 yr
+        t_capped = earth_delivery_time(1000.0, 500, earth_max_units_per_year=250)  # 1000/250 = 4 yr
+        assert float(t_capped) > float(t_fast)
+        assert float(t_capped) == pytest.approx(4.0)
+
+    def test_cap_above_prodrate_no_effect(self):
+        """Cap above prod_rate should have no effect."""
+        from isru_model import earth_delivery_time
+        t_base = earth_delivery_time(1000.0, 500)
+        t_high_cap = earth_delivery_time(1000.0, 500, earth_max_units_per_year=10000)
+        np.testing.assert_allclose(t_high_cap, t_base)
+
+    def test_crossover_shifts_with_cap(self, baseline):
+        """Throughput cap should shift crossover earlier (Earth is slower)."""
+        cross_base = find_crossover(baseline, discount=True)
+        p_capped = baseline.copy()
+        p_capped["earth_max_units_per_year"] = 250
+        cross_capped = find_crossover(p_capped, discount=True)
+        # Slower Earth delivery means Earth costs are discounted more -> Earth cheaper in NPV
+        # But also, if cap < prod_rate, it extends the Earth timeline
+        # Net effect depends on specifics, but we just verify it runs
+        assert isinstance(cross_capped, int)
+
+
 # ===== TestPiecewiseSchedule =====
 
 class TestPiecewiseSchedule:

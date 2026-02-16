@@ -44,6 +44,8 @@ BASELINE: Params = {
     "K_maint_interval": 5,  # M3: years between maintenance overhauls
     "C_mfg_floor": 0,      # N1: Earth mfg cost floor ($/unit, 0 = no floor)
     "availability": 1.0,   # O2: ISRU facility availability factor (0-1)
+    "C_mat": 1e6,          # U1: per-unit material cost (non-learnable, $/unit)
+    "C_labor1": 74e6,      # U1: first-unit labor+overhead cost (learnable, $/unit)
 }
 
 # ---------------------------------------------------------------------------
@@ -193,7 +195,12 @@ def find_crossover_mfg_lead(
 
     # Earth side — split mfg and launch timing
     b_E = learning_exponent(params["LR_E"])
-    c_mfg = params["C_mfg1"] * ns ** b_E
+    C_mat = params.get("C_mat", 0)
+    if C_mat > 0:
+        C_labor1 = params.get("C_labor1", params["C_mfg1"] - C_mat)
+        c_mfg = C_mat + C_labor1 * ns ** b_E
+    else:
+        c_mfg = params["C_mfg1"] * ns ** b_E
 
     # N1: Earth manufacturing cost floor
     C_mfg_floor = params.get("C_mfg_floor", 0)
@@ -233,10 +240,23 @@ def find_crossover_mfg_lead(
 
 
 def earth_unit_cost(n: float | NDFloat, params: Params) -> NDFloat:
-    """Eq 2-4: Earth per-unit cost = manufacturing learning + launch."""
+    """Eq 2-4: Earth per-unit cost = manufacturing learning + launch.
+
+    U1: Two-component manufacturing model: C_mfg = C_mat + C_labor1 * n^b_E
+    where C_mat is non-learnable material cost and C_labor1 is first-unit
+    labor/overhead cost. Falls back to single Wright curve (C_mfg1 * n^b_E)
+    when C_mat is not in params or is zero.
+    """
     n = asarray(n, dtype=float)
     b_E = learning_exponent(params["LR_E"])
-    c_mfg = params["C_mfg1"] * n ** b_E
+
+    # U1: Two-component model (material + labor) or single Wright curve
+    C_mat = params.get("C_mat", 0)
+    if C_mat > 0:
+        C_labor1 = params.get("C_labor1", params["C_mfg1"] - C_mat)
+        c_mfg = C_mat + C_labor1 * n ** b_E
+    else:
+        c_mfg = params["C_mfg1"] * n ** b_E
 
     # N1: Earth manufacturing cost floor
     C_mfg_floor = params.get("C_mfg_floor", 0)
@@ -414,12 +434,24 @@ def cumulative_isru(
     return ns, unit_costs, cum
 
 
-def earth_delivery_time(ns: float | NDFloat, prod_rate: float = 500) -> NDFloat:
+def earth_delivery_time(
+    ns: float | NDFloat,
+    prod_rate: float = 500,
+    earth_max_units_per_year: float | None = None,
+) -> NDFloat:
     """Earth delivery time — constant rate from t=0 (no ramp-up delay).
 
     Earth manufacturing can begin immediately, so t_{n,E} = n / prod_rate.
+
+    U3: When earth_max_units_per_year is set, the effective Earth production
+    rate is capped at min(prod_rate, earth_max_units_per_year), modeling
+    launch throughput constraints.
     """
-    return asarray(ns, dtype=float) / prod_rate
+    ns_arr = asarray(ns, dtype=float)
+    effective_rate = prod_rate
+    if earth_max_units_per_year is not None:
+        effective_rate = min(prod_rate, earth_max_units_per_year)
+    return ns_arr / effective_rate
 
 
 def earth_delivery_time_ramped(
@@ -443,6 +475,7 @@ def find_crossover(
     discount: bool = False,
     phased_k_years: int | None = None,
     earth_ramp: tuple[float, float] | None = None,
+    use_piecewise: bool = True,
 ) -> int:
     """Find smallest N where ISRU cumulative <= Earth cumulative.
 
@@ -459,6 +492,10 @@ def find_crossover(
     earth_ramp : tuple(t0_earth, k_earth) or None
         If set, use logistic ramp-up for Earth delivery schedule instead of
         instant-start. Tuple is (midpoint_years, steepness).
+    use_piecewise : bool
+        If True (default), use piecewise schedule with explicit construction
+        delay as primary ISRU schedule. The piecewise schedule sets
+        n_dot(t) = 0 for t < t_c where t_c = t0 - 1.
     """
     r = params.get("r", 0.0) if discount else 0.0
 
@@ -475,6 +512,9 @@ def find_crossover(
     availability = params.get("availability", 1.0)
     isru_prod_rate = prod_rate * availability
 
+    # U3: Earth throughput cap
+    earth_cap = params.get("earth_max_units_per_year", None)
+
     # Earth side
     earth_units = earth_unit_cost(ns, params)
     if discount:
@@ -482,16 +522,22 @@ def find_crossover(
             t0_e, k_e = earth_ramp
             t_n_earth = earth_delivery_time_ramped(ns, prod_rate, t0_e, k_e)
         else:
-            t_n_earth = earth_delivery_time(ns, prod_rate)
+            t_n_earth = earth_delivery_time(ns, prod_rate, earth_cap)
         discount_earth = (1.0 + r) ** (-t_n_earth)
         earth_cum = cumsum(earth_units * discount_earth)
     else:
         earth_cum = cumsum(earth_units)
 
     # ISRU side — ops (uses availability-adjusted production rate for timing)
+    # A4: Use piecewise schedule as primary
     ops = isru_ops_cost(ns, params)
     if discount:
-        t_n_isru = unit_to_time(ns, isru_prod_rate, params["t0"], k_ramp)
+        if use_piecewise:
+            t_n_isru = unit_to_time_piecewise(
+                ns, isru_prod_rate, params["t0"], k_ramp
+            )
+        else:
+            t_n_isru = unit_to_time(ns, isru_prod_rate, params["t0"], k_ramp)
         discount_isru = (1.0 + r) ** (-t_n_isru)
         isru_ops_cum = cumsum(ops * discount_isru)
     else:

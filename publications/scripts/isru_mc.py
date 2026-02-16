@@ -23,6 +23,7 @@ from isru_model import (
     find_crossover_npv,
     significance_stars,
 )
+from scipy.stats import rankdata
 
 NDFloat = NDArray[floating[Any]]
 
@@ -58,6 +59,15 @@ class SpearmanResult:
 
 
 @dataclass
+class PRCCResult:
+    """Partial Rank Correlation Coefficient for one parameter."""
+    name: str
+    prcc: float
+    p_val: float
+    stars: str
+
+
+@dataclass
 class NonConvergenceProfile:
     """Characterization of non-convergence drivers."""
     non_conv_drivers: dict[str, tuple[float, float]]
@@ -77,6 +87,8 @@ class MCResult:
     param_arrays: dict[str, NDFloat]
     N_MAX_MC: int
     convergence_drivers: list[tuple[str, float]] = field(default_factory=list)
+    prcc: list[PRCCResult] = field(default_factory=list)
+    prcc_conditional: list[PRCCResult] = field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -148,6 +160,11 @@ def sample_mc_params(
         else:
             k_samples = rng.uniform(30e9, 100e9, n_runs)
 
+    # U1: Sample C_mfg1 and split into C_mat (fixed) + C_labor1 (learnable)
+    C_mfg1_samples = rng.uniform(50e6, 100e6, n_runs)
+    C_mat_samples = rng.uniform(0.5e6, 2e6, n_runs)
+    C_labor1_samples = C_mfg1_samples - C_mat_samples
+
     return {
         "p_launch": p_launch_samples,
         "K": k_samples,
@@ -155,7 +172,9 @@ def sample_mc_params(
         "LR_I": clip(rng.normal(0.90, 0.03, n_runs), 0.80, 0.98),
         "t0": rng.uniform(3, 8, n_runs),
         "C_ops1": rng.uniform(2e6, 10e6, n_runs),
-        "C_mfg1": rng.uniform(50e6, 100e6, n_runs),
+        "C_mfg1": C_mfg1_samples,
+        "C_mat": C_mat_samples,
+        "C_labor1": C_labor1_samples,
         "alpha": rng.uniform(1.0, 2.0, n_runs),
         "p_transport": rng.uniform(50, 300, n_runs),
         "C_floor": rng.uniform(0.3e6, 2.0e6, n_runs),
@@ -264,6 +283,77 @@ def compute_spearman_correlations(
             name=name, rho=float(corr), p_val=float(p_val),
             stars=significance_stars(float(p_val)),
         ))
+    return results
+
+
+def compute_prcc(
+    param_arrays: dict[str, NDFloat],
+    crossovers: NDFloat,
+    *,
+    mask: NDFloat | None = None,
+) -> list[PRCCResult]:
+    """Compute Partial Rank Correlation Coefficients.
+
+    For each parameter X_i:
+      1. Rank all variables.
+      2. Regress rank(X_i) on ranks of all other parameters -> residuals R_Xi.
+      3. Regress rank(Y) on ranks of all other parameters -> residuals R_Y.
+      4. PRCC = Spearman(R_Xi, R_Y).
+
+    PRCC isolates the effect of each parameter after removing the linear
+    effects of all other parameters, resolving confounding from correlations
+    (e.g., the launch cost sign reversal caused by the copula).
+    """
+    from numpy.linalg import lstsq
+
+    names = list(param_arrays.keys())
+    n_params = len(names)
+
+    # Apply mask if provided
+    if mask is not None:
+        arrays = {k: v[mask] for k, v in param_arrays.items()}
+        y = crossovers[mask]
+    else:
+        arrays = param_arrays
+        y = crossovers
+
+    n_obs = len(y)
+    if n_obs < n_params + 2:
+        return []
+
+    # Build rank matrix (n_obs x n_params)
+    rank_matrix = empty((n_obs, n_params))
+    for j, name in enumerate(names):
+        rank_matrix[:, j] = rankdata(arrays[name])
+
+    rank_y = rankdata(y)
+
+    results = []
+    for i, name in enumerate(names):
+        # Other parameter ranks (all columns except i)
+        X_others = rank_matrix[:, [j for j in range(n_params) if j != i]]
+
+        # Regress rank(X_i) on X_others
+        # Add intercept column
+        X_design = empty((n_obs, X_others.shape[1] + 1))
+        X_design[:, 0] = 1.0
+        X_design[:, 1:] = X_others
+        coef_xi, _, _, _ = lstsq(X_design, rank_matrix[:, i], rcond=None)
+        resid_xi = rank_matrix[:, i] - X_design @ coef_xi
+
+        # Regress rank(Y) on X_others
+        coef_y, _, _, _ = lstsq(X_design, rank_y, rcond=None)
+        resid_y = rank_y - X_design @ coef_y
+
+        # PRCC = Spearman correlation of residuals
+        corr, p_val = spearmanr(resid_xi, resid_y)
+        results.append(PRCCResult(
+            name=name,
+            prcc=float(corr),
+            p_val=float(p_val),
+            stars=significance_stars(float(p_val)),
+        ))
+
     return results
 
 
@@ -378,6 +468,13 @@ def run_mc(
 
     conv_drivers = compute_convergence_drivers(param_arrays, converged_mask)
 
+    prcc = compute_prcc(param_arrays, crossovers)
+    prcc_conditional = (
+        compute_prcc(param_arrays, crossovers, mask=converged_mask)
+        if n_converged > 100
+        else []
+    )
+
     return MCResult(
         r_fixed=r_fixed,
         crossovers=crossovers,
@@ -389,6 +486,8 @@ def run_mc(
         param_arrays=param_arrays,
         N_MAX_MC=n_max_mc,
         convergence_drivers=conv_drivers,
+        prcc=prcc,
+        prcc_conditional=prcc_conditional,
     )
 
 
