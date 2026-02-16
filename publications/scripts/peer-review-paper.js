@@ -46,7 +46,8 @@ const MODELS = {
     id: 'databricks-gemini-3-pro',
     name: 'Gemini 3 Pro',
     filename: 'gemini-3-pro.md',
-    endpoint: '/serving-endpoints/databricks-gemini-3-pro/invocations'
+    endpoint: '/serving-endpoints/databricks-gemini-3-pro/invocations',
+    maxTokens: 65000
   },
   'gpt-5-2': {
     id: 'databricks-gpt-5-2',
@@ -155,7 +156,7 @@ async function queryDatabricks(modelKey, systemPrompt, userPrompt) {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        max_tokens: 100000,
+        max_tokens: model.maxTokens || 100000,
         temperature: 0.7
       })
     });

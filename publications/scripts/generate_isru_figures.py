@@ -1800,7 +1800,7 @@ def print_pioneering_phase_sensitivity():
     print(f"  {'--------':>8s}  {'------':>6s}  {'--------':>8s}  {'--------':>8s}  {'------':>6s}")
 
     for gamma in [1, 2, 5]:
-        for n_p in [20, 50, 100]:
+        for n_p in [20, 50, 100, 500, 1000]:
             p = BASELINE.copy()
             p["pioneer_gamma"] = gamma
             p["pioneer_n"] = n_p
@@ -1917,6 +1917,31 @@ def print_throughput_cap_sensitivity():
 
 
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# W3: Independent p_fuel sensitivity (total launch cost varies)
+# ---------------------------------------------------------------------------
+def print_pfuel_independent_sensitivity():
+    """W3: Sweep p_fuel while holding p_ops fixed — total launch cost varies."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  W3: Independent p_fuel sensitivity (p_ops=$800 fixed, NPV, r=5%):")
+    print(f"  {'p_fuel':>8s}  {'p_ops':>8s}  {'total':>8s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}")
+
+    for p_fuel in [50, 100, 200, 400]:
+        p = BASELINE.copy()
+        p["p_fuel"] = p_fuel
+        p["p_ops_launch"] = 800  # held fixed
+        # Total first-unit launch cost = p_fuel + p_ops = varies
+        cross = find_crossover_npv(p)
+        shift = cross - base_npv
+        total = p_fuel + 800
+        if cross >= 40000:
+            print(f"  {p_fuel:>7d}$  {800:>7d}$  {total:>7d}$  {'>40,000':>8s}  {'N/A':>8s}")
+        else:
+            print(f"  {p_fuel:>7d}$  {800:>7d}$  {total:>7d}$  {cross:>8,d}  {shift:>+8,d}")
+
+
 # Main
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -2033,5 +2058,8 @@ if __name__ == "__main__":
     print_pioneering_phase_sensitivity()
     print_qa_cost_sensitivity()
     print_isru_ops_timing_sensitivity()
+
+    # Version W diagnostics
+    print_pfuel_independent_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")

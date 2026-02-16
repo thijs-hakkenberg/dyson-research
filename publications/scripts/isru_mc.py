@@ -103,7 +103,7 @@ def sample_mc_params(
     n_runs: int,
     *,
     rho: float = 0.3,
-    rho_k_prod: float = 0.0,
+    rho_k_prod: float = 0.5,
     correlated: bool = True,
     k_distribution: str = "uniform",
 ) -> dict[str, NDFloat]:
@@ -452,7 +452,7 @@ def run_mc(
     This is the thin orchestrator that composes sampling, loop, stats,
     correlations, and non-convergence analysis.
     """
-    param_arrays = sample_mc_params(rng, n_runs, rho=0.3, correlated=True)
+    param_arrays = sample_mc_params(rng, n_runs, rho=0.3, rho_k_prod=0.5, correlated=True)
     crossovers, permanent_mask = run_mc_loop(param_arrays, r_fixed, n_max_mc)
 
     converged_mask = crossovers < n_max_mc
