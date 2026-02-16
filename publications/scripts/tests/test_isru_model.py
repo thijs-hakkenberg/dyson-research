@@ -8,9 +8,11 @@ from isru_model import (
     PARAM_BOUNDS,
     _cumulative_production,
     clamp_param,
+    compute_savings_window_survival,
     cumulative_cost,
     cumulative_isru,
     cumulative_npv,
+    derive_asymptotic_costs,
     earth_delivery_time,
     earth_delivery_time_ramped,
     earth_unit_cost,
@@ -1201,3 +1203,103 @@ class TestEarthN0Offset:
         cost_n0 = earth_unit_cost_plateau(ns, p, n_break=500, damping=0.5)
         # With offset, costs should be lower (more prior experience)
         assert np.all(cost_n0 <= cost_base)
+
+
+# ===== TestSavingsWindowSurvival =====
+
+class TestSavingsWindowSurvival:
+    """AC1: Verify savings window survival computation."""
+
+    def test_probabilities_in_range(self):
+        """All P values should be in [0, 1]."""
+        crossovers = np.array([1000, 2000, 3000, 5000, 8000], dtype=float)
+        recrossing = np.array([10000, 15000, 20000, 50000, 200000], dtype=float)
+        result = compute_savings_window_survival(crossovers, recrossing)
+        for N_h, p in result.items():
+            assert 0.0 <= p <= 1.0, f"P at {N_h} = {p} out of range"
+
+    def test_monotonically_nondecreasing(self):
+        """P(in window) should be non-decreasing with horizon (more runs captured)."""
+        crossovers = np.array([1000, 2000, 3000, 5000, 8000, 10000], dtype=float)
+        recrossing = np.array([50000, 50000, 50000, 50000, 50000, 50000], dtype=float)
+        result = compute_savings_window_survival(
+            crossovers, recrossing,
+            horizons=[5000, 10000, 20000, 50000],
+        )
+        probs = [result[h] for h in [5000, 10000, 20000, 50000]]
+        for i in range(len(probs) - 1):
+            assert probs[i] <= probs[i + 1] + 1e-10, \
+                f"P decreased from {probs[i]} to {probs[i+1]}"
+
+    def test_all_permanent_gives_one(self):
+        """If all runs are permanent (N**=200k), P should be 1.0 for reasonable horizons."""
+        crossovers = np.array([1000, 2000, 3000], dtype=float)
+        recrossing = np.array([200000, 200000, 200000], dtype=float)
+        result = compute_savings_window_survival(
+            crossovers, recrossing, horizons=[5000, 10000],
+        )
+        assert result[5000] == pytest.approx(1.0)
+        assert result[10000] == pytest.approx(1.0)
+
+    def test_horizon_below_all_crossovers(self):
+        """If N_h < min(N*), nobody is in the window."""
+        crossovers = np.array([5000, 6000, 7000], dtype=float)
+        recrossing = np.array([50000, 50000, 50000], dtype=float)
+        result = compute_savings_window_survival(
+            crossovers, recrossing, horizons=[1000],
+        )
+        assert result[1000] == pytest.approx(0.0)
+
+
+# ===== TestAsymptoticConsistency =====
+
+class TestAsymptoticConsistency:
+    """AC3: Verify asymptotic cost consistency audit."""
+
+    def test_baseline_consistent(self, baseline):
+        """derive_asymptotic_costs should be self-consistent for baseline params."""
+        terms = derive_asymptotic_costs(baseline)
+        assert terms["consistent"] is True
+
+    def test_zero_vitamin_permanent(self, baseline):
+        """f_v=0 should classify as permanent, consistently."""
+        baseline["vitamin_frac"] = 0.0
+        terms = derive_asymptotic_costs(baseline)
+        assert terms["analytic_permanent"] is True
+        assert terms["is_permanent_result"] is True
+        assert terms["empirical_permanent"] is True
+        assert terms["consistent"] is True
+
+    def test_high_cfloor_transient(self, baseline):
+        """Very high C_floor should make it transient, consistently."""
+        baseline["C_floor"] = 5e6
+        terms = derive_asymptotic_costs(baseline)
+        assert terms["analytic_permanent"] is False
+        assert terms["consistent"] is True
+
+    def test_returns_cost_terms(self, baseline):
+        """Should return meaningful cost breakdowns."""
+        terms = derive_asymptotic_costs(baseline)
+        assert "isru_total_asymp" in terms
+        assert "earth_total_asymp" in terms
+        assert terms["isru_total_asymp"] > 0
+        assert terms["earth_total_asymp"] > 0
+
+
+# ===== TestTwoPartSensitivity =====
+
+class TestTwoPartSensitivity:
+    """AC4: Verify point-biserial correlation for convergence drivers."""
+
+    def test_k_positive_for_convergence(self):
+        """Higher K should correlate negatively with convergence (harder to converge)."""
+        from scipy.stats import pointbiserialr
+        from isru_mc import sample_mc_params, run_mc_loop
+        rng = np.random.default_rng(42)
+        params = sample_mc_params(rng, 1000, rho=0.3, rho_k_prod=0.5, correlated=True)
+        crossovers, _ = run_mc_loop(params, 0.05, 40000)
+        converged = (crossovers < 40000).astype(float)
+        r_pb, p_val = pointbiserialr(converged, params["K"])
+        # Higher K -> less likely to converge -> negative correlation
+        assert r_pb < 0
+        assert p_val < 0.05

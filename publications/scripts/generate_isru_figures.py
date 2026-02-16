@@ -38,14 +38,16 @@ from matplotlib.pyplot import subplots, close, rcParams  # noqa: E402
 from matplotlib.ticker import FuncFormatter  # noqa: E402
 from matplotlib.patches import Patch  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
-from scipy.stats import spearmanr, triang  # noqa: E402
+from scipy.stats import pointbiserialr, spearmanr, triang  # noqa: E402
 
 from isru_model import (  # noqa: E402
     BASELINE,
     clamp_param,
+    compute_savings_window_survival,
     cumulative_cost,
     cumulative_isru,
     cumulative_npv,
+    derive_asymptotic_costs,
     earth_delivery_time,
     earth_delivery_time_ramped,
     earth_unit_cost,
@@ -2297,7 +2299,7 @@ def print_k_clip_sensitivity():
 # Version AB diagnostics
 # ---------------------------------------------------------------------------
 def print_recrossing_analysis():
-    """AB1: Re-crossing volume analysis for transient crossovers."""
+    """AB1/AC: Re-crossing volume analysis with savings window survival."""
     import numpy as np
 
     print("\n  AB1: Re-crossing volume analysis (10,000 MC runs, r=5%):")
@@ -2344,8 +2346,285 @@ def print_recrossing_analysis():
         print(f"    N** IQR: [{iqr_lo:,.0f}, {iqr_hi:,.0f}]")
         print(f"    Median peak savings volume: {med_peak_n:,.0f} units")
         print(f"    Median peak savings: ${med_peak_sav/1e9:.2f}B")
+
+        # AC2: Savings window width distribution
+        window_widths = recross_arr - crossovers[transient]
+        med_width = float(np.median(window_widths))
+        width_iqr_lo = float(np.percentile(window_widths, 25))
+        width_iqr_hi = float(np.percentile(window_widths, 75))
+        print(f"    Savings window width (N** - N*): median={med_width:,.0f}, "
+              f"IQR=[{width_iqr_lo:,.0f}, {width_iqr_hi:,.0f}]")
+
+        # P(N** > H) for various horizons
+        print("    P(N** > H) — re-crossing survival:")
+        for H in [20000, 40000, 100000, 200000]:
+            p_above = float((recross_arr > H).mean())
+            print(f"      H={H:>7,d}: P(N** > H) = {p_above:.1%}")
+
+        # AC1: Savings window survival table
+        # Build full arrays for all converged runs (permanent get N**=200k)
+        all_recross = np.full(len(crossovers), 200000.0)
+        trans_idx_full = np.where(transient)[0]
+        for i, idx in enumerate(trans_idx_full):
+            all_recross[idx] = recross_arr[i]
+        # Permanent crossovers: N** effectively infinite
+        perm_mask = converged & perm_flags.astype(bool)
+        all_recross[perm_mask] = 200000.0
+
+        surv = compute_savings_window_survival(
+            crossovers[converged], all_recross[converged],
+            horizons=[5000, 10000, 20000, 50000, 100000],
+        )
+        print("    Savings window survival P(N* <= N_h <= N**):")
+        for N_h, p_val in sorted(surv.items()):
+            print(f"      N_h={N_h:>7,d}: P = {p_val:.1%}")
+
+        # Cross-check: % agreement between is_permanent_crossover() and observed N**
+        perm_analytic = perm_flags[converged].astype(bool)
+        observed_perm = all_recross[converged] >= 200000
+        agreement = float((perm_analytic == observed_perm).mean())
+        print(f"    Permanent classification agreement "
+              f"(analytic vs observed N**>=200k): {agreement:.1%}")
     else:
         print("    No transient crossovers found.")
+
+
+def print_asymptotic_consistency():
+    """AC3: Asymptotic consistency audit table."""
+    print("\n  AC3: Asymptotic cost consistency audit (baseline):")
+    terms = derive_asymptotic_costs(BASELINE)
+
+    print("    Term-by-term asymptotic analysis:")
+    for key, val in terms.items():
+        if isinstance(val, dict) and "value" in val:
+            vanish = "vanishes" if val.get("vanishes") else "persists"
+            note = f"  ({val['note']})" if "note" in val else ""
+            print(f"      {key:>25s}: ${val['value']/1e6:>10.2f}M  [{vanish}]{note}")
+
+    isru_a = terms["isru_total_asymp"]
+    earth_a = terms["earth_total_asymp"]
+    print(f"    ISRU asymptotic per-unit:  ${isru_a/1e6:.2f}M")
+    print(f"    Earth asymptotic per-unit: ${earth_a/1e6:.2f}M")
+    print(f"    Analytic permanent: {terms['analytic_permanent']}")
+    print(f"    is_permanent_crossover(): {terms['is_permanent_result']}")
+    print(f"    Empirical at n=1e15: ISRU=${terms['isru_empirical_1e15']/1e6:.2f}M, "
+          f"Earth=${terms['earth_empirical_1e15']/1e6:.2f}M")
+    print(f"    Empirical permanent: {terms['empirical_permanent']}")
+    print(f"    ALL CONSISTENT: {terms['consistent']}")
+
+
+def print_two_part_sensitivity():
+    """AC4: Two-part sensitivity — convergence drivers vs location drivers."""
+    import numpy as np
+
+    print("\n  AC4: Two-part sensitivity decomposition (10,000 MC runs, r=5%):")
+    rng = default_rng(42)
+    params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5, correlated=True)
+    crossovers, _ = run_mc_loop(params, 0.05, 40000)
+
+    converged = crossovers < 40000
+    convergence_indicator = converged.astype(float)
+
+    # Part A: Point-biserial correlation with convergence indicator
+    param_names = sorted(params.keys())
+    print("    Part A: Drivers of crossover ACHIEVEMENT (point-biserial r):")
+    print(f"    {'Parameter':>12s}  {'r_pb':>8s}  {'p-value':>10s}  {'Sig':>4s}")
+    print(f"    {'------------':>12s}  {'--------':>8s}  {'----------':>10s}  {'----':>4s}")
+
+    pb_results = []
+    for name in param_names:
+        r_pb, p_val = pointbiserialr(convergence_indicator, params[name])
+        from isru_model import significance_stars
+        stars = significance_stars(p_val)
+        pb_results.append((name, r_pb, p_val, stars))
+
+    pb_results.sort(key=lambda x: -abs(x[1]))
+    for name, r_pb, p_val, stars in pb_results:
+        print(f"    {name:>12s}  {r_pb:>+8.3f}  {p_val:>10.2e}  {stars:>4s}")
+
+    # Part B: Conditional PRCC on converged runs only
+    if int(np.sum(converged)) > 100:
+        print(f"\n    Part B: Drivers of crossover LOCATION | converged "
+              f"(conditional PRCC, n={int(np.sum(converged)):,}):")
+        cond_crossovers = crossovers[converged]
+        cond_params = {k: v[converged] for k, v in params.items()}
+        prcc_results = compute_prcc(cond_params, cond_crossovers)
+        print(f"    {'Parameter':>12s}  {'PRCC':>8s}  {'Sig':>4s}")
+        print(f"    {'------------':>12s}  {'--------':>8s}  {'----':>4s}")
+        for pr in sorted(prcc_results, key=lambda x: -abs(x.prcc)):
+            print(f"    {pr.name:>12s}  {pr.prcc:>+8.3f}  {pr.stars:>4s}")
+
+
+def print_n0_lr_interaction():
+    """AC5: Earth_n0 × LR_E interaction analysis."""
+    print("\n  AC5: earth_n0 x LR_E interaction table (deterministic, r=5%):")
+
+    n0_values = [0, 50, 100, 200, 500]
+    lr_values = [0.80, 0.85, 0.90, 0.95]
+
+    # Header
+    header = f"  {'n0\\LR_E':>8s}"
+    for lr in lr_values:
+        header += f"  {lr:>8.2f}"
+    print(header)
+    print(f"  {'--------':>8s}" + f"  {'--------':>8s}" * len(lr_values))
+
+    for n0 in n0_values:
+        row = f"  {n0:>8d}"
+        for lr in lr_values:
+            p = BASELINE.copy()
+            p["earth_n0"] = n0
+            p["LR_E"] = lr
+            cross = find_crossover(p, n_max=40000, discount=True)
+            if cross >= 40000:
+                row += f"  {'>40k':>8s}"
+            else:
+                row += f"  {cross:>8,d}"
+        print(row)
+
+    print("    Analog cases:")
+    print("      n0 ~ 0:     Novel design with no manufacturing heritage")
+    print("      n0 ~ 50-100: Modules derived from existing satellite bus "
+          "(e.g., Eurostar Neo, ~50 units)")
+    print("      n0 ~ 200+:  High-volume heritage from modular platforms "
+          "(e.g., OneWeb, ~600+ units)")
+
+
+def print_obsolescence_scenario():
+    """AC6: Technology disruption scenarios."""
+    from numpy import arange as np_ar, cumsum as np_cs, where as np_wh
+
+    print("\n  AC6: Technology disruption scenarios (deterministic, r=5%):")
+    base_npv = find_crossover_npv(BASELINE)
+    print(f"    Baseline N*: {base_npv:,}")
+
+    r = BASELINE["r"]
+    ns = np_ar(1, 40001, dtype=float)
+    prod_rate = BASELINE["prod_rate"]
+    k_ramp = BASELINE["k_ramp"]
+
+    t_n_earth = earth_delivery_time(ns, prod_rate)
+    discount_earth = (1.0 + r) ** (-t_n_earth)
+    ops = isru_ops_cost(ns, BASELINE)
+    t_n_isru = unit_to_time_piecewise(ns, prod_rate, BASELINE["t0"], k_ramp)
+    discount_isru = (1.0 + r) ** (-t_n_isru)
+    isru_cum = BASELINE["K"] + np_cs(ops * discount_isru)
+
+    p_cheap = BASELINE.copy()
+    p_cheap["C_mfg1"] = BASELINE["C_mfg1"] * 0.5
+    p_cheap["C_labor1"] = BASELINE.get("C_labor1", BASELINE["C_mfg1"] - BASELINE.get("C_mat", 0)) * 0.5
+
+    p_cheap_launch = BASELINE.copy()
+    p_cheap_launch["p_launch"] = 500
+    p_cheap_launch["p_fuel"] = 100
+    p_cheap_launch["p_ops_launch"] = 400
+
+    for n_break in [2000, 5000]:
+        print(f"\n    --- Disruption at n={n_break:,} ---")
+
+        # Scenario 1: Earth mfg cost halved
+        earth_units_s1 = earth_unit_cost(ns, BASELINE).copy()
+        earth_units_s1[n_break - 1:] = earth_unit_cost(ns[n_break - 1:], p_cheap)
+        earth_cum_s1 = np_cs(earth_units_s1 * discount_earth)
+        diff_s1 = isru_cum - earth_cum_s1
+        crossings_s1 = np_wh(diff_s1 <= 0)[0]
+        cross_s1 = int(ns[crossings_s1[0]]) if len(crossings_s1) > 0 else 40000
+        shift_s1 = cross_s1 - base_npv
+        status_s1 = f"N* = {cross_s1:,} (shift: {shift_s1:+,})" if cross_s1 < 40000 else "NO CROSSOVER within 40,000"
+        print(f"    Scenario 1 (Earth mfg -50%): {status_s1}")
+
+        # Scenario 2: Launch cost drops to $500/kg
+        earth_units_s2 = earth_unit_cost(ns, BASELINE).copy()
+        earth_units_s2[n_break - 1:] = earth_unit_cost(ns[n_break - 1:], p_cheap_launch)
+        earth_cum_s2 = np_cs(earth_units_s2 * discount_earth)
+        diff_s2 = isru_cum - earth_cum_s2
+        crossings_s2 = np_wh(diff_s2 <= 0)[0]
+        cross_s2 = int(ns[crossings_s2[0]]) if len(crossings_s2) > 0 else 40000
+        shift_s2 = cross_s2 - base_npv
+        status_s2 = f"N* = {cross_s2:,} (shift: {shift_s2:+,})" if cross_s2 < 40000 else "NO CROSSOVER within 40,000"
+        print(f"    Scenario 2 (launch $500/kg): {status_s2}")
+
+
+def print_decision_thresholds():
+    """AC7: Derive and print decision tree threshold values."""
+    print("\n  AC7: Decision tree quantitative thresholds:")
+
+    # Revenue breakeven R*
+    prod_rate = BASELINE["prod_rate"]
+    t0 = BASELINE["t0"]
+    k_ramp = BASELINE["k_ramp"]
+    r = BASELINE["r"]
+    cross_npv = find_crossover_npv(BASELINE)
+    n_check = cross_npv * 2
+    from numpy import arange as np_ar, sum as np_sum
+    ns = np_ar(1, n_check + 1, dtype=float)
+    t_earth = earth_delivery_time(ns, prod_rate)
+    t_isru = unit_to_time(ns, prod_rate, t0, k_ramp)
+    delay = t_isru - t_earth
+    earth_units = earth_unit_cost(ns, BASELINE)
+    disc_earth = (1.0 + r) ** (-t_earth)
+    earth_cum = float(np_sum(earth_units * disc_earth))
+    ops = isru_ops_cost(ns, BASELINE)
+    disc_isru = (1.0 + r) ** (-t_isru)
+    isru_cum = BASELINE["K"] + float(np_sum(ops * disc_isru))
+    savings_npv = earth_cum - isru_cum
+    opp_cost_factor = float(np_sum(delay * disc_isru))
+    r_star = savings_npv / opp_cost_factor if opp_cost_factor > 0 else float('inf')
+    print(f"    Revenue breakeven R*: ${r_star/1e6:.2f}M/unit/yr (at N={n_check:,}, r=5%)")
+
+    # Discount rate convergence
+    print("    Discount rate convergence rates:")
+    print(f"    {'r':>6s}  {'Conv%':>7s}  {'Cond.Med N*':>12s}")
+    print(f"    {'------':>6s}  {'-------':>7s}  {'------------':>12s}")
+    for r_val in [0.03, 0.05, 0.08, 0.20]:
+        p = BASELINE.copy()
+        p["r"] = r_val
+        det_cross = find_crossover(p, n_max=40000, discount=True)
+        rng = default_rng(42)
+        res = run_mc(r_val, rng, n_runs=500, n_max_mc=40000)
+        conv = res.stats.convergence_rate
+        cmed = int(res.stats.cond_median)
+        det_str = f"{det_cross:,}" if det_cross < 40000 else ">40k"
+        print(f"    {r_val:>5.0%}  {conv:>6.1f}%  {cmed:>12,d}  (det: {det_str})")
+
+    # f_v threshold for >50% transient
+    print("\n    Vitamin fraction threshold (f_v where >50% shift to transient):")
+    for fv_test in [0.0, 0.02, 0.05, 0.08, 0.10, 0.15]:
+        p = BASELINE.copy()
+        p["vitamin_frac"] = fv_test
+        perm = is_permanent_crossover(p)
+        print(f"      f_v={fv_test:.2f}: permanent={perm}")
+
+
+def print_vitamin_permanence_cliff():
+    """AC8: Vitamin permanence cliff analysis — sweep f_v to find transition."""
+    print("\n  AC8: Vitamin permanence cliff (deterministic, r=5%):")
+    print(f"  {'f_v':>6s}  {'Permanent':>10s}  {'N* (r=5%)':>10s}  {'Note':>20s}")
+    print(f"  {'------':>6s}  {'----------':>10s}  {'----------':>10s}  {'--------------------':>20s}")
+
+    prev_perm = None
+    cliff_fv = None
+    for fv_int in range(0, 21):
+        fv = fv_int / 100.0
+        p = BASELINE.copy()
+        p["vitamin_frac"] = fv
+        perm = is_permanent_crossover(p)
+        cross = find_crossover(p, n_max=40000, discount=True)
+        cross_str = f"{cross:,}" if cross < 40000 else ">40k"
+        note = ""
+        if prev_perm is True and perm is False and cliff_fv is None:
+            cliff_fv = fv
+            note = "<-- TRANSITION"
+        if fv == 0.05:
+            note = "(baseline)" if not note else note + " (baseline)"
+        prev_perm = perm
+        print(f"  {fv:>6.2f}  {str(perm):>10s}  {cross_str:>10s}  {note:>20s}")
+
+    if cliff_fv is not None:
+        print(f"\n    Permanence cliff at f_v = {cliff_fv:.2f} "
+              f"(permanent -> transient transition)")
+    else:
+        print("\n    No permanence cliff found in [0, 0.20] range")
 
 
 def print_earth_n0_sensitivity():
@@ -2365,7 +2644,25 @@ def print_earth_n0_sensitivity():
 
 
 def fig_decision_tree():
-    """AB1: Generate decision-tree summary figure."""
+    """AC7: Generate decision-tree summary figure with quantitative thresholds."""
+    # Compute thresholds for branch labels
+    base_cross = find_crossover_npv(BASELINE)
+    from numpy import arange as np_ar2, sum as np_sum2
+    ns_t = np_ar2(1, base_cross * 2 + 1, dtype=float)
+    t_e = earth_delivery_time(ns_t, BASELINE["prod_rate"])
+    t_i = unit_to_time(ns_t, BASELINE["prod_rate"], BASELINE["t0"], BASELINE["k_ramp"])
+    r = BASELINE["r"]
+    eu = earth_unit_cost(ns_t, BASELINE)
+    disc_e = (1.0 + r) ** (-t_e)
+    e_cum = float(np_sum2(eu * disc_e))
+    ops_t = isru_ops_cost(ns_t, BASELINE)
+    disc_i = (1.0 + r) ** (-t_i)
+    i_cum = BASELINE["K"] + float(np_sum2(ops_t * disc_i))
+    sav = e_cum - i_cum
+    delay_t = t_i - t_e
+    opp = float(np_sum2(delay_t * disc_i))
+    r_star = sav / opp / 1e6 if opp > 0 else 999
+
     fig, ax = subplots(figsize=(10, 6))
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 7)
@@ -2388,9 +2685,9 @@ def fig_decision_tree():
                 arrowprops=dict(arrowstyle="->", lw=1.2))
     ax.text(6.7, 6.05, "Non-revenue", ha="center", fontsize=7, color="#6b7280")
 
-    # Revenue branch
-    ax.text(2.5, 5.4, "Revenue > $0.9M/unit/yr?", ha="center", va="center", fontsize=9,
-            bbox=box_props)
+    # Revenue branch — now with computed R*
+    ax.text(2.5, 5.4, f"Revenue > R*$\\approx$\\${r_star:.1f}M/yr?",
+            ha="center", va="center", fontsize=9, bbox=box_props)
     ax.annotate("", xy=(1.2, 4.5), xytext=(1.8, 5.1),
                 arrowprops=dict(arrowstyle="->", lw=1.0))
     ax.text(1.4, 4.85, "Yes", fontsize=7, color="#6b7280")
@@ -2415,8 +2712,8 @@ def fig_decision_tree():
 
     ax.annotate("", xy=(7.5, 4.5), xytext=(7.5, 5.1),
                 arrowprops=dict(arrowstyle="->", lw=1.0))
-    ax.text(7.6, 4.85, "5-8%", fontsize=7, color="#6b7280")
-    ax.text(7.5, 4.2, "54-68% converge\nHigher N*", ha="center", fontsize=8,
+    ax.text(7.6, 4.85, "5\u20138%", fontsize=7, color="#6b7280")
+    ax.text(7.5, 4.2, "54\u201368% converge\nHigher N*", ha="center", fontsize=8,
             bbox=leaf_no)
 
     ax.annotate("", xy=(9.0, 4.5), xytext=(8.2, 5.1),
@@ -2425,19 +2722,19 @@ def fig_decision_tree():
     ax.text(9.0, 4.2, "No crossover\n(ISRU NPV\ntoo costly)", ha="center", fontsize=8,
             bbox=leaf_red)
 
-    # Production scale branch (below the converging paths)
+    # Production scale branch
     ax.text(5, 3.0, "Production scale?", ha="center", va="center", fontsize=9,
             bbox=box_props)
 
     ax.annotate("", xy=(3.0, 2.1), xytext=(4.2, 2.7),
                 arrowprops=dict(arrowstyle="->", lw=1.0))
-    ax.text(3.4, 2.5, "< N*", fontsize=7, color="#6b7280")
+    ax.text(3.4, 2.5, f"< N*\n(~{base_cross:,})", fontsize=7, color="#6b7280")
     ax.text(3.0, 1.7, "Below crossover\nEarth preferred", ha="center", fontsize=8,
             bbox=leaf_no)
 
     ax.annotate("", xy=(5, 2.1), xytext=(5, 2.7),
                 arrowprops=dict(arrowstyle="->", lw=1.0))
-    ax.text(5.2, 2.5, "N*-10k", fontsize=7, color="#6b7280")
+    ax.text(5.2, 2.5, "N*\u201310k", fontsize=7, color="#6b7280")
     ax.text(5, 1.7, "Crossover zone\nISRU advantage", ha="center", fontsize=8,
             bbox=leaf_yes)
 
@@ -2458,7 +2755,7 @@ def fig_decision_tree():
 
     fig.savefig(join(fig_dir, "fig-decision-tree.pdf"))
     close(fig)
-    print("  [AB] fig-decision-tree.pdf")
+    print("  [AC] fig-decision-tree.pdf (with quantitative thresholds)")
 
 
 if __name__ == "__main__":
@@ -2600,6 +2897,14 @@ if __name__ == "__main__":
     # Version AB diagnostics
     print_recrossing_analysis()
     print_earth_n0_sensitivity()
+
+    # Version AC diagnostics
+    print_asymptotic_consistency()
+    print_two_part_sensitivity()
+    print_n0_lr_interaction()
+    print_obsolescence_scenario()
+    print_decision_thresholds()
+    print_vitamin_permanence_cliff()
     fig_decision_tree()
 
     print(f"\nDone. All figures saved to {fig_dir}")

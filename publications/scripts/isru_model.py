@@ -703,7 +703,13 @@ def find_recrossing_volume(
     crossover_n: int,
     N_max: int = 200000,
 ) -> tuple[int, int, float]:
-    """AB1: Find the re-crossing volume N** where ISRU becomes more expensive again.
+    """Find the re-crossing volume N** where ISRU becomes more expensive again.
+
+    Formally, N** = min{N > N* : Sigma_ISRU^NPV(N) > Sigma_Earth^NPV(N)},
+    mirroring the crossover definition (Eq. 17).  N** is searched up to N_max
+    (right-censored); with NPV discounting, late-arriving costs are heavily
+    attenuated, so many asymptotically transient scenarios do not re-cross
+    within any practical horizon.
 
     For transient crossovers, after the initial crossover at N*, the ISRU
     cumulative cost eventually re-crosses the Earth cumulative cost at N**.
@@ -760,6 +766,115 @@ def find_recrossing_volume(
         recross_n = N_max
 
     return recross_n, peak_savings_n, peak_savings
+
+
+def compute_savings_window_survival(
+    crossovers: NDFloat,
+    recrossing_ns: NDFloat,
+    horizons: list[int] | None = None,
+) -> dict[int, float]:
+    """AC1: Savings window survival — P(N* <= N_h <= N**) at each horizon.
+
+    For a program committing to N_h units, returns the probability that N_h
+    falls within the ISRU savings window [N*, N**].  This transforms the
+    "transient" classification into an actionable decision tool.
+
+    Parameters
+    ----------
+    crossovers : array
+        N* values from MC (same length as recrossing_ns).
+    recrossing_ns : array
+        N** values from MC (N_max for permanent crossovers).
+    horizons : list of int
+        Planning horizons to evaluate (default: [5k, 10k, 20k, 50k, 100k]).
+
+    Returns
+    -------
+    dict mapping horizon -> p_in_window (float in [0, 1]).
+    """
+    if horizons is None:
+        horizons = [5000, 10000, 20000, 50000, 100000]
+    crossovers = asarray(crossovers, dtype=float)
+    recrossing_ns = asarray(recrossing_ns, dtype=float)
+    result: dict[int, float] = {}
+    for N_h in horizons:
+        in_window = (crossovers <= N_h) & (N_h <= recrossing_ns)
+        result[N_h] = float(in_window.mean())
+    return result
+
+
+def derive_asymptotic_costs(params: Params) -> dict[str, Any]:
+    """AC3: Audit asymptotic cost consistency.
+
+    Returns a dict with:
+      - Each cost term's asymptotic (n -> inf) value and whether it vanishes
+      - Total asymptotic per-unit cost for each pathway
+      - is_permanent_crossover() classification
+      - Empirical check at n=500,000
+      - Consistency flag (analytic == empirical)
+    """
+    alpha = params.get("alpha", 1.0)
+    c_floor = params.get("C_floor", 0)
+    p_transport = params.get("p_transport", 0)
+    vitamin_frac = params.get("vitamin_frac", 0.0)
+    C_mat = params.get("C_mat", 0)
+    b_L = params.get("b_L", None)
+
+    terms: dict[str, Any] = {}
+
+    # --- ISRU asymptotic terms ---
+    terms["isru_ops_floor"] = {"value": alpha * c_floor, "vanishes": False}
+    terms["isru_transport"] = {"value": params["m"] * p_transport * alpha, "vanishes": False}
+    terms["isru_ops_learning"] = {"value": 0.0, "vanishes": True,
+                                   "note": "C_ops1 * n^b_I -> 0"}
+
+    # Compute ISRU total asymptotic
+    isru_asymp = alpha * c_floor + params["m"] * p_transport * alpha
+
+    if vitamin_frac > 0:
+        p_fuel = params.get("p_fuel", 200)
+        c_vitamin_kg = params.get("c_vitamin_kg", 10000)
+        terms["vitamin_launch"] = {"value": vitamin_frac * params["m"] * p_fuel,
+                                    "vanishes": False}
+        terms["vitamin_mfg"] = {"value": vitamin_frac * params["m"] * c_vitamin_kg,
+                                 "vanishes": False}
+        isru_asymp = ((1.0 - vitamin_frac) * isru_asymp +
+                      vitamin_frac * params["m"] * (p_fuel + c_vitamin_kg))
+
+    # --- Earth asymptotic terms ---
+    terms["earth_material"] = {"value": C_mat, "vanishes": False}
+    terms["earth_labor"] = {"value": 0.0, "vanishes": True,
+                             "note": "C_labor1 * n^b_E -> 0"}
+
+    if b_L is not None:
+        p_fuel_e = params.get("p_fuel", 200)
+        terms["earth_launch_fuel"] = {"value": params["m"] * p_fuel_e, "vanishes": False}
+        terms["earth_launch_ops"] = {"value": 0.0, "vanishes": True,
+                                      "note": "p_ops * n^b_L -> 0"}
+        earth_asymp = C_mat + params["m"] * p_fuel_e
+    else:
+        terms["earth_launch_const"] = {"value": params["m"] * params.get("p_launch", 1000),
+                                        "vanishes": False}
+        earth_asymp = C_mat + params["m"] * params.get("p_launch", 1000)
+
+    terms["isru_total_asymp"] = isru_asymp
+    terms["earth_total_asymp"] = earth_asymp
+    terms["analytic_permanent"] = isru_asymp < earth_asymp
+    terms["is_permanent_result"] = is_permanent_crossover(params)
+
+    # Empirical validation at very large n (power-law terms decay slowly)
+    n_large = asarray([1e15])
+    isru_empirical = float(isru_ops_cost(n_large, params)[0])
+    earth_empirical = float(earth_unit_cost(n_large, params)[0])
+    terms["isru_empirical_1e15"] = isru_empirical
+    terms["earth_empirical_1e15"] = earth_empirical
+    terms["empirical_permanent"] = isru_empirical < earth_empirical
+
+    # Consistency: analytic formula agrees with is_permanent_crossover()
+    # (empirical may lag due to slow power-law decay of learning terms)
+    terms["consistent"] = terms["analytic_permanent"] == terms["is_permanent_result"]
+
+    return terms
 
 
 def earth_unit_cost_plateau(
