@@ -43,6 +43,7 @@ BASELINE: Params = {
     "K_maint_frac": 0.0,   # M3: fraction of K spent on maintenance per interval
     "K_maint_interval": 5,  # M3: years between maintenance overhauls
     "C_mfg_floor": 0,      # N1: Earth mfg cost floor ($/unit, 0 = no floor)
+    "availability": 1.0,   # O2: ISRU facility availability factor (0-1)
 }
 
 # ---------------------------------------------------------------------------
@@ -470,6 +471,10 @@ def find_crossover(
     prod_rate = params.get("prod_rate", 500)
     k_ramp = params.get("k_ramp", 2.0)
 
+    # O2: ISRU facility availability — reduces effective ISRU production rate
+    availability = params.get("availability", 1.0)
+    isru_prod_rate = prod_rate * availability
+
     # Earth side
     earth_units = earth_unit_cost(ns, params)
     if discount:
@@ -483,10 +488,10 @@ def find_crossover(
     else:
         earth_cum = cumsum(earth_units)
 
-    # ISRU side — ops
+    # ISRU side — ops (uses availability-adjusted production rate for timing)
     ops = isru_ops_cost(ns, params)
     if discount:
-        t_n_isru = unit_to_time(ns, prod_rate, params["t0"], k_ramp)
+        t_n_isru = unit_to_time(ns, isru_prod_rate, params["t0"], k_ramp)
         discount_isru = (1.0 + r) ** (-t_n_isru)
         isru_ops_cum = cumsum(ops * discount_isru)
     else:
@@ -505,7 +510,7 @@ def find_crossover(
     maint_cost = 0.0
     if K_maint_frac > 0 and discount:
         K_maint_interval = params.get("K_maint_interval", 5)
-        t_horizon = float(unit_to_time(n_max, prod_rate, params["t0"], k_ramp))
+        t_horizon = float(unit_to_time(n_max, isru_prod_rate, params["t0"], k_ramp))
         maint_cost = sum(
             (K * K_maint_frac) / (1.0 + r) ** t
             for t in range(K_maint_interval, int(t_horizon) + 1, K_maint_interval)

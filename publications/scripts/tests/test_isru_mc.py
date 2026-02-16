@@ -20,11 +20,11 @@ class TestSampleMCParams:
         for name, arr in params.items():
             assert arr.shape == (100,), f"{name} has wrong shape"
 
-    def test_all_eleven_params_present(self, rng):
+    def test_all_twelve_params_present(self, rng):
         params = sample_mc_params(rng, 10)
         expected = {
             "p_launch", "K", "LR_E", "LR_I", "t0", "C_ops1", "C_mfg1",
-            "alpha", "p_transport", "C_floor", "prod_rate",
+            "alpha", "p_transport", "C_floor", "prod_rate", "availability",
         }
         assert set(params.keys()) == expected
 
@@ -156,7 +156,7 @@ class TestRunMCIntegration:
         assert result.r_fixed == 0.05
         assert len(result.crossovers) == 500
         assert 0 <= result.stats.convergence_rate <= 100
-        assert len(result.spearman) == 11  # 11 parameters
+        assert len(result.spearman) == 12  # 12 parameters (incl. availability)
 
     @pytest.mark.slow
     def test_reproducible_with_same_seed(self):

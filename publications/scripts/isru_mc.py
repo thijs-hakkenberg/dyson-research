@@ -160,6 +160,7 @@ def sample_mc_params(
         "p_transport": rng.uniform(50, 300, n_runs),
         "C_floor": rng.uniform(0.3e6, 2.0e6, n_runs),
         "prod_rate": prod_rate_samples,
+        "availability": rng.uniform(0.70, 0.95, n_runs),
     }
 
 

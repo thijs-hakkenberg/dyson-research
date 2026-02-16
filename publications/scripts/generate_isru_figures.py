@@ -1572,6 +1572,29 @@ def print_ps_min_vs_horizon():
 
 
 # ---------------------------------------------------------------------------
+# O2: ISRU facility availability sensitivity
+# ---------------------------------------------------------------------------
+def print_availability_sensitivity():
+    """O2: Sweep ISRU facility availability factor."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  O2: ISRU facility availability sensitivity (NPV, r=5%):")
+    print(f"  {'Avail':>8s}  {'Eff.Rate':>10s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'--------':>8s}  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}")
+
+    for avail in [1.0, 0.95, 0.85, 0.80, 0.70]:
+        p = BASELINE.copy()
+        p["availability"] = avail
+        eff_rate = int(p["prod_rate"] * avail)
+        cross = find_crossover(p, n_max=40000, discount=True)
+        shift = cross - base_npv
+        if cross >= 40000:
+            print(f"  {avail:>7.0%}  {eff_rate:>8d}/yr  {'>40,000':>8s}  {'N/A':>8s}")
+        else:
+            print(f"  {avail:>7.0%}  {eff_rate:>8d}/yr  {cross:>8,d}  {shift:>+8,d}")
+
+
+# ---------------------------------------------------------------------------
 # N1: Earth manufacturing cost floor sensitivity
 # ---------------------------------------------------------------------------
 def print_earth_mfg_floor_sensitivity():
@@ -1852,5 +1875,6 @@ if __name__ == "__main__":
 
     # Version O diagnostics
     print_ps_min_vs_horizon()
+    print_availability_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")
