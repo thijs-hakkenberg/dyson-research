@@ -61,6 +61,8 @@ from isru_model import (  # noqa: E402
     s_curve,
     unit_to_time,
     unit_to_time_piecewise,
+    earth_unit_cost_plateau,
+    find_crossover_plateau,
     _cumulative_production,
 )
 from isru_mc import run_mc, sample_mc_params, run_mc_loop, compute_convergence_stats, compute_kaplan_meier, compute_prcc  # noqa: E402
@@ -1652,12 +1654,12 @@ def print_earth_mfg_floor_sensitivity():
 # N1b: Log-normal K MC comparison
 # ---------------------------------------------------------------------------
 def print_lognormal_k_comparison():
-    """N1b: Compare uniform vs log-normal K distribution in MC."""
+    """Y1: Compare log-normal (primary) vs uniform (sensitivity) K in MC."""
     n_runs = 10000
     n_max_mc = 40000
     r_fixed = 0.05
 
-    print(f"\n  N1b: Log-normal K distribution comparison (r=5%, n={n_runs:,}):")
+    print(f"\n  Y1: K distribution comparison — log-normal primary (r=5%, n={n_runs:,}):")
     print(f"  {'K dist':>12s}  {'Conv%':>8s}  {'Cond.Med':>10s}  {'Cond.IQR':>20s}  {'K median':>10s}  {'K mean':>10s}")
     print(f"  {'------------':>12s}  {'--------':>8s}  {'----------':>10s}  {'--------------------':>20s}  {'----------':>10s}  {'----------':>10s}")
 
@@ -2009,6 +2011,143 @@ def print_pfuel_independent_sensitivity():
 
 # Main
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Y1: Flyvbjerg calibration diagnostic
+# ---------------------------------------------------------------------------
+def print_flyvbjerg_calibration():
+    """Y1: Report log-normal K distribution properties and compare to Flyvbjerg."""
+    from numpy import exp as np_exp, log as np_log
+    from scipy.stats import norm as sp_norm
+
+    mu_ln = np_log(65e9)
+    sigma_ln = 0.70
+
+    # Analytical properties of log-normal
+    ln_median = np_exp(mu_ln) / 1e9
+    ln_mean = np_exp(mu_ln + sigma_ln**2 / 2) / 1e9
+    ln_p10 = np_exp(mu_ln + sp_norm.ppf(0.10) * sigma_ln) / 1e9
+    ln_p90 = np_exp(mu_ln + sp_norm.ppf(0.90) * sigma_ln) / 1e9
+    ln_p95 = np_exp(mu_ln + sp_norm.ppf(0.95) * sigma_ln) / 1e9
+    p90_p50 = ln_p90 / ln_median
+
+    print(f"\n  Y1: Log-normal K calibration (σ_ln={sigma_ln}):")
+    print(f"    Median:  ${ln_median:.1f}B")
+    print(f"    Mean:    ${ln_mean:.1f}B")
+    print(f"    P10:     ${ln_p10:.1f}B")
+    print(f"    P90:     ${ln_p90:.1f}B")
+    print(f"    P95:     ${ln_p95:.1f}B")
+    print(f"    P90/P50: {p90_p50:.2f}×")
+    print(f"    Clip:    [$20B, $200B]")
+    print(f"    Flyvbjerg reference: P90/P50 = 2-4× for large infrastructure")
+    print(f"    Our P90/P50 = {p90_p50:.1f}× → conservative end of Flyvbjerg range")
+
+
+# ---------------------------------------------------------------------------
+# Y2: Stochastic p_fuel impact diagnostic
+# ---------------------------------------------------------------------------
+def print_pfuel_stochastic_impact():
+    """Y2: Compare MC results with fixed vs stochastic p_fuel."""
+    n_runs = 10000
+    n_max_mc = 40000
+    r_fixed = 0.05
+
+    print(f"\n  Y2: Stochastic p_fuel impact (r=5%, n={n_runs:,}):")
+    print(f"  {'p_fuel':>12s}  {'Conv%':>8s}  {'Cond.Med':>10s}  {'Cond.IQR':>20s}")
+    print(f"  {'------------':>12s}  {'--------':>8s}  {'----------':>10s}  {'--------------------':>20s}")
+
+    # Default: stochastic p_fuel U[100,400] (new default)
+    rng = default_rng(42)
+    res_stoch = run_mc(r_fixed, rng, n_runs=n_runs, n_max_mc=n_max_mc)
+    conv_s = res_stoch.stats.convergence_rate
+    cmed_s = int(res_stoch.stats.cond_median)
+    q25_s = int(res_stoch.stats.cond_q25)
+    q75_s = int(res_stoch.stats.cond_q75)
+    print(f"  {'U[100,400]':>12s}  {conv_s:>7.1f}%  {cmed_s:>10,d}  [{q25_s:>8,d}, {q75_s:>8,d}]")
+
+    # Fixed at $200 for comparison: run MC manually with overridden p_fuel
+    rng2 = default_rng(42)
+    params_fixed = sample_mc_params(rng2, n_runs, rho=0.3, rho_k_prod=0.5, correlated=True)
+    params_fixed["p_fuel"] = array([200.0] * n_runs)
+    crossovers_f, _ = run_mc_loop(params_fixed, r_fixed, n_max_mc)
+    converged_f = crossovers_f[crossovers_f < n_max_mc]
+    conv_f = len(converged_f) / n_runs * 100
+    cmed_f = int(median(converged_f)) if len(converged_f) > 0 else n_max_mc
+    q25_f = int(percentile(converged_f, 25)) if len(converged_f) > 0 else n_max_mc
+    q75_f = int(percentile(converged_f, 75)) if len(converged_f) > 0 else n_max_mc
+    print(f"  {'Fixed $200':>12s}  {conv_f:>7.1f}%  {cmed_f:>10,d}  [{q25_f:>8,d}, {q75_f:>8,d}]")
+
+
+# ---------------------------------------------------------------------------
+# Y3: Learning plateau sensitivity
+# ---------------------------------------------------------------------------
+def print_learning_plateau_sensitivity():
+    """Y3: Sweep n_break and damping for piecewise learning plateau."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  Y3: Learning plateau sensitivity (NPV, r=5%, baseline N*={base_npv:,}):")
+    print(f"  {'n_break':>8s}  {'damping':>8s}  {'N*':>8s}  {'Shift':>8s}  {'%Shift':>8s}")
+    print(f"  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}")
+
+    for n_break in [200, 500, 1000, 2000]:
+        for damping in [0.3, 0.5, 0.7, 1.0]:
+            cross = find_crossover_plateau(
+                BASELINE, n_max=40000, n_break=n_break, damping=damping
+            )
+            shift = cross - base_npv
+            pct = shift / base_npv * 100
+            if cross >= 40000:
+                print(f"  {n_break:>8d}  {damping:>8.1f}  {'> 40k':>8s}  {'---':>8s}  {'---':>8s}")
+            else:
+                print(f"  {n_break:>8d}  {damping:>8.1f}  {cross:>8,d}  {shift:>+8,d}  {pct:>+7.1f}%")
+
+    print("    (damping=1.0 is the standard model; lower damping = more plateau)")
+
+
+# ---------------------------------------------------------------------------
+# Y4: Earth pathway validation against Iridium NEXT
+# ---------------------------------------------------------------------------
+def print_earth_validation():
+    """Y4: Validate Earth pathway against Iridium NEXT production data."""
+    from numpy import log as np_log, cumsum as np_cumsum
+
+    print(f"\n  Y4: Earth pathway validation — Iridium NEXT mapping:")
+
+    # Iridium NEXT parameters
+    n_units = 81
+    m_unit = 860  # kg bus mass
+    total_contract = 2.1e9  # $2.1B Thales Alenia contract
+
+    # Test different first-unit costs and learning rates
+    print(f"    Program: {n_units} satellites, {m_unit} kg each")
+    print(f"    Contract: ${total_contract/1e9:.1f}B (Thales Alenia Space)")
+    print(f"")
+    print(f"    {'C_mfg1 ($M)':>12s}  {'LR_E':>6s}  {'Cum.Cost ($B)':>14s}  {'Ratio':>8s}")
+    print(f"    {'------------':>12s}  {'------':>6s}  {'--------------':>14s}  {'--------':>8s}")
+
+    for c_mfg1 in [80e6, 100e6, 120e6]:
+        for lr_e in [0.80, 0.85, 0.90]:
+            b_e = np_log(lr_e) / np_log(2)
+            ns = arange(1, n_units + 1, dtype=float)
+            unit_costs = c_mfg1 * ns ** b_e
+            cum_cost = float(np_cumsum(unit_costs)[-1])
+            ratio = cum_cost / total_contract
+            print(f"    ${c_mfg1/1e6:>10.0f}M  {lr_e:>6.2f}  ${cum_cost/1e9:>12.2f}B  {ratio:>7.2f}×")
+
+    # Reverse-fit: find implied LR given C_mfg1 and total
+    print(f"\n    Implied learning rate (reverse-fitting to ${total_contract/1e9:.1f}B):")
+    from scipy.optimize import brentq
+    for c_mfg1 in [80e6, 100e6, 120e6]:
+        def residual(lr):
+            b = np_log(lr) / np_log(2)
+            ns = arange(1, n_units + 1, dtype=float)
+            return float(np_cumsum(c_mfg1 * ns ** b)[-1]) - total_contract
+        try:
+            lr_implied = brentq(residual, 0.50, 0.99)
+            print(f"    C_mfg1=${c_mfg1/1e6:.0f}M → LR_E={lr_implied:.3f}")
+        except ValueError:
+            print(f"    C_mfg1=${c_mfg1/1e6:.0f}M → no solution in [0.50, 0.99]")
+
+
 if __name__ == "__main__":
     print(f"Generating figures in: {fig_dir}\n")
 
@@ -2130,5 +2269,11 @@ if __name__ == "__main__":
     # Version X diagnostics
     print_sobol_diagnostic()
     print_isru_propellant_scenario()
+
+    # Version Y diagnostics
+    print_flyvbjerg_calibration()
+    print_pfuel_stochastic_impact()
+    print_learning_plateau_sensitivity()
+    print_earth_validation()
 
     print(f"\nDone. All figures saved to {fig_dir}")

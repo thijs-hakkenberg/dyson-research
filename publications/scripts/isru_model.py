@@ -665,6 +665,105 @@ def is_permanent_crossover(params: Params) -> bool:
     return isru_asymp < earth_asymp
 
 
+def earth_unit_cost_plateau(
+    n: float | NDFloat,
+    params: Params,
+    *,
+    n_break: int = 500,
+    damping: float = 0.5,
+) -> NDFloat:
+    """Y3: Earth per-unit cost with piecewise learning plateau.
+
+    For n <= n_break: standard Wright curve with exponent b_E.
+    For n > n_break: reduced exponent b_E2 = b_E * damping, modeling
+    the empirical observation that learning rates moderate at high
+    cumulative volumes (Argote & Epple 1990, Benkard 2000).
+
+    damping=1.0 reproduces the standard model (no plateau).
+    """
+    n = asarray(n, dtype=float)
+    b_E = learning_exponent(params["LR_E"])
+
+    C_mat = params.get("C_mat", 0)
+    C_labor1 = params.get("C_labor1", params["C_mfg1"] - C_mat) if C_mat > 0 else params["C_mfg1"]
+
+    b_E2 = b_E * damping  # reduced exponent after break
+
+    if C_mat > 0:
+        # Before break: C_mat + C_labor1 * n^b_E
+        # After break: C_mat + C_labor1 * n_break^b_E * (n/n_break)^b_E2
+        #   = C_mat + C_labor1 * n_break^(b_E - b_E2) * n^b_E2
+        cost_at_break = C_labor1 * n_break ** b_E
+        scale_factor = C_labor1 * n_break ** (b_E - b_E2)
+        c_mfg = np_where(
+            n <= n_break,
+            C_mat + C_labor1 * n ** b_E,
+            C_mat + scale_factor * n ** b_E2,
+        )
+    else:
+        cost_at_break = C_labor1 * n_break ** b_E
+        scale_factor = C_labor1 * n_break ** (b_E - b_E2)
+        c_mfg = np_where(
+            n <= n_break,
+            C_labor1 * n ** b_E,
+            scale_factor * n ** b_E2,
+        )
+
+    # N1: Earth manufacturing cost floor
+    C_mfg_floor = params.get("C_mfg_floor", 0)
+    if C_mfg_floor > 0:
+        c_mfg = maximum(c_mfg, C_mfg_floor)
+
+    # Launch cost (same as earth_unit_cost)
+    b_L = params.get("b_L", None)
+    if b_L is not None:
+        p_fuel = params.get("p_fuel", 200)
+        p_ops = params.get("p_ops_launch", 800)
+        launches_per_unit = params.get("launches_per_unit", 1.0)
+        n_launches = n * launches_per_unit
+        c_launch = params["m"] * (p_fuel + p_ops * n_launches ** b_L)
+    else:
+        c_launch = params["m"] * params["p_launch"]
+
+    return c_mfg + c_launch
+
+
+def find_crossover_plateau(
+    params: Params,
+    n_max: int = 40000,
+    *,
+    n_break: int = 500,
+    damping: float = 0.5,
+) -> int:
+    """Y3: Find NPV crossover using piecewise learning plateau for Earth."""
+    r = params.get("r", 0.05)
+    ns = arange(1, n_max + 1, dtype=float)
+    prod_rate = params.get("prod_rate", 500)
+    k_ramp = params.get("k_ramp", 2.0)
+
+    availability = params.get("availability", 1.0)
+    isru_prod_rate = prod_rate * availability
+
+    # Earth side with plateau learning
+    earth_units = earth_unit_cost_plateau(ns, params, n_break=n_break, damping=damping)
+    t_n_earth = earth_delivery_time(ns, prod_rate)
+    discount_earth = (1.0 + r) ** (-t_n_earth)
+    earth_cum = cumsum(earth_units * discount_earth)
+
+    # ISRU side (unchanged)
+    ops = isru_ops_cost(ns, params)
+    t_n_isru = unit_to_time_piecewise(ns, isru_prod_rate, params["t0"], k_ramp)
+    discount_isru = (1.0 + r) ** (-t_n_isru)
+    isru_ops_cum = cumsum(ops * discount_isru)
+    isru_cum = params["K"] + isru_ops_cum
+
+    diff = isru_cum - earth_cum
+    crossings = np_where(diff <= 0)[0]
+    if len(crossings) > 0:
+        return int(ns[crossings[0]])
+    return n_max
+
+
 # Backward-compat shims
 def find_crossover_npv(params: Params, N_max: int = 20000) -> int:
     """Find NPV crossover (backward-compatible wrapper)."""

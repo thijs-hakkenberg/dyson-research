@@ -115,7 +115,7 @@ def sample_mc_params(
     rho: float = 0.3,
     rho_k_prod: float = 0.5,
     correlated: bool = True,
-    k_distribution: str = "uniform",
+    k_distribution: str = "lognormal",
 ) -> dict[str, NDFloat]:
     """Sample MC parameter arrays.
 
@@ -131,8 +131,9 @@ def sample_mc_params(
     correlated : bool
         If False, sample p_launch, K, and prod_rate independently (uniform).
     k_distribution : str
-        "uniform" (default) or "lognormal". Log-normal calibrated to
-        median=$65B with right-skewed tail (P90~$120B), clipped to [20B, 200B].
+        "lognormal" (default) or "uniform". Log-normal calibrated to
+        median=$65B with σ_ln=0.70 (Flyvbjerg megaproject reference class),
+        clipped to [20B, 200B].
     """
     if correlated:
         # 3D Gaussian copula: (p_launch, K, prod_rate)
@@ -151,10 +152,11 @@ def sample_mc_params(
         prod_rate_samples = 250 + u_prod * (750 - 250)
 
         if k_distribution == "lognormal":
-            # N1b: Log-normal K calibrated: median=$65B, P90~$120B
-            # sigma = (ln(120e9) - ln(65e9)) / 1.2816 ≈ 0.48
+            # Y1: Log-normal K calibrated to Flyvbjerg megaproject data:
+            # median=$65B, σ_ln=0.70 (P90/P50≈2.5×, conservative end of
+            # Flyvbjerg's 2-4× range for large infrastructure)
             mu_ln = float(np_log(65e9))
-            sigma_ln = 0.48
+            sigma_ln = 0.70
             # Transform copula uniform to log-normal via inverse CDF
             ln_k = sp_norm.ppf(u_capital) * sigma_ln + mu_ln
             k_samples = np_exp(ln_k)
@@ -167,7 +169,7 @@ def sample_mc_params(
 
         if k_distribution == "lognormal":
             mu_ln = float(np_log(65e9))
-            sigma_ln = 0.48
+            sigma_ln = 0.70
             ln_k = rng.normal(mu_ln, sigma_ln, n_runs)
             k_samples = np_exp(ln_k)
             k_samples = clip(k_samples, 20e9, 200e9)
@@ -178,6 +180,10 @@ def sample_mc_params(
     C_mfg1_samples = rng.uniform(50e6, 100e6, n_runs)
     C_mat_samples = rng.uniform(0.5e6, 2e6, n_runs)
     C_labor1_samples = C_mfg1_samples - C_mat_samples
+
+    # Y2: p_fuel sampled stochastically U[100, 400] $/kg to reflect
+    # uncertainty in the operational asymptote (propellant + GEO delivery ops)
+    p_fuel_samples = rng.uniform(100, 400, n_runs)
 
     return {
         "p_launch": p_launch_samples,
@@ -194,6 +200,7 @@ def sample_mc_params(
         "C_floor": rng.uniform(0.3e6, 2.0e6, n_runs),
         "prod_rate": prod_rate_samples,
         "availability": rng.uniform(0.70, 0.95, n_runs),
+        "p_fuel": p_fuel_samples,
     }
 
 
@@ -221,11 +228,12 @@ def run_mc_loop(
             p[name] = arr[i]
         p["r"] = r_fixed
         # Decompose sampled p_launch into fuel/ops when launch learning is active
+        # Y2: p_fuel is now sampled stochastically; use sampled value if present
         if p.get("b_L") is not None:
-            p_fuel_base = BASELINE.get("p_fuel", 200)
+            p_fuel_val = p.get("p_fuel", BASELINE.get("p_fuel", 200))
             p_launch_sampled = p["p_launch"]
-            p["p_fuel"] = p_fuel_base
-            p["p_ops_launch"] = max(p_launch_sampled - p_fuel_base, 0)
+            p["p_fuel"] = p_fuel_val
+            p["p_ops_launch"] = max(p_launch_sampled - p_fuel_val, 0)
         crossovers[i] = find_crossover_npv(p, N_max=n_max)
         permanent[i] = is_permanent_crossover(p)
     return crossovers, permanent

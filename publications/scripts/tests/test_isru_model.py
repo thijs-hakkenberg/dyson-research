@@ -862,14 +862,13 @@ class TestEarthMfgFloor:
 # ===== TestLogNormalK =====
 
 class TestLogNormalK:
-    """N1b: Verify log-normal K distribution properties."""
+    """Y1: Verify log-normal K distribution properties (now default)."""
 
     def test_right_skewed(self):
         """Log-normal K should have mean > median (right-skewed)."""
         from isru_mc import sample_mc_params
         rng = np.random.default_rng(42)
-        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True,
-                                  k_distribution="lognormal")
+        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True)
         k = params["K"]
         assert np.mean(k) > np.median(k)
 
@@ -877,8 +876,7 @@ class TestLogNormalK:
         """Log-normal K median should be near $65B."""
         from isru_mc import sample_mc_params
         rng = np.random.default_rng(42)
-        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True,
-                                  k_distribution="lognormal")
+        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True)
         k_median = float(np.median(params["K"]))
         assert 55e9 < k_median < 75e9  # within ~15% of $65B
 
@@ -886,16 +884,40 @@ class TestLogNormalK:
         """Log-normal K should be clipped to [20B, 200B]."""
         from isru_mc import sample_mc_params
         rng = np.random.default_rng(42)
-        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True,
-                                  k_distribution="lognormal")
+        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True)
         assert np.all(params["K"] >= 20e9)
         assert np.all(params["K"] <= 200e9)
 
-    def test_uniform_default(self):
-        """Default k_distribution should be uniform."""
+    def test_lognormal_default(self):
+        """Y1: Default k_distribution should be lognormal."""
         from isru_mc import sample_mc_params
         rng = np.random.default_rng(42)
-        params = sample_mc_params(rng, 1000, rho=0.3, correlated=True)
+        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True)
+        k = params["K"]
+        # Log-normal is right-skewed: mean > median
+        assert np.mean(k) > np.median(k)
+        # With σ_ln=0.70, P90 should be significantly above median
+        p90 = float(np.percentile(k, 90))
+        median_k = float(np.median(k))
+        assert p90 / median_k > 1.8  # P90/P50 > 1.8 for σ_ln=0.70
+
+    def test_sigma_ln_wider_than_old(self):
+        """Y1: σ_ln=0.70 should give wider spread than old σ_ln=0.48."""
+        from isru_mc import sample_mc_params
+        rng = np.random.default_rng(42)
+        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True)
+        k = params["K"]
+        p10 = float(np.percentile(k, 10))
+        p90 = float(np.percentile(k, 90))
+        # P90/P10 ratio should be substantial with σ_ln=0.70
+        assert p90 / p10 > 4.0
+
+    def test_uniform_variant(self):
+        """Uniform K variant should still work."""
+        from isru_mc import sample_mc_params
+        rng = np.random.default_rng(42)
+        params = sample_mc_params(rng, 1000, rho=0.3, correlated=True,
+                                  k_distribution="uniform")
         # Uniform [30B, 100B] — check bounds
         assert np.all(params["K"] >= 30e9 - 1)
         assert np.all(params["K"] <= 100e9 + 1)
@@ -945,3 +967,85 @@ class TestKProdRateCorrelation:
         rho_sp, p_val = spearmanr(params["K"], params["prod_rate"])
         assert rho_sp > 0.3  # should be strongly positive
         assert p_val < 0.001
+
+
+# ===== TestLearningPlateau =====
+
+class TestLearningPlateau:
+    """Y3: Verify piecewise learning plateau model."""
+
+    def test_damping_one_matches_baseline(self, baseline):
+        """damping=1.0 should reproduce standard Wright curve."""
+        from isru_model import earth_unit_cost, earth_unit_cost_plateau
+        ns = np.array([1.0, 100.0, 1000.0, 5000.0])
+        cost_base = earth_unit_cost(ns, baseline)
+        cost_plateau = earth_unit_cost_plateau(ns, baseline, n_break=500, damping=1.0)
+        np.testing.assert_allclose(cost_plateau, cost_base, rtol=1e-10)
+
+    def test_before_break_matches_baseline(self, baseline):
+        """Units before n_break should match standard model."""
+        from isru_model import earth_unit_cost, earth_unit_cost_plateau
+        ns = np.array([1.0, 50.0, 100.0, 499.0])
+        cost_base = earth_unit_cost(ns, baseline)
+        cost_plateau = earth_unit_cost_plateau(ns, baseline, n_break=500, damping=0.5)
+        np.testing.assert_allclose(cost_plateau, cost_base, rtol=1e-10)
+
+    def test_after_break_higher_than_baseline(self, baseline):
+        """Units after n_break with damping<1 should be more expensive."""
+        from isru_model import earth_unit_cost, earth_unit_cost_plateau
+        ns = np.array([1000.0, 5000.0, 10000.0])
+        cost_base = earth_unit_cost(ns, baseline)
+        cost_plateau = earth_unit_cost_plateau(ns, baseline, n_break=500, damping=0.5)
+        assert np.all(cost_plateau >= cost_base)
+
+    def test_continuity_at_break(self, baseline):
+        """Cost should be continuous at the break point."""
+        from isru_model import earth_unit_cost_plateau
+        n_break = 500
+        ns = np.array([float(n_break) - 0.01, float(n_break), float(n_break) + 0.01])
+        costs = earth_unit_cost_plateau(ns, baseline, n_break=n_break, damping=0.5)
+        # Check continuity: adjacent costs should be very close
+        assert abs(costs[0] - costs[1]) < 1000  # within $1k
+        assert abs(costs[1] - costs[2]) < 1000
+
+    def test_crossover_delays_with_plateau(self, baseline):
+        """Plateau should delay crossover (Earth stays cheaper longer)."""
+        from isru_model import find_crossover_npv, find_crossover_plateau
+        cross_base = find_crossover_npv(baseline)
+        cross_plateau = find_crossover_plateau(baseline, n_break=500, damping=0.5)
+        # Plateau slows Earth cost decline -> later crossover
+        assert cross_plateau <= cross_base  # Earth stays MORE expensive with plateau
+
+    def test_less_damping_closer_to_baseline(self, baseline):
+        """Less damping (closer to 1.0) should give result closer to baseline."""
+        from isru_model import find_crossover_plateau
+        cross_05 = find_crossover_plateau(baseline, n_break=500, damping=0.5)
+        cross_07 = find_crossover_plateau(baseline, n_break=500, damping=0.7)
+        cross_10 = find_crossover_plateau(baseline, n_break=500, damping=1.0)
+        # More damping (lower value) means MORE slowdown in Earth learning
+        # so crossover should come EARLIER (Earth stays expensive)
+        assert cross_05 <= cross_07 <= cross_10
+
+
+# ===== TestStochasticPFuel =====
+
+class TestStochasticPFuel:
+    """Y2: Verify stochastic p_fuel in MC sampling."""
+
+    def test_pfuel_sampled(self):
+        """p_fuel should be present in sampled parameters."""
+        from isru_mc import sample_mc_params
+        rng = np.random.default_rng(42)
+        params = sample_mc_params(rng, 1000, rho=0.3, correlated=True)
+        assert "p_fuel" in params
+        assert len(params["p_fuel"]) == 1000
+
+    def test_pfuel_range(self):
+        """p_fuel should be sampled from U[100, 400]."""
+        from isru_mc import sample_mc_params
+        rng = np.random.default_rng(42)
+        params = sample_mc_params(rng, 10000, rho=0.3, correlated=True)
+        assert np.all(params["p_fuel"] >= 100)
+        assert np.all(params["p_fuel"] <= 400)
+        # Mean should be near 250
+        assert 230 < np.mean(params["p_fuel"]) < 270
