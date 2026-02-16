@@ -543,6 +543,105 @@ class TestTwoComponentEarthModel:
         assert abs(cross_two - cross_single) < 500
 
 
+# ===== TestPioneeringPhase =====
+
+class TestPioneeringPhase:
+    """V1: Verify pioneering phase cost multiplier."""
+
+    def test_gamma_one_matches_baseline(self, baseline):
+        """gamma=1 should match baseline (no pioneering effect)."""
+        ns = np.array([1.0, 50.0, 100.0, 500.0])
+        cost_base = isru_ops_cost(ns, baseline)
+        baseline["pioneer_gamma"] = 1.0
+        baseline["pioneer_n"] = 50
+        cost_pioneer = isru_ops_cost(ns, baseline)
+        np.testing.assert_allclose(cost_pioneer, cost_base)
+
+    def test_gamma_increases_early_costs(self, baseline):
+        """gamma>1 should increase costs for n <= n_p."""
+        n_early = np.array([1.0, 10.0, 20.0])
+        cost_base = isru_ops_cost(n_early, baseline)
+        baseline["pioneer_gamma"] = 3.0
+        baseline["pioneer_n"] = 50
+        cost_pioneer = isru_ops_cost(n_early, baseline)
+        assert np.all(cost_pioneer > cost_base)
+
+    def test_late_units_unaffected(self, baseline):
+        """Units past n_p should be unaffected."""
+        n_late = np.array([100.0, 500.0, 1000.0])
+        cost_base = isru_ops_cost(n_late, baseline)
+        baseline["pioneer_gamma"] = 5.0
+        baseline["pioneer_n"] = 50
+        cost_pioneer = isru_ops_cost(n_late, baseline)
+        np.testing.assert_allclose(cost_pioneer, cost_base)
+
+    def test_crossover_delayed(self, baseline):
+        """Pioneering phase should delay crossover."""
+        cross_base = find_crossover(baseline, discount=True)
+        baseline["pioneer_gamma"] = 3.0
+        baseline["pioneer_n"] = 50
+        cross_pioneer = find_crossover(baseline, discount=True)
+        assert cross_pioneer >= cross_base
+
+
+# ===== TestQACost =====
+
+class TestQACost:
+    """V2: Verify QA/certification cost addition."""
+
+    def test_zero_qa_matches_baseline(self, baseline):
+        """C_QA1=0 should match baseline."""
+        ns = np.array([1.0, 100.0, 1000.0])
+        cost_base = isru_ops_cost(ns, baseline)
+        baseline["C_QA1"] = 0
+        cost_qa = isru_ops_cost(ns, baseline)
+        np.testing.assert_allclose(cost_qa, cost_base)
+
+    def test_qa_increases_cost(self, baseline):
+        """C_QA1>0 should increase ISRU ops cost."""
+        ns = np.array([1.0, 100.0, 1000.0])
+        cost_base = isru_ops_cost(ns, baseline)
+        baseline["C_QA1"] = 1e6
+        baseline["LR_QA"] = 0.85
+        cost_qa = isru_ops_cost(ns, baseline)
+        assert np.all(cost_qa > cost_base)
+
+    def test_qa_declines_with_experience(self, baseline):
+        """QA cost should decline at large n (learning curve)."""
+        baseline["C_QA1"] = 1e6
+        baseline["LR_QA"] = 0.85
+        cost_early = float(isru_ops_cost(1.0, baseline))
+        cost_late = float(isru_ops_cost(10000.0, baseline))
+        # QA cost at n=1: $1M; at n=10000: much less
+        # Total ops should still be decreasing
+        assert cost_late < cost_early
+
+    def test_crossover_delayed(self, baseline):
+        """QA cost should delay crossover."""
+        cross_base = find_crossover(baseline, discount=True)
+        baseline["C_QA1"] = 1e6
+        baseline["LR_QA"] = 0.85
+        cross_qa = find_crossover(baseline, n_max=40000, discount=True)
+        assert cross_qa >= cross_base
+
+
+# ===== TestPermanentCrossover =====
+
+class TestPermanentCrossover:
+    """V3: Verify permanent vs transient crossover classification."""
+
+    def test_baseline_is_permanent(self, baseline):
+        """Baseline C_floor=0.5M < threshold should be permanent."""
+        from isru_model import is_permanent_crossover
+        assert is_permanent_crossover(baseline) is True
+
+    def test_high_cfloor_is_transient(self, baseline):
+        """Very high C_floor should make crossover transient."""
+        from isru_model import is_permanent_crossover
+        baseline["C_floor"] = 5e6  # well above threshold
+        assert is_permanent_crossover(baseline) is False
+
+
 # ===== TestEarthThroughputCap =====
 
 class TestEarthThroughputCap:

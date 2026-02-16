@@ -64,18 +64,19 @@ class TestSampleMCParams:
 class TestRunMCLoop:
     def test_output_shape(self, rng):
         params = sample_mc_params(rng, 50)
-        crossovers = run_mc_loop(params, 0.05, 5000)
+        crossovers, perm = run_mc_loop(params, 0.05, 5000)
         assert crossovers.shape == (50,)
+        assert perm.shape == (50,)
 
     def test_all_positive(self, rng):
         params = sample_mc_params(rng, 50)
-        crossovers = run_mc_loop(params, 0.05, 5000)
+        crossovers, _ = run_mc_loop(params, 0.05, 5000)
         assert np.all(crossovers > 0)
 
     def test_bounded_by_n_max(self, rng):
         params = sample_mc_params(rng, 50)
         N_max = 5000
-        crossovers = run_mc_loop(params, 0.05, N_max)
+        crossovers, _ = run_mc_loop(params, 0.05, N_max)
         assert np.all(crossovers <= N_max)
 
 

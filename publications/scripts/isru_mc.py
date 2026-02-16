@@ -21,6 +21,7 @@ from isru_model import (
     BASELINE,
     Params,
     find_crossover_npv,
+    is_permanent_crossover,
     significance_stars,
 )
 from scipy.stats import rankdata
@@ -89,6 +90,9 @@ class MCResult:
     convergence_drivers: list[tuple[str, float]] = field(default_factory=list)
     prcc: list[PRCCResult] = field(default_factory=list)
     prcc_conditional: list[PRCCResult] = field(default_factory=list)
+    permanent_mask: NDFloat = field(default_factory=lambda: array([]))
+    n_permanent: int = 0
+    n_transient: int = 0
 
 
 # ---------------------------------------------------------------------------
@@ -187,7 +191,7 @@ def run_mc_loop(
     param_arrays: dict[str, NDFloat],
     r_fixed: float,
     n_max: int,
-) -> NDFloat:
+) -> tuple[NDFloat, NDFloat]:
     """Execute the MC loop: for each sample, compute crossover at fixed r.
 
     When the baseline has launch learning (b_L is set), the sampled p_launch
@@ -195,10 +199,12 @@ def run_mc_loop(
     value (irreducible propellant floor), and p_ops = p_launch - p_fuel
     captures the learnable operational component.
 
-    Returns array of crossover values.
+    Returns (crossovers, permanent_mask) where permanent_mask[i] is True
+    if run i has a permanent (not transient) crossover.
     """
     n_runs = len(next(iter(param_arrays.values())))
     crossovers = empty(n_runs, dtype=float)
+    permanent = empty(n_runs, dtype=bool)
     for i in range(n_runs):
         p = BASELINE.copy()
         for name, arr in param_arrays.items():
@@ -211,7 +217,8 @@ def run_mc_loop(
             p["p_fuel"] = p_fuel_base
             p["p_ops_launch"] = max(p_launch_sampled - p_fuel_base, 0)
         crossovers[i] = find_crossover_npv(p, N_max=n_max)
-    return crossovers
+        permanent[i] = is_permanent_crossover(p)
+    return crossovers, permanent
 
 
 def compute_convergence_stats(
@@ -446,10 +453,16 @@ def run_mc(
     correlations, and non-convergence analysis.
     """
     param_arrays = sample_mc_params(rng, n_runs, rho=0.3, correlated=True)
-    crossovers = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+    crossovers, permanent_mask = run_mc_loop(param_arrays, r_fixed, n_max_mc)
 
     converged_mask = crossovers < n_max_mc
     n_converged = int(sum(converged_mask))
+
+    # V3: Classify converging runs as permanent or transient
+    conv_and_perm = converged_mask & permanent_mask
+    conv_and_trans = converged_mask & ~permanent_mask
+    n_permanent = int(sum(conv_and_perm))
+    n_transient = int(sum(conv_and_trans))
 
     stats = compute_convergence_stats(crossovers, n_max_mc, rng)
 
@@ -488,6 +501,9 @@ def run_mc(
         convergence_drivers=conv_drivers,
         prcc=prcc,
         prcc_conditional=prcc_conditional,
+        permanent_mask=permanent_mask,
+        n_permanent=n_permanent,
+        n_transient=n_transient,
     )
 
 

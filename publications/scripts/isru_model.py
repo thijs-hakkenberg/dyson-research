@@ -301,6 +301,11 @@ def isru_ops_cost(n: float | NDFloat, params: Params) -> NDFloat:
     integrates S(t)). Mass penalty alpha multiplies ops cost.
     Transport cost added as m * p_transport * alpha.
     Vitamin fraction adds Earth-sourced component cost.
+
+    V1: Pioneering phase — for n <= pioneer_n, cost is multiplied by
+    pioneer_gamma to model negative learning (debugging, rework, failures).
+    V2: QA cost — per-unit quality assurance cost C_QA added, declining
+    with its own learning curve (LR_QA).
     """
     n = asarray(n, dtype=float)
     b_i = learning_exponent(params["LR_I"])
@@ -309,6 +314,20 @@ def isru_ops_cost(n: float | NDFloat, params: Params) -> NDFloat:
 
     # Learning curve ops cost
     c_ops = alpha * (c_floor + (params["C_ops1"] - c_floor) * n ** b_i)
+
+    # V1: Pioneering phase — elevated costs for first n_p units
+    pioneer_gamma = params.get("pioneer_gamma", 1.0)
+    pioneer_n = params.get("pioneer_n", 0)
+    if pioneer_gamma > 1.0 and pioneer_n > 0:
+        pioneer_mask = n <= pioneer_n
+        c_ops = np_where(pioneer_mask, c_ops * pioneer_gamma, c_ops)
+
+    # V2: QA/certification cost — declines with experience
+    C_QA1 = params.get("C_QA1", 0)
+    if C_QA1 > 0:
+        LR_QA = params.get("LR_QA", 0.85)
+        b_qa = learning_exponent(LR_QA)
+        c_ops = c_ops + C_QA1 * n ** b_qa
 
     # Transport cost
     p_transport = params.get("p_transport", 0)
@@ -602,6 +621,48 @@ def find_crossover_rate_dependent(
     if len(crossings) > 0:
         return int(ns[crossings[0]])
     return n_max
+
+
+def is_permanent_crossover(params: Params) -> bool:
+    """V3: Check whether crossover is permanent (asymptotic ISRU < Earth).
+
+    Compares asymptotic per-unit costs at very large n. If ISRU per-unit
+    cost exceeds Earth per-unit cost asymptotically, any crossover is a
+    finite-horizon amortization artifact that would eventually re-cross.
+
+    Returns True if crossover is permanent (ISRU cheaper at large n).
+    """
+    alpha = params.get("alpha", 1.0)
+    c_floor = params.get("C_floor", 0)
+    p_transport = params.get("p_transport", 0)
+    vitamin_frac = params.get("vitamin_frac", 0.0)
+
+    # Asymptotic ISRU ops cost (learning terms -> 0 at large n)
+    isru_asymp = alpha * c_floor + params["m"] * p_transport * alpha
+
+    # Add vitamin fraction asymptotic contribution
+    if vitamin_frac > 0:
+        # At large n with launch learning, p_launch_eff -> p_fuel
+        p_fuel = params.get("p_fuel", 200)
+        c_vitamin_kg = params.get("c_vitamin_kg", 10000)
+        isru_asymp = (1.0 - vitamin_frac) * isru_asymp + \
+            vitamin_frac * params["m"] * (p_fuel + c_vitamin_kg)
+
+    # Add QA asymptotic (-> 0 with learning, so negligible)
+    # Pioneer phase also negligible at large n
+
+    # Asymptotic Earth per-unit cost
+    # Two-component: C_mat + C_labor1 * n^b_E -> C_mat (labor -> 0)
+    # Plus launch: at large n with learning, p_launch -> m * p_fuel
+    C_mat = params.get("C_mat", 0)
+    b_L = params.get("b_L", None)
+    if b_L is not None:
+        p_fuel_e = params.get("p_fuel", 200)
+        earth_asymp = C_mat + params["m"] * p_fuel_e
+    else:
+        earth_asymp = C_mat + params["m"] * params.get("p_launch", 1000)
+
+    return isru_asymp < earth_asymp
 
 
 # Backward-compat shims

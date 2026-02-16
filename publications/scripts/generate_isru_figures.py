@@ -410,6 +410,17 @@ def print_mc_diagnostics(all_results, mc_rates):
             for label, rate in ncp.non_conv_by_K.items():
                 print(f"           K={label}: {rate:.1f}% non-converge")
 
+        # V3: Permanent vs transient crossover split
+        n_conv = int(sum(res.converged_mask))
+        if n_conv > 0:
+            print(f"         Permanent/transient: {res.n_permanent:,} permanent, "
+                  f"{res.n_transient:,} transient "
+                  f"(of {n_conv:,} converging)")
+            perm_pct = res.n_permanent / len(res.crossovers) * 100
+            trans_pct = res.n_transient / len(res.crossovers) * 100
+            print(f"           Permanent crossover rate: {perm_pct:.1f}% "
+                  f"(transient: {trans_pct:.1f}%)")
+
         if res.prcc:
             print("         PRCC (unconditional):")
             for pr in sorted(res.prcc, key=lambda x: -abs(x.prcc)):
@@ -806,7 +817,7 @@ def print_mc_convergence():
 
     # Sample full 10,000 params upfront
     param_arrays = sample_mc_params(rng, 10000, rho=0.3, correlated=True)
-    crossovers = run_mc_loop(param_arrays, 0.05, n_max_mc)
+    crossovers, _ = run_mc_loop(param_arrays, 0.05, n_max_mc)
 
     print("\n  G1b: MC convergence diagnostic (r=5%, rho=0.3):")
     print(f"  {'N_runs':>8s}  {'Conv%':>8s}  {'Cond.Med':>10s}  {'Cond.IQR':>20s}  {'Stable?':>8s}")
@@ -893,7 +904,7 @@ def print_copula_rho_sensitivity():
     for rho in rho_values:
         rng = default_rng(42)
         param_arrays = sample_mc_params(rng, n_runs, rho=rho, correlated=(rho > 0))
-        crossovers = run_mc_loop(param_arrays, 0.05, n_max_mc)
+        crossovers, _ = run_mc_loop(param_arrays, 0.05, n_max_mc)
         converged = crossovers[crossovers < n_max_mc]
         conv_rate = len(converged) / n_runs * 100
         if len(converged) > 0:
@@ -1085,7 +1096,7 @@ def print_k_prodrate_correlation():
     for rho_kp in [0.0, 0.5]:
         rng = default_rng(42)
         param_arrays = sample_mc_params(rng, n_runs, rho=0.3, rho_k_prod=rho_kp, correlated=True)
-        crossovers = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+        crossovers, _ = run_mc_loop(param_arrays, r_fixed, n_max_mc)
         converged = crossovers[crossovers < n_max_mc]
         conv_rate = len(converged) / n_runs * 100
         if len(converged) > 0:
@@ -1239,7 +1250,7 @@ def print_additional_correlations():
     for label, rho_pk, rho_kp in configs:
         rng = default_rng(42)
         param_arrays = sample_mc_params(rng, n_runs, rho=rho_pk, rho_k_prod=rho_kp, correlated=True)
-        crossovers = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+        crossovers, _ = run_mc_loop(param_arrays, r_fixed, n_max_mc)
         converged = crossovers[crossovers < n_max_mc]
         conv_rate = len(converged) / n_runs * 100
         cond_med = int(median(converged)) if len(converged) > 0 else n_max_mc
@@ -1654,7 +1665,7 @@ def print_lognormal_k_comparison():
         rng = default_rng(42)
         param_arrays = sample_mc_params(rng, n_runs, rho=0.3, correlated=True,
                                          k_distribution=k_dist)
-        crossovers = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+        crossovers, _ = run_mc_loop(param_arrays, r_fixed, n_max_mc)
         converged = crossovers[crossovers < n_max_mc]
         conv_rate = len(converged) / n_runs * 100
         if len(converged) > 0:
@@ -1775,6 +1786,102 @@ def print_revenue_breakeven_with_lifetime():
         elif L == 20:
             note = "(baseline assumption)"
         print(f"  {L:>8d}yr  {r_star:>16,.0f}  {r_star/1e6:>11.2f}M  {note:>30s}")
+
+
+# ---------------------------------------------------------------------------
+# V1: Pioneering phase sensitivity
+# ---------------------------------------------------------------------------
+def print_pioneering_phase_sensitivity():
+    """V1: Test two-phase ISRU learning model with elevated early-unit costs."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  V1: Pioneering phase sensitivity (NPV, r=5%, baseline N*={base_npv:,}):")
+    print(f"  {'gamma':>8s}  {'n_p':>6s}  {'N*':>8s}  {'Shift':>8s}  {'%':>6s}")
+    print(f"  {'--------':>8s}  {'------':>6s}  {'--------':>8s}  {'--------':>8s}  {'------':>6s}")
+
+    for gamma in [1, 2, 5]:
+        for n_p in [20, 50, 100]:
+            p = BASELINE.copy()
+            p["pioneer_gamma"] = gamma
+            p["pioneer_n"] = n_p
+            cross = find_crossover(p, n_max=40000, discount=True)
+            shift = cross - base_npv
+            pct = shift / base_npv * 100 if base_npv > 0 else 0
+            if cross >= 40000:
+                print(f"  {gamma:>8d}  {n_p:>6d}  {'>40,000':>8s}  {'N/A':>8s}  {'N/A':>6s}")
+            else:
+                print(f"  {gamma:>8d}  {n_p:>6d}  {cross:>8,d}  {shift:>+8,d}  {pct:>+5.1f}%")
+
+
+# ---------------------------------------------------------------------------
+# V2: QA/certification cost sensitivity
+# ---------------------------------------------------------------------------
+def print_qa_cost_sensitivity():
+    """V2: Test per-unit QA/certification cost added to ISRU pathway."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  V2: QA/certification cost sensitivity (NPV, r=5%, baseline N*={base_npv:,}):")
+    print(f"  {'C_QA1':>10s}  {'LR_QA':>8s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}")
+
+    for c_qa in [0.5e6, 1e6, 3e6]:
+        for lr_qa in [0.85, 0.90]:
+            p = BASELINE.copy()
+            p["C_QA1"] = c_qa
+            p["LR_QA"] = lr_qa
+            cross = find_crossover(p, n_max=40000, discount=True)
+            shift = cross - base_npv
+            label = f"${c_qa/1e6:.1f}M"
+            if cross >= 40000:
+                print(f"  {label:>10s}  {lr_qa:>8.2f}  {'>40,000':>8s}  {'N/A':>8s}")
+            else:
+                print(f"  {label:>10s}  {lr_qa:>8.2f}  {cross:>8,d}  {shift:>+8,d}")
+
+
+# ---------------------------------------------------------------------------
+# V4: ISRU ops timing sensitivity (symmetric with Earth lead-time test)
+# ---------------------------------------------------------------------------
+def print_isru_ops_timing_sensitivity():
+    """V4: Test ISRU ops pre-purchase timing (symmetric with Earth cash-flow test)."""
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  V4: ISRU ops pre-purchase timing sensitivity (NPV, r=5%):")
+    print(f"    Baseline (pay-at-production):   N* = {base_npv:,}")
+
+    # Shift a fraction of ISRU ops cost earlier by tau_ops years
+    from numpy import arange as np_ar, cumsum as np_cs, where as np_w
+    r = BASELINE["r"]
+    ns = np_ar(1, 20001, dtype=float)
+    prod_rate = BASELINE["prod_rate"]
+    k_ramp = BASELINE["k_ramp"]
+
+    # Earth side (standard)
+    earth_units = earth_unit_cost(ns, BASELINE)
+    from isru_model import earth_delivery_time as edt, unit_to_time_piecewise as utp
+    t_n_earth = edt(ns, prod_rate)
+    discount_earth = (1.0 + r) ** (-t_n_earth)
+    earth_cum = np_cs(earth_units * discount_earth)
+
+    from numpy import maximum as np_max
+    for tau_ops, g in [(0.5, 0.3), (0.5, 0.7), (1.0, 0.5)]:
+        # ISRU side: fraction g of ops cost paid tau_ops years earlier
+        ops = isru_ops_cost(ns, BASELINE)
+        t_n_isru = utp(ns, prod_rate, BASELINE["t0"], k_ramp)
+        t_early = np_max(t_n_isru - tau_ops, 0.0)
+
+        # Split: g fraction at t_early, (1-g) at t_n_isru
+        disc_early = (1.0 + r) ** (-t_early)
+        disc_normal = (1.0 + r) ** (-t_n_isru)
+        ops_npv = g * ops * disc_early + (1.0 - g) * ops * disc_normal
+
+        isru_cum = BASELINE["K"] + np_cs(ops_npv)
+        diff = isru_cum - earth_cum
+        crossings = np_w(diff <= 0)[0]
+        cross = int(ns[crossings[0]]) if len(crossings) > 0 else 20000
+        shift = cross - base_npv
+        pct = shift / base_npv * 100
+        print(f"    tau={tau_ops:.1f}yr, g={g:.0%} pre-purchase:  N* = {cross:,} "
+              f"(shift: {shift:+,}, {pct:+.1f}%)")
 
 
 # ---------------------------------------------------------------------------
@@ -1921,5 +2028,10 @@ if __name__ == "__main__":
 
     # Version U diagnostics
     print_throughput_cap_sensitivity()
+
+    # Version V diagnostics
+    print_pioneering_phase_sensitivity()
+    print_qa_cost_sensitivity()
+    print_isru_ops_timing_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")
