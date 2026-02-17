@@ -47,6 +47,7 @@ BASELINE: Params = {
     "C_mat": 1e6,          # U1: per-unit material cost (non-learnable, $/unit)
     "C_labor1": 74e6,      # U1: first-unit labor+overhead cost (learnable, $/unit)
     "earth_n0": 0,         # AB1: Earth learning curve starting offset (prior production units)
+    "tau_transport": 0.5,  # AD1: lunar-to-GEO transport duration (years)
 }
 
 # ---------------------------------------------------------------------------
@@ -231,6 +232,9 @@ def find_crossover_mfg_lead(
     # ISRU side — unchanged
     ops = isru_ops_cost(ns, params)
     t_n_isru = unit_to_time(ns, prod_rate, params["t0"], k_ramp)
+    # AD1: Add transport duration for ISRU delivery timing
+    tau_transport = params.get("tau_transport", 0.0)
+    t_n_isru = t_n_isru + tau_transport
     discount_isru = (1.0 + r) ** (-t_n_isru)
     isru_ops_cum = cumsum(ops * discount_isru)
     isru_cum = params["K"] + isru_ops_cum
@@ -590,6 +594,9 @@ def find_crossover(
             )
         else:
             t_n_isru = unit_to_time(ns, isru_prod_rate, params["t0"], k_ramp)
+        # AD1: Add transport duration for ISRU delivery timing
+        tau_transport = params.get("tau_transport", 0.0)
+        t_n_isru = t_n_isru + tau_transport
         discount_isru = (1.0 + r) ** (-t_n_isru)
         isru_ops_cum = cumsum(ops * discount_isru)
     else:
@@ -742,6 +749,9 @@ def find_recrossing_volume(
     # ISRU side
     ops = isru_ops_cost(ns, params)
     t_n_isru = unit_to_time_piecewise(ns, isru_prod_rate, params["t0"], k_ramp)
+    # AD1: Add transport duration for ISRU delivery timing
+    tau_transport = params.get("tau_transport", 0.0)
+    t_n_isru = t_n_isru + tau_transport
     discount_isru = (1.0 + r) ** (-t_n_isru)
     isru_ops_cum = cumsum(ops * discount_isru)
     isru_cum = params["K"] + isru_ops_cum

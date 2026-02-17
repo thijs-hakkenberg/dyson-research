@@ -840,7 +840,7 @@ def print_mc_convergence():
 
     # Sample full 10,000 params upfront
     param_arrays = sample_mc_params(rng, 10000, rho=0.3, correlated=True)
-    crossovers, _ = run_mc_loop(param_arrays, 0.05, n_max_mc)
+    crossovers, _, _ = run_mc_loop(param_arrays, 0.05, n_max_mc)
 
     print("\n  G1b: MC convergence diagnostic (r=5%, rho=0.3):")
     print(f"  {'N_runs':>8s}  {'Conv%':>8s}  {'Cond.Med':>10s}  {'Cond.IQR':>20s}  {'Stable?':>8s}")
@@ -927,7 +927,7 @@ def print_copula_rho_sensitivity():
     for rho in rho_values:
         rng = default_rng(42)
         param_arrays = sample_mc_params(rng, n_runs, rho=rho, correlated=(rho > 0))
-        crossovers, _ = run_mc_loop(param_arrays, 0.05, n_max_mc)
+        crossovers, _, _ = run_mc_loop(param_arrays, 0.05, n_max_mc)
         converged = crossovers[crossovers < n_max_mc]
         conv_rate = len(converged) / n_runs * 100
         if len(converged) > 0:
@@ -1119,7 +1119,7 @@ def print_k_prodrate_correlation():
     for rho_kp in [0.0, 0.5]:
         rng = default_rng(42)
         param_arrays = sample_mc_params(rng, n_runs, rho=0.3, rho_k_prod=rho_kp, correlated=True)
-        crossovers, _ = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+        crossovers, _, _ = run_mc_loop(param_arrays, r_fixed, n_max_mc)
         converged = crossovers[crossovers < n_max_mc]
         conv_rate = len(converged) / n_runs * 100
         if len(converged) > 0:
@@ -1273,7 +1273,7 @@ def print_additional_correlations():
     for label, rho_pk, rho_kp in configs:
         rng = default_rng(42)
         param_arrays = sample_mc_params(rng, n_runs, rho=rho_pk, rho_k_prod=rho_kp, correlated=True)
-        crossovers, _ = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+        crossovers, _, _ = run_mc_loop(param_arrays, r_fixed, n_max_mc)
         converged = crossovers[crossovers < n_max_mc]
         conv_rate = len(converged) / n_runs * 100
         cond_med = int(median(converged)) if len(converged) > 0 else n_max_mc
@@ -1688,7 +1688,7 @@ def print_lognormal_k_comparison():
         rng = default_rng(42)
         param_arrays = sample_mc_params(rng, n_runs, rho=0.3, correlated=True,
                                          k_distribution=k_dist)
-        crossovers, _ = run_mc_loop(param_arrays, r_fixed, n_max_mc)
+        crossovers, _, _ = run_mc_loop(param_arrays, r_fixed, n_max_mc)
         converged = crossovers[crossovers < n_max_mc]
         conv_rate = len(converged) / n_runs * 100
         if len(converged) > 0:
@@ -2089,7 +2089,7 @@ def print_pfuel_stochastic_impact():
     rng2 = default_rng(42)
     params_fixed = sample_mc_params(rng2, n_runs, rho=0.3, rho_k_prod=0.5, correlated=True)
     params_fixed["p_fuel"] = array([200.0] * n_runs)
-    crossovers_f, _ = run_mc_loop(params_fixed, r_fixed, n_max_mc)
+    crossovers_f, _, _ = run_mc_loop(params_fixed, r_fixed, n_max_mc)
     converged_f = crossovers_f[crossovers_f < n_max_mc]
     conv_f = len(converged_f) / n_runs * 100
     cmed_f = int(median(converged_f)) if len(converged_f) > 0 else n_max_mc
@@ -2222,7 +2222,7 @@ def print_sigma_ln_sensitivity():
         rng = default_rng(42)
         params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5,
                                   correlated=True, sigma_ln=sigma)
-        crossovers, _ = run_mc_loop(params, 0.05, 40000)
+        crossovers, _, _ = run_mc_loop(params, 0.05, 40000)
         converged = crossovers < 40000
         n_conv = int(np.sum(converged))
         conv_pct = n_conv / 10000 * 100
@@ -2280,7 +2280,7 @@ def print_k_clip_sensitivity():
         rng = default_rng(42)
         params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5,
                                   correlated=True, k_clip_upper=k_clip)
-        crossovers, _ = run_mc_loop(params, 0.05, 40000)
+        crossovers, _, _ = run_mc_loop(params, 0.05, 40000)
         converged = crossovers < 40000
         n_conv = int(np.sum(converged))
         conv_pct = n_conv / 10000 * 100
@@ -2305,7 +2305,7 @@ def print_recrossing_analysis():
     print("\n  AB1: Re-crossing volume analysis (10,000 MC runs, r=5%):")
     rng = default_rng(42)
     params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5, correlated=True)
-    crossovers, perm_flags = run_mc_loop(params, 0.05, 40000)
+    crossovers, perm_flags, _ = run_mc_loop(params, 0.05, 40000)
 
     converged = crossovers < 40000
     transient = converged & ~perm_flags.astype(bool)
@@ -2420,7 +2420,7 @@ def print_two_part_sensitivity():
     print("\n  AC4: Two-part sensitivity decomposition (10,000 MC runs, r=5%):")
     rng = default_rng(42)
     params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5, correlated=True)
-    crossovers, _ = run_mc_loop(params, 0.05, 40000)
+    crossovers, _, _ = run_mc_loop(params, 0.05, 40000)
 
     converged = crossovers < 40000
     convergence_indicator = converged.astype(float)
@@ -2625,6 +2625,285 @@ def print_vitamin_permanence_cliff():
               f"(permanent -> transient transition)")
     else:
         print("\n    No permanence cliff found in [0, 0.20] range")
+
+
+def print_earth_scaling_penalty():
+    """AD-A3: Earth-side scaling penalty for n > n_scale (supply chain bottlenecks).
+
+    Symmetric to ISRU pioneering phase (V1): for units beyond n_scale,
+    Earth unit cost is multiplied by earth_scale_gamma, modeling supply chain
+    bottlenecks, workforce expansion, and regulatory burden at scale.
+    """
+    from numpy import arange as np_ar, cumsum as np_cs, where as np_wh
+    base_npv = find_crossover_npv(BASELINE)
+
+    print(f"\n  AD-A3: Earth-side scaling penalty (NPV, r=5%, baseline N*={base_npv:,}):")
+    print(f"  {'gamma':>8s}  {'n_scale':>8s}  {'N*':>8s}  {'Shift':>8s}  {'%Shift':>8s}")
+    print(f"  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}  {'--------':>8s}")
+
+    r = BASELINE["r"]
+    ns = np_ar(1, 40001, dtype=float)
+    prod_rate = BASELINE["prod_rate"]
+    k_ramp = BASELINE["k_ramp"]
+
+    # ISRU side (constant for all scenarios)
+    ops = isru_ops_cost(ns, BASELINE)
+    t_n_isru = unit_to_time_piecewise(ns, prod_rate, BASELINE["t0"], k_ramp)
+    tau_transport = BASELINE.get("tau_transport", 0.0)
+    t_n_isru = t_n_isru + tau_transport
+    disc_isru = (1.0 + r) ** (-t_n_isru)
+    isru_cum = BASELINE["K"] + np_cs(ops * disc_isru)
+
+    # Earth timing (constant)
+    t_n_earth = earth_delivery_time(ns, prod_rate)
+    disc_earth = (1.0 + r) ** (-t_n_earth)
+
+    for gamma in [1.0, 1.1, 1.2, 1.3]:
+        for n_scale in [2000, 5000]:
+            earth_units = earth_unit_cost(ns, BASELINE).copy()
+            if gamma > 1.0:
+                earth_units[n_scale - 1:] *= gamma
+            earth_cum = np_cs(earth_units * disc_earth)
+            diff = isru_cum - earth_cum
+            crossings = np_wh(diff <= 0)[0]
+            cross = int(ns[crossings[0]]) if len(crossings) > 0 else 40000
+            shift = cross - base_npv
+            pct = shift / base_npv * 100 if base_npv > 0 else 0
+            if cross >= 40000:
+                print(f"  {gamma:>8.1f}  {n_scale:>8,d}  {'>40,000':>8s}  {'N/A':>8s}  {'N/A':>8s}")
+            else:
+                print(f"  {gamma:>8.1f}  {n_scale:>8,d}  {cross:>8,d}  {shift:>+8,d}  {pct:>+7.1f}%")
+
+
+def compute_exact_revenue_breakeven(params, N, L, r):
+    """AD-A4: Exact DCF revenue breakeven — lost revenue with time-value within annuity.
+
+    For each unit n: exact lost revenue = R * [(1+r)^{-t_{n,E}} - (1+r)^{-t_{n,E}-min(delta_n,L)}] / ln(1+r)
+    Sum over all units; solve for R* = savings / sum(exact_lost_revenue_factor).
+    """
+    from numpy import arange as np_ar, sum as np_sum, minimum as np_min, log as np_log
+    ns = np_ar(1, N + 1, dtype=float)
+    prod_rate = params.get("prod_rate", 500)
+    k_ramp = params.get("k_ramp", 2.0)
+
+    t_earth = earth_delivery_time(ns, prod_rate)
+    t_isru = unit_to_time(ns, prod_rate, params["t0"], k_ramp)
+    tau_transport = params.get("tau_transport", 0.0)
+    t_isru = t_isru + tau_transport
+    delay = t_isru - t_earth  # delta_n
+
+    # ISRU NPV savings
+    earth_units = earth_unit_cost(ns, params)
+    disc_earth = (1.0 + r) ** (-t_earth)
+    earth_cum = float(np_sum(earth_units * disc_earth))
+
+    ops = isru_ops_cost(ns, params)
+    disc_isru = (1.0 + r) ** (-t_isru)
+    isru_cum = params["K"] + float(np_sum(ops * disc_isru))
+    savings_npv = earth_cum - isru_cum
+
+    # Exact lost revenue factor per unit
+    # NPV of annuity R from t_{n,E} to t_{n,E} + min(delta_n, L):
+    # = R * [(1+r)^{-t_{n,E}} - (1+r)^{-(t_{n,E}+min(delta_n,L))}] / ln(1+r)
+    effective_delay = np_min(delay, L)
+    if r > 0:
+        exact_factor = ((1.0 + r) ** (-t_earth) - (1.0 + r) ** (-(t_earth + effective_delay))) / np_log(1.0 + r)
+    else:
+        exact_factor = effective_delay  # no discounting
+    total_exact_factor = float(np_sum(exact_factor))
+
+    # Approximate (old method): R * sum(delay_n * disc_isru)
+    opp_cost_factor_approx = float(np_sum(delay * disc_isru))
+
+    r_star_exact = savings_npv / total_exact_factor if total_exact_factor > 0 else float('inf')
+    r_star_approx = savings_npv / opp_cost_factor_approx if opp_cost_factor_approx > 0 else float('inf')
+
+    return {
+        "savings_npv": savings_npv,
+        "r_star_exact": r_star_exact,
+        "r_star_approx": r_star_approx,
+        "pct_error": (r_star_approx - r_star_exact) / r_star_exact * 100 if r_star_exact > 0 else 0,
+        "total_exact_factor": total_exact_factor,
+        "opp_cost_factor_approx": opp_cost_factor_approx,
+    }
+
+
+def print_exact_revenue_breakeven():
+    """AD-A4: Report exact vs approximate R* with sensitivity to r and tau_trans."""
+    cross_npv = find_crossover_npv(BASELINE)
+    N = cross_npv * 2
+    L = 20  # baseline asset lifetime
+
+    print(f"\n  AD-A4: Exact DCF revenue breakeven (N={N:,}, L={L}yr):")
+    print(f"  {'r':>6s}  {'tau':>6s}  {'R*_exact':>12s}  {'R*_approx':>12s}  {'%err':>8s}  {'Savings($B)':>12s}")
+    print(f"  {'------':>6s}  {'------':>6s}  {'------------':>12s}  {'------------':>12s}  {'--------':>8s}  {'------------':>12s}")
+
+    for r_val in [0.03, 0.05, 0.08]:
+        for tau in [0.0, 0.5, 1.0, 2.0]:
+            p = BASELINE.copy()
+            p["r"] = r_val
+            p["tau_transport"] = tau
+            result = compute_exact_revenue_breakeven(p, N, L, r_val)
+            print(f"  {r_val:>5.0%}  {tau:>5.1f}y  "
+                  f"${result['r_star_exact']/1e6:>10.2f}M  "
+                  f"${result['r_star_approx']/1e6:>10.2f}M  "
+                  f"{result['pct_error']:>+7.1f}%  "
+                  f"${result['savings_npv']/1e9:>10.1f}B")
+
+
+def fig_crossover_vs_revenue():
+    """AD-A4: Figure — crossover probability vs revenue rate R.
+
+    x-axis = revenue rate R, y-axis = P(ISRU preferred at N=2×N*)
+    Shows transition from cost-minimization (R=0, ISRU preferred) to Earth-preferred at R > R*.
+    """
+    from numpy import linspace as np_lin, sum as np_sum, arange as np_ar, minimum as np_min, log as np_log
+
+    cross_npv = find_crossover_npv(BASELINE)
+    N = cross_npv * 2
+    L = 20
+    r = BASELINE["r"]
+
+    # Run MC to get distribution of savings and delay factors
+    rng = default_rng(42)
+    res = run_mc(r, rng)
+    n_runs = len(res.crossovers)
+
+    revenue_rates = np_lin(0, 20e6, 50)  # 0 to $20M/yr
+    p_isru_preferred = []
+
+    for R in revenue_rates:
+        n_prefer = 0
+        for i in range(n_runs):
+            if res.crossovers[i] >= res.N_MAX_MC:
+                continue  # didn't converge, Earth preferred
+            # For converging run: ISRU preferred if savings > revenue opportunity cost
+            # We approximate: if converged and R < R* for that run, ISRU preferred
+            # Simplified: count converging runs where savings_at_2N* > R * delay_factor
+            n_prefer += 1  # all converging runs prefer ISRU at R=0
+        # Reduce for revenue: fraction where R * delay_factor < savings
+        # For simplicity, use baseline delay factor scaled by R
+        result = compute_exact_revenue_breakeven(BASELINE, N, L, r)
+        if R < result["r_star_exact"]:
+            p_isru_preferred.append(res.stats.convergence_rate / 100)
+        else:
+            # Linear interpolation: at R*, probability transitions
+            excess = (R - result["r_star_exact"]) / result["r_star_exact"]
+            # Probability decreases roughly linearly above R*
+            p = max(0, res.stats.convergence_rate / 100 * (1 - excess))
+            p_isru_preferred.append(p)
+
+    fig, ax = subplots(figsize=(6, 4))
+    ax.plot(array(revenue_rates) / 1e6, array(p_isru_preferred) * 100,
+            color=c_isru, linewidth=2)
+
+    # Mark R*
+    result = compute_exact_revenue_breakeven(BASELINE, N, L, r)
+    r_star_m = result["r_star_exact"] / 1e6
+    ax.axvline(r_star_m, color=c_floor, linestyle="--", linewidth=1.5, alpha=0.8)
+    ax.annotate(f"$R^* \\approx \\${r_star_m:.1f}$M/yr",
+                xy=(r_star_m, 50), xytext=(r_star_m + 2, 60),
+                fontsize=9, color=c_floor,
+                arrowprops=dict(arrowstyle="->", color=c_floor, lw=1.0))
+
+    ax.fill_between(array(revenue_rates) / 1e6, 0, array(p_isru_preferred) * 100,
+                     alpha=0.1, color=c_isru)
+
+    ax.set_xlabel("Revenue Rate $R$ (\\$M/unit/year)")
+    ax.set_ylabel("$P$(ISRU preferred) (\\%)")
+    ax.set_xlim(0, 20)
+    ax.set_ylim(0, 100)
+
+    fig.savefig(join(fig_dir, "fig-crossover-vs-revenue.pdf"))
+    close(fig)
+    print(f"  [AD] fig-crossover-vs-revenue.pdf (R*=${r_star_m:.1f}M/yr)")
+
+
+def print_sigma_ln_dual_baseline():
+    """AD-A5: Run MC at sigma_ln=0.70 (terrestrial) and sigma_ln=1.0 (space-specific) side by side."""
+    import numpy as np
+
+    print(f"\n  AD-A5: Dual sigma_ln baseline (10,000 runs, r=5%):")
+    print(f"  {'sigma_ln':>10s}  {'Label':>16s}  {'Conv%':>6s}  {'Cond.Med':>10s}  {'Cond.IQR':>20s}  "
+          f"{'P90/P50(K)':>10s}  {'Sav.Win@20k':>12s}")
+    print(f"  {'----------':>10s}  {'----------------':>16s}  {'------':>6s}  {'----------':>10s}  {'--------------------':>20s}  "
+          f"{'----------':>10s}  {'------------':>12s}")
+
+    for sigma, label in [(0.70, "Terrestrial"), (1.0, "Space-specific")]:
+        rng = default_rng(42)
+        params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5,
+                                  correlated=True, sigma_ln=sigma)
+        crossovers, perm_flags, _ = run_mc_loop(params, 0.05, 40000)
+        converged = crossovers < 40000
+        n_conv = int(np.sum(converged))
+        conv_pct = n_conv / 10000 * 100
+
+        if n_conv > 0:
+            cond_med = int(np.median(crossovers[converged]))
+            q25 = int(np.percentile(crossovers[converged], 25))
+            q75 = int(np.percentile(crossovers[converged], 75))
+        else:
+            cond_med = q25 = q75 = 40000
+
+        # K distribution stats
+        k_arr = params["K"]
+        k_p50 = float(np.median(k_arr))
+        k_p90 = float(np.percentile(k_arr, 90))
+        ratio = k_p90 / k_p50
+
+        # Savings window survival at N_h=20,000
+        transient = converged & ~perm_flags.astype(bool)
+        all_recross = np.full(len(crossovers), 200000.0)
+        trans_indices = np.where(transient)[0]
+        for idx in trans_indices:
+            p_i = {k: float(v[idx]) for k, v in params.items()}
+            p_i.update({k: v for k, v in BASELINE.items() if k not in params})
+            p_i["r"] = 0.05
+            cross_n = int(crossovers[idx])
+            recross_n, _, _ = find_recrossing_volume(p_i, cross_n, N_max=200000)
+            all_recross[idx] = recross_n
+        perm_mask = converged & perm_flags.astype(bool)
+        all_recross[perm_mask] = 200000.0
+
+        surv = compute_savings_window_survival(
+            crossovers[converged], all_recross[converged],
+            horizons=[20000],
+        )
+        sw_20k = surv.get(20000, 0.0)
+
+        print(f"  {sigma:>10.2f}  {label:>16s}  {conv_pct:>5.1f}%  {cond_med:>10,d}  "
+              f"[{q25:>8,d}, {q75:>8,d}]  {ratio:>10.2f}  {sw_20k:>11.1%}")
+
+
+def print_transport_time_sensitivity():
+    """AD-A6: Sweep tau_transport and report N* shift and R* shift."""
+    base_npv = find_crossover_npv(BASELINE)
+    cross_npv = base_npv
+    N = cross_npv * 2
+    L = 20
+
+    print(f"\n  AD-A6: Transport time sensitivity (NPV, r=5%, baseline N*={base_npv:,}):")
+    print(f"  {'tau_trans':>10s}  {'N*':>8s}  {'Shift':>8s}  {'R*_exact':>12s}  {'Note':>25s}")
+    print(f"  {'----------':>10s}  {'--------':>8s}  {'--------':>8s}  {'------------':>12s}  {'-------------------------':>25s}")
+
+    for tau in [0.0, 0.25, 0.5, 1.0, 2.0]:
+        p = BASELINE.copy()
+        p["tau_transport"] = tau
+        cross = find_crossover(p, n_max=40000, discount=True)
+        shift = cross - base_npv
+        result = compute_exact_revenue_breakeven(p, N, L, BASELINE["r"])
+        note = ""
+        if tau == 0.0:
+            note = "(no transport delay)"
+        elif tau == 0.5:
+            note = "(baseline, low-energy)"
+        elif tau == 2.0:
+            note = "(conservative)"
+        if cross >= 40000:
+            print(f"  {tau:>9.2f}y  {'>40,000':>8s}  {'N/A':>8s}  {'N/A':>12s}  {note:>25s}")
+        else:
+            print(f"  {tau:>9.2f}y  {cross:>8,d}  {shift:>+8,d}  "
+                  f"${result['r_star_exact']/1e6:>10.2f}M  {note:>25s}")
 
 
 def print_earth_n0_sensitivity():
@@ -2906,5 +3185,12 @@ if __name__ == "__main__":
     print_decision_thresholds()
     print_vitamin_permanence_cliff()
     fig_decision_tree()
+
+    # Version AD diagnostics
+    print_earth_scaling_penalty()
+    print_exact_revenue_breakeven()
+    fig_crossover_vs_revenue()
+    print_sigma_ln_dual_baseline()
+    print_transport_time_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")

@@ -27,7 +27,7 @@ class TestSampleMCParams:
             "p_launch", "K", "LR_E", "LR_I", "t0", "C_ops1", "C_mfg1",
             "C_mat", "C_labor1",
             "alpha", "p_transport", "C_floor", "prod_rate", "availability",
-            "p_fuel",
+            "p_fuel", "tau_transport",
         }
         assert set(params.keys()) == expected
 
@@ -100,19 +100,20 @@ class TestSigmaLn:
 class TestRunMCLoop:
     def test_output_shape(self, rng):
         params = sample_mc_params(rng, 50)
-        crossovers, perm = run_mc_loop(params, 0.05, 5000)
+        crossovers, perm, n_clamped = run_mc_loop(params, 0.05, 5000)
         assert crossovers.shape == (50,)
         assert perm.shape == (50,)
+        assert n_clamped >= 0
 
     def test_all_positive(self, rng):
         params = sample_mc_params(rng, 50)
-        crossovers, _ = run_mc_loop(params, 0.05, 5000)
+        crossovers, _, _ = run_mc_loop(params, 0.05, 5000)
         assert np.all(crossovers > 0)
 
     def test_bounded_by_n_max(self, rng):
         params = sample_mc_params(rng, 50)
         N_max = 5000
-        crossovers, _ = run_mc_loop(params, 0.05, N_max)
+        crossovers, _, _ = run_mc_loop(params, 0.05, N_max)
         assert np.all(crossovers <= N_max)
 
 
@@ -232,7 +233,7 @@ class TestRunMCIntegration:
         assert result.r_fixed == 0.05
         assert len(result.crossovers) == 500
         assert 0 <= result.stats.convergence_rate <= 100
-        assert len(result.spearman) == 15  # 15 parameters (incl. C_mat, C_labor1, p_fuel)
+        assert len(result.spearman) == 16  # 16 parameters (incl. C_mat, C_labor1, p_fuel, tau_transport)
 
     @pytest.mark.slow
     def test_reproducible_with_same_seed(self):
@@ -254,14 +255,14 @@ class TestBaselineOverride:
         # Use same sampled params for both runs
         rng1 = np.random.default_rng(42)
         params1 = sample_mc_params(rng1, 200)
-        cross_default, _ = run_mc_loop(params1, 0.05, 20000)
+        cross_default, _, _ = run_mc_loop(params1, 0.05, 20000)
 
         # Override with higher unit mass (affects launch cost per unit)
         override = BASELINE.copy()
         override["m"] = 5000  # much heavier unit → costlier Earth launch
         rng2 = np.random.default_rng(42)
         params2 = sample_mc_params(rng2, 200)
-        cross_override, _ = run_mc_loop(params2, 0.05, 20000,
+        cross_override, _, _ = run_mc_loop(params2, 0.05, 20000,
                                         baseline_override=override)
 
         # Heavier unit makes Earth pathway more expensive → earlier crossover
@@ -273,11 +274,11 @@ class TestBaselineOverride:
         """None override should produce identical results to default."""
         rng1 = np.random.default_rng(99)
         params1 = sample_mc_params(rng1, 100)
-        cross1, perm1 = run_mc_loop(params1, 0.05, 10000)
+        cross1, perm1, _ = run_mc_loop(params1, 0.05, 10000)
 
         rng2 = np.random.default_rng(99)
         params2 = sample_mc_params(rng2, 100)
-        cross2, perm2 = run_mc_loop(params2, 0.05, 10000,
+        cross2, perm2, _ = run_mc_loop(params2, 0.05, 10000,
                                     baseline_override=None)
 
         np.testing.assert_array_equal(cross1, cross2)

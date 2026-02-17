@@ -103,6 +103,7 @@ class MCResult:
     n_transient: int = 0
     sobol: SobolResult | None = None
     sobol_conditional: SobolResult | None = None
+    n_clamped: int = 0  # AD2: count of runs with coherence clamping
 
 
 # ---------------------------------------------------------------------------
@@ -207,6 +208,7 @@ def sample_mc_params(
         "prod_rate": prod_rate_samples,
         "availability": rng.uniform(0.70, 0.95, n_runs),
         "p_fuel": p_fuel_samples,
+        "tau_transport": rng.uniform(0.25, 2.0, n_runs),  # AD1: lunar-to-GEO transport (years)
     }
 
 
@@ -237,11 +239,24 @@ def run_mc_loop(
     n_runs = len(next(iter(param_arrays.values())))
     crossovers = empty(n_runs, dtype=float)
     permanent = empty(n_runs, dtype=bool)
+    n_clamped = 0
     for i in range(n_runs):
         p = base.copy()
         for name, arr in param_arrays.items():
             p[name] = arr[i]
         p["r"] = r_fixed
+        # AD2: Coherence constraints — material can't exceed total mfg,
+        # ops floor can't exceed first-unit ops
+        clamped = False
+        if p["C_mat"] >= p["C_mfg1"]:
+            p["C_mat"] = p["C_mfg1"] * 0.1
+            p["C_labor1"] = p["C_mfg1"] - p["C_mat"]
+            clamped = True
+        if p.get("C_floor", 0) >= p.get("C_ops1", 5e6):
+            p["C_floor"] = p["C_ops1"] * 0.1
+            clamped = True
+        if clamped:
+            n_clamped += 1
         # Decompose sampled p_launch into fuel/ops when launch learning is active
         # Y2: p_fuel is now sampled stochastically; use sampled value if present
         if p.get("b_L") is not None:
@@ -251,7 +266,7 @@ def run_mc_loop(
             p["p_ops_launch"] = max(p_launch_sampled - p_fuel_val, 0)
         crossovers[i] = find_crossover_npv(p, N_max=n_max)
         permanent[i] = is_permanent_crossover(p)
-    return crossovers, permanent
+    return crossovers, permanent, n_clamped
 
 
 def compute_convergence_stats(
@@ -579,8 +594,8 @@ def run_mc(
     """
     param_arrays = sample_mc_params(rng, n_runs, rho=0.3, rho_k_prod=0.5,
                                     correlated=True, k_clip_upper=k_clip_upper)
-    crossovers, permanent_mask = run_mc_loop(param_arrays, r_fixed, n_max_mc,
-                                             baseline_override=baseline_override)
+    crossovers, permanent_mask, n_clamped = run_mc_loop(param_arrays, r_fixed, n_max_mc,
+                                                        baseline_override=baseline_override)
 
     converged_mask = crossovers < n_max_mc
     n_converged = int(sum(converged_mask))
@@ -640,6 +655,7 @@ def run_mc(
         n_transient=n_transient,
         sobol=sobol,
         sobol_conditional=sobol_conditional,
+        n_clamped=n_clamped,
     )
 
 
