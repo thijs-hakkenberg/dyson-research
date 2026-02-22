@@ -1,0 +1,17 @@
+question_id,question_slug,question_title,phase_id,category,status,total_rounds,termination_reason,conclusion_generated_by,total_votes,approve_count,neutral_count,reject_count,approve_rate,total_responses,mean_word_count
+rq-0-14,propellant-production-phase-0-scope,Propellant production in Phase 0 scope,phase-0,technical-systems,concluded,1,unanimous-conclude,claude-opus-4-6,9,8,1,0,0.8889,3,1187
+rq-0-18,human-rating-transport-vehicles,Human-rating requirement for transport vehicles,phase-0,certification,concluded,1,unanimous-conclude,claude-opus-4-6,9,8,1,0,0.8889,3,1273
+rq-0-26,dual-bucket-wheel-excavation,Dual counter-rotating bucket-wheel excavation for microgravity torque balancing,phase-0,technical-systems,concluded,1,unanimous-conclude,claude-opus-4-6,9,6,3,0,0.6667,3,1201
+rq-0-28,isru-cost-methodology-validation,In-situ resource utilization cost methodology validation,phase-0,economic,concluded,3,consecutive-conclude,claude-opus-4-6,27,18,9,0,0.6667,9,1234
+rq-0-29,multi-century-governance-structure,"Governance structure for multi-century, volunteer-driven global coordination",phase-0,governance,concluded,1,unanimous-conclude,claude-opus-4-6,9,7,2,0,0.7778,3,1308
+rq-1-11,swarm-power-architecture-end-use,Swarm-level power architecture and end-use,phase-1,technical-systems,concluded,1,unanimous-conclude,claude-opus-4-6,9,7,2,0,0.7778,3,1175
+rq-1-16,autonomous-assembly-certification,Autonomy certification for fully autonomous assembly,phase-1,certification,concluded,1,unanimous-conclude,claude-opus-4-6,9,8,1,0,0.8889,3,1364
+rq-1-21,feedstock-acquisition-isru-timeline,Feedstock acquisition and ISRU transition timeline,phase-1,economic,concluded,1,unanimous-conclude,claude-opus-4-6,9,8,1,0,0.8889,3,1351
+rq-1-24,swarm-coordination-architecture-scale,Swarm coordination architecture at scale (millions of units),phase-1,technical-systems,concluded,2,unanimous-conclude,claude-opus-4-6,18,13,5,0,0.7222,6,1194
+rq-1-33,tug-end-of-life-disposal,End-of-life disposal protocol for orbital tugs,phase-1,governance,concluded,1,unanimous-conclude,claude-opus-4-6,9,7,2,0,0.7778,3,1345
+rq-1-40,slot-reallocation-governance,Slot reallocation governance protocol,phase-1,governance,concluded,2,unanimous-conclude,claude-opus-4-6,18,12,6,0,0.6667,6,1292
+rq-1-42,node-end-of-life-disposal,End-of-life disposal for failed swarm nodes,phase-1,governance,concluded,2,unanimous-conclude,claude-opus-4-6,18,12,6,0,0.6667,6,1312
+rq-2-17,fleet-coordination-scale-constraints,Fleet coordination constraints at scale,phase-2,technical-systems,concluded,2,unanimous-conclude,claude-opus-4-6,18,10,8,0,0.5556,6,1167
+rq-2-20,swarm-roi-threshold-humanity-power-needs,Swarm operational threshold for meeting humanity's energy needs,phase-2,economic,concluded,2,consecutive-conclude,claude-opus-4-6,18,10,8,0,0.5556,6,1271
+rq-2-3,billion-unit-collision-avoidance,Collision avoidance certification for billion-unit swarms,phase-2,technical-systems,concluded,1,unanimous-conclude,claude-opus-4-6,9,6,3,0,0.6667,3,1304
+rq-2-8,autonomous-repair-authority-limits,Autonomous repair authority limits,phase-2,governance,concluded,1,unanimous-conclude,claude-opus-4-6,9,8,1,0,0.8889,3,1253
