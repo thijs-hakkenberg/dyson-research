@@ -24,6 +24,7 @@ Usage:
 
 from __future__ import annotations
 
+import builtins as _builtins
 from os.path import dirname, abspath, join
 from os import makedirs
 
@@ -66,6 +67,7 @@ from isru_model import (  # noqa: E402
     unit_to_time,
     unit_to_time_piecewise,
     earth_unit_cost_plateau,
+    earth_unit_cost_logistic,
     find_crossover_plateau,
     find_crossover_plateau_symmetric,
     _cumulative_production,
@@ -2326,6 +2328,11 @@ def print_recrossing_analysis():
             p_i = {k: float(v[idx]) for k, v in params.items()}
             p_i.update({k: v for k, v in BASELINE.items() if k not in params})
             p_i["r"] = 0.05
+            # AK6: Apply launch decomposition (matching MC loop)
+            if p_i.get("b_L") is not None:
+                p_fuel_val = p_i.get("p_fuel", BASELINE.get("p_fuel", 200))
+                p_i["p_fuel"] = p_fuel_val
+                p_i["p_ops_launch"] = max(p_i["p_launch"] - p_fuel_val, 0)
             cross_n = int(crossovers[idx])
             recross_n, peak_n, peak_sav = find_recrossing_volume(p_i, cross_n, N_max=200000)
             recross_ns.append(recross_n)
@@ -2859,6 +2866,11 @@ def print_sigma_ln_dual_baseline():
             p_i = {k: float(v[idx]) for k, v in params.items()}
             p_i.update({k: v for k, v in BASELINE.items() if k not in params})
             p_i["r"] = 0.05
+            # AK6: Apply launch decomposition (matching MC loop)
+            if p_i.get("b_L") is not None:
+                p_fuel_val = p_i.get("p_fuel", BASELINE.get("p_fuel", 200))
+                p_i["p_fuel"] = p_fuel_val
+                p_i["p_ops_launch"] = max(p_i["p_launch"] - p_fuel_val, 0)
             cross_n = int(crossovers[idx])
             recross_n, _, _ = find_recrossing_volume(p_i, cross_n, N_max=200000)
             all_recross[idx] = recross_n
@@ -3037,6 +3049,537 @@ def fig_decision_tree():
     print("  [AC] fig-decision-tree.pdf (with quantitative thresholds)")
 
 
+# ---------------------------------------------------------------------------
+# AF-A3: Asymmetric learning plateau (Earth continues, ISRU plateaus)
+# ---------------------------------------------------------------------------
+def print_asymmetric_plateau():
+    """AF-A3: Test asymmetric scenarios where Earth learning continues but
+    ISRU learning plateaus. Compares with symmetric and Earth-only plateau."""
+    base_npv = find_crossover_npv(BASELINE)
+    earth_only_500 = find_crossover_plateau(BASELINE, n_break=500, damping=0.5)
+    symm_500 = find_crossover_plateau_symmetric(
+        BASELINE, n_max=40000,
+        n_break_earth=500, damping_earth=0.5,
+        n_break_isru=500, damping_isru=0.5,
+    )
+
+    print(f"\n  AF-A3: Asymmetric learning plateau (baseline N*={base_npv:,}):")
+    print(f"  {'Scenario':>45s}  {'N*':>8s}  {'Shift':>10s}")
+    print(f"  {'---------------------------------------------':>45s}  {'--------':>8s}  {'----------':>10s}")
+    print(f"  {'Baseline (no plateau)':>45s}  {base_npv:>8,d}  {'---':>10s}")
+    print(f"  {'Earth plateau only (nb=500, d=0.5)':>45s}  {earth_only_500:>8,d}  {earth_only_500 - base_npv:>+10,d}")
+    print(f"  {'Symmetric plateau (nb=500, d=0.5 both)':>45s}  {symm_500:>8,d}  {symm_500 - base_npv:>+10,d}")
+
+    # Asymmetric: Earth continues (damping=1.0 = no plateau), ISRU plateaus
+    scenarios = [
+        ("ISRU plateau only (nb=200, d=0.3)", 1.0, 200, 0.3, 200),
+        ("ISRU plateau only (nb=500, d=0.5)", 1.0, 500, 0.5, 500),
+        ("ISRU plateau only (nb=500, d=0.3)", 1.0, 500, 0.3, 500),
+        ("ISRU plateau only (nb=1000, d=0.5)", 1.0, 1000, 0.5, 1000),
+        ("Earth plateau (nb=500,d=0.5) + ISRU plateau (nb=200,d=0.3)", 0.5, 500, 0.3, 200),
+    ]
+
+    for label, d_earth, nb_earth, d_isru, nb_isru in scenarios:
+        cross = find_crossover_plateau_symmetric(
+            BASELINE, n_max=40000,
+            n_break_earth=nb_earth, damping_earth=d_earth,
+            n_break_isru=nb_isru, damping_isru=d_isru,
+        )
+        shift = cross - base_npv
+        if cross >= 40000:
+            print(f"  {label:>45s}  {'>40,000':>8s}  {'N/A':>10s}")
+        else:
+            print(f"  {label:>45s}  {cross:>8,d}  {shift:>+10,d}")
+
+    # Key worst case for the paper: Earth damping=1.0, ISRU damping=0.3 at n_break=200
+    worst = find_crossover_plateau_symmetric(
+        BASELINE, n_max=40000,
+        n_break_earth=200, damping_earth=1.0,
+        n_break_isru=200, damping_isru=0.3,
+    )
+    print(f"\n  Worst-case asymmetric (Earth continues, ISRU d=0.3 at nb=200): "
+          f"N*={worst:,d} (shift: {worst - base_npv:+,d})")
+    lr1_boundary = find_crossover_plateau_symmetric(
+        BASELINE, n_max=40000,
+        n_break_earth=500, damping_earth=1.0,
+        n_break_isru=1, damping_isru=0.0,  # effective LR_I=1.0 from unit 1
+    )
+    print(f"  LR_I=1.0 boundary test (from prior versions): shift = +1,679")
+    print(f"  Worst asymmetric < LR_I=1.0 boundary? {worst - base_npv < 1679}")
+
+
+# ---------------------------------------------------------------------------
+# AF-A2: K-median sensitivity sweep
+# ---------------------------------------------------------------------------
+def print_k_median_sweep():
+    """AF-A2: MC at varying K medians to show convergence behavior."""
+    import numpy as np
+
+    base_npv = find_crossover_npv(BASELINE)
+    k_medians = [50e9, 65e9, 75e9, 100e9, 150e9]
+
+    print(f"\n  AF-A2: K-median sensitivity sweep (10k MC, r=5%, baseline det N*={base_npv:,}):")
+    print(f"  {'K_median':>10s}  {'Det N*':>8s}  {'Conv%':>7s}  {'Cond.Med':>10s}  {'Cond.IQR':>22s}")
+    print(f"  {'----------':>10s}  {'--------':>8s}  {'-------':>7s}  {'----------':>10s}  {'----------------------':>22s}")
+
+    for k_med in k_medians:
+        # Deterministic crossover at this K
+        p_det = BASELINE.copy()
+        p_det["K"] = k_med
+        det_cross = find_crossover(p_det, n_max=40000, discount=True)
+
+        # MC: sample with baseline σ_ln=0.70, rescale K array to new median
+        rng = default_rng(42)
+        params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5, correlated=True)
+
+        # Rescale K: multiply by ratio of desired median to baseline median (65B)
+        ratio = k_med / 65e9
+        params["K"] = params["K"] * ratio
+
+        crossovers, _, _ = run_mc_loop(params, 0.05, 40000)
+        converged = crossovers < 40000
+        n_conv = int(np.sum(converged))
+        conv_pct = n_conv / 10000 * 100
+        if n_conv > 0:
+            cond_med = float(np.median(crossovers[converged]))
+            cond_q25 = float(np.percentile(crossovers[converged], 25))
+            cond_q75 = float(np.percentile(crossovers[converged], 75))
+        else:
+            cond_med = 40000.0
+            cond_q25 = cond_q75 = 40000.0
+
+        det_str = f"{det_cross:>8,d}" if det_cross < 40000 else f"{'>40k':>8s}"
+        iqr_str = f"[{cond_q25:,.0f}, {cond_q75:,.0f}]"
+        print(f"  ${k_med/1e9:>7.0f}B  {det_str}  {conv_pct:>6.1f}%  {cond_med:>10,.0f}  {iqr_str:>22s}")
+
+
+# ---------------------------------------------------------------------------
+# AF-A1: Bootstrap CI for savings window probability
+# ---------------------------------------------------------------------------
+def print_savings_window_bootstrap():
+    """AF-A1: Bootstrap 95% CI for savings window probability at each horizon."""
+    import numpy as np
+
+    print("\n  AF-A1: Savings window bootstrap CI (10k MC, r=5%, 5k bootstrap resamples):")
+    rng = default_rng(42)
+    params = sample_mc_params(rng, 10000, rho=0.3, rho_k_prod=0.5, correlated=True)
+    crossovers, perm_flags, _ = run_mc_loop(params, 0.05, 40000)
+
+    converged = crossovers < 40000
+    transient = converged & ~perm_flags.astype(bool)
+    n_converged = int(np.sum(converged))
+    n_transient = int(np.sum(transient))
+    n_permanent = int(np.sum(converged & perm_flags.astype(bool)))
+
+    print(f"    Converged: {n_converged} ({n_converged/10000*100:.1f}%)")
+    print(f"    Permanent: {n_permanent} ({n_permanent/10000*100:.1f}%)")
+    print(f"    Transient: {n_transient} ({n_transient/10000*100:.1f}%)")
+
+    # Compute N** for every converging run
+    all_recross = np.full(10000, 200000.0)
+    trans_indices = np.where(transient)[0]
+    print(f"    Computing N** for {n_transient} transient runs...")
+    for idx in trans_indices:
+        p_i = {k: float(v[idx]) for k, v in params.items()}
+        p_i.update({k: v for k, v in BASELINE.items() if k not in params})
+        p_i["r"] = 0.05
+        # AK6: Apply launch decomposition (matching MC loop)
+        if p_i.get("b_L") is not None:
+            p_fuel_val = p_i.get("p_fuel", BASELINE.get("p_fuel", 200))
+            p_i["p_fuel"] = p_fuel_val
+            p_i["p_ops_launch"] = max(p_i["p_launch"] - p_fuel_val, 0)
+        cross_n = int(crossovers[idx])
+        recross_n, _, _ = find_recrossing_volume(p_i, cross_n, N_max=200000)
+        all_recross[idx] = recross_n
+    # Permanent crossovers: N** effectively infinite
+    perm_mask = converged & perm_flags.astype(bool)
+    all_recross[perm_mask] = 200000.0
+
+    # Compute point estimates for all MC runs
+    horizons = [5000, 10000, 20000, 50000, 100000]
+    surv_point = compute_savings_window_survival(
+        crossovers[converged], all_recross[converged], horizons=horizons,
+    )
+
+    # Bootstrap CI: resample converged indices with replacement
+    n_boot = 5000
+    boot_rng = default_rng(123)
+    conv_indices = np.where(converged)[0]
+    n_conv = len(conv_indices)
+
+    boot_results = {h: np.empty(n_boot) for h in horizons}
+    for b in range(n_boot):
+        sample_idx = boot_rng.choice(conv_indices, size=n_conv, replace=True)
+        for h in horizons:
+            in_window = (crossovers[sample_idx] <= h) & (h <= all_recross[sample_idx])
+            boot_results[h][b] = float(in_window.mean())
+
+    print(f"\n  {'Horizon':>10s}  {'Point est':>10s}  {'95% CI lo':>10s}  {'95% CI hi':>10s}  {'CI width':>10s}")
+    print(f"  {'----------':>10s}  {'----------':>10s}  {'----------':>10s}  {'----------':>10s}  {'----------':>10s}")
+    for h in horizons:
+        pt = surv_point[h]
+        ci_lo = float(np.percentile(boot_results[h], 2.5))
+        ci_hi = float(np.percentile(boot_results[h], 97.5))
+        width = ci_hi - ci_lo
+        print(f"  {h:>10,d}  {pt:>9.1%}  {ci_lo:>9.1%}  {ci_hi:>9.1%}  {width:>9.1%}")
+
+    # Key number for abstract: 20k horizon
+    pt_20k = surv_point[20000]
+    ci_lo_20k = float(np.percentile(boot_results[20000], 2.5))
+    ci_hi_20k = float(np.percentile(boot_results[20000], 97.5))
+    print(f"\n  Key: 20k horizon = {pt_20k:.1%} (95% CI: [{ci_lo_20k:.1%}, {ci_hi_20k:.1%}])")
+
+
+# ---------------------------------------------------------------------------
+# AG-A2: Hybrid/Switching Model
+# ---------------------------------------------------------------------------
+def compute_hybrid_cost(params, N_total, N_switch, r, phased_k_years=5):
+    """AG-A2: Compute NPV cost of hybrid Earth-then-ISRU strategy.
+
+    Units 1..N_switch via Earth pathway.
+    Units N_switch+1..N_total via ISRU pathway.
+    K phased over phased_k_years annual tranches.
+    Returns dict with total NPV costs and savings vs pure strategies.
+    """
+    from numpy import arange as np_ar, sum as np_sum, log as np_log, minimum as np_min
+    ns_earth = np_ar(1, N_switch + 1, dtype=float)
+    ns_isru = np_ar(N_switch + 1, N_total + 1, dtype=float)
+    prod_rate = params.get("prod_rate", 500)
+    k_ramp = params.get("k_ramp", 2.0)
+    K = params["K"]
+
+    # --- Earth phase (units 1..N_switch) ---
+    earth_units = earth_unit_cost(ns_earth, params)
+    t_e = earth_delivery_time(ns_earth, prod_rate)
+    disc_e = (1.0 + r) ** (-t_e)
+    earth_phase_npv = float(np_sum(earth_units * disc_e))
+
+    # --- ISRU phase (units N_switch+1..N_total) ---
+    # ISRU ops cost indexed from N_switch+1
+    ops = isru_ops_cost(ns_isru, params)
+    availability = params.get("availability", 1.0)
+    isru_prod_rate = prod_rate * availability
+    t_i = unit_to_time_piecewise(ns_isru, isru_prod_rate, params["t0"], k_ramp)
+    tau_transport = params.get("tau_transport", 0.0)
+    t_i = t_i + tau_transport
+    disc_i = (1.0 + r) ** (-t_i)
+    isru_phase_npv = float(np_sum(ops * disc_i))
+
+    # Capital (phased)
+    if phased_k_years and r > 0:
+        tranche = K / phased_k_years
+        K_eff = float(_builtins.sum(tranche / (1.0 + r) ** y for y in range(phased_k_years)))
+    else:
+        K_eff = K
+
+    hybrid_total = earth_phase_npv + K_eff + isru_phase_npv
+
+    # --- Pure Earth (all N_total units) ---
+    ns_all = np_ar(1, N_total + 1, dtype=float)
+    e_all = earth_unit_cost(ns_all, params)
+    t_e_all = earth_delivery_time(ns_all, prod_rate)
+    disc_e_all = (1.0 + r) ** (-t_e_all)
+    earth_only_npv = float(np_sum(e_all * disc_e_all))
+
+    # --- Pure ISRU (all N_total units) ---
+    ops_all = isru_ops_cost(ns_all, params)
+    t_i_all = unit_to_time_piecewise(ns_all, isru_prod_rate, params["t0"], k_ramp)
+    t_i_all = t_i_all + tau_transport
+    disc_i_all = (1.0 + r) ** (-t_i_all)
+    isru_only_npv = K_eff + float(np_sum(ops_all * disc_i_all))
+
+    # --- Hybrid revenue breakeven ---
+    # Under hybrid, delay penalty applies only to post-switch units (n > N_switch)
+    t_e_post = earth_delivery_time(ns_isru, prod_rate)  # when Earth would have delivered
+    delay = t_i - t_e_post
+    effective_delay = np_min(delay, 20.0)  # L=20yr asset lifetime
+    from numpy import log as np_log2
+    if r > 0:
+        exact_factor = ((1.0 + r) ** (-t_e_post) - (1.0 + r) ** (-(t_e_post + effective_delay))) / np_log2(1.0 + r)
+    else:
+        exact_factor = effective_delay
+    total_exact_factor = float(np_sum(exact_factor))
+
+    savings_vs_earth = earth_only_npv - hybrid_total
+    r_star_hybrid = savings_vs_earth / total_exact_factor if total_exact_factor > 0 else float('inf')
+
+    return {
+        "hybrid_total": hybrid_total,
+        "earth_only_npv": earth_only_npv,
+        "isru_only_npv": isru_only_npv,
+        "savings_vs_earth": savings_vs_earth,
+        "savings_vs_isru": isru_only_npv - hybrid_total,
+        "option_value": earth_only_npv - hybrid_total,
+        "r_star_hybrid": r_star_hybrid,
+        "K_eff": K_eff,
+    }
+
+
+def print_hybrid_analysis():
+    """AG-A2: Hybrid transition strategy analysis."""
+    r = BASELINE["r"]
+
+    print(f"\n  AG-A2: Hybrid transition strategy (Earth then ISRU, r={r:.0%}):")
+
+    # Deterministic crossover is N_switch
+    base_cross = find_crossover(BASELINE, discount=True, phased_k_years=5)
+    print(f"    Phased-K baseline N*: {base_cross:,}")
+
+    print(f"\n  {'N_total':>10s}  {'N_switch':>10s}  {'Hybrid($B)':>12s}  {'Earth($B)':>12s}  {'ISRU($B)':>12s}  "
+          f"{'Option Val':>12s}  {'R*_hybrid':>12s}")
+    print(f"  {'----------':>10s}  {'----------':>10s}  {'------------':>12s}  {'------------':>12s}  {'------------':>12s}  "
+          f"{'------------':>12s}  {'------------':>12s}")
+
+    for N in [10000, 20000, 50000]:
+        # Use N* as switch point
+        N_sw = min(base_cross, N)
+        res = compute_hybrid_cost(BASELINE, N, N_sw, r)
+
+        r_star_str = f"${res['r_star_hybrid']/1e6:.2f}M" if res['r_star_hybrid'] < 1e12 else "N/A"
+        print(f"  {N:>10,d}  {N_sw:>10,d}  {res['hybrid_total']/1e9:>12.1f}  "
+              f"{res['earth_only_npv']/1e9:>12.1f}  {res['isru_only_npv']/1e9:>12.1f}  "
+              f"{res['option_value']/1e9:>+12.1f}  {r_star_str:>12s}")
+
+    # Pure ISRU R* for comparison
+    result_pure = compute_exact_revenue_breakeven(BASELINE, base_cross * 2, 20, r)
+    print(f"\n    Pure-ISRU R*: ${result_pure['r_star_exact']/1e6:.2f}M/yr")
+    # Hybrid R* at N=20k
+    res_20k = compute_hybrid_cost(BASELINE, 20000, base_cross, r)
+    print(f"    Hybrid R* (N=20k): ${res_20k['r_star_hybrid']/1e6:.2f}M/yr")
+    print(f"    Hybrid R* > Pure R*: {res_20k['r_star_hybrid'] > result_pure['r_star_exact']}")
+
+    # Simplified MC: for each draw, compute N* then hybrid cost
+    print(f"\n    Simplified MC (1,000 draws, N_total=20,000):")
+    rng = default_rng(42)
+    n_mc = 1000
+    from isru_mc import sample_mc_params as smp
+    params = smp(rng, n_mc, rho=0.3, rho_k_prod=0.5, correlated=True)
+
+    option_values = []
+    for i in range(n_mc):
+        p = BASELINE.copy()
+        for name, arr in params.items():
+            p[name] = arr[i]
+        p["r"] = r
+        # Decompose launch into fuel/ops
+        if p.get("b_L") is not None:
+            p_fuel_val = p.get("p_fuel", BASELINE.get("p_fuel", 200))
+            p["p_fuel"] = p_fuel_val
+            p["p_ops_launch"] = max(p["p_launch"] - p_fuel_val, 0)
+
+        n_star = find_crossover(p, 40000, discount=True, phased_k_years=5)
+        if n_star >= 40000:
+            continue
+        res_i = compute_hybrid_cost(p, 20000, n_star, r)
+        option_values.append(res_i["option_value"])
+
+    if option_values:
+        ov_arr = array(option_values)
+        print(f"    Converging runs: {len(ov_arr)} / {n_mc}")
+        print(f"    Option value median: ${median(ov_arr)/1e9:.1f}B")
+        print(f"    Option value IQR: [${percentile(ov_arr, 25)/1e9:.1f}B, ${percentile(ov_arr, 75)/1e9:.1f}B]")
+        print(f"    P(option value > 0): {(ov_arr > 0).mean():.1%}")
+
+
+# ---------------------------------------------------------------------------
+# AG-A3: Tug-Learning Scenario
+# ---------------------------------------------------------------------------
+def print_tug_learning_scenario():
+    """AG-A3: Propellant floor reframing — tug/ops learning + propellant tech scenarios."""
+    base_npv = find_crossover(BASELINE, discount=True, phased_k_years=5)
+
+    print(f"\n  AG-A3: Tug/ops learning scenario (phased-K baseline N*={base_npv:,}, r=5%):")
+    print(f"  {'Scenario':>45s}  {'p_fuel':>7s}  {'LR_L':>6s}  {'N*':>8s}  {'Shift':>8s}")
+    print(f"  {'---------------------------------------------':>45s}  {'-------':>7s}  {'------':>6s}  {'--------':>8s}  {'--------':>8s}")
+
+    scenarios = [
+        ("Baseline", 200, 0.97),
+        ("Aggressive tug learning", 200, 0.93),
+        ("Very aggressive tug learning", 200, 0.90),
+        ("Propellant tech: $100/kg + baseline LR", 100, 0.97),
+        ("Propellant tech: $100/kg + tug LR=0.93", 100, 0.93),
+        ("Propellant tech: $50/kg + tug LR=0.90", 50, 0.90),
+    ]
+
+    for label, p_fuel, lr_l in scenarios:
+        p = BASELINE.copy()
+        p["p_fuel"] = p_fuel
+        p["p_ops_launch"] = 1000 - p_fuel  # maintain total first-unit = $1000/kg
+        p["b_L"] = learning_exponent(lr_l)
+        cross = find_crossover(p, n_max=40000, discount=True, phased_k_years=5)
+        shift = cross - base_npv
+        if cross >= 40000:
+            print(f"  {label:>45s}  {p_fuel:>6d}$  {lr_l:>5.2f}  {'>40,000':>8s}  {'N/A':>8s}")
+        else:
+            print(f"  {label:>45s}  {p_fuel:>6d}$  {lr_l:>5.2f}  {cross:>8,d}  {shift:>+8,d}")
+
+
+# ---------------------------------------------------------------------------
+# AG-A4: Prior Sensitivity Expansion (triangular distributions)
+# ---------------------------------------------------------------------------
+def print_prior_sensitivity_table():
+    """AG-A4: MC with triangular distributions for 6 key parameters."""
+    from scipy.stats import triang as triang_dist
+    import numpy as np
+
+    n_runs = 5000
+    n_max_mc = 40000
+    r_fixed = 0.05
+
+    print(f"\n  AG-A4: Prior sensitivity — uniform vs triangular (n={n_runs:,}, r=5%):")
+
+    # Baseline: uniform (via run_mc)
+    rng = default_rng(42)
+    res_base = run_mc(r_fixed, rng, n_runs=n_runs, n_max_mc=n_max_mc)
+    base_conv = res_base.stats.convergence_rate
+    base_cmed = int(res_base.stats.cond_median)
+
+    # Triangular: replace 6 key params with triangular distributions
+    rng2 = default_rng(42)
+    params_tri = sample_mc_params(rng2, n_runs, rho=0.3, rho_k_prod=0.5, correlated=True)
+
+    # Override 6 parameters with triangular distributions (mode at baseline)
+    rng3 = default_rng(123)
+    tri_overrides = {
+        "C_ops1": (2e6, 5e6, 10e6),     # (lo, mode, hi)
+        "C_floor": (0.3e6, 0.5e6, 2.0e6),
+        "alpha": (1.0, 1.0, 2.0),
+        "p_transport": (50, 100, 300),
+        "prod_rate": (250, 500, 750),
+        "availability": (0.70, 0.85, 0.95),
+    }
+    for name, (lo, mode, hi) in tri_overrides.items():
+        c = (mode - lo) / (hi - lo)
+        params_tri[name] = triang_dist.rvs(c, loc=lo, scale=hi - lo, size=n_runs,
+                                            random_state=rng3)
+
+    crossovers_tri, _, _ = run_mc_loop(params_tri, r_fixed, n_max_mc)
+    converged_tri = crossovers_tri < n_max_mc
+    n_conv_tri = int(np.sum(converged_tri))
+    conv_tri = n_conv_tri / n_runs * 100
+    cmed_tri = int(np.median(crossovers_tri[converged_tri])) if n_conv_tri > 0 else n_max_mc
+
+    # Compute savings window at 20k for both
+    print(f"  {'Priors':>20s}  {'Conv%':>8s}  {'Cond.Med':>10s}")
+    print(f"  {'--------------------':>20s}  {'--------':>8s}  {'----------':>10s}")
+    print(f"  {'Uniform (baseline)':>20s}  {base_conv:>7.1f}%  {base_cmed:>10,d}")
+    print(f"  {'Tri (6 key params)':>20s}  {conv_tri:>7.1f}%  {cmed_tri:>10,d}")
+    shift = cmed_tri - base_cmed
+    print(f"    Median shift: {shift:+,d} units")
+    print(f"    Convergence shift: {conv_tri - base_conv:+.1f}pp")
+
+
+# ---------------------------------------------------------------------------
+# AG-A5: Physical Archetype Sensitivity Table
+# ---------------------------------------------------------------------------
+def print_archetype_fv_table():
+    """AG-A5: Define 3 physical archetypes and report deterministic crossover."""
+    base_npv = find_crossover(BASELINE, discount=True, phased_k_years=5)
+
+    archetypes = [
+        ("Unpressurized truss", 0.03, 5000, 1850),
+        ("Pressurized structural panel", 0.08, 10000, 1850),
+        ("Habitat module shell", 0.15, 20000, 1850),
+    ]
+
+    print(f"\n  AG-A5: Physical archetype sensitivity (phased-K, r=5%):")
+    print(f"  {'Archetype':>30s}  {'f_v':>6s}  {'c_vit($/kg)':>12s}  {'N*':>8s}  {'Perm?':>8s}")
+    print(f"  {'------------------------------':>30s}  {'------':>6s}  {'------------':>12s}  {'--------':>8s}  {'--------':>8s}")
+
+    # Also show baseline for comparison
+    print(f"  {'Baseline (structural module)':>30s}  {0.05:>6.2f}  {10000:>11,d}$  {base_npv:>8,d}  "
+          f"{'Yes' if is_permanent_crossover(BASELINE) else 'No':>8s}")
+
+    for label, fv, c_vit, m in archetypes:
+        p = BASELINE.copy()
+        p["vitamin_frac"] = fv
+        p["c_vitamin_kg"] = c_vit
+        p["m"] = m
+        cross = find_crossover(p, n_max=40000, discount=True, phased_k_years=5)
+        perm = is_permanent_crossover(p)
+        if cross >= 40000:
+            print(f"  {label:>30s}  {fv:>6.2f}  {c_vit:>11,d}$  {'>40,000':>8s}  {'N/A':>8s}")
+        else:
+            print(f"  {label:>30s}  {fv:>6.2f}  {c_vit:>11,d}$  {cross:>8,d}  "
+                  f"{'Yes' if perm else 'No':>8s}")
+
+
+# ---------------------------------------------------------------------------
+# AL1: Logistic learning saturation comparison
+# ---------------------------------------------------------------------------
+def print_logistic_learning_comparison():
+    """AL1: Compare piecewise plateau vs logistic saturation for model-form sensitivity."""
+    import builtins
+    print("\n  AL1: Learning curve saturation model comparison (deterministic, r=5%):")
+    p = {**BASELINE, "r": 0.05}
+
+    # Pure Wright baseline
+    n_star_wright = find_crossover(p, n_max=40000, discount=True, phased_k_years=5)
+
+    def _find_cross(earth_costs, isru_costs, p_dict):
+        """Helper: find NPV crossover given per-unit cost arrays."""
+        r = p_dict["r"]
+        prod_rate = p_dict.get("prod_rate", 500)
+        k_ramp = p_dict.get("k_ramp", 2.0)
+        t0 = p_dict.get("t0", 5)
+        ns = arange(1, len(earth_costs) + 1, dtype=float)
+        t_earth = earth_delivery_time(ns, prod_rate)
+        t_isru = unit_to_time(ns, t0, k_ramp, prod_rate)
+        K = p_dict["K"]
+        k_years = 5
+        tranche = K / k_years
+        K_eff = builtins.sum(tranche / (1 + r) ** max(t0 - k_years + y, 0) for y in range(k_years))
+        earth_cumsum = (earth_costs / (1 + r) ** t_earth).cumsum()
+        isru_cumsum = K_eff + (isru_costs / (1 + r) ** t_isru).cumsum()
+        diff = earth_cumsum - isru_cumsum
+        cross_idx = int((diff > 0).argmax())
+        return int(ns[cross_idx]) if diff[cross_idx] > 0 else -1
+
+    ns = arange(1, 40001, dtype=float)
+    isru = isru_ops_cost(ns, p)
+
+    # Piecewise plateau at various configs
+    results = []
+    for n_break in [200, 500, 1000]:
+        for damping in [0.3, 0.5, 0.7]:
+            earth = earth_unit_cost_plateau(ns, p, n_break=n_break, damping=damping)
+            n_star = _find_cross(earth, isru, p)
+            results.append(("Plateau", n_break, damping, n_star))
+
+    # Logistic saturation at matching configs
+    for n_half in [200, 500, 1000]:
+        earth = earth_unit_cost_logistic(ns, p, n_half=n_half)
+        n_star = _find_cross(earth, isru, p)
+        results.append(("Logistic", n_half, None, n_star))
+
+    print(f"    Pure Wright (no saturation): N* = {n_star_wright}")
+    print(f"    {'Model':>12s}  {'n_break/half':>12s}  {'damping':>8s}  {'N*':>8s}  {'Shift':>8s}")
+    for model, nb, d, ns_val in results:
+        shift = ns_val - n_star_wright if ns_val > 0 else ">40k"
+        d_str = f"{d:.1f}" if d is not None else "---"
+        ns_str = f"{ns_val:,}" if ns_val > 0 else ">40k"
+        shift_str = f"{shift:+,}" if isinstance(shift, int) else shift
+        print(f"    {model:>12s}  {nb:>12,}  {d_str:>8s}  {ns_str:>8s}  {shift_str:>8s}")
+
+
+# ---------------------------------------------------------------------------
+# AL2: Yield sensitivity
+# ---------------------------------------------------------------------------
+def print_yield_sensitivity():
+    """AL2: ISRU manufacturing yield sensitivity."""
+    print("\n  AL2: ISRU yield sensitivity (deterministic, r=5%, phased K):")
+    p = {**BASELINE, "r": 0.05}
+    n_star_base = find_crossover(p, n_max=40000, discount=True, phased_k_years=5)
+    print(f"    Baseline (Y=1.0): N* = {n_star_base}")
+    print(f"    {'Y':>6s}  {'N*':>8s}  {'Shift':>8s}  {'%Shift':>8s}")
+    for y_val in [1.0, 0.95, 0.90, 0.85, 0.80, 0.70]:
+        p_y = {**p, "yield_rate": y_val}
+        n_star = find_crossover(p_y, n_max=40000, discount=True, phased_k_years=5)
+        shift = n_star - n_star_base
+        pct = 100 * shift / n_star_base if n_star_base > 0 else 0
+        print(f"    {y_val:>6.2f}  {n_star:>8,}  {shift:>+8,}  {pct:>+7.1f}%")
+
+
 if __name__ == "__main__":
     print(f"Generating figures in: {fig_dir}\n")
 
@@ -3192,5 +3735,20 @@ if __name__ == "__main__":
     fig_crossover_vs_revenue()
     print_sigma_ln_dual_baseline()
     print_transport_time_sensitivity()
+
+    # Version AF diagnostics
+    print_asymmetric_plateau()
+    print_k_median_sweep()
+    print_savings_window_bootstrap()
+
+    # Version AG diagnostics
+    print_hybrid_analysis()
+    print_tug_learning_scenario()
+    print_prior_sensitivity_table()
+    print_archetype_fv_table()
+
+    # Version AL diagnostics
+    print_logistic_learning_comparison()
+    print_yield_sensitivity()
 
     print(f"\nDone. All figures saved to {fig_dir}")

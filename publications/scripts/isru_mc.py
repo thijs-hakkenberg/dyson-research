@@ -20,6 +20,7 @@ from scipy.stats import norm as sp_norm, spearmanr
 from isru_model import (
     BASELINE,
     Params,
+    find_crossover,
     find_crossover_npv,
     is_permanent_crossover,
     significance_stars,
@@ -209,6 +210,17 @@ def sample_mc_params(
         "availability": rng.uniform(0.70, 0.95, n_runs),
         "p_fuel": p_fuel_samples,
         "tau_transport": rng.uniform(0.25, 2.0, n_runs),  # AD1: lunar-to-GEO transport (years)
+        # AK1: Stochastic learning plateau — Earth mfg learning saturates at
+        # n_break with damping η, so cost exponent transitions from b to b*η.
+        # n_break ~ U[200, 1000]: onset of saturation (within empirical base)
+        # eta_earth ~ U[0.3, 0.7]: residual learning rate beyond n_break
+        "n_break_earth": rng.uniform(200, 1000, n_runs),
+        "eta_earth": rng.uniform(0.3, 0.7, n_runs),
+        # AK2: Dynamic vitamin fraction — f_v decays from initial value toward
+        # a floor as ISRU maturity grows.  vitamin_decay_n is the e-folding
+        # scale (units); vitamin_frac_floor is the irreducible minimum.
+        "vitamin_decay_n": rng.uniform(2000, 10000, n_runs),
+        "vitamin_frac_floor": rng.uniform(0.01, 0.03, n_runs),
     }
 
 
@@ -218,6 +230,7 @@ def run_mc_loop(
     n_max: int,
     *,
     baseline_override: dict[str, Any] | None = None,
+    k_years: int | None = 5,
 ) -> tuple[NDFloat, NDFloat]:
     """Execute the MC loop: for each sample, compute crossover at fixed r.
 
@@ -264,7 +277,7 @@ def run_mc_loop(
             p_launch_sampled = p["p_launch"]
             p["p_fuel"] = p_fuel_val
             p["p_ops_launch"] = max(p_launch_sampled - p_fuel_val, 0)
-        crossovers[i] = find_crossover_npv(p, N_max=n_max)
+        crossovers[i] = find_crossover(p, n_max, discount=True, phased_k_years=k_years)
         permanent[i] = is_permanent_crossover(p)
     return crossovers, permanent, n_clamped
 
@@ -579,6 +592,7 @@ def run_mc(
     *,
     baseline_override: dict[str, Any] | None = None,
     k_clip_upper: float = 200e9,
+    k_years: int | None = 5,
 ) -> MCResult:
     """Run full Monte Carlo at a fixed discount rate.
 
@@ -595,7 +609,8 @@ def run_mc(
     param_arrays = sample_mc_params(rng, n_runs, rho=0.3, rho_k_prod=0.5,
                                     correlated=True, k_clip_upper=k_clip_upper)
     crossovers, permanent_mask, n_clamped = run_mc_loop(param_arrays, r_fixed, n_max_mc,
-                                                        baseline_override=baseline_override)
+                                                        baseline_override=baseline_override,
+                                                        k_years=k_years)
 
     converged_mask = crossovers < n_max_mc
     n_converged = int(sum(converged_mask))

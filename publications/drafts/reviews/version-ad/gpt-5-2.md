@@ -3,139 +3,142 @@ paper: "01-isru-economic-crossover"
 version: "ad"
 modelId: "gpt-5-2"
 modelName: "GPT-5.2"
-reviewed: "2026-02-17"
-recommendation: "Major Revision"
+reviewed: "2026-02-21"
+recommendation: "Unknown"
 ---
 
-## 1. Significance & Novelty  
-**Rating: 4/5**  
-The manuscript addresses an important and recurring question in space systems economics—when large-scale in-space manufacturing (via ISRU) becomes economically preferable to Earth manufacture + launch—using an explicitly schedule-aware NPV formulation and a reasonably broad uncertainty propagation. The core contribution is not the existence of a crossover (well-known qualitatively), but the paper’s attempt to (i) formalize *timing* differences between pathways, (ii) quantify uncertainty with a Monte Carlo framework, and (iii) introduce a practically useful distinction between *raw crossover*, *permanent vs transient* crossover, and the *savings window* concept.
+## 1. Significance & Novelty — **Rating: 4/5**
 
-Relative to much of the prior ISRU literature (often mission-specific propellant/water cases), the “generic structural module” framing is novel and could be valuable for megastructure-level discussions (SPS, habitats, depots). The paper also improves over many prior conceptual treatments by explicitly incorporating learning curves, ramp-up schedules, and discounting rather than static $/kg comparisons. That said, the novelty is somewhat limited by (a) heavy reliance on assumed parameter ranges without bottom-up ISRU architecture costing, and (b) several “decision-relevant” outputs (e.g., the 42% savings-window probability at 20k units) being sensitive to horizon choices and to the re-crossing/censoring setup.
+This manuscript targets a genuinely important decision problem in space systems economics: when large-scale space construction should transition from Earth-supplied manufacturing/logistics to in-space production using ISRU. The paper’s core contribution is not the qualitative claim that ISRU “wins at scale” (well-known since O’Neill), but the explicit combination of (i) schedule-aware NPV accounting with different delivery timelines, (ii) learning-curve dynamics on both Earth manufacturing and (to a lesser extent) launch operations, and (iii) a Monte Carlo uncertainty treatment that reports probabilities of crossover rather than a single deterministic breakeven. That combination is novel enough for a space policy/space systems journal audience and is aligned with how real investment decisions are made under uncertainty.
 
-## 2. Methodological Soundness  
-**Rating: 3/5**  
-The overall modeling approach is coherent: Wright learning curves, two-part Earth manufacturing cost (materials + learnable labor), ISRU capex + learnable ops with floors, explicit schedule functions, and NPV discounting applied at unit delivery times. The Monte Carlo is competently described (10,000 runs, copula correlations, bootstrap CIs, PRCC/rank regression). The manuscript also shows awareness of censoring and selection effects (KM estimator; two-part sensitivity decomposition), which is stronger than typical in this genre.
+The “savings window” framing (introducing re-crossing \(N^{**}\) and reporting \(P(N^* \le N_h \le N^{**})\)) is also a useful addition, because it acknowledges that with “vitamins” and/or higher ISRU cost floors, ISRU may only be advantageous over a finite production interval. Likewise, the explicit revenue-delay opportunity cost formulation (Eq. 63–64) is a strong differentiator versus many prior ISRU economic papers that focus on cost-only comparisons.
 
-However, there are methodological weaknesses that currently prevent “top-tier” confidence in the quantitative claims:
-
-* The **re-crossing ($N^{**}$) analysis** is directionally good but not yet statistically rigorous for transient crossovers under discounting; right-censoring at 200k units and the choice to treat “finite-horizon permanent” separately introduces classification artifacts.  
-* The **Earth learning offset ($n_0$)** sensitivity is plausible, but its implementation and motivation are not fully grounded in learning-curve theory for multi-program transfer learning; the current treatment risks overstating or misrepresenting what “heritage” does to cost trajectories.  
-* Several parameter distributions (uniforms, clipped normals) are defensible as bounding exercises but are not consistently justified as epistemic vs aleatory uncertainty; independence assumptions beyond the 3D copula are likely too strong for a megaproject context (e.g., $t_0$, $K$, and $A$ are not plausibly independent).  
-* Some reported sensitivity results appear internally inconsistent or at least confusing (notably the launch learning sweep table behavior vs the stated model configuration).
-
-## 3. Presentation Quality  
-**Rating: 4/5**  
-The manuscript is generally well written, well structured, and unusually transparent about assumptions, limitations, and code availability. The separation of deterministic baseline, sensitivity sweeps, and Monte Carlo results is clear. The “validated” language has largely been softened appropriately (e.g., “cross-checked,” “grounding,” “bounding exercise”), which is a meaningful improvement.
-
-Figures and tables are mostly helpful; the production schedule figure and histogram are particularly valuable. The vitamin BOM table is much clearer than typical “vitamins” discussions: it explicitly distinguishes “irreducible modeled fraction” vs potentially ISRU-sourceable components, which directly addresses prior ambiguity.
-
-Two presentation concerns remain: (i) the decision tree figure feels more like an outreach summary than a journal figure unless it is tied to an explicit decision-analytic workflow; and (ii) some tables mix deterministic and MC baselines in ways that can confuse readers (e.g., $K=50$B deterministic vs lognormal median 65B MC).
+That said, the manuscript sometimes over-claims novelty (“not aware of prior work…”) without fully fencing off adjacent strands: e.g., cislunar network-flow logistics economics (Ishimatsu et al.), lunar propellant business cases (Sowers), and bootstrapping factory concepts (Metzger) have elements of schedule/capex/NPV that are close in spirit even if not identical in formulation. The novelty would be clearer if the authors more explicitly contrasted their “generic manufactured structural unit + learning + schedule NPV + Monte Carlo” model against those mission/product-specific frameworks in a short comparative table in Related Work.
 
 ---
 
-## 4. Major Issues
+## 2. Methodological Soundness — **Rating: 3/5**
 
-1) **Re-crossing ($N^{**}$) and “transient” characterization under discounting is not fully decision-consistent**  
-   *Why it matters:* Under positive discount rates, cumulative NPV differences can converge, and late-unit costs contribute negligibly. In that regime, an “asymptotically transient” per-unit cost ordering does not necessarily imply a meaningful or even reachable cumulative NPV re-crossing. Your current framework mixes (a) an asymptotic per-unit criterion (Eq. 23) with (b) a finite-horizon cumulative NPV re-crossing search capped at 200k. This can create paradoxical classifications (e.g., “transient but never re-crosses in practice”), and your key metric “savings window probability” depends directly on $N^{**}$ and the censoring rule.  
-   *Specific remedy:*  
-   - Reframe the transient/permanent discussion explicitly in **finite-horizon NPV terms**. Consider defining:  
-     **(i)** “NPV-permanent up to horizon $H$” if $\Delta \Sigma^{NPV}(N)\le 0$ for all $N\in[N^*,H]$; and  
-     **(ii)** “NPV-transient within $H$” if a re-crossing occurs by $H$.  
-     Then treat $H$ as a decision parameter (e.g., 20k, 40k, 100k).  
-   - If you want an asymptotic notion, separate it cleanly as a *theoretical* property of undiscounted per-unit costs, and avoid using it to imply practical re-crossing likelihood under discounting.  
-   - Replace the single-point summary of $N^{**}$ (Table 18) with a **survival curve for $N^{**}$** (Kaplan–Meier or parametric) conditional on having crossed, and report $P(N^{**}>N_h)$ with confidence bands. That would align with your own censoring-aware approach.
+The overall modeling approach is reasonable for the paper’s stated aim: a parametric, exploratory cost model rather than a bottom-up engineering estimate. The structure is transparent (Earth: manufacturing + launch; ISRU: capex + ops + transport), and the paper does a commendable job stating assumptions and running many sensitivity tests. The Monte Carlo design is also generally appropriate: fixed discount rates (treated as decision-maker inputs), stochastic engineering/cost parameters, and a copula to impose correlation among a small subset of variables. The attempt to distinguish “whether crossover happens” from “where it happens” (binary vs continuous outcomes) is methodologically mature.
 
-2) **The savings-window probability (e.g., 42% at 20k units) is underspecified and potentially misleading**  
-   *Why it matters:* This statistic is central to your abstract and conclusion, but it is conditional on multiple modeling choices: definition of “converging runs,” handling of non-crossing runs, treatment of censored $N^{**}$, and whether “within window” is evaluated over all runs vs only converging runs. Table 19 says “(all converging MC runs)” but the abstract/conclusion reads like an unconditional program-level probability. These are not the same.  
-   *Specific remedy:*  
-   - Report **two probabilities** consistently:  
-     (a) unconditional $P(N^*\le N_h \le N^{**})$ over all runs, with non-crossing runs counted as 0; and  
-     (b) conditional $P(N_h \in [N^*,N^{**}] \mid N^*\le H)$ if you want a “given crossover exists” metric.  
-   - In the abstract, explicitly label which one is being quoted. Right now, the 42% figure risks being interpreted as “chance ISRU is cheaper at 20k units,” which is not exactly what is computed.
+However, several methodological choices need tightening to meet high-impact journal standards:
 
-3) **Earth learning offset ($n_0$) is plausible but not well-motivated as implemented; it needs a clearer transfer-learning interpretation**  
-   *Why it matters:* $n_0$ can materially move $N^*$ (and interacts strongly with LR\_E), so it is not a cosmetic sensitivity. But “prior experience of 100 units” is not necessarily equivalent to shifting the Wright curve index by 100 for a new product unless the design, factory, workforce, and supply chain are substantially identical. Also, if $C_{\mathrm{mfg}}^{(1)}$ already includes NRE amortization and “spacecraft-class one-off” effects, applying $n_0$ may double-count maturation.  
-   *Specific remedy:*  
-   - Provide a short conceptual model: e.g., decompose Earth manufacturing into **(i)** recurring production learning and **(ii)** design/NRE maturity, and state which $n_0$ is intended to represent.  
-   - Consider implementing $n_0$ as a *partial* transfer factor: effective index $n_{\mathrm{eff}} = 1 + \phi n_0$ with $\phi\in[0,1]$, or as an offset applied only to the labor/overhead component (not materials), which would be more defensible.  
-   - Calibrate $n_0$ with at least one quantitative analogy (e.g., satellite bus block upgrades vs clean-sheet designs) and explain why 50–200 is a reasonable bracket for *this* module.
+1) **Copula and correlation structure is under-justified and potentially incomplete.** Only \((p_{\text{launch}},K,\dot n)\) are correlated, with fixed \(\rho\) values. In practice, schedule \(t_0\), availability \(A\), and first-unit ops cost \(C_{\text{ops}}^{(1)}\) are likely correlated with \(K\) (bigger programs tend to cost more *and* take longer *and* have higher early ops). Treating these as independent can materially bias the left tail of \(N^*\) (too many “cheap/fast/high-availability” ISRU draws). If you retain the simplified copula, you should justify why these other correlations are second-order, or add a sensitivity case that correlates \(K\) with \(t_0\) and/or \(A\).
 
-4) **Decision tree figure: unclear incremental value for a journal article unless tied to an operational decision-analytic method**  
-   *Why it matters:* Figure 14 reads as a summary infographic. In a top-tier journal context, such a figure should either (i) encode an actual decision policy derived from the model (e.g., maximize expected utility under uncertainty with thresholds computed from MC), or (ii) be removed to avoid diluting the technical narrative. As-is, the thresholds are “illustrative,” which undermines its scientific role.  
-   *Specific remedy:*  
-   - Either (a) convert it into a **formal decision policy**: define objective (min expected NPV cost, or maximize expected NPV utility including revenue), define priors, and show the tree outputs as computed boundaries; or  
-   - (b) move it to an appendix or replace it with a more analytical “decision map” (e.g., $N_h$ vs $r$ vs $p_s$ regions) derived directly from the Monte Carlo.
+2) **The Wright learning formulation is applied in a way that may not match cost-accounting conventions.** Eq. (2) uses \(C(n)=C_{\text{mat}} + C_{\text{labor}}^{(1)}n^{b_E}\), implying unit cost depends on cumulative unit number. That is standard, but later you mention NRE amortization inside \(C_{\text{labor}}^{(1)}\). If NRE is included, then *unit cost vs cumulative* can double-count when you also sum unit costs (Eq. 7). You need to clarify whether \(C_{\text{labor}}^{(1)}\) is a true first-unit recurring cost or includes a fixed NRE term that should be treated separately (capex-like) rather than as part of the learning curve. This is important because it can shift crossover materially at low \(N\).
 
-5) **Technology obsolescence/disruption treatment is too limited for the strength of claims made about multi-decade programs**  
-   *Why it matters:* You correctly note static-parameter limitations, but the disruption analysis is two deterministic step changes at a single $n$ threshold. That is not enough to support strong statements about robustness “over multi-decade horizons,” especially when learning, launch prices, and automation are precisely the things most likely to shift. Also, “obsolescence” in manufacturing economics is not only cost halving; it includes redesign, requalification, stranded capital, and learning resets.  
-   *Specific remedy:*  
-   - Add a minimal stochastic obsolescence model: e.g., with probability $q$ per year, Earth manufacturing cost multiplier drops by factor $X$ (or ISRU ops improves), and/or learning resets partially. Even a simple Monte Carlo overlay would show whether your conclusions survive plausible disruption rates.  
-   - Alternatively, tighten claims: present disruption scenarios explicitly as “illustrative bounds” and avoid implying they cover obsolescence risk comprehensively.
+3) **Discounting treatment is asymmetric in a way that may favor ISRU.** In Eq. (23), all ISRU capex \(K\) is incurred at \(t=0\), while Earth costs are discounted per delivery schedule. But Earth manufacturing almost certainly has its own capex, working capital, and production line ramp costs (you add \(K_E\) only as an appendix sensitivity). If the main claim is economic inflection, the baseline should arguably include at least a stylized Earth-side fixed-cost term (even if small relative to ISRU), or justify why it is negligible for the relevant production rates. Similarly, the Earth pathway assumes immediate full-rate delivery (Eq. 11), while ISRU has an S-curve; you do test Earth ramp-up later, but given the centrality of schedule to NPV results, a more symmetric baseline schedule treatment would strengthen the core comparison.
 
-6) **Parameter dependence structure is likely incomplete; at minimum, justify independence of $(K,t_0,A,C_{\mathrm{ops}}^{(1)})$**  
-   *Why it matters:* In megaprojects and first-of-a-kind space infrastructure, capital cost, schedule, availability, and early operational cost are typically positively correlated (complexity drives all). Treating them as independent can understate tail risk and overstate crossover probability. You already use a copula for $(p_{\mathrm{launch}},K,\dot n)$; extending it is feasible.  
-   *Specific remedy:*  
-   - Add at least one sensitivity case with a broader copula including $(K,t_0,A)$ (e.g., $\rho_{K,t_0}=0.5$, $\rho_{K,A}=-0.3$), and report impact on convergence and savings-window probability.  
-   - If you cannot implement it now, explicitly acknowledge that independence likely biases results in favor of ISRU (by allowing “high K but fast ramp and high availability” combinations).
-
-7) **“Validation” vs “cross-check” language is improved, but one section still overreaches conceptually**  
-   *Why it matters:* The “Earth pathway validation” with Iridium NEXT is a useful sanity check, but it is not validation of your Earth model for (i) a different product class, (ii) two orders of magnitude higher volumes, and (iii) a cost structure that includes a large fixed material floor and GEO launch. Some phrasing still reads like stronger empirical confirmation than warranted.  
-   *Specific remedy:*  
-   - Rename to “sanity check / calibration point,” and explicitly state what is and is not being tested (learning curve plausibility at n~80, not high-volume extrapolation; contract price vs internal cost, etc.).  
-   - Discuss contract value vs cost (margin, integration scope) and whether the comparison is apples-to-apples.
-
-8) **Internal consistency issues in launch-learning sensitivity description**  
-   *Why it matters:* Table 12 shows that more aggressive launch learning (lower LR\_L) *increases* $N^*$, which is counterintuitive if launch costs are a component of Earth pathway cost. You provide an explanation tied to the fuel floor asymptote, but the direction still needs to be reconciled carefully with Eq. (10) and the decomposition $p_{\mathrm{ops}}=\max(p_{\mathrm{launch}}-p_{\mathrm{fuel}},0)$. This currently reads like either (i) a sign/indexing mistake, (ii) a mismatch between “baseline uses fixed launch” vs “baseline MC uses learning,” or (iii) a reporting error.  
-   *Specific remedy:*  
-   - Provide one worked numeric example (e.g., compute Earth unit launch cost at n=1, 4,403, 10,000 for LR\_L=1.0 vs 0.90) and show the implied effect on $\Sigma_{\mathrm{Earth}}^{NPV}$.  
-   - Ensure the text is consistent about whether baseline uses Eq. (9) or Eq. (10). Right now, the manuscript states both in different places.
+Reproducibility is helped by code availability, but the manuscript currently includes placeholders (“COMMIT_HASH”). For reviewability, the exact commit hash and a permanent archive (Zenodo DOI) should be provided at submission or at least in revision.
 
 ---
 
-## 5. Minor Issues
+## 3. Validity & Logic — **Rating: 3/5**
 
-1) **Vitamin BOM table wording:** Caption says “connecting the 15% total vitamin content to the 5% irreducible Earth-sourced fraction,” but the table totals 15% Earth-sourced components *plus* an “irreducible vitamin 5%” line. Consider clarifying that 15% is an illustrative “Earth-sourced in early maturity” set, while only 5% is modeled as irreducible in baseline economics.
+Many conclusions are directionally consistent with the model structure: if Earth launch has a non-zero asymptote and ISRU ops has a lower asymptote, then at sufficient scale capex amortization can dominate. The paper is careful to emphasize probabilistic outcomes (“X% converge by horizon”), and it acknowledges key failure modes (high vitamin costs, high discount rates, low technical success probability). The discussion about how discount rate affects *probability of achieving crossover* more than *conditional median crossover location* is a useful and plausible insight given right-censoring behavior.
 
-2) **Equation consistency for ISRU delivery time:** Discounting uses $t_{n,I}$ in Eq. (20), but earlier you define delivery time $t_{n,I}^{del}=t_{n,I}+\tau_{trans}$ and say discounting uses delivery time. Eq. (20) should use $t_{n,I}^{del}$ (or clarify precisely what is discounted at production vs delivery).
+Still, there are internal consistency issues that weaken validity:
 
-3) **Units and symbols:** You use $C_{\mathrm{ISRU}}^{\mathrm{ops}}(n)$ vs $C_{\mathrm{ops}}(n)$ vs $C_{\mathrm{ops}}^{\mathrm{vit}}(n)$; consider standardizing notation in the permanent/transient section to avoid confusion.
+- **Headline probability inconsistency between Abstract/Conclusion and tables.** The Abstract states: “for a program committing to 20,000 units, 42% … within savings window at \(r=5\%\). The raw crossover probability is 69%…”. But Table 18 (“convergence”) gives \(P(N^*\le 20{,}000)=63.1\%\) at \(r=5\%\), and Table 16 gives 68.1% convergence within \(H=40,000\). The 69% figure appears to be “within 40k” not “within 20k”, but it is written as “raw crossover probability” without specifying horizon. This must be corrected because it affects the main takeaway.
 
-4) **Table 6 (params):** “Baseline values are rounded… code uses exact values” is good; consider adding the actual lognormal parameters $(\mu_{\ln},\sigma_{\ln})$ for $K$ to improve reproducibility.
+- **Interpretation of learning-rate direction is confusing and occasionally wrong in wording.** In the tornado discussion you state: “higher learning rate (LR\(_E\)=0.90, i.e., slower learning) shifts crossover earlier…” This is correct mathematically (a higher LR means less improvement per doubling), but the phrasing “higher learning rate = slower learning” is counterintuitive to many readers. Several parts of the manuscript risk misinterpretation because “learning rate” is used in the Wright-curve convention (progress ratio), not in the plain-English sense. This needs a consistent terminology note early (e.g., “progress ratio” vs “learning rate”) and careful editing of sign interpretations in sensitivity sections.
 
-5) **PRCC interpretation for $\dot n_{\max}$:** Spearman $\rho_S$ is positive but PRCC is negative; you explain confounding generally, but a one-sentence explanation specific to $\dot n_{\max}$ (correlated with $K$) would help.
-
-6) **Discounting discussion:** The statement that Earth costs being earlier makes Earth “more expensive in NPV terms than nominal costs suggest” could be tightened: NPV is *defined* by timing; “nominal” is ambiguous.
-
-7) **Success probability model:** All-or-nothing failure is clearly stated; consider one additional line acknowledging that “fail then revert to Earth” likely also incurs schedule penalties and restart costs, which would raise the failure cost beyond sunk $K$.
-
-8) **Censoring bound choices:** 40k (for $N^*$) and 200k (for $N^{**}$) are plausible but should be justified as decision horizons (e.g., linked to architectures in Table 26).
+- **Permanent vs transient crossover classification is logically interesting but decision relevance is muddled.** You correctly note that discounting can prevent practical re-crossing even if asymptotically transient. However, the paper then mixes asymptotic permanence, finite-horizon permanence (censoring at 200k), and “savings window probability” in ways that could confuse readers about what is actually being recommended. Consider elevating one primary decision metric (e.g., expected NPV at a specified program horizon \(N_h\), or \(P(\text{ISRU cheaper at }N_h)\)) and treating permanence as a secondary characterization.
 
 ---
 
-## 6. Questions for Authors
+## 4. Clarity & Structure — **Rating: 4/5**
 
-1) In Eq. (20) (NPV crossover), should the ISRU discount exponent be **$t_{n,I}^{del}$** rather than $t_{n,I}$, consistent with Eq. (17) and your stated approach?
+The manuscript is generally well organized: it motivates the question, defines a clear decision metric, introduces the model in a structured way, then reports deterministic baselines, one-at-a-time sensitivities, and Monte Carlo results, followed by a policy/strategy discussion. Figures (cumulative cost, unit cost, histogram, schedule plot, heatmap, decision tree) are appropriate for the narrative. The appendices are extensive and helpful, and the authors do a good job describing what is in appendices versus main text.
 
-2) How exactly is $N^{**}$ computed under discounting when the NPV difference approaches an asymptote? Do you observe numerical non-monotonicity or “never re-cross” cases even when per-unit asymptotes imply eventual re-crossing in undiscounted terms?
+The abstract is information-dense and in places reads more like a technical executive summary than a typical journal abstract; it includes many numbers (e.g., 42%, 69%, 6%/63%, \(\sim\)5000 units, \(\sim\)70% variance explained, \(\sim\$0.9\)M/unit/yr). That is not inherently bad, but because at least one of those numbers appears inconsistent with the tables (see above), the density increases the risk that a single mismatch undermines confidence. I recommend simplifying the abstract to fewer headline metrics and ensuring every number is traceable to a specific table/figure.
 
-3) For the 42% “savings window probability” at 20k units: is this computed over **all runs** or only **converged (crossover-achieving) runs**? Please provide both.
+A few clarity issues are more structural:
 
-4) Can you provide the numerical launch-cost trajectories for LR\_L sweep (Table 12) at key n values to reconcile the direction of $N^*$ shifts?
+- The Earth pathway section alternates between “baseline MC uses launch learning” and “baseline uses constant launch cost” (e.g., around Eq. 5–6 and later in “Launch cost learning sweep”). Table 35 indicates baseline MC includes launch learning, but the sensitivity section states “baseline model uses constant launch cost (Eq. 5).” This contradiction should be resolved so readers know exactly what is baseline.
 
-5) What is the rationale for fixing logistic steepness $k=2.0$ while sampling $t_0$ widely? Would a correlation between $t_0$ and $k$ (slow programs also ramp more slowly) change results?
-
-6) Have you tested correlation between $K$ and $t_0$ (and/or $A$)? If not, do you agree independence likely biases convergence upward?
-
-7) For $n_0$: do you intend it to represent design heritage, factory learning, workforce learning, or supply-chain maturity? Why is a pure index shift the right mapping?
-
-8) The vitamin cost threshold claim (“vitamin components above ~$50k/kg prevent crossover”) depends on $f_v$ and on whether vitamins are treated as launched to GEO or to the ISRU site and then transported. Can you clarify the assumed logistics chain for vitamins and whether $p_{\mathrm{transport}}$ should apply to vitamins too?
+- Several “sanity check” claims are made without showing the calculation in main text (e.g., the Iridium NEXT mapping). Given how central LR\(_E\) is, consider moving a compact version of that validation into the main text.
 
 ---
 
-## 7. Overall Assessment  
-**Recommendation:** Major Revision
+## 5. Ethical Compliance — **Rating: 5/5**
 
-The manuscript is ambitious, timely, and substantially stronger than many ISRU economic comparisons because it (i) treats time explicitly via pathway-specific schedules and NPV, (ii) propagates uncertainty with a reasonably transparent Monte Carlo framework, and (iii) introduces the permanent/transient/re-crossing framing and the savings-window concept, which could become a useful way to communicate “ISRU may be advantageous only over a finite production band” once Earth-sourced vitamins are acknowledged. The writing is generally clear, and the “validated” language is appropriately softened; the vitamin BOM table is now understandable and helps connect an abstract parameter ($f_v$) to real subsystem content.
+The disclosure of AI-assisted methodology is unusually thorough and, in my view, exemplary for current norms: it clarifies which tasks used LLMs (literature synthesis, editorial review simulation) and explicitly states that numerical results were generated by human-written/verified code and not accepted from AI without verification. The manuscript includes code availability statements, conflict-of-interest statements, and funding disclosure.
 
-The main barrier to publication at a top-tier venue is that several of the headline probabilistic conclusions (notably the savings-window probability and transient crossover implications) depend on definitions and censoring choices that are not yet decision-consistent under discounting, and the dependence structure among key ISRU risk drivers is likely understated. In addition, the Earth learning offset sensitivity is a good addition but needs a more defensible transfer-learning interpretation to avoid overclaiming what “heritage” means quantitatively. Addressing the re-crossing/savings-window methodology rigorously (ideally with survival-style reporting for $N^{**}$ and unconditional vs conditional probabilities), reconciling the launch-learning sensitivity direction, and strengthening the treatment of correlated megaproject risks would materially improve the paper’s scientific reliability without requiring a complete model rewrite.
+Two minor improvements: (i) ensure the journal’s AI policy is satisfied (some require stating that AI tools are not listed as authors and that authors take responsibility—implied but can be explicit); (ii) if “peer review simulation” was performed with AI, clarify that it did not influence the actual peer review process (obvious, but worth one sentence to avoid misinterpretation).
+
+---
+
+## 6. Scope & Referencing — **Rating: 4/5**
+
+The topic is appropriate for *Advances in Space Research* and adjacent outlets (Acta Astronautica, Space Policy, New Space). The manuscript engages relevant ISRU literature (Sanders & Larson; Metzger; Sowers; Kornuta; Crawford; Cilliers), learning-curve foundations (Wright; Argote & Epple; Benkard; Thompson; Nagy), and cost/launch trend sources (Jones; NASA cost handbook; Zapata). The inclusion of Flyvbjerg megaproject risk is a strong and appropriate cross-domain reference.
+
+Opportunities to strengthen referencing:
+
+- The launch cost floor decomposition and “operations asymptote” would benefit from citing more recent public analyses of reusable launch vehicle marginal cost structure (beyond Zapata 2019), and/or explicit Starship architecture assumptions (even if uncertain). Right now, several key numbers are justified via internal decomposition in the appendix; external corroboration would help.
+
+- For ISRU manufacturing, you cite additive manufacturing demonstrations (Werkheiser; Cesaretti) but these are not lunar regolith-to-structural-metal supply chain demonstrations. Consider adding references on lunar metal extraction/refining concepts and/or NASA/ESA studies on regolith-derived metals, even if preliminary, to support plausibility of \(C_{\text{floor}}\), \(\alpha\), and \(C_{\text{ops}}^{(1)}\).
+
+---
+
+## Major Issues
+
+1) **Resolve baseline-definition contradictions (launch learning; “constant launch cost” vs “baseline MC uses two-component learning).**  
+   - Conflicts appear between the Earth pathway description (Eq. 6 used in MC), Table 35 (“Launch learning … baseline MC ✓”), and Sensitivity text (“baseline model uses constant launch cost (Eq. 5)”). This must be made internally consistent because it affects reproducibility and interpretation of sensitivity results.
+
+2) **Correct and standardize “crossover probability” reporting (horizon dependence).**  
+   - Abstract/Conclusion report “raw crossover probability 69%” while Table 18 suggests 63.1% by 20k and Table 16 suggests 68.1% by 40k at \(r=5\%\). You need to define “raw crossover probability” as \(P(N^*\le H)\) with an explicit \(H\), and ensure all headline numbers match tables/figures.
+
+3) **Clarify treatment of NRE and fixed costs in Earth manufacturing learning curve.**  
+   - If \(C_{\text{labor}}^{(1)}\) includes NRE amortization, summing unit costs risks misrepresenting accounting. Either separate NRE as a fixed cost term (Earth capex analogue) or explicitly define \(C_{\text{labor}}^{(1)}\) as recurring first-unit cost excluding fixed NRE. This is central because LR\(_E\) dominates variance and drives key conclusions.
+
+4) **Expand correlation/schedule-risk treatment or justify independence assumptions.**  
+   - Independence between \(K\) and \(t_0\)/\(A\)/\(C_{\text{ops}}^{(1)}\) likely understates downside risk and overstates convergence probability. At minimum, add a sensitivity case with \(K\) positively correlated with \(t_0\) and negatively with \(A\), or provide a justification that results are robust to plausible correlation ranges.
+
+5) **Revisit the interpretation of discounting and timing (“Earth costs earlier → higher PV → Earth more expensive”).**  
+   - The statement is mathematically correct for equal undiscounted costs, but the narrative can mislead: discounting earlier costs less does not *intrinsically* make Earth “more expensive,” it changes the comparison because schedules differ. Consider reframing carefully and showing a small illustrative cash-flow example to avoid confusion.
+
+---
+
+## Minor Issues
+
+- **Equation numbering and symbol consistency:**  
+  - Eq. (33) uses \(C_{\mathrm{ISRU}}^{\mathrm{ops}}(n)\) but earlier the ops cost is \(C_{\mathrm{ops}}(n)\). Standardize notation.  
+  - Eq. (13) says constant “\(-\ln 2\) ensures \(N(t_0)=0\)” but with the logistic integral as written, check carefully that the shift matches the chosen definition when the piecewise \(t_c\) is imposed.
+
+- **Table 20 PRCC sign confusion for production rate:**  
+  - In Table 20, \(\rho_S(\text{cond})\) for \(\dot n_{\max}\) is \(+0.28\) but PRCC is \(-0.42\). This can happen with confounding, but you should explicitly explain why the marginal correlation flips sign under partialing-out (likely due to correlation with \(K\)). Otherwise readers may suspect an error.
+
+- **Learning-rate terminology:**  
+  - Early in the model section, add a one-sentence definition: “We use Wright ‘learning rate’ as progress ratio (cost multiplier per doubling), so smaller LR means faster learning.”
+
+- **Abstract density and traceability:**  
+  - Reduce the number of specific percentages unless each is clearly defined (horizon, discount rate, \(\sigma_{\ln}\) case). At minimum, add parenthetical qualifiers (e.g., “69% within \(H=40{,}000\) at \(r=5\%\), \(\sigma_{\ln}=0.70\)”).
+
+- **Code availability:**  
+  - Replace `COMMIT_HASH` with the actual hash for Version AD, and consider adding a Zenodo DOI upon revision (many journals now expect archival persistence).
+
+---
+
+## Overall Recommendation — **Major Revision**
+
+The manuscript addresses an important question with a generally solid parametric + Monte Carlo framework, and it contains several publishable ideas (schedule-aware NPV crossover, savings-window probability, and revenue-delay breakeven). However, internal inconsistencies in the definition of baselines and headline probabilities, plus insufficient clarity around Earth manufacturing cost accounting (NRE vs recurring) and correlation structure, currently prevent full confidence in the quantitative claims. These issues are fixable without changing the paper’s core concept, but they require careful revision and possibly modest re-analysis.
+
+---
+
+## Constructive Suggestions
+
+1) **Add a “Baseline Definition” box/table and enforce consistency throughout.**  
+   Create a short boxed summary (or promote Table 35) that states exactly which equations/features are active in the baseline deterministic case and baseline MC case (launch learning on/off, vitamin model on/off, phased capex on/off, etc.). Then align all text in Results/Sensitivity to that baseline.
+
+2) **Standardize probability metrics with explicit horizons and add one “decision metric” figure.**  
+   Use consistent notation like \(P_H = P(N^*\le H)\) and \(P_{\text{win}}(N_h)=P(N^*\le N_h\le N^{**})\). Provide a single figure showing both as functions of \(N_h\) (you already have convergence curves; extend to savings-window probability). Update Abstract/Conclusion to reference those.
+
+3) **Refactor Earth manufacturing cost into fixed + recurring components (and rerun key results).**  
+   Even a stylized separation—Earth fixed cost \(K_E\) plus recurring learning curve excluding NRE—will make the model more defensible and comparable to ISRU’s capex/opex split. Report how much \(N^*\) and convergence change under plausible \(K_E\) ranges and under alternative NRE treatments.
+
+4) **Introduce a correlated downside-risk sensitivity case (K–schedule–availability).**  
+   Add one additional MC variant: correlate \(K\) with \(t_0\) (positive) and with \(A\) (negative), and optionally with \(C_{\text{ops}}^{(1)}\) (positive). Report how convergence probability and conditional median shift. This will materially strengthen the credibility of probabilistic conclusions.
+
+5) **Tighten the “revenue-delay” section by linking \(R^*\) to an example architecture.**  
+   Readers will ask whether \(\$0.9\)M/unit/yr is realistic. Provide a short back-of-the-envelope mapping for one application (e.g., SPS: power per unit × sale price × capacity factor) and show whether it is above/below \(R^*\). This will make the key qualification (“ISRU best for non-revenue infrastructure”) more actionable.

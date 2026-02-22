@@ -376,8 +376,20 @@ def isru_ops_cost(
     # Two-part model (M1): ISRU processes (1-fv) of the unit; the vitamin
     # portion must be launched from Earth and has its own mfg cost per kg.
     # c_vitamin = fv * m * (p_launch_effective + c_vitamin_kg)
-    vitamin_frac = params.get("vitamin_frac", 0.0)
-    if vitamin_frac > 0:
+    # AJ2: Dynamic vitamin fraction — f_v(n) = fv0 * exp(-n/n_v) + fv_floor
+    vitamin_frac_0 = params.get("vitamin_frac", 0.0)
+    n_v = params.get("vitamin_decay_n", None)  # maturation scale
+    fv_floor = params.get("vitamin_frac_floor", None)
+    if n_v is not None and fv_floor is not None and vitamin_frac_0 > 0:
+        # Dynamic: decays from fv0 toward fv_floor with scale n_v
+        vitamin_frac = fv_floor + (vitamin_frac_0 - fv_floor) * np_exp(-n / n_v)
+    else:
+        vitamin_frac = vitamin_frac_0
+    if isinstance(vitamin_frac, (int, float)):
+        has_vitamin = vitamin_frac > 0
+    else:
+        has_vitamin = True  # array: always compute
+    if has_vitamin:
         c_vitamin_kg = params.get("c_vitamin_kg", 10000)
         # Effective launch cost for vitamins (with learning if active)
         b_L = params.get("b_L", None)
@@ -392,6 +404,12 @@ def isru_ops_cost(
         c_vitamin_launch = vitamin_frac * params["m"] * p_launch_eff
         c_vitamin_mfg = vitamin_frac * params["m"] * c_vitamin_kg
         c_ops = (1.0 - vitamin_frac) * c_ops + c_vitamin_launch + c_vitamin_mfg
+
+    # AL2: Yield rate — fraction of ISRU units passing quality acceptance.
+    # If Y < 1.0, each delivered unit costs 1/Y units of production.
+    yield_rate = params.get("yield_rate", 1.0)
+    if yield_rate < 1.0:
+        c_ops = c_ops / yield_rate
 
     return c_ops
 
@@ -571,8 +589,15 @@ def find_crossover(
     # U3: Earth throughput cap
     earth_cap = params.get("earth_max_units_per_year", None)
 
-    # Earth side
-    earth_units = earth_unit_cost(ns, params)
+    # Earth side — AJ1: use plateau model when n_break_earth is in params
+    n_break_earth = params.get("n_break_earth", None)
+    eta_earth = params.get("eta_earth", 1.0)
+    if n_break_earth is not None and eta_earth != 1.0:
+        earth_units = earth_unit_cost_plateau(
+            ns, params, n_break=int(n_break_earth), damping=eta_earth
+        )
+    else:
+        earth_units = earth_unit_cost(ns, params)
     if discount:
         if earth_ramp is not None:
             t0_e, k_e = earth_ramp
@@ -586,7 +611,14 @@ def find_crossover(
 
     # ISRU side — ops (uses availability-adjusted production rate for timing)
     # A4: Use piecewise schedule as primary
-    ops = isru_ops_cost(ns, params)
+    # AJ1: pass ISRU plateau params and dynamic vitamin params if present
+    n_break_isru_val = params.get("n_break_isru", None)
+    damping_isru_val = params.get("eta_isru", 1.0)
+    ops = isru_ops_cost(
+        ns, params,
+        n_break_isru=int(n_break_isru_val) if n_break_isru_val is not None else None,
+        damping_isru=damping_isru_val,
+    )
     if discount:
         if use_piecewise:
             t_n_isru = unit_to_time_piecewise(
@@ -606,7 +638,17 @@ def find_crossover(
     K = params["K"]
     if phased_k_years is not None and discount:
         tranche = K / phased_k_years
-        K_eff = sum(tranche / (1.0 + r) ** y for y in range(phased_k_years))
+        # AH1: Capex-schedule coupling — spending centered on construction period
+        # ending at t0 (commissioning). Tranches at t0-phased_k_years .. t0-1.
+        k_coupled = params.get("k_capex_coupled", True)
+        if k_coupled:
+            t0_val = params.get("t0", 5)
+            K_eff = sum(
+                tranche / (1.0 + r) ** max(t0_val - phased_k_years + y, 0)
+                for y in range(phased_k_years)
+            )
+        else:
+            K_eff = sum(tranche / (1.0 + r) ** y for y in range(phased_k_years))
     else:
         K_eff = K
 
@@ -675,7 +717,10 @@ def is_permanent_crossover(params: Params) -> bool:
     alpha = params.get("alpha", 1.0)
     c_floor = params.get("C_floor", 0)
     p_transport = params.get("p_transport", 0)
-    vitamin_frac = params.get("vitamin_frac", 0.0)
+    # AK3: Use vitamin floor for asymptotic comparison when dynamic model active
+    vitamin_frac_0 = params.get("vitamin_frac", 0.0)
+    vitamin_frac_floor = params.get("vitamin_frac_floor", None)
+    vitamin_frac = vitamin_frac_floor if vitamin_frac_floor is not None else vitamin_frac_0
 
     # Asymptotic ISRU ops cost (learning terms -> 0 at large n)
     isru_asymp = alpha * c_floor + params["m"] * p_transport * alpha
@@ -709,6 +754,8 @@ def find_recrossing_volume(
     params: Params,
     crossover_n: int,
     N_max: int = 200000,
+    *,
+    phased_k_years: int | None = 5,
 ) -> tuple[int, int, float]:
     """Find the re-crossing volume N** where ISRU becomes more expensive again.
 
@@ -739,22 +786,51 @@ def find_recrossing_volume(
     availability = params.get("availability", 1.0)
     isru_prod_rate = prod_rate * availability
 
-    # Earth side
-    earth_units = earth_unit_cost(ns, params)
+    # Earth side — AK4: use plateau model when stochastic params present
+    n_break_earth = params.get("n_break_earth", None)
+    eta_earth = params.get("eta_earth", 1.0)
+    if n_break_earth is not None and eta_earth != 1.0:
+        earth_units = earth_unit_cost_plateau(
+            ns, params, n_break=int(n_break_earth), damping=eta_earth
+        )
+    else:
+        earth_units = earth_unit_cost(ns, params)
     earth_cap = params.get("earth_max_units_per_year", None)
     t_n_earth = earth_delivery_time(ns, prod_rate, earth_cap)
     discount_earth = (1.0 + r) ** (-t_n_earth)
     earth_cum = cumsum(earth_units * discount_earth)
 
-    # ISRU side
-    ops = isru_ops_cost(ns, params)
+    # ISRU side — dynamic vitamin params flow through isru_ops_cost automatically
+    n_break_isru_val = params.get("n_break_isru", None)
+    damping_isru_val = params.get("eta_isru", 1.0)
+    ops = isru_ops_cost(
+        ns, params,
+        n_break_isru=int(n_break_isru_val) if n_break_isru_val is not None else None,
+        damping_isru=damping_isru_val,
+    )
     t_n_isru = unit_to_time_piecewise(ns, isru_prod_rate, params["t0"], k_ramp)
     # AD1: Add transport duration for ISRU delivery timing
     tau_transport = params.get("tau_transport", 0.0)
     t_n_isru = t_n_isru + tau_transport
     discount_isru = (1.0 + r) ** (-t_n_isru)
     isru_ops_cum = cumsum(ops * discount_isru)
-    isru_cum = params["K"] + isru_ops_cum
+
+    # AK5: Use phased K (consistent with find_crossover, including coupling)
+    K = params["K"]
+    if phased_k_years is not None:
+        tranche = K / phased_k_years
+        k_coupled = params.get("k_capex_coupled", True)
+        if k_coupled:
+            t0_val = params.get("t0", 5)
+            K_eff = sum(
+                tranche / (1.0 + r) ** max(t0_val - phased_k_years + y, 0)
+                for y in range(phased_k_years)
+            )
+        else:
+            K_eff = sum(tranche / (1.0 + r) ** y for y in range(phased_k_years))
+    else:
+        K_eff = K
+    isru_cum = K_eff + isru_ops_cum
 
     # Savings = earth_cum - isru_cum (positive means ISRU is cheaper)
     savings = earth_cum - isru_cum
@@ -932,6 +1008,69 @@ def earth_unit_cost_plateau(
             C_labor1 * n_eff ** b_E,
             scale_factor * n_eff ** b_E2,
         )
+
+    # N1: Earth manufacturing cost floor
+    C_mfg_floor = params.get("C_mfg_floor", 0)
+    if C_mfg_floor > 0:
+        c_mfg = maximum(c_mfg, C_mfg_floor)
+
+    # Launch cost (same as earth_unit_cost)
+    b_L = params.get("b_L", None)
+    if b_L is not None:
+        p_fuel = params.get("p_fuel", 200)
+        p_ops = params.get("p_ops_launch", 800)
+        launches_per_unit = params.get("launches_per_unit", 1.0)
+        n_launches = n * launches_per_unit + earth_n0
+        c_launch = params["m"] * (p_fuel + p_ops * n_launches ** b_L)
+    else:
+        c_launch = params["m"] * params["p_launch"]
+
+    return c_mfg + c_launch
+
+
+def earth_unit_cost_logistic(
+    n: float | NDFloat,
+    params: Params,
+    *,
+    C_floor_labor: float | None = None,
+    n_half: int = 500,
+) -> NDFloat:
+    """AL1: Earth per-unit cost with logistic learning saturation.
+
+    Alternative to the piecewise plateau: the labor cost approaches an
+    asymptotic floor via a logistic transition:
+
+        C_labor(n) = C_floor_labor + (C_labor1 * n^b_E - C_floor_labor)
+                     / (1 + (n / n_half)^2)
+
+    At small n: ~C_labor1 * n^b_E (Wright curve dominates).
+    At large n: ~C_floor_labor (floor dominates).
+    n_half: production volume at which halfway between Wright and floor.
+
+    If C_floor_labor is None, it defaults to C_labor1 * n_half^b_E * damping_equiv,
+    calibrated so that the logistic and piecewise plateau give similar cost at 2*n_half.
+    """
+    n = asarray(n, dtype=float)
+    b_E = learning_exponent(params["LR_E"])
+    earth_n0 = params.get("earth_n0", 0)
+    n_eff = n + earth_n0
+
+    C_mat = params.get("C_mat", 0)
+    C_labor1 = params.get("C_labor1", params["C_mfg1"] - C_mat) if C_mat > 0 else params["C_mfg1"]
+
+    # Wright curve cost at each n
+    wright_cost = C_labor1 * n_eff ** b_E
+
+    # Default floor: Wright cost at n_half * 0.5 (moderate saturation)
+    if C_floor_labor is None:
+        C_floor_labor = C_labor1 * float(n_half) ** b_E * 0.5
+
+    # Logistic blend: smoothly transition from Wright to floor
+    ratio = (n / float(n_half)) ** 2
+    c_labor = C_floor_labor + (wright_cost - C_floor_labor) / (1.0 + ratio)
+    c_labor = maximum(c_labor, C_floor_labor)  # ensure non-negative
+
+    c_mfg = C_mat + c_labor if C_mat > 0 else c_labor
 
     # N1: Earth manufacturing cost floor
     C_mfg_floor = params.get("C_mfg_floor", 0)
