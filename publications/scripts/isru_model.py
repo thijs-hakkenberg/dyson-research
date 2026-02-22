@@ -5,6 +5,9 @@ all functions are pure math suitable for testing and reuse.
 """
 
 from __future__ import annotations
+
+__version__ = "1.0.0"
+
 from typing import Any
 from numpy import floating, log, maximum, asarray, arange, ones_like, exp as np_exp, where as np_where, cumsum, log1p
 from numpy.typing import NDArray

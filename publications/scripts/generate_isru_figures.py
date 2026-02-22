@@ -24,6 +24,8 @@ Usage:
 
 from __future__ import annotations
 
+__version__ = "1.0.0"
+
 import builtins as _builtins
 from os.path import dirname, abspath, join
 from os import makedirs
@@ -77,8 +79,12 @@ from isru_mc import run_mc, sample_mc_params, run_mc_loop, compute_convergence_s
 # ---------------------------------------------------------------------------
 # Output directory
 # ---------------------------------------------------------------------------
+from os import environ
 script_dir = dirname(abspath(__file__))
-fig_dir = join(script_dir, "..", "drafts", "01-isru-economic-crossover", "figures")
+fig_dir = environ.get(
+    "ISRU_FIG_DIR",
+    join(script_dir, "..", "drafts", "01-isru-economic-crossover", "figures"),
+)
 makedirs(fig_dir, exist_ok=True)
 
 # ---------------------------------------------------------------------------
@@ -131,6 +137,7 @@ ARCHETYPE_B: dict = {
 # Figure 1: Cumulative Cost Comparison (undiscounted baseline)
 # ---------------------------------------------------------------------------
 def fig_cumulative_cost():
+    """Generate Figure 1: undiscounted cumulative cost comparison (Earth vs ISRU)."""
     p = BASELINE.copy()
     p["r"] = 0.0  # undiscounted for this figure
     cross_n = find_crossover(p)
@@ -180,6 +187,7 @@ def fig_cumulative_cost():
 # Figure 2: Per-Unit Cost Comparison
 # ---------------------------------------------------------------------------
 def fig_unit_cost():
+    """Generate Figure 2: per-unit cost comparison with launch-cost floor."""
     p = BASELINE.copy()
     cross_n = find_crossover(p)
     n_max = max(cross_n * 2 + 500, 8000)
@@ -221,6 +229,7 @@ def fig_unit_cost():
 # Figure 3: Tornado Diagram (NPV-based sensitivity)
 # ---------------------------------------------------------------------------
 def fig_tornado():
+    """Generate Figure 3: tornado diagram of NPV-based parameter sensitivities."""
     base_cross = find_crossover_npv(BASELINE)
 
     variations = [
@@ -295,6 +304,7 @@ def fig_tornado():
 # Figure 4: 2D Heatmap — Launch Cost vs ISRU Capital → Crossover
 # ---------------------------------------------------------------------------
 def fig_heatmap():
+    """Generate Figure 4: 2-D heatmap of launch cost vs ISRU capital to crossover unit."""
     launch_costs = linspace(200, 2500, 60)
     isru_capitals = linspace(20e9, 120e9, 60)
 
@@ -508,6 +518,7 @@ def print_copula_diagnostic(res5):
 # Figure 6: NPV Comparison at Multiple Discount Rates
 # ---------------------------------------------------------------------------
 def fig_npv_comparison():
+    """Generate Figure 6: cumulative NPV cost comparison at multiple discount rates."""
     rates = [0.0, 0.03, 0.05, 0.10]
     rate_labels = ["0%", "3%", "5%", "10%"]
     colors_r = ["#6b7280", "#2563eb", "#16a34a", "#dc2626"]
@@ -2161,6 +2172,7 @@ def print_earth_validation():
     from scipy.optimize import brentq
     for c_mfg1 in [80e6, 100e6, 120e6]:
         def residual(lr):
+            """Return total-cost error for a given learning rate (used by brentq root finder)."""
             b = np_log(lr) / np_log(2)
             ns = arange(1, n_units + 1, dtype=float)
             return float(np_cumsum(c_mfg1 * ns ** b)[-1]) - total_contract

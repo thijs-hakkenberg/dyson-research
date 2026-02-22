@@ -28,6 +28,7 @@ class TestSampleMCParams:
             "C_mat", "C_labor1",
             "alpha", "p_transport", "C_floor", "prod_rate", "availability",
             "p_fuel", "tau_transport",
+            "n_break_earth", "vitamin_frac_floor", "vitamin_decay_n", "eta_earth",
         }
         assert set(params.keys()) == expected
 
@@ -233,7 +234,7 @@ class TestRunMCIntegration:
         assert result.r_fixed == 0.05
         assert len(result.crossovers) == 500
         assert 0 <= result.stats.convergence_rate <= 100
-        assert len(result.spearman) == 16  # 16 parameters (incl. C_mat, C_labor1, p_fuel, tau_transport)
+        assert len(result.spearman) == 20  # 20 MC parameters
 
     @pytest.mark.slow
     def test_reproducible_with_same_seed(self):

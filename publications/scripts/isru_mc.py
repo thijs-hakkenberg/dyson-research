@@ -5,6 +5,9 @@ analysis as composable functions. No matplotlib, no prints.
 """
 
 from __future__ import annotations
+
+__version__ = "1.0.0"
+
 from dataclasses import dataclass, field
 from typing import Any
 from numpy import (
