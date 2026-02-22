@@ -1,6 +1,6 @@
 # Publication Plan — Project Dyson Research Papers
 
-**Last updated:** 2026-02-22
+**Last updated:** 2026-02-23
 **Papers planned:** 10 (1 complete, 9 in pipeline)
 **Open research questions:** 107 of 142 (75%)
 **Publication-addressable:** 29 questions across 10 papers
@@ -82,8 +82,8 @@ Track F:                                              │ 07,08,09  │───
 
 ### Paper 02: Swarm Coordination Scaling
 - [ ] **Simulation Code**
-  - [ ] Port `discrete-event-sim.ts` → `swarm_des.py`
-  - [ ] Port `monte-carlo.ts` → `swarm_mc.py`
+  - [x] Port `discrete-event-sim.ts` → `swarm_model.py` (DES engine, topology, message passing, coordinator model)
+  - [x] Port `monte-carlo.ts` → `swarm_mc.py` (MC engine, topology comparison, scaling analysis, PRCC)
   - [ ] Cross-validate Python vs TypeScript outputs
   - [ ] Write pytest suite (>95% coverage target)
   - [ ] Profile and optimize for 1M-node runs
@@ -109,10 +109,11 @@ Track F:                                              │ 07,08,09  │───
 
 ### Paper 03: Multi-Model AI Consensus
 - [ ] **Data Extraction & Analysis**
-  - [ ] Parse all 16 deliberation transcripts → structured dataset
-  - [ ] Compute convergence statistics (rounds, rate by category)
-  - [ ] Analyze voting dynamics (self-vote correlation, REJECT frequency)
-  - [ ] Categorize divergent views (47 topics across 16 questions)
+  - [x] Parse all 16 deliberation transcripts → structured dataset (`deliberation_analysis.py`)
+  - [x] Compute convergence statistics (mean 1.44 rounds, 95% CI [1.19, 1.75])
+  - [x] Analyze voting dynamics (71.5% APPROVE, 0% REJECT, self-vote r=0.13 n.s.)
+  - [x] Export CSV datasets (207 votes, 16 discussions, 23 rounds)
+  - [ ] Categorize divergent views (27 DV files across BOM specs)
   - [ ] Cross-reference divergent views with literature
 - [ ] **Figures**
   - [ ] Create `generate_consensus_figures.py`
