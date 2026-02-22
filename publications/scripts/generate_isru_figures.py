@@ -78,7 +78,7 @@ from isru_mc import run_mc, sample_mc_params, run_mc_loop, compute_convergence_s
 # Output directory
 # ---------------------------------------------------------------------------
 script_dir = dirname(abspath(__file__))
-fig_dir = join(script_dir, "..", "drafts", "figures")
+fig_dir = join(script_dir, "..", "drafts", "01-isru-economic-crossover", "figures")
 makedirs(fig_dir, exist_ok=True)
 
 # ---------------------------------------------------------------------------
