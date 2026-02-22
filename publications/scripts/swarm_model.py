@@ -111,6 +111,9 @@ class SwarmCoordinationConfig:
     seed: int = 42
     """Random seed for reproducibility."""
 
+    max_events: Optional[int] = None
+    """Override maximum events processed (default: node_count * simulation_days * 10)."""
+
 
 @dataclass
 class SwarmNode:
@@ -208,6 +211,28 @@ class NetworkStructure:
     clusters: list[Cluster]
     central_coordinator_id: str
     mesh_neighbors: Optional[dict[str, list[str]]] = None
+
+    def __post_init__(self) -> None:
+        self.rebuild_indices()
+
+    def rebuild_indices(self) -> None:
+        """Build O(1) lookup dicts for nodes and clusters."""
+        self._node_map: dict[str, int] = {
+            n.id: i for i, n in enumerate(self.nodes)
+        }
+        self._cluster_map: dict[str, int] = {
+            c.id: i for i, c in enumerate(self.clusters)
+        }
+
+    def get_node(self, node_id: str) -> Optional["SwarmNode"]:
+        """O(1) node lookup by ID."""
+        idx = self._node_map.get(node_id)
+        return self.nodes[idx] if idx is not None else None
+
+    def get_cluster(self, cluster_id: str) -> Optional["Cluster"]:
+        """O(1) cluster lookup by ID."""
+        idx = self._cluster_map.get(cluster_id)
+        return self.clusters[idx] if idx is not None else None
 
 
 @dataclass
@@ -351,6 +376,10 @@ class MessageQueue:
         self._max_queue_size: int = max_queue_size
 
     # -- mutators ----------------------------------------------------------
+    def is_full(self) -> bool:
+        """Return ``True`` if the queue has reached its capacity."""
+        return len(self._queue) >= self._max_queue_size
+
     def enqueue(self, message: Message) -> bool:
         """Add *message* to the queue.  Returns ``False`` if dropped."""
         if len(self._queue) >= self._max_queue_size:
@@ -819,12 +848,10 @@ def _hierarchical_routing(
 ) -> list[tuple[str, str]]:
     """Hierarchical: node -> cluster coordinator -> regional -> central."""
     routes: list[tuple[str, str]] = []
-    source = next((n for n in network.nodes if n.id == source_node_id), None)
+    source = network.get_node(source_node_id)
     if source is None:
         return routes
-    cluster = next(
-        (c for c in network.clusters if source_node_id in c.node_ids), None
-    )
+    cluster = network.get_cluster(source.cluster_id) if source.cluster_id else None
     if cluster is None:
         return routes
 
@@ -837,7 +864,7 @@ def _hierarchical_routing(
         for nid in cluster.node_ids:
             if nid == source_node_id:
                 continue
-            node = next((n for n in network.nodes if n.id == nid), None)
+            node = network.get_node(nid)
             if node and node.status != "failed":
                 routes.append((source_node_id, nid))
     else:
@@ -854,7 +881,7 @@ def _mesh_routing(
     return [
         (source_node_id, nid)
         for nid in neighbors
-        if any(n.id == nid and n.status != "failed" for n in network.nodes)
+        if (lambda n: n is not None and n.status != "failed")(network.get_node(nid))
     ]
 
 
@@ -986,25 +1013,44 @@ class SwarmCoordinationSimulator:
             self._schedule_gossip_rounds(0.0)
 
     def _schedule_state_sync_events(self, start_time: float) -> None:
-        sync_interval = 60.0 if self.config.coordination_topology == "mesh" else 10.0
+        """Schedule the first batch of state sync events (lazy scheduling).
+
+        Instead of pre-scheduling events for the entire simulation, schedule
+        only the first round.  Each handled ``state_sync`` event re-schedules
+        the next round for its node via :meth:`_reschedule_state_sync`.
+        """
+        self._sync_interval = 60.0 if self.config.coordination_topology == "mesh" else 10.0
+        self._sync_sample_rate = min(1.0, 1_000 / self.config.node_count)
         t = start_time
-        while t < self.simulation_duration_seconds:
-            sample_rate = min(1.0, 1_000 / self.config.node_count)
-            for node in self.network.nodes:
-                if node.status != "failed" and self.rng.random() < sample_rate:
-                    self.event_queue.push(
-                        SimEvent(
-                            type="state_sync",
-                            time=t,
-                            node_id=node.id,
-                            cluster_id=node.cluster_id,
-                        )
+        for node in self.network.nodes:
+            if node.status != "failed" and self.rng.random() < self._sync_sample_rate:
+                self.event_queue.push(
+                    SimEvent(
+                        type="state_sync",
+                        time=t,
+                        node_id=node.id,
+                        cluster_id=node.cluster_id,
                     )
-            t += sync_interval
+                )
+
+    def _reschedule_state_sync(self, node: Node, current_time: float) -> None:
+        """Schedule the next state_sync for *node* after the sync interval."""
+        next_time = current_time + self._sync_interval
+        if next_time < self.simulation_duration_seconds:
+            if self.rng.random() < self._sync_sample_rate:
+                self.event_queue.push(
+                    SimEvent(
+                        type="state_sync",
+                        time=next_time,
+                        node_id=node.id,
+                        cluster_id=node.cluster_id,
+                    )
+                )
 
     def _schedule_handoff_events(self, start_time: float) -> None:
+        """Schedule only the first coordinator handoff per cluster (lazy)."""
         t = start_time + self.duty_cycle_seconds
-        while t < self.simulation_duration_seconds:
+        if t < self.simulation_duration_seconds:
             for cluster in self.network.clusters:
                 self.event_queue.push(
                     SimEvent(
@@ -1014,21 +1060,48 @@ class SwarmCoordinationSimulator:
                         cluster_id=cluster.id,
                     )
                 )
-            t += self.duty_cycle_seconds
+
+    def _reschedule_handoff(self, cluster_id: str, current_time: float) -> None:
+        """Schedule the next coordinator handoff for *cluster_id*."""
+        next_time = current_time + self.duty_cycle_seconds
+        if next_time < self.simulation_duration_seconds:
+            cluster = self.network.get_cluster(cluster_id)
+            if cluster is not None:
+                self.event_queue.push(
+                    SimEvent(
+                        type="coordinator_handoff",
+                        time=next_time,
+                        node_id=cluster.coordinator_id,
+                        cluster_id=cluster.id,
+                    )
+                )
 
     def _schedule_gossip_rounds(self, start_time: float) -> None:
-        gossip_interval = 60.0
+        """Schedule only the first gossip round (lazy)."""
+        self._gossip_interval = 60.0
         t = start_time
-        while t < self.simulation_duration_seconds:
+        if t < self.simulation_duration_seconds:
             self.event_queue.push(
                 SimEvent(
                     type="gossip_round",
                     time=t,
                     node_id="mesh-coordinator",
-                    data={"round": int(t / gossip_interval)},
+                    data={"round": 0},
                 )
             )
-            t += gossip_interval
+
+    def _reschedule_gossip(self, current_time: float, current_round: int) -> None:
+        """Schedule the next gossip round."""
+        next_time = current_time + self._gossip_interval
+        if next_time < self.simulation_duration_seconds:
+            self.event_queue.push(
+                SimEvent(
+                    type="gossip_round",
+                    time=next_time,
+                    node_id="mesh-coordinator",
+                    data={"round": current_round + 1},
+                )
+            )
 
     def _schedule_failure_events(self) -> None:
         annual_rate = self.config.node_failure_rate_per_year
@@ -1053,7 +1126,14 @@ class SwarmCoordinationSimulator:
     def run(self) -> SwarmCoordinationRunResult:
         """Execute the full simulation and return the result."""
         events_processed = 0
-        max_events = self.config.node_count * self.config.simulation_days * 10
+        max_events = (
+            self.config.max_events
+            if self.config.max_events is not None
+            else self.config.node_count * self.config.simulation_days * 10
+        )
+        # Batch power updates: only update when >=60s have elapsed
+        last_power_time: float = 0.0
+        power_update_interval = 60.0
 
         while not self.event_queue.is_empty() and events_processed < max_events:
             event = self.event_queue.pop()
@@ -1062,16 +1142,20 @@ class SwarmCoordinationSimulator:
             if event.time > self.simulation_duration_seconds:
                 break
 
-            elapsed = event.time - self.current_time
-            self._update_power_consumption(elapsed)
+            # Batch power updates at intervals instead of every event
+            if event.time - last_power_time >= power_update_interval:
+                elapsed = event.time - last_power_time
+                self._update_power_consumption(elapsed)
+                last_power_time = event.time
+
             self.current_time = event.time
             self._process_event(event)
             events_processed += 1
 
-        # Final power update
-        remaining = self.simulation_duration_seconds - self.current_time
-        if remaining > 0:
-            self._update_power_consumption(remaining)
+        # Final power update for remaining time
+        remaining_power = self.simulation_duration_seconds - last_power_time
+        if remaining_power > 0:
+            self._update_power_consumption(remaining_power)
 
         return self._generate_result()
 
@@ -1121,6 +1205,8 @@ class SwarmCoordinationSimulator:
                     )
                 )
         node.last_update_time = self.current_time
+        # Lazy reschedule: queue the next state_sync for this node
+        self._reschedule_state_sync(node, self.current_time)
 
     def _handle_message_send(self, event: SimEvent) -> None:
         # Sending is handled inline in state_sync
@@ -1161,6 +1247,8 @@ class SwarmCoordinationSimulator:
         if idx >= 0:
             self.network.clusters[idx] = result.cluster
         self.network.nodes = result.nodes
+        # Lazy reschedule next handoff for this cluster
+        self._reschedule_handoff(event.cluster_id, self.current_time)
 
     def _handle_node_failure(self, event: SimEvent) -> None:
         idx = self._find_node_index(event.node_id)
@@ -1222,20 +1310,41 @@ class SwarmCoordinationSimulator:
     def _handle_gossip_round(self, event: SimEvent) -> None:
         if self.config.coordination_topology != "mesh":
             return
-        operational = [n for n in self.network.nodes if n.status != "failed"]
-        sample_rate = min(1.0, 1_000 / max(1, len(operational)))
-        sampled = [n for n in operational if self.rng.random() < sample_rate]
+        mesh_neighbors = self.network.mesh_neighbors or {}
+        n_nodes = len(self.network.nodes)
+        # Sample a fixed number of node indices directly
+        n_sample = min(1_000, n_nodes)
+        indices = self.rng.choice(n_nodes, size=n_sample, replace=False)
+        max_gossip_msgs = min(1_000, n_nodes)
+        msgs_this_round = 0
 
-        for node in sampled:
-            neighbors = (self.network.mesh_neighbors or {}).get(node.id, [])
+        queue_has_space = not self.message_queue.is_full()
+        for idx in indices:
+            if msgs_this_round >= max_gossip_msgs or not queue_has_space:
+                break
+            node = self.network.nodes[idx]
+            if node.status == "failed":
+                continue
+            neighbors = mesh_neighbors.get(node.id, [])
             for nid in neighbors:
-                neighbor = self._find_node(nid)
+                if msgs_this_round >= max_gossip_msgs:
+                    break
+                neighbor = self.network.get_node(nid)
                 if neighbor is None or neighbor.status == "failed":
                     continue
                 msg = create_message(node.id, nid, "gossip", self.current_time)
                 if self.message_queue.enqueue(msg):
                     self.total_messages_sent += 1
                     node.messages_sent += 1
+                    msgs_this_round += 1
+                else:
+                    queue_has_space = False
+                    break
+            if not queue_has_space:
+                break
+        # Lazy reschedule next gossip round
+        current_round = (event.data or {}).get("round", 0)
+        self._reschedule_gossip(self.current_time, current_round)
 
     def _handle_collision_warning(self, event: SimEvent) -> None:
         self.total_messages_sent += 1
@@ -1244,15 +1353,14 @@ class SwarmCoordinationSimulator:
     def _update_power_consumption(self, elapsed_seconds: float) -> None:
         if elapsed_seconds <= 0:
             return
-        self.network.nodes = [
-            update_node_power(
-                n,
-                elapsed_seconds,
-                self.config.base_power_w,
-                self.config.coordinator_power_w,
-            )
-            for n in self.network.nodes
-        ]
+        base_w = self.config.base_power_w
+        coord_w = self.config.coordinator_power_w
+        hours = elapsed_seconds / 3600.0
+        for node in self.network.nodes:
+            power = coord_w if node.is_coordinator else base_w
+            node.power_consumed_wh += power * hours
+            if node.is_coordinator:
+                node.coordinator_time_seconds += elapsed_seconds
 
     # -- result generation -------------------------------------------------
     def _generate_result(self) -> SwarmCoordinationRunResult:
@@ -1324,20 +1432,15 @@ class SwarmCoordinationSimulator:
 
     # -- helpers -----------------------------------------------------------
     def _find_node(self, node_id: str) -> Optional[SwarmNode]:
-        return next((n for n in self.network.nodes if n.id == node_id), None)
+        return self.network.get_node(node_id)
 
     def _find_node_index(self, node_id: str) -> int:
-        for i, n in enumerate(self.network.nodes):
-            if n.id == node_id:
-                return i
-        return -1
+        return self.network._node_map.get(node_id, -1)
 
     def _find_cluster(self, cluster_id: Optional[str]) -> Optional[Cluster]:
         if cluster_id is None:
             return None
-        return next(
-            (c for c in self.network.clusters if c.id == cluster_id), None
-        )
+        return self.network.get_cluster(cluster_id)
 
 
 # ---------------------------------------------------------------------------

@@ -202,6 +202,7 @@ def run_swarm_coordination_mc(
             base_power_w=config.base_power_w,
             simulation_days=config.simulation_days,
             seed=seed,
+            max_events=config.max_events,
         )
         sim = SwarmCoordinationSimulator(run_cfg)
         result = sim.run()
