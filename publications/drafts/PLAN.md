@@ -97,9 +97,9 @@ Track F:                                              │ 07,08,09  │───
   - [x] Fig 6: Architecture diagram (4-level hierarchy)
   - [x] Fig 7: Failure resilience vs. failure rate
   - [x] Fig 8: Topology comparison summary
-- [ ] **Paper**
-  - [ ] Verify all arXiv citations exist
-  - [ ] Write Version A (full LaTeX)
+- [x] **Paper**
+  - [x] Verify all arXiv citations exist (3 fixed: tolstaya year, li year, badescu title)
+  - [x] Write Version A (full LaTeX — 585 lines, 10 pages, 8 figures integrated)
   - [ ] Run iterative AI peer review → 3/3 Accept
   - [ ] Create CHANGELOG
 - [ ] **Publication Package**
@@ -125,9 +125,9 @@ Track F:                                              │ 07,08,09  │───
   - [x] Fig 6: System architecture diagram
   - [x] Fig 7: Word count distribution
   - [x] Fig 8: Termination voting patterns
-- [ ] **Paper**
-  - [ ] Verify all citations (especially 2025-2026 multi-agent LLM literature)
-  - [ ] Write Version A (full LaTeX)
+- [x] **Paper**
+  - [x] Verify all citations (5 fixed: arulmohan, wang, zheng year, chan venue, wu authors)
+  - [x] Write Version A (full LaTeX — 580 lines, 24 pages, 8 figures integrated)
   - [ ] Run iterative AI peer review → 3/3 Accept
   - [ ] Create CHANGELOG
 - [ ] **Publication Package**

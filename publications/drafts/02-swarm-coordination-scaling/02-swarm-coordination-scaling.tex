@@ -12,6 +12,8 @@
 \usepackage{algorithm}
 \usepackage{siunitx}
 
+\graphicspath{{figures/}}
+
 \begin{document}
 
 \title{Scaling Hierarchical Coordination for Billion-Unit Space Swarms: Discrete Event Simulation and Architectural Validation}
@@ -144,12 +146,14 @@ The total message complexity per coordination cycle is $O(N)$, as each node send
 
 \subsubsection{Hierarchical Topology}
 
-The hierarchical model implements a four-level tree structure:
+The hierarchical model implements a four-level tree structure (Fig.~\ref{fig:architecture}):
 
-% Figure placeholder: Figure 6 - Hierarchical architecture diagram
-% [Figure showing ground control at root, connected to 10-100 regional coordinators,
-% each managing 10-100 cluster coordinators, each managing 50-100 individual nodes.
-% Labels indicate message aggregation ratios at each level.]
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{fig-architecture-diagram.pdf}
+    \caption{Four-level hierarchical coordination architecture. Ground control connects to 10--100 regional coordinators, each managing 10--100 cluster coordinators, each responsible for 50--100 individual nodes. Labels indicate message aggregation ratios at each level of the hierarchy.}
+    \label{fig:architecture}
+\end{figure}
 
 \begin{equation}
     \text{Levels: Ground} \to \text{Regional} \to \text{Cluster} \to \text{Node}
@@ -221,7 +225,7 @@ The primary metrics collected are: communication overhead (fraction of total ban
 
 \subsection{Topology Comparison}
 
-Table~\ref{tab:topology_comparison} summarizes the scaling behavior of the three coordination topologies across the simulated range.
+Table~\ref{tab:topology_comparison} and Fig.~\ref{fig:overhead_scaling} summarize the scaling behavior of the three coordination topologies across the simulated range.
 
 \begin{table}[t]
     \centering
@@ -238,20 +242,30 @@ Table~\ref{tab:topology_comparison} summarizes the scaling behavior of the three
     \end{tabular}
 \end{table}
 
-% Figure placeholder: Figure 1 - Communication overhead vs. node count
-% [Log-log plot with node count on x-axis (10^3 to 10^6) and communication overhead
-% percentage on y-axis. Three curves: centralized (rising steeply, diverging near 10^4),
-% hierarchical (gradual rise from 1% to 8%), mesh (rising from 5% past 25% at 10^5).
-% Shaded regions indicate 95% confidence intervals from Monte Carlo runs.]
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{fig-overhead-vs-nodes.pdf}
+    \caption{Communication overhead as a function of node count for all three coordination topologies (log--log scale). Centralized overhead diverges near $10^4$ nodes, mesh overhead exceeds 25\% beyond $10^5$ nodes, and hierarchical overhead remains between 2--8\% across the full range. Shaded regions indicate 95\% confidence intervals from Monte Carlo runs.}
+    \label{fig:overhead_scaling}
+\end{figure}
 
-The centralized topology maintains acceptable overhead (5--15\%) up to approximately 10{,}000 nodes, beyond which message processing latency at the central coordinator diverges. Critically, this bottleneck arises from processing latency, not bandwidth: even with ample communication bandwidth, the sequential processing of status reports at the central coordinator introduces queueing delays that exceed coordination cycle deadlines. At $N = 10{,}000$ with our parameterization, the $M/D/1$ queue utilization $\rho$ approaches unity (Eq.~\ref{eq:centralized_utilization}), and mean waiting time (Eq.~\ref{eq:md1_waiting}) exceeds the coordination cycle period.
+The centralized topology maintains acceptable overhead (5--15\%) up to approximately 10{,}000 nodes, beyond which message processing latency at the central coordinator diverges (Fig.~\ref{fig:latency_dist}). Critically, this bottleneck arises from processing latency, not bandwidth: even with ample communication bandwidth, the sequential processing of status reports at the central coordinator introduces queueing delays that exceed coordination cycle deadlines. At $N = 10{,}000$ with our parameterization, the $M/D/1$ queue utilization $\rho$ approaches unity (Eq.~\ref{eq:centralized_utilization}), and mean waiting time (Eq.~\ref{eq:md1_waiting}) exceeds the coordination cycle period.
 
-% Figure placeholder: Figure 2 - Message processing latency distribution
-% [Three panels (10K, 100K, 1M nodes) showing latency histograms for each topology.
-% At 10K: all three have acceptable latency. At 100K: centralized shows extreme tail,
-% mesh shows broadening. At 1M: only hierarchical maintains tight distribution.]
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{fig-latency-distribution.pdf}
+    \caption{Message processing latency distributions at three scales ($10^4$, $10^5$, $10^6$ nodes). At $10^4$ nodes all topologies exhibit acceptable latency; at $10^5$ nodes the centralized topology develops extreme tail latency and mesh broadens; at $10^6$ nodes only the hierarchical topology maintains a tight distribution.}
+    \label{fig:latency_dist}
+\end{figure}
 
-The mesh topology provides excellent failure resilience---the loss of any individual node has negligible impact on global coordination---but its $O(N^2)$ state propagation overhead renders it impractical beyond approximately $10^5$ nodes. At $N = 100{,}000$, gossip traffic consumes over 25\% of available bandwidth, leaving insufficient capacity for operational data. Reducing the gossip fanout $f$ proportionally slows convergence, creating a fundamental trade-off between overhead and state freshness.
+The mesh topology provides excellent failure resilience---the loss of any individual node has negligible impact on global coordination---but its $O(N^2)$ state propagation overhead renders it impractical beyond approximately $10^5$ nodes. At $N = 100{,}000$, gossip traffic consumes over 25\% of available bandwidth, leaving insufficient capacity for operational data. Reducing the gossip fanout $f$ proportionally slows convergence, creating a fundamental trade-off between overhead and state freshness. Fig.~\ref{fig:failure_resilience} quantifies system availability under increasing failure rates for all three topologies.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{fig-failure-resilience.pdf}
+    \caption{System availability as a function of node failure rate for the three coordination topologies. The mesh topology maintains near-perfect availability even at elevated failure rates, while the centralized topology degrades sharply once the central coordinator is affected. The hierarchical topology exhibits graceful degradation intermediate between the two extremes.}
+    \label{fig:failure_resilience}
+\end{figure}
 
 The hierarchical topology achieves 2--8\% communication overhead across the full range of simulated scales. Its message aggregation at each level of the hierarchy reduces the load on upper levels by the cluster fan-out ratio, enabling the ground station to operate well within capacity even at $N = 10^6$. Failure resilience is intermediate: the loss of a cluster coordinator temporarily degrades that cluster's coordination (typically for one reporting cycle, until a replacement is elected), but does not affect other clusters.
 
@@ -279,13 +293,14 @@ Within the hierarchical topology, cluster size $k_c$ is a critical design parame
     \end{tabular}
 \end{table}
 
-% Figure placeholder: Figure 3 - Overhead vs. cluster size optimization curve
-% [Two curves (N=10^5 and N=10^6) showing communication overhead as a function of
-% cluster size. Both curves exhibit a U-shape with minimum near k_c=100.
-% Below k_c=50, overhead rises due to excessive inter-cluster coordination.
-% Above k_c=200, intra-cluster latency increases overhead.]
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{fig-cluster-size-optimization.pdf}
+    \caption{Communication overhead as a function of cluster size $k_c$ for $N = 10^5$ and $N = 10^6$ nodes. Both curves exhibit a U-shaped profile with a minimum near $k_c = 100$. Overhead rises below $k_c = 50$ due to excessive inter-cluster coordination and above $k_c = 200$ due to increasing intra-cluster latency.}
+    \label{fig:cluster_opt}
+\end{figure}
 
-The overhead exhibits a U-shaped dependence on cluster size with a minimum near $k_c = 100$. Below $k_c = 50$, the number of clusters becomes large, increasing inter-cluster coordination traffic and the load on regional coordinators. Above $k_c = 200$, intra-cluster message latency rises because the cluster coordinator must process more status reports per cycle, and the state transfer volume during handoffs increases proportionally. The optimal range of $k_c = 50$--$100$ is consistent across both scales tested.
+As shown in Fig.~\ref{fig:cluster_opt}, the overhead exhibits a U-shaped dependence on cluster size with a minimum near $k_c = 100$. Below $k_c = 50$, the number of clusters becomes large, increasing inter-cluster coordination traffic and the load on regional coordinators. Above $k_c = 200$, intra-cluster message latency rises because the cluster coordinator must process more status reports per cycle, and the state transfer volume during handoffs increases proportionally. The optimal range of $k_c = 50$--$100$ is consistent across both scales tested.
 
 Communication overhead decomposes into three components: intra-cluster traffic (approximately 60\% of total), inter-cluster coordination between cluster and regional coordinators (approximately 25\%), and ground-link traffic (approximately 15\%). This decomposition is largely invariant to total swarm size, indicating that the hierarchical structure successfully contains the scaling problem at each level.
 
@@ -311,14 +326,16 @@ The coordinator duty cycle $\tau_d$---the duration for which a node serves as cl
     \end{tabular}
 \end{table}
 
-% Figure placeholder: Figure 4 - Duty cycle Pareto frontier
-% [Scatter plot with power variance on x-axis and system availability on y-axis.
-% Points labeled by duty cycle duration. Pareto frontier connects 1h, 6h, 24h, 48h
-% points. 24h and 48h lie on the efficient frontier; 7d is dominated.]
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{fig-duty-cycle-pareto.pdf}
+    \caption{Duty cycle Pareto frontier in the power variance--system availability trade-off space. Points are labeled by duty cycle duration. The 24\,h and 48\,h configurations lie on the efficient frontier; the 7\,d configuration is Pareto-dominated.}
+    \label{fig:duty_pareto}
+\end{figure}
 
 The seemingly paradoxical result that shorter duty cycles yield lower handoff success rates arises from the fixed overhead of state transfer. Each handoff requires 1--10~seconds to transfer 10--50~MB of accumulated cluster state over optical inter-satellite links. At a 1-hour duty cycle in a 100-node cluster, this overhead occurs 24 times per day; the cumulative probability of at least one handoff failure per day reaches 5\% under our reliability model. At 24-hour duty cycles, only one handoff per day occurs, and the per-handoff success rate of 99.5\% translates directly to daily reliability.
 
-The 24-hour and 48-hour duty cycles occupy the Pareto frontier of the power-variance/availability trade-off. At 24~hours, power variance (12\%) is acceptable for solar-powered spacecraft with battery buffering, and availability (99.5\%) meets the requirements of most coordination tasks. At 48~hours, handoff success improves slightly (99.8\%) at the cost of increased power variance (18\%) and marginally reduced availability (99.2\%) due to longer coordinator failure exposure windows. Duty cycles of 7~days produce unacceptable power variance (35\%) and substantially reduced availability (98.0\%), and are Pareto-dominated by the 24--48~hour configurations.
+The 24-hour and 48-hour duty cycles occupy the Pareto frontier of the power-variance/availability trade-off (Fig.~\ref{fig:duty_pareto}). At 24~hours, power variance (12\%) is acceptable for solar-powered spacecraft with battery buffering, and availability (99.5\%) meets the requirements of most coordination tasks. At 48~hours, handoff success improves slightly (99.8\%) at the cost of increased power variance (18\%) and marginally reduced availability (99.2\%) due to longer coordinator failure exposure windows. Duty cycles of 7~days produce unacceptable power variance (35\%) and substantially reduced availability (98.0\%), and are Pareto-dominated by the 24--48~hour configurations.
 
 \subsection{The 50{,}000-Node Inflection Point}
 
@@ -341,15 +358,16 @@ A critical finding of our simulation study is the existence of an inflection poi
     \end{tabular}
 \end{table}
 
-% Figure placeholder: Figure 5 - Overhead trajectory with and without optimizations
-% [Log-linear plot showing overhead vs. fleet size. Baseline hierarchical curve rises
-% from 1% at 10^3 to 10% at 5x10^5. Optimized curve (with exception-based telemetry,
-% dynamic partitioning, and heterogeneous hardware) flattens near 4-5% beyond 50K.
-% Horizontal dashed line at 5% marks the "acceptable overhead" threshold.]
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{fig-scaling-trajectory.pdf}
+    \caption{Communication overhead trajectory with and without optimizations (log-linear scale). The baseline hierarchical curve rises from 1\% at $10^3$ to 10\% at $5 \times 10^5$ nodes. The optimized curve (exception-based telemetry, dynamic partitioning, and heterogeneous hardware) flattens near 4--5\% beyond the 50{,}000-node inflection point. The dashed line marks the 5\% acceptable-overhead threshold.}
+    \label{fig:scaling_trajectory}
+\end{figure}
 
 Below 50{,}000 nodes, overhead grows approximately logarithmically with fleet size, consistent with the $O(N \log N)$ theoretical complexity. Beyond this point, second-order effects---including inter-regional coordination, global state reconciliation, and the overhead of managing coordinator rotations across a large number of clusters---accelerate overhead growth. At 100{,}000 nodes, overhead reaches 6\%, which we classify as marginal: the system remains functional but the coordination tax on bandwidth begins to impact operational data throughput. At 500{,}000 nodes, the 10\% overhead is operationally significant.
 
-Three optimizations, applied in combination, restore overhead to acceptable levels beyond the inflection point:
+Three optimizations, applied in combination, restore overhead to acceptable levels beyond the inflection point (Fig.~\ref{fig:scaling_trajectory}):
 
 \textbf{Exception-based telemetry}: Instead of periodic status reports, nodes transmit only when their state deviates from predicted trajectories by more than a configurable threshold. This ``silence by default'' approach reduces telemetry bandwidth by approximately two orders of magnitude, as most nodes in a well-coordinated swarm follow predictable orbits.
 
@@ -367,6 +385,15 @@ The power impact of coordinator rotation is modest. In a 100-node cluster with a
 \end{equation}
 
 This represents a 3\% increase over the 5~W baseline---well within the margins of typical solar-powered spacecraft power budgets, which are designed with 20--30\% reserve capacity \cite{wertz_smad}. The duty cycle rotation also naturally distributes thermal cycling across all nodes, avoiding the concentration of thermal stress on permanently designated coordinators.
+
+Fig.~\ref{fig:topology_summary} provides a comprehensive comparison of all three topologies across the key performance metrics evaluated in this section.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{fig-topology-summary.pdf}
+    \caption{Comprehensive topology comparison across communication overhead, message latency, failure resilience, and scalability limit. The hierarchical topology offers the best overall balance, achieving low overhead and high scalability with intermediate failure resilience.}
+    \label{fig:topology_summary}
+\end{figure}
 
 
 %% ===========================================================================
@@ -503,7 +530,7 @@ C.~McLaughlin, ``OneWeb constellation management approach,'' in \emph{Proc. 35th
 G.~K.~O'Neill, \emph{The High Frontier: Human Colonies in Space}.\hskip 1em plus 0.5em minus 0.4em New York, NY, USA: Morrow, 1976.
 
 \bibitem{badescu_2006}
-V.~Badescu, Ed., \emph{Dyson Spheres: How Visible are Artificial Biospheres?}, Springer, 2006.
+V.~Badescu and R.~B.~Cathcart, Eds., \emph{Macro-Engineering: A Challenge for the Future}.\hskip 1em plus 0.5em minus 0.4em Springer, 2006.
 
 \bibitem{lynch_distributed}
 N.~A.~Lynch, \emph{Distributed Algorithms}.\hskip 1em plus 0.5em minus 0.4em San Francisco, CA, USA: Morgan Kaufmann, 1996.
@@ -530,7 +557,7 @@ J.~Kennedy and R.~Eberhart, ``Particle swarm optimization,'' in \emph{Proc. IEEE
 D.~Karaboga and B.~Basturk, ``A powerful and efficient algorithm for numerical function optimization: Artificial bee colony (ABC) algorithm,'' \emph{J. Global Optim.}, vol.~39, no.~3, pp.~459--471, 2007.
 
 \bibitem{tolstaya_gnn}
-E.~Tolstaya, F.~Gama, J.~Paulos, G.~Pappas, V.~Kumar, and A.~Ribeiro, ``Learning decentralized controllers for robot swarms with graph neural networks,'' in \emph{Proc. Conf. Robot Learn. (CoRL)}, 2019, pp.~671--682.
+E.~Tolstaya, F.~Gama, J.~Paulos, G.~Pappas, V.~Kumar, and A.~Ribeiro, ``Learning decentralized controllers for robot swarms with graph neural networks,'' in \emph{Proc. Conf. Robot Learn. (CoRL)}, 2020, pp.~671--682.
 
 \bibitem{lasry_mfg}
 J.-M.~Lasry and P.-L.~Lions, ``Mean field games,'' \emph{Japanese J. Math.}, vol.~2, no.~1, pp.~229--260, 2007.
@@ -539,7 +566,7 @@ J.-M.~Lasry and P.-L.~Lions, ``Mean field games,'' \emph{Japanese J. Math.}, vol
 M.~Huang, R.~P.~Malham\'{e}, and P.~E.~Caines, ``Large population stochastic dynamic games: Closed-loop McKean--Vlasov systems and the Nash certainty equivalence principle,'' \emph{Commun. Inf. Syst.}, vol.~6, no.~3, pp.~221--252, 2006.
 
 \bibitem{li_decentralized}
-Q.~Li, F.~Gama, A.~Ribeiro, and A.~Prorok, ``Graph neural networks for decentralized multi-robot path planning,'' in \emph{Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)}, 2023, pp.~1--8.
+Q.~Li, F.~Gama, A.~Ribeiro, and A.~Prorok, ``Graph neural networks for decentralized multi-robot path planning,'' in \emph{Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)}, 2020, pp.~11785--11792.
 
 \bibitem{darpa_offset}
 DARPA, ``OFFensive Swarm-Enabled Tactics (OFFSET),'' 2022. [Online]. Available: \url{https://www.darpa.mil/program/offensive-swarm-enabled-tactics}

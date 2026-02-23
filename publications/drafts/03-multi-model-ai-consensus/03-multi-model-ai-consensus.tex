@@ -20,6 +20,8 @@
 \usepackage{subcaption}
 \usepackage{textcomp}
 
+\graphicspath{{figures/}}
+
 % --- Hyperref configuration ---
 \hypersetup{
     colorlinks=true,
@@ -133,15 +135,14 @@ The value of institutionalized dissent is well-established in decision theory. R
 \subsection{System Architecture}
 \label{sec:architecture}
 
-The deliberation system comprises three layers: a model layer, an orchestration layer, and an output layer. The model layer consists of three frontier LLMs accessed through a unified API gateway (Databricks serving endpoints): Claude~4.6 (Anthropic), Gemini~3~Pro (Google), and GPT-5.2 (OpenAI). The choice of three models balances diversity against coordination complexity; with fewer than three, meaningful voting dynamics cannot emerge, while more than three increases orchestration overhead without proportional benefit for the class of problems studied.
+The deliberation system comprises three layers: a model layer, an orchestration layer, and an output layer (Fig.~\ref{fig:architecture}). The model layer consists of three frontier LLMs accessed through a unified API gateway (Databricks serving endpoints): Claude~4.6 (Anthropic), Gemini~3~Pro (Google), and GPT-5.2 (OpenAI). The choice of three models balances diversity against coordination complexity; with fewer than three, meaningful voting dynamics cannot emerge, while more than three increases orchestration overhead without proportional benefit for the class of problems studied.
 
-% FIGURE PLACEHOLDER: System architecture diagram
-% A three-tier diagram showing:
-% Top: Three model boxes (Claude 4.6, Gemini 3 Pro, GPT-5.2)
-% Middle: Orchestration layer with prompt construction, parallel response collection,
-%         structured vote tabulation, and termination condition detection
-% Bottom: Output layer with per-model proposals (markdown), voting records (structured),
-%         synthesized conclusion (markdown), and divergent views (YAML)
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-system-architecture.pdf}
+    \caption{Three-tier deliberation system architecture. The model layer dispatches prompts to three frontier LLMs (Claude~4.6, Gemini~3~Pro, GPT-5.2) through a unified API gateway. The orchestration layer manages prompt construction, parallel response collection, structured vote tabulation, and termination condition evaluation. The output layer produces four artifact types: per-model proposals (markdown), voting records (structured YAML), synthesized conclusions, and machine-readable divergent views.}
+    \label{fig:architecture}
+\end{figure}
 
 The orchestration layer, implemented as a Node.js application (\texttt{run-discussion.js}, approximately 940 lines), manages the deliberation lifecycle. It constructs prompts incorporating question context and prior-round history, dispatches requests to all three models in sequence, parses structured voting responses from free-text model outputs, tabulates weighted vote scores, evaluates termination conditions, and persists all intermediate artifacts to disk. Each model receives identical system prompts establishing the engineering domain context, and all models operate at temperature $T = 0.7$ to balance creativity with coherence.
 
@@ -193,7 +194,7 @@ Alongside their proposal votes, each model casts a binary termination vote: CONT
 The unanimous termination condition is deliberately strict. It requires all three models to independently assess that further iteration would not substantively improve the outcome. This prevents premature termination driven by a single model's assessment while the consecutive-conclude pathway provides an escape valve for cases where one model persistently votes CONTINUE despite clear convergence among the other two.
 
 \subsection{Conclusion Generation}
-\label{sec:conclusion}
+\label{sec:conclusion_generation}
 
 When a termination condition is satisfied, a designated synthesizer model (configurable; Claude~4.6 by default) generates a conclusion document from the full deliberation record. The synthesizer receives all round-by-round proposals, voting results, and winning responses, and produces a structured output comprising four sections: a narrative \emph{Summary} synthesizing key conclusions (2--3 paragraphs), \emph{Key Points} identifying 4--6 areas of convergence, \emph{Unresolved Questions} documenting 2--4 areas where deliberation did not reach resolution, and \emph{Recommended Actions} specifying 3--5 concrete next steps.
 
@@ -300,17 +301,25 @@ Average approval rate (all votes) & 72.2\% \\
 \end{tabular}
 \end{table}
 
-No deliberation reached the 5-round safety limit. The two questions that did not achieve unanimous-conclude termination both involved governance topics where value-laden disagreements persisted but the models assessed that further iteration would yield diminishing returns. The mean approval rate of 72.2\% across all votes (including self-votes) indicates that models generally assessed their peers' proposals favorably, consistent with the engineering domain where multiple valid approaches exist.
+No deliberation reached the 5-round safety limit. The two questions that did not achieve unanimous-conclude termination both involved governance topics where value-laden disagreements persisted but the models assessed that further iteration would yield diminishing returns. The mean approval rate of 72.2\% across all votes (including self-votes) indicates that models generally assessed their peers' proposals favorably, consistent with the engineering domain where multiple valid approaches exist. Fig.~\ref{fig:convergence_scatter} illustrates the relationship between approval rate and rounds to convergence across all 16~deliberations.
 
-% FIGURE PLACEHOLDER: Bar chart showing rounds to convergence by question category.
-% X-axis: question categories (Coordination, Power, Propulsion, Manufacturing, Governance, Cross-cutting)
-% Y-axis: number of rounds
-% Shows that Coordination and Power questions converge in 1-2 rounds,
-% while Governance questions require 3-4 rounds.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-convergence-scatter.pdf}
+    \caption{Relationship between mean approval rate and rounds to convergence for all 16~deliberations. Questions with higher approval rates tend to converge in fewer rounds, while questions with lower approval rates---typically governance and economic topics---require additional iteration. Each point represents one deliberation; marker color indicates question category.}
+    \label{fig:convergence_scatter}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-rounds-by-category.pdf}
+    \caption{Rounds to convergence grouped by question domain. Well-constrained physics and engineering categories (Coordination, Power) converge in 1--2 rounds, while questions involving economic assumptions (Manufacturing, Propulsion) or value-laden judgments (Governance) require 3--4 rounds.}
+    \label{fig:convergence_by_category}
+\end{figure}
 
 \subsection{Convergence Patterns by Domain}
 
-Convergence behavior varied systematically with question domain, falling into three distinct patterns.
+Convergence behavior varied systematically with question domain (Fig.~\ref{fig:convergence_by_category}), falling into three distinct patterns.
 
 \textbf{Rapid convergence (1--2 rounds).} Well-constrained physics and engineering problems reached conclusion quickly. The swarm coordination architecture question (rq-1-24) achieved unanimous-conclude in round~2 after all three models converged on a hierarchical, locality-based control architecture with dedicated coordinator nodes, differing only in implementation specifics (three-tier versus five-tier hierarchy, exact cluster sizes). Similarly, exception-based telemetry design and autonomous assembly certification reached consensus in round~1 with unanimous CONCLUDE votes. These questions shared a common property: the design space was sufficiently constrained by physical laws that models rapidly identified the same family of solutions.
 
@@ -318,16 +327,46 @@ Convergence behavior varied systematically with question domain, falling into th
 
 \textbf{Slow convergence (3--4 rounds).} Questions involving economic assumptions or governance exhibited the slowest convergence. The ISRU manufacturing transition timing question (rq-1-21) required three rounds because models held fundamentally different assumptions about launch cost trajectories and asteroid mining economics---disagreements that could not be resolved through engineering analysis alone but depended on economic forecasts. The multi-century governance structure question (rq-0-29) reached unanimous CONCLUDE in a single round, but this was anomalous: all three models independently assessed that governance questions are inherently value-laden and that a single round of comprehensive proposals adequately mapped the solution space, even though deep disagreements persisted in the divergent views.
 
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-word-count-distribution.pdf}
+    \caption{Distribution of proposal word counts across models and deliberation rounds. All three models generally adhered to the 2{,}000-word guideline, with proposal lengths decreasing slightly in later rounds as models converged on refined positions rather than generating comprehensive new proposals.}
+    \label{fig:word_count}
+\end{figure}
+
+Fig.~\ref{fig:word_count} shows the distribution of proposal word counts across models and rounds, illustrating that later-round proposals tend to be more focused as models converge.
+
 \subsection{Voting Dynamics}
 \label{sec:voting}
 
-Analysis of all 162~individual votes across 16~deliberations reveals several patterns in the voting mechanism's behavior.
+Analysis of all 162~individual votes across 16~deliberations reveals several patterns in the voting mechanism's behavior. Fig.~\ref{fig:vote_distribution} shows the overall distribution of APPROVE, NEUTRAL, and REJECT votes across deliberation rounds.
 
-\textbf{Self-vote correlation.} Models' self-votes correlated with the peer votes they received ($r = 0.72$, $p < 0.001$), indicating that self-assessment tracks peer assessment reasonably well but with a systematic positive bias. Models assigned APPROVE to their own proposals in 89\% of cases, compared to a 68\% APPROVE rate for peer proposals. The $0.5\times$ self-vote weight effectively neutralizes this bias: removing the self-vote weight entirely would have changed the round winner in 3 of 36~rounds (8.3\%), while eliminating self-voting altogether would have changed it in 2~rounds (5.6\%). The $0.5\times$ weight thus represents a reasonable compromise.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-vote-distribution.pdf}
+    \caption{Distribution of APPROVE, NEUTRAL, and REJECT votes across deliberation rounds. APPROVE votes dominate in all rounds, consistent with the engineering domain where multiple valid approaches exist. REJECT votes remain rare throughout, indicating that the models' proposals are generally technically competent. The proportion of APPROVE votes increases slightly in later rounds as proposals converge.}
+    \label{fig:vote_distribution}
+\end{figure}
+
+\textbf{Self-vote correlation.} Models' self-votes correlated with the peer votes they received ($r = 0.72$, $p < 0.001$), indicating that self-assessment tracks peer assessment reasonably well but with a systematic positive bias. Models assigned APPROVE to their own proposals in 89\% of cases, compared to a 68\% APPROVE rate for peer proposals. The $0.5\times$ self-vote weight effectively neutralizes this bias: removing the self-vote weight entirely would have changed the round winner in 3 of 36~rounds (8.3\%), while eliminating self-voting altogether would have changed it in 2~rounds (5.6\%). The $0.5\times$ weight thus represents a reasonable compromise, as shown in Fig.~\ref{fig:self_peer_vote}.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-self-peer-vote.pdf}
+    \caption{Correlation between self-votes and peer-votes across all deliberations. Models exhibit a systematic positive self-assessment bias (89\% self-APPROVE rate versus 68\% peer-APPROVE rate), but self-votes and peer-votes are positively correlated ($r = 0.72$), indicating that self-assessment provides a meaningful quality signal. The $0.5\times$ self-vote weight effectively mitigates the bias without discarding this signal.}
+    \label{fig:self_peer_vote}
+\end{figure}
 
 \textbf{REJECT vote informativeness.} REJECT votes constituted only 8\% of all votes (13 of 162) but were disproportionately informative. In every case where a REJECT vote was cast, the accompanying justification identified a specific technical weakness---an incorrect assumption, an infeasible parameter value, or an internal inconsistency---rather than a general quality objection. Post-hoc review confirmed that 11 of 13~REJECT justifications identified genuine technical issues. The rarity of REJECT votes suggests that the models' proposals are generally competent within their respective reasoning capabilities, and that the voting mechanism surfaces the most significant disagreements rather than noise.
 
-\textbf{Model-specific voting patterns.} Claude~4.6 cast the most REJECT votes (6 of 13, 46\%), consistent with its generally conservative assessment style. GPT-5.2 was the most generous evaluator, casting zero REJECT votes across all deliberations. Gemini~3~Pro's voting was occasionally compromised by JSON parsing failures (defaulting to NEUTRAL), which affected 4 of 48 voting instances (8.3\%). This technical limitation reduced Gemini's effective influence in affected rounds and represents an implementation issue to be addressed in future work.
+\textbf{Model-specific voting patterns.} Claude~4.6 cast the most REJECT votes (6 of 13, 46\%), consistent with its generally conservative assessment style. GPT-5.2 was the most generous evaluator, casting zero REJECT votes across all deliberations. Gemini~3~Pro's voting was occasionally compromised by JSON parsing failures (defaulting to NEUTRAL), which affected 4 of 48 voting instances (8.3\%). This technical limitation reduced Gemini's effective influence in affected rounds and represents an implementation issue to be addressed in future work. Fig.~\ref{fig:termination_voting} summarizes the termination voting patterns across all rounds and models.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-termination-voting.pdf}
+    \caption{Termination voting patterns showing CONTINUE versus CONCLUDE votes by round and model. The proportion of CONCLUDE votes increases sharply after Round~1, with most deliberations reaching unanimous CONCLUDE by Round~2 or~3. The two deliberations that required consecutive-conclude termination (rather than unanimous) both involved governance topics where one model persistently voted CONTINUE.}
+    \label{fig:termination_voting}
+\end{figure}
 
 \subsection{Divergent View Analysis}
 
@@ -416,7 +455,14 @@ Qualitative analysis of proposals across 16~deliberations revealed consistent mo
     \item \textbf{Gemini~3~Pro} excelled at quantitative analysis and hardware-level reasoning. Its proposals frequently introduced SWaP (Size, Weight, and Power) constraints and manufacturing considerations that other models overlooked. However, its voting was occasionally compromised by JSON parsing failures.
 \end{itemize}
 
-This diversity is a feature of the methodology, not a limitation. A deliberation panel composed of three instances of the same model would converge faster but explore a narrower design space. The complementary strengths---conservative risk assessment from Claude, implementation detail from GPT, quantitative hardware analysis from Gemini---produced richer trade studies than any single model could achieve.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-model-profiles.pdf}
+    \caption{Comparative model performance profiles across 16~deliberations. Each axis represents a distinct evaluation dimension: proposal win rate, mean peer approval score, REJECT votes cast, mean proposal length, and round-over-round improvement. The three models exhibit complementary strengths---Claude favors conservative, well-hedged proposals; GPT produces implementation-detailed specifications; Gemini excels at quantitative hardware-level analysis.}
+    \label{fig:model_profiles}
+\end{figure}
+
+This diversity is a feature of the methodology, not a limitation, as illustrated in the comparative profiles shown in Fig.~\ref{fig:model_profiles}. A deliberation panel composed of three instances of the same model would converge faster but explore a narrower design space. The complementary strengths---conservative risk assessment from Claude, implementation detail from GPT, quantitative hardware analysis from Gemini---produced richer trade studies than any single model could achieve.
 
 \subsection{Limitations and Failure Modes}
 \label{sec:limitations}
@@ -500,10 +546,10 @@ G.~Irving, C.~Christiano, and D.~Amodei, ``AI safety via debate,'' \emph{arXiv p
 Y.~Du, S.~Li, A.~Torralba, J.~B. Tenenbaum, and I.~Mordatch, ``Improving factuality and reasoning in language models through multiagent debate,'' in \emph{Proc.\ International Conference on Machine Learning (ICML)}, 2023.
 
 \bibitem{wu2023autogen}
-Q.~Wu, G.~Bansal, J.~Zhang, Y.~Wu, S.~Zhang, E.~Zhu, B.~Li, L.~Jiang, X.~Zhang, and C.~Wang, ``AutoGen: Enabling next-gen LLM applications via multi-agent conversation,'' \emph{arXiv preprint arXiv:2308.08155}, 2023.
+Q.~Wu, G.~Bansal, J.~Zhang, Y.~Wu, B.~Li, E.~Zhu, L.~Jiang, X.~Zhang, S.~Zhang, J.~Liu, A.~H.~Awadallah, R.~W.~White, D.~Burger, and C.~Wang, ``AutoGen: Enabling next-gen LLM applications via multi-agent conversation,'' \emph{arXiv preprint arXiv:2308.08155}, 2023.
 
 \bibitem{zheng2024judging}
-L.~Zheng, W.-L. Chiang, Y.~Sheng, S.~Zhuang, Z.~Wu, Y.~Zhuang, Z.~Lin, Z.~Li, D.~Li, E.~P. Xing, H.~Zhang, J.~E. Gonzalez, and I.~Stoica, ``Judging LLM-as-a-judge with MT-Bench and Chatbot Arena,'' in \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2024.
+L.~Zheng, W.-L. Chiang, Y.~Sheng, S.~Zhuang, Z.~Wu, Y.~Zhuang, Z.~Lin, Z.~Li, D.~Li, E.~P. Xing, H.~Zhang, J.~E. Gonzalez, and I.~Stoica, ``Judging LLM-as-a-judge with MT-Bench and Chatbot Arena,'' in \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2023.
 
 \bibitem{bubeck2023sparks}
 S.~Bubeck, V.~Chandrasekaran, R.~Eldan, J.~Gehrke, E.~Horvitz, E.~Kamar, P.~Lee, Y.~T. Lee, Y.~Li, S.~Lundberg, H.~Nori, H.~Palangi, M.~T. Ribeiro, and Y.~Zhang, ``Sparks of artificial general intelligence: Early experiments with GPT-4,'' \emph{arXiv preprint arXiv:2303.12712}, 2023.
@@ -524,7 +570,7 @@ J.~McDermott, ``R1: A rule-based configurer of computer systems,'' \emph{Artific
 Autodesk Research, ``Generative design: An overview,'' Autodesk, Tech.\ Rep., 2023.
 
 \bibitem{arulmohan2023extracting}
-S.~Arulmohan, S.~Jain, and A.~Veeraraghavan, ``Extracting requirements from regulations and standards using LLMs,'' in \emph{Proc.\ IEEE International Requirements Engineering Conference}, 2023.
+S.~Arulmohan, M.-J.~Meurs, and S.~Mosser, ``Extracting domain models from textual requirements in the era of large language models,'' in \emph{Proc.\ ACM/IEEE Int. Conf. Model Driven Eng. Languages Syst. Companion (MODELS-C)}, 2023.
 
 \bibitem{chen2021codex}
 M.~Chen, J.~Tworek, H.~Jun, Q.~Yuan, H.~Pinto de Oliveira, J.~Kaplan, H.~Edwards, Y.~Burda, N.~Joseph, G.~Brockman, et~al., ``Evaluating large language models trained on code,'' \emph{arXiv preprint arXiv:2107.03374}, 2021.
@@ -563,10 +609,10 @@ NASA, ``NASA Systems Engineering Handbook,'' NASA SP-2016-6105 Rev.~2, 2020.
 T.~Liang, Z.~He, W.~Jiao, X.~Wang, Y.~Wang, R.~Wang, Y.~Yang, Z.~Tu, and S.~Shi, ``Encouraging divergent thinking in large language models through multi-agent debate,'' \emph{arXiv preprint arXiv:2305.19118}, 2024.
 
 \bibitem{chan2024chateval}
-C.~M. Chan, W.~Chen, Y.~Su, J.~Yu, W.~Xue, S.~Zhang, J.~Fu, and Z.~Liu, ``ChatEval: Towards better LLM-based evaluators through multi-agent debate,'' in \emph{Proc.\ International Conference on Learning Representations (ICLR)}, 2024.
+C.~M. Chan, W.~Chen, Y.~Su, J.~Yu, W.~Xue, S.~Zhang, J.~Fu, and Z.~Liu, ``ChatEval: Towards better LLM-based evaluators through multi-agent debate,'' \emph{arXiv preprint arXiv:2308.07201}, 2023.
 
 \bibitem{wang2024rethinking}
-X.~Wang, Z.~Wang, J.~Liu, Y.~Chen, L.~Yuan, H.~Peng, and H.~Ji, ``Rethinking the bounds of LLM reasoning: Are multi-agent discussions the key?,'' \emph{arXiv preprint arXiv:2402.18272}, 2024.
+Q.~Wang, Z.~Wang, Y.~Su, H.~Tong, and Y.~Song, ``Rethinking the bounds of LLM reasoning: Are multi-agent discussions the key?,'' \emph{arXiv preprint arXiv:2402.18272}, 2024.
 
 \end{thebibliography}
 
