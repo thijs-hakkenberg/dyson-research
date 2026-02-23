@@ -10,155 +10,161 @@ reviewers:
 
 
 
-# Comparative Review Synthesis
+# Comparative Peer Review Synthesis
 
-**Manuscript:** "Scaling Hierarchical Coordination for Million-Unit Space Swarms: Discrete Event Simulation and Architectural Analysis"
+**Manuscript:** "Characterizing Hierarchical Coordination Scaling for Large Autonomous Space Swarms: A Discrete Event Simulation Study"
 
-**Target Venue:** IEEE Transactions on Aerospace and Electronic Systems
+**Reviewers:** Claude Opus 4.6, Gemini 3 Pro, GPT-5.2 — All reviewing Version E
 
 ---
 
 ## Version Comparison
 
-All three reviews provided here were conducted on **Version D** only; the prompt references an A/B voice-style comparison, but the actual reviews do not differentiate between a "formal academic" (A) and "humanized" (B) version. Each reviewer evaluated the same manuscript text. Consequently, no direct A-versus-B voice-style comparison can be extracted from the review content. The ratings below are therefore replicated across both columns for each model, reflecting the single version reviewed. Any future revision cycle that produces distinct A and B drafts should be re-evaluated for voice-style trade-offs.
+All three reviewers evaluated the same version (Version E), so a direct A-vs-B voice-style comparison is not possible from the provided materials. However, the reviews themselves exhibit notable differences in tone and emphasis that illuminate how different evaluative lenses interact with the manuscript:
 
-What *can* be observed is a difference in **reviewer voice and emphasis** across models, which serves as a proxy for how different audiences might receive the paper:
+- **Claude Opus 4.6** adopted the most granular, line-by-line approach, identifying specific equation-level issues (Eq. 4/5 notation, Eq. 8 power calculation, the gossip fanout derivation in Section III-B-3) and providing the most detailed minor-issue list (10 items). This reviewer balanced acknowledgment of the paper's structural strengths with deep skepticism about the quantitative reliability of the results under idealized assumptions.
 
-- **Claude Opus 4.6** adopted the most exacting, line-by-line technical audit style, flagging equation-level inconsistencies and demanding additional simulation runs. This mirrors a senior T-AES reviewer with deep queueing-theory expertise who prioritizes internal consistency and falsifiability of quantitative claims.
-- **Gemini 3 Pro** was the most favorable overall, treating the paper as a near-publishable contribution needing primarily reframing rather than new experiments. This mirrors a systems-engineering reviewer who values practical design guidance and clear writing.
-- **GPT-5.2** occupied a middle ground but was the most insistent on **task-based requirement formalization** and **byte-level traffic accounting**, reflecting a networking/protocol-design perspective that demands reproducibility at the packet level.
+- **Gemini 3 Pro** was the most favorable overall, rating Significance, Validity, Clarity, and Ethics all at 5/5. This reviewer focused on the paper's conceptual contribution and engineering utility, treating the idealized link model and superlinear regime granularity as addressable issues rather than fundamental flaws. Gemini's review reads as the most "big picture" oriented.
 
-The divergence in overall recommendation (Minor Revision from Gemini vs. Major Revision from Claude and GPT) is driven primarily by whether the reviewer believes the paper's comparative claims require new simulation data (Claude, GPT: yes) or can be adequately addressed through reframing and caveating (Gemini: yes).
+- **GPT-5.2** was the most critical, particularly on methodology (2/5) and validity (2/5), identifying a fundamental bandwidth model inconsistency that the other reviewers did not flag with the same specificity — namely, that coordinators receiving traffic from $k_c$ members would violate the stated 1 kbps per-node constraint. GPT also uniquely questioned the coherence between the queueing model (msg/s) and the bandwidth model (bps).
+
+The divergence between Gemini's "Minor Revision" and Claude/GPT's "Major Revision" recommendations highlights a genuine tension: the paper's *conceptual framing* is strong (Gemini's emphasis), but its *quantitative execution* has gaps that undermine the specific numeric claims that constitute the paper's primary contribution (Claude/GPT's emphasis).
 
 ---
 
 ## Consensus Strengths
 
-1. **Important and timely problem.** All three reviewers agreed that the $10^3$–$10^6$ node coordination gap is a genuine, under-studied regime with direct relevance to near-term mega-constellation operations (Starlink, Kuiper). Claude called it "genuinely important"; Gemini rated significance 5/5; GPT described it as "important and timely."
+1. **Important and timely problem space.** All three reviewers agreed that the $10^3$–$10^6$ node scaling regime for autonomous space systems is genuinely underexplored and that the paper addresses a real gap in the literature. Claude called it "timely given Starlink's growth trajectory"; Gemini rated significance 5/5; GPT acknowledged "a genuine and increasingly important problem."
 
-2. **Transparent and commendable limitations disclosure.** Every reviewer praised the honesty of Section V-E (limitations) and the AI-usage disclosure. Claude called it "one of the most honest limitations sections I have reviewed"; Gemini rated ethical compliance 5/5; GPT noted it is "better than typical disclosure practices."
+2. **Well-structured simulation framework with transparent parameterization.** All reviewers praised the explicit parameter table (Table I/II/III across reviews), the Monte Carlo methodology (50–100 runs per configuration with bootstrap CIs), and the validation against closed-form queueing solutions. GPT called the parameter table "a strong step toward reproducibility"; Claude noted the "commendable transparency about assumptions."
 
-3. **Sound overall simulation framework.** The choice of DES with Monte Carlo analysis, bootstrap confidence intervals, and validation against closed-form queueing bounds (M/D/1, gossip convergence) was recognized as appropriate and competently executed by all reviewers. The parameter table (Table II / Table I) and the baseline-vs-protocol overhead decomposition (Section III-F) were specifically highlighted as strengths.
+3. **Clean separation of baseline telemetry from protocol overhead.** All three reviewers specifically highlighted the analytical choice to isolate the topology-invariant 20.5% baseline telemetry from architecture-dependent protocol overhead as methodologically sound and helpful for fair comparison. Gemini noted it "prevents confusion in the results"; Claude called it "a clean analytical choice."
 
-4. **Practical design guidance.** The cluster-size optimization (50–100 nodes) and duty-cycle recommendation (24–48 hours) were valued by all reviewers as actionable outputs for system architects, distinguishing this work from purely theoretical graph-theoretic studies.
+4. **Honest and thorough limitations discussion.** All reviewers acknowledged that the paper is unusually forthcoming about its own weaknesses — the idealized link model, the sparse data points for the superlinear regime, the missing message decomposition. Gemini called the limitations section "refreshingly honest"; Claude noted the "honest acknowledgment of the superlinear regime's under-characterization."
 
-5. **Clear writing and logical structure.** All reviewers rated clarity at 4/5 or 5/5. The progression from problem statement through simulation framework to results and discussion was described as logical and well-organized, with consistent notation and well-designed figures and tables.
+5. **Strong ethical disclosure regarding AI assistance.** All three reviewers praised the explicit acknowledgment of AI tools used for ideation, the naming of specific models, and the distinction between AI-assisted concept generation and human-led validation. Gemini called it a standard-setting disclosure.
 
-6. **Appropriate separation of baseline telemetry from protocol overhead.** All reviewers noted that this distinction (Section III-F) prevents a common source of confusion and adds credibility to the overhead analysis.
+6. **Effective conceptual framing with bounding baselines.** The strategy of bracketing the design space with centralized (lower bound on overhead, upper bound on latency/spectrum) and global-state mesh (upper bound on overhead, lower bound on information completeness) was recognized as conceptually valuable by all reviewers, even as they critiqued the extremity of these bounds.
 
 ---
 
 ## Consensus Weaknesses
 
-1. **Asymmetric / apples-to-oranges topology comparison.** This was the single most consistently raised issue. Claude identified it as the paper's "most fundamental methodological issue" (centralized uses $c=1$ worst case; mesh uses global-state convergence worst case; hierarchical gets generous headroom). Gemini flagged the mesh as a "strawman" evaluated under "global awareness" rather than practical sectorized dissemination. GPT framed it as a mismatch in **information objectives**: mesh must disseminate $O(N)$ full trajectories while hierarchical uses aggregated summaries, making the comparison one of different coordination requirements rather than different architectures under the same requirement. All three demand either simulation of intermediate variants (sectorized mesh, multi-server centralized) or explicit reframing/relabeling throughout.
+1. **Idealized link model undermines quantitative claims.** All three reviewers identified the absence of realistic link conditions (Earth occlusion, Doppler, MAC contention, pointing, atmospheric effects) as a significant weakness. Claude estimated 2–4× overhead increase; Gemini noted the differential impact on GSLs vs. ISLs; GPT flagged it as part of the broader bandwidth model inconsistency. All agreed this is not merely a limitation to acknowledge but a gap that materially affects the paper's central quantitative contribution.
 
-2. **Insufficient evidence for the superlinear scaling regime near 50,000 nodes.** Claude noted only five data points with large gaps and demanded intermediate fleet sizes (20k–80k) with formal change-point analysis. Gemini called the inflection point claim dependent on reporting rate $r$ and asked for sensitivity analysis or softened language. GPT described it as a "parameter-contingent outcome from an idealized model" that should be positioned as a design hypothesis rather than a general finding.
+2. **Superlinear scaling regime is under-characterized and over-claimed.** All three reviewers flagged the mismatch between the prominence of the superlinear finding (abstract, contributions, conclusions) and the evidence supporting it (five data points, no message decomposition, no change-point analysis). Claude called for demotion to "preliminary observation" or additional simulation; Gemini requested a "zoom-in" sweep between 10k–100k; GPT noted the authors explicitly admit they did not instrument the decomposition needed to support their causal attribution.
 
-3. **Physical-layer / link-layer abstraction undermines quantitative conclusions.** All reviewers noted that the idealized full-connectivity assumption (no Earth occlusion, no MAC contention, no link acquisition delay) is not topology-neutral. Claude argued hierarchical is more vulnerable to targeted coordinator-link outages; GPT noted hierarchical creates hot spots while mesh benefits from path diversity; Gemini was less emphatic but acknowledged the gap. All requested at minimum a sensitivity analysis with stochastic link availability.
+3. **Optimizations in Section IV-D lack rigorous evaluation.** All reviewers questioned whether the three optimizations (exception-based telemetry, dynamic spatial partitioning, heterogeneous hardware) were actually implemented in the DES or merely projected analytically. Claude noted the "two orders of magnitude" reduction is stated without derivation; Gemini requested explicit quantification; GPT recommended moving them to Discussion as qualitative recommendations if not simulated.
 
-4. **Traffic model under-specification.** GPT was most insistent (demanding explicit byte/packet accounting, aggregation payload sizes, delta-vs-full-table gossip, ack/retry assumptions), but Claude also flagged missing downward command messages in Eq. (4)/(5) and the unjustified collision-avoidance event rate. Gemini noted the coordinator processing capacity (1,000 msg/s) lacks hardware justification. The consensus is that the headline 2–8% overhead numbers cannot be independently verified from the information provided.
+4. **Reference baselines are too extreme for meaningful architectural comparison.** All reviewers noted that the centralized (single server) and global-state mesh (full fleet state at every node) baselines are deliberately extreme, making the hierarchical architecture's superiority somewhat predetermined. Claude called for simulation of the sectorized mesh; Gemini acknowledged the issue implicitly through the "Sectorized Mesh" discussion praise; GPT recommended either including a sectorized baseline or tightening the bounding language.
 
-5. **AI-assisted design exploration section (V-B) is premature and potentially distracting.** Claude recommended removing or relegating it to an appendix; Gemini suggested moving it to Future Work; GPT said it should either be removed, shortened to a brief disclosure, or converted into an actually evaluated DES variant. All agreed it interrupts the technical flow and risks reducing credibility with the T-AES audience, despite the transparent disclosure.
+5. **Missing or incomplete message/traffic decomposition.** All reviewers noted that the paper claims specific overhead percentages and scaling behaviors without providing the per-tier traffic breakdown (intra-cluster, cluster-to-regional, regional-to-ground) that would substantiate these claims. The paper itself acknowledges this gap but does not address it.
 
-6. **Missing key references.** All reviewers identified gaps in the citation of Delay/Disruption Tolerant Networking (DTN/BPv7), CCSDS standards beyond Prox-1, ISL routing/scheduling literature, and conjunction assessment operational data. Several non-archival web references were flagged as insufficient for T-AES.
+6. **Queueing model assumptions questionable for intra-cluster traffic.** Claude specifically identified the Poisson arrival assumption as inappropriate for periodic reporters within small clusters; GPT raised the broader issue of inconsistency between the queueing model (msg/s) and bandwidth model (bps). Gemini did not flag this explicitly but noted the need for stress-testing the collision avoidance rate's impact on the superlinear threshold, which is related.
 
 ---
 
 ## Divergent Opinions
 
-| Area | Position | Reviewer |
-|------|----------|----------|
-| **Overall recommendation** | Major Revision — new simulations required (multi-server centralized, sectorized mesh, stochastic links, intermediate fleet sizes) | **Claude Opus 4.6**, **GPT-5.2** |
-| | Minor Revision — reframing and caveating sufficient, no new simulations strictly required | **Gemini 3 Pro** |
-| **Severity of mesh parameterization issue** | Fundamental flaw requiring simulation of sectorized mesh variant before publication | **Claude**, **GPT** |
-| | Addressable by relabeling ("Global-State Mesh") and adding a discussion paragraph estimating sectorized crossover | **Gemini** |
-| **Novelty level** | Adequate (3/5) — the qualitative conclusion (hierarchy wins) is predictable from first principles; novelty is incremental parameterization | **Claude** |
-| | Excellent (5/5) — the systematic DES comparison across three orders of magnitude fills a genuine gap | **Gemini** |
-| | Good (4/5) — novel in scope and synthesis but not in theory or validated operational insight | **GPT** |
-| **Need for task-based requirement formalization** | Strongly required — define coordination tasks (conjunction screening, maneuver scheduling, failure detection) with explicit information needs, then evaluate topologies against the same task metrics | **GPT** |
-| | Not explicitly requested as a structural change | **Claude**, **Gemini** |
-| **Centralized model consistency** | The $c=1$ server is the main issue; simulate $c \in \{1, 10, 100\}$ | **Claude** |
-| | The inconsistency between 1 kbps/node ISL budget and ground-station-based centralized processing is the deeper problem — clarify which links exist and how capacity is allocated | **GPT** |
-| | Not flagged as a major issue | **Gemini** |
-| **Collision avoidance rate ($10^{-4}$/node/s)** | Critical unjustified parameter requiring derivation from orbital mechanics or sensitivity sweep | **Claude** |
-| | Not specifically flagged | **Gemini**, **GPT** |
-| **Duty-cycle table (handoff success metric)** | Conflates per-event and cumulative reliability; needs consistent reporting | **Claude** |
-| | "Handoff cost" is qualitative and should be made quantitative | **GPT** |
-| | Not flagged | **Gemini** |
+1. **Overall severity of methodological issues.**
+   - **Gemini 3 Pro** rated Methodology 4/5 (Good) and recommended Minor Revision, viewing the idealized link model and sparse superlinear data as addressable without fundamental restructuring.
+   - **Claude Opus 4.6** rated Methodology 2/5 (Needs Improvement) and recommended Major Revision, arguing the idealized link model could invalidate specific quantitative claims.
+   - **GPT-5.2** rated Methodology 2/5 (Needs Improvement) and recommended Major Revision, identifying a fundamental bandwidth model inconsistency (coordinator inbound traffic vs. per-node 1 kbps cap) that the other reviewers did not flag with the same specificity.
+
+2. **Bandwidth model coherence.**
+   - **GPT-5.2** uniquely identified a critical inconsistency: coordinators receiving $k_c \times 205$ bps from cluster members would exceed the stated 1 kbps per-node allocation, and the handoff transfer (10–50 MB over 1–10 Gbps) is irreconcilable with the coordination channel allocation without explicit specification of separate link modes.
+   - **Claude Opus 4.6** and **Gemini 3 Pro** did not flag this specific inconsistency, though Claude raised related concerns about the link model's impact on coordinator bottleneck links.
+
+3. **Validity of the global-state mesh baseline.**
+   - **Claude Opus 4.6** argued the $O(N^2)$ characterization involves "circular reasoning" because the operational requirement for full global state is overstated — collision risk is local in state space.
+   - **GPT-5.2** similarly argued the baseline is an extreme assumption and that practical conjunction assessment does not require full global trajectory tables.
+   - **Gemini 3 Pro** was more accepting, praising the "Sectorized Mesh" discussion as an "intellectual bridge" and treating the mesh baseline as a legitimate bounding reference without questioning its operational justification as strongly.
+
+4. **Clarity and writing quality.**
+   - **Gemini 3 Pro** rated Clarity 5/5 (Excellent), calling the manuscript "exceptionally well-written."
+   - **GPT-5.2** rated Clarity 4/5 (Good), noting that clarity suffers where modeling choices interact and that Table II mixes numeric and asymptotic entries.
+   - **Claude Opus 4.6** rated Clarity 4/5 (Good), praising the structure but noting the paper is overly long in places due to defensive qualification.
+
+5. **Significance of the gossip fanout derivation.**
+   - **Claude Opus 4.6** identified a specific technical error: the stated $f = O(N/\log N)$ fanout conflates single-rumor and multi-rumor gossip analysis and needs tightening.
+   - **GPT-5.2** noted the derivation is "asserted rather than derived carefully" and recommended a more formal argument.
+   - **Gemini 3 Pro** did not flag this issue.
+
+6. **Novelty assessment.**
+   - **Gemini 3 Pro** rated Significance 5/5, viewing the systematic DES comparison and superlinear regime identification as excellent contributions.
+   - **Claude Opus 4.6** rated Significance 3/5, arguing the core finding (hierarchies scale better) is well-established and the contribution is primarily quantitative within a specific parameterization.
+   - **GPT-5.2** rated Significance 4/5, acknowledging the contribution while noting some novelty claims are overstated.
 
 ---
 
 ## Aggregated Ratings
 
-Since all three reviewers evaluated the same Version D, ratings are replicated across A/B columns. Where a reviewer did not provide an explicit numeric rating for a criterion, the score is inferred from the text and marked with an asterisk (*).
+Since all three reviewers evaluated the same version (E), the table below presents their ratings for that single version. Columns are labeled by reviewer rather than by A/B version.
 
-| Criterion | Claude A | Claude B | Gemini A | Gemini B | GPT A | GPT B |
-|-----------|----------|----------|----------|----------|-------|-------|
-| Significance & Novelty | 3 | 3 | 5 | 5 | 4 | 4 |
-| Methodological Soundness | 2 | 2 | 4 | 4 | 2 | 2 |
-| Validity & Logic | 3 | 3 | 4 | 4 | 3 | 3 |
-| Clarity & Structure | 4 | 4 | 5 | 5 | 4 | 4 |
-| Ethical Compliance | 5 | 5 | 5 | 5 | 4 | 4 |
-| Scope & Referencing | 3 | 3 | 4 | 4 | 3 | 3 |
-| **Overall Recommendation** | **Major** | **Major** | **Minor** | **Minor** | **Major** | **Major** |
+| Criterion | Claude Opus 4.6 | Gemini 3 Pro | GPT-5.2 | **Mean** |
+|---|---|---|---|---|
+| Significance & Novelty | 3 | 5 | 4 | **4.0** |
+| Methodological Soundness | 2 | 4 | 2 | **2.7** |
+| Validity & Logic | 3 | 5 | 2 | **3.3** |
+| Clarity & Structure | 4 | 5 | 4 | **4.3** |
+| Ethical Compliance | 4 | 5 | 4 | **4.3** |
+| Scope & Referencing | 3 | 4 | 3 | **3.3** |
+| **Criterion Mean** | **3.2** | **4.7** | **3.2** | **3.7** |
 
-**Cross-reviewer averages (out of 5):**
-- Significance & Novelty: **4.0**
-- Methodological Soundness: **2.7**
-- Validity & Logic: **3.3**
-- Clarity & Structure: **4.3**
-- Ethical Compliance: **4.7**
-- Scope & Referencing: **3.3**
-
-The clear pattern: the paper excels in ethical transparency and writing quality but has significant methodological gaps that two of three reviewers consider blocking.
+**Recommendation tally:** Major Revision (Claude, GPT) / Minor Revision (Gemini) → **Consensus: Major Revision**
 
 ---
 
 ## Priority Action Items
 
-### 1. Equalize the topology comparison (Critical — all three reviewers)
-**Applies to: both versions**
+### 1. Resolve the bandwidth model inconsistency (Critical)
+**Flagged by:** GPT-5.2 (primary), Claude Opus 4.6 (related)
+**Applies to:** Both versions / core model
 
-Simulate at minimum one additional variant per competing topology: (a) centralized with $c \in \{10, 100\}$ parallel servers, and (b) a sectorized mesh with local gossip + hierarchical inter-sector aggregation. Alternatively, if new simulations are infeasible, **reframe the entire paper** as "characterizing hierarchical coordination scaling" rather than "comparing topologies," relabel the mesh as "Global-Complete-State Mesh" throughout all figures and tables, and add a substantive discussion paragraph estimating where a sectorized mesh crossover would occur. Claude and GPT consider new simulations required; Gemini considers relabeling sufficient.
+Explicitly define per-node and per-coordinator link allocations. Specify whether coordinators have higher bandwidth (multiple transceivers, separate ISL channels), whether the 1 kbps is a fleet-average budget, or whether spatial/frequency reuse is assumed. Recompute all overhead percentages under the corrected model. Without this fix, the headline "2–8% overhead" metric is not physically meaningful.
 
-### 2. Strengthen the superlinear scaling claim or downgrade it (High — all three reviewers)
-**Applies to: both versions**
+### 2. Add intermediate-scale simulation with per-tier message decomposition
+**Flagged by:** All three reviewers
+**Applies to:** Both versions
 
-Either (a) add simulation runs at $N \in \{20\text{k}, 30\text{k}, 40\text{k}, 60\text{k}, 70\text{k}, 80\text{k}\}$ with formal change-point detection (Bayesian or piecewise-linear with AIC/BIC), or (b) reposition the 50,000-node threshold as a parameter-contingent preliminary observation rather than a finding, removing it from the abstract and contributions list and adding sensitivity analysis showing how it shifts with reporting rate $r$ and link capacity.
+Run simulations at $N \in \{20\text{k}, 30\text{k}, 40\text{k}, 60\text{k}, 80\text{k}\}$ and instrument the DES to separately track intra-cluster, cluster-to-regional, regional-to-ground, and handoff message volumes. This simultaneously (a) characterizes the superlinear transition with adequate resolution, (b) enables formal change-point analysis, (c) validates or refutes the hypothesized inter-regional reconciliation cause, and (d) confirms the claimed 60/25/15% traffic decomposition. This is the single highest-value addition to the paper.
 
-### 3. Add stochastic link availability sensitivity analysis (High — all three reviewers)
-**Applies to: both versions**
+### 3. Incorporate a stochastic link availability model
+**Flagged by:** All three reviewers
+**Applies to:** Both versions
 
-Implement at minimum a Bernoulli link model ($p_{\text{available}} \approx 0.5$ for LEO occlusion) with topology-specific link criticality weighting (coordinator-to-coordinator links for hierarchical; uniform for mesh). Show whether the relative topology ranking and the quantitative overhead thresholds survive. Claude and GPT consider this essential; Gemini considers it desirable.
+At minimum, implement a two-state Markov (on/off) link model calibrated to LEO orbital geometry (e.g., 40–60% availability for ground links, 85–95% for ISLs). Report overhead results as ranges across availability scenarios. Critically, test whether the hierarchical architecture's concentrated traffic on coordinator links makes it more vulnerable to link unavailability than the mesh topology. Even a simplified model would dramatically strengthen the quantitative claims.
 
-### 4. Provide complete traffic accounting (High — GPT primary, Claude secondary)
-**Applies to: both versions**
+### 4. Rigorously evaluate or clearly separate the three optimizations
+**Flagged by:** All three reviewers
+**Applies to:** Both versions
 
-Add a subsection or appendix with explicit formulas or pseudocode specifying, per coordination cycle per topology: number of messages by type, payload sizes (including aggregation summary content and size), ack/retry assumptions, and how handoff state accumulates. Include downward command messages in Eq. (4)/(5) or explicitly label the equation as upward-only. This is necessary for the 2–8% overhead claim to be independently verifiable.
+Either (a) implement exception-based telemetry, dynamic spatial partitioning, and heterogeneous hardware in the DES with explicit parameters and Monte Carlo CIs, reporting individual and combined contributions via factorial analysis; or (b) clearly label the "optimized curve" in Fig. 7/8 as a conceptual projection and move the optimization discussion to a qualitative design-recommendations subsection. The current ambiguous presentation undermines credibility.
 
-### 5. Remove or relegate AI-assisted design exploration (Moderate — all three reviewers)
-**Applies to: both versions**
+### 5. Simulate a sectorized mesh baseline or reframe comparative claims
+**Flagged by:** Claude Opus 4.6 (primary), GPT-5.2 (secondary), Gemini 3 Pro (implicit)
+**Applies to:** Both versions
 
-Either (a) remove Section V-B entirely and retain the Shepherd/Flock concept as a one-paragraph future-work item motivated solely by DES results, (b) move it to a supplementary appendix with minimal claims, or (c) implement the heterogeneous-coordinator variant in the DES and report quantitative results. Option (a) is the path of least resistance and was recommended by Claude; option (c) would add genuine novelty and was suggested by GPT.
+The centralized and global-state mesh baselines are too extreme to support claims of architectural comparison. Either (a) add a sectorized mesh with $\sqrt{N}$ sectors and local gossip + inter-sector aggregation at 2–3 scale points, providing a realistic decentralized competitor; or (b) explicitly reframe the paper as "characterization of hierarchical scaling between known bounds" rather than "comparison across architectures," and rename the mesh baseline to "Full Global Table Mesh (Upper Bound)" throughout.
 
-### 6. Justify or sweep the collision avoidance event rate (Moderate — Claude primary)
-**Applies to: both versions**
+### 6. Justify or correct the queueing model for intra-cluster traffic
+**Flagged by:** Claude Opus 4.6 (primary), GPT-5.2 (related)
+**Applies to:** Both versions
 
-Either derive the $10^{-4}$/node/s rate from conjunction screening analysis for a representative dense LEO shell (citing ESA's annual space environment report or 18th Space Defense Squadron data), or conduct a sensitivity analysis sweeping this parameter over two orders of magnitude to show qualitative robustness of results.
+The Poisson arrival assumption ($M/D/1$) is inappropriate for cluster coordinators receiving periodic reports from 50–100 synchronized nodes. Either demonstrate that reporting phases are randomized (producing approximately Poisson superposition), use a $D/D/1$ or $\Sigma D_i/D/1$ model for intra-cluster traffic, or show via sensitivity analysis that the latency results are robust to the arrival process assumption.
 
-### 7. Strengthen references (Moderate — all three reviewers)
-**Applies to: both versions**
+### 7. Strengthen referencing with archival sources and fill gaps
+**Flagged by:** Claude Opus 4.6, GPT-5.2
+**Applies to:** Both versions
 
-Add citations for: (a) CCSDS DTN Bundle Protocol (BPv7) and related space networking standards; (b) ISL routing/scheduling literature (Akyildiz et al.); (c) mega-constellation capacity/interference analysis (Del Portillo et al.); (d) conjunction assessment operational data. Replace or supplement non-archival web references (refs [1], [3], [4], [20], [22], [35]) with peer-reviewed or standards-based sources where possible. Remove or replace the "manuscript in preparation" self-citation (ref [38]) with a preprint link.
+Replace non-archival references (SpaceX/Amazon websites) with FCC filings, ITU documents, or peer-reviewed sources for quantitative claims. Add references to on-orbit autonomy experiments (ESA OPS-SAT), space traffic management literature (Weeden & Samson; Bonnal et al.), Telesat Lightspeed mesh ISL architecture, and LEO ISL routing/scheduling literature beyond Handley 2018. Either develop the mean-field game theory connection or remove those references.
 
 ---
 
 ## Overall Assessment
 
-The manuscript addresses a genuinely important and timely problem—coordination architecture scaling for $10^5$–$10^6$ node space swarms—with a competently executed DES framework, commendable transparency about limitations and AI usage, and clear, well-organized writing. These strengths provide a strong foundation for a significant T-AES contribution.
+This manuscript addresses a genuinely important and timely problem — the scaling of coordination architectures for autonomous space systems in the $10^3$–$10^6$ node regime — with a well-structured simulation study and commendable transparency about assumptions and limitations. The conceptual framing (bounding baselines, clean overhead decomposition, explicit parameterization) is strong, and the writing quality is high. All three reviewers recognized the paper's relevance to IEEE T-AES and its potential contribution to mega-constellation design.
 
-However, the paper's central comparative claim is undermined by an asymmetric parameterization that favors the hierarchical topology by construction (best-case hierarchy vs. worst-case centralized and worst-case mesh). Two of three reviewers (Claude, GPT) consider this a blocking issue requiring either new simulation variants or a fundamental reframing of the paper's scope. The superlinear scaling regime, prominently featured in the abstract and contributions, rests on insufficient data. The physical-layer abstraction, while honestly disclosed, is asserted to be topology-neutral without evidence, and the tight overhead margins (2–8%) leave little room for the 2–4× multiplier the authors themselves estimate for unmodeled link-layer effects.
+However, the paper's central value proposition is *quantitative* — specific overhead percentages, scaling thresholds, and optimal parameter ranges — and the current modeling infrastructure does not fully support these quantitative claims. The bandwidth model inconsistency identified by GPT-5.2 is a fundamental issue that must be resolved before the overhead metrics are interpretable. The idealized link model, sparse superlinear regime characterization, ambiguously evaluated optimizations, and extreme reference baselines collectively mean that the specific numbers reported cannot yet be relied upon for system design decisions.
 
-The **recommended path forward is Major Revision** (2-of-3 consensus). The most impactful revision strategy would be: (1) simulate a sectorized mesh and multi-server centralized variant to create a genuine Pareto frontier; (2) add intermediate fleet sizes to confirm or refute the superlinear regime; (3) add a stochastic link-availability sensitivity study; and (4) provide complete traffic accounting. If new simulations are infeasible in the revision timeline, the paper can still be made publishable by reframing as a characterization of hierarchical scaling (rather than a topology comparison), relabeling the mesh variant, downgrading the superlinear claim, and providing explicit traffic formulas—but this would reduce the contribution's impact.
-
-Since only one version (D) was reviewed, no A-vs-B recommendation can be made. The authors should proceed with whichever voice style best serves the T-AES audience (typically formal academic), incorporating the priority action items above.
+The consensus recommendation is **Major Revision**. The required changes are substantial but tractable: resolving the bandwidth model, adding intermediate-scale simulations with per-tier decomposition, incorporating basic link availability, and either rigorously evaluating the optimizations or clearly separating them as projections. With these revisions, the paper has strong potential to become a valuable reference for the mega-constellation design community. Since only one version was reviewed, the version-selection question is moot; the authors should focus revision effort on the methodological and modeling issues identified above rather than on voice or presentation changes.

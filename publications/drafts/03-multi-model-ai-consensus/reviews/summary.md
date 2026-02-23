@@ -12,158 +12,158 @@ reviewers:
 
 # Comparative Peer Review Synthesis
 
-## Multi-Model AI Deliberation for Complex Engineering Decisions
-
----
-
 ## Version Comparison
 
-All three reviews provided here are for **Version D only**; no reviewer submitted separate ratings for Version A (formal academic voice) versus Version B (humanized voice). Consequently, a direct voice-style comparison cannot be performed from the available data. Each reviewer evaluated the same manuscript and converged on a remarkably similar assessment: the writing quality is already high (Clarity ratings of 4–5/5 across all three reviewers), the conceptual contribution is strong, and the empirical foundation is the critical gap.
+All three reviews provided here evaluate **Version E only** (described in the prompt as the version under review). The prompt references a design where each model reviews two versions (A = formal academic voice, B = humanized voice), but the submitted reviews do not contain separate A/B ratings or commentary distinguishing between two voice styles. Each reviewer produced a single, unified review of what appears to be the same manuscript text.
 
-Because no A/B differentiation exists in the submitted reviews, the synthesis below treats all three reviews as evaluations of a single version. If the authors intend to choose between a formal and humanized voice for resubmission, the uniformly high clarity ratings suggest the current voice is effective; any voice-style revision should preserve the precise, well-caveated prose that all reviewers praised. The one implicit signal is that all three reviewers valued the manuscript's transparent, self-aware tone—its willingness to label results as "illustrative rather than evaluative"—which is more characteristic of a humanized, intellectually honest register than a stiff formal one. Authors should retain this quality regardless of which voice they select.
+**Consequently, a direct A-vs-B voice-style comparison cannot be performed from the available evidence.** The reviews are consistent in treating the manuscript as a single artifact with high clarity and professional academic tone. All three reviewers rated Clarity & Structure at 4.0 or above (Claude: 4.5, Gemini: 5.0, GPT: 4.0), suggesting that whichever voice style was used in Version E, it was well received. No reviewer flagged tone, register, or readability as a concern, nor did any reviewer comment on the manuscript feeling either too formal or too informal. The absence of A/B differentiation means the aggregated ratings table below will report Version E ratings in a single column per reviewer, and the Priority Action Items apply to the manuscript as a whole.
 
 ---
 
 ## Consensus Strengths
 
-**1. The Divergent Views Schema as a First-Class Artifact**
-All three reviewers identified this as the paper's most original and publishable contribution. Claude called it "the paper's most original element" with "clear practical utility for design rationale capture." Gemini described treating divergent views "as a first-class, machine-readable artifact rather than statistical noise" as "highly significant." GPT characterized it as "arguably the most publishable idea in the paper." The YAML-based formalization, the connection to DRL/QOC traditions, and the epistemological stance that structured disagreement is more valuable than forced consensus were universally praised.
+**1. The Divergent Views Schema Is the Paper's Most Novel and Valuable Contribution**
+All three reviewers independently identified the structured preservation of disagreement—operationalized through the YAML divergent views schema (Section 3.4/3.5, Listing 1)—as the paper's signature contribution. Claude called it "a concrete, implementable contribution that could see adoption in engineering practice." Gemini described the reframing of disagreement as "a novel and valuable perspective for the engineering design community." GPT noted it is "the clearest novel contribution relative to most multi-agent/debate work."
 
-**2. Exceptional Transparency and Intellectual Honesty**
-Every reviewer noted—often with explicit admiration—the authors' candor about limitations. Claude stated the paper's argumentative structure is "notably honest and well-calibrated" and that the three competing interpretations of framework adoption (Section 6.4) are "a model of balanced analysis." GPT praised the explicit flagging of mechanical relationships (e.g., approval rate vs. convergence rounds being partly induced by termination rules) as "good scientific hygiene." Gemini noted the "commendable rigor" of the protocol specification. The consistent use of caveating language throughout was recognized as exemplary scientific communication.
+**2. Exceptional Intellectual Honesty and Transparency About Limitations**
+All reviewers praised the manuscript's unusual candor. Claude rated this the paper's "strongest dimension" (Validity & Logic: 4.0), highlighting the "three competing interpretations of framework adoption" and the careful distinction between illustrative and evaluative results. Gemini called the Discussion section "refreshing in its honesty." GPT described the epistemological discussion (Section 6.6) as "unusually strong for an applied systems paper" and the threats-to-validity section as "concrete and directionally reasoned."
 
-**3. Procedural Reproducibility and Methodological Detail**
-All reviewers agreed the protocol is specified with sufficient detail for independent reproduction: voting equations, round structures, termination conditions, configuration parameters, YAML schemas, and the open-source implementation commitment were all noted favorably. Claude highlighted the "commendable detail" of the methodology; GPT called the discussion of practical engineering issues (context truncation, JSON parsing failures) "unusually candid and helpful."
+**3. Exemplary Ethical Disclosure and AI-Assistance Transparency**
+Claude rated Ethics at 5.0 ("could serve as a model for AI-assisted research"), Gemini also rated it 5.0 ("exemplary"), and GPT rated it 4.0 (noting two remaining gaps but calling disclosure "strong and unusually explicit"). The title-page footnote, Section 7 ethics statement, and open-source release were all commended.
 
-**4. Well-Structured Validation Roadmap**
-The four proposed experiments in Section 6.2 were praised by all reviewers as specific, feasible, and well-designed. Claude called it "one of the best 'future work' sections I have reviewed." GPT noted the cost estimates ($360–$1,360) effectively preempt objections about feasibility. Gemini acknowledged the roadmap's value while noting it cannot substitute for actual execution.
+**4. High Protocol-Level Specificity and Reproducibility Potential**
+All reviewers noted that the deliberation protocol—round structure, voting mechanics (Eq. 1), termination conditions, configuration parameters (Table 1)—is described with sufficient precision for independent implementation. Claude: "described with commendable precision and reproducibility." Gemini: "defined with admirable rigor." GPT: "described clearly enough for a reader to implement a similar system."
 
-**5. Strong Ethical Framing**
-All three reviewers rated ethical compliance highly (4–5/5). The AI-use disclosures, the warning against over-reliance on LLM outputs for engineering decisions, the environmental cost consideration, and the recommendation to label outputs as "AI-assisted preliminary trade studies" were all recognized as above-average for the field.
+**5. Strong Writing Quality and Logical Organization**
+Clarity ratings ranged from 4.0 to 5.0. The paper's flow from motivation through methodology, application, results, and discussion was praised by all reviewers. The case study (Section 5.6, Swarm Coordination Architecture) was specifically highlighted by Claude as "an effective illustration that makes the abstract methodology concrete."
 
-**6. Writing Quality and Paper Organization**
-Clarity ratings ranged from 4 to 5 across all reviewers. The logical flow from methodology through application to discussion, the informative section headings, the well-captioned figures, and the appropriate paper length were consistently praised.
+**6. Well-Specified Validation Roadmap**
+All three reviewers noted the unusual quality of the future-work validation roadmap (Section 6.2), with Claude calling it "unusually well-specified for a limitations section" and GPT describing it as "unusually candid and helpful." Critically, all three also noted the irony that the roadmap's own experiments remain unexecuted.
 
 ---
 
 ## Consensus Weaknesses
 
-**1. Complete Absence of Controlled Experimental Baselines**
-This is the single most critical weakness identified by every reviewer. Claude: "the paper as submitted cannot support any claim about the methodology's *effectiveness*—only its *feasibility*." Gemini: "the paper is a *proposal* for a methodology rather than a *validation* of one." GPT: "the study design is still primarily *descriptive* and internally confounded." All three reviewers specifically noted that the low-cost aggregation-only baseline ($15–30, Section 5.7) should have been executed before submission, and its absence is difficult to justify.
+**1. Absence of Controlled Baselines—Especially Single-Model Self-Refinement**
+This is the most consistently and forcefully raised concern across all three reviews. Claude: "A methodology paper without empirical validation of the methodology's core mechanism is incomplete." Gemini: "The study lacks a critical control: Single-Model Self-Refinement... we cannot isolate the 'wisdom of the crowd' effect from the 'chain of thought' effect." GPT: "improvements [may be] due to adversarial evaluation or to a strong anchoring signal." All three reviewers specifically called for execution of the authors' own Experiment 2 (single-model self-refinement) at minimum.
 
-**2. Divergent View Validation by System Designers Without Formal Inter-Rater Reliability**
-All reviewers flagged the conflict of interest in having the Project Dyson research team—the system's designers—classify the 47 divergent views. Claude noted the absence of Cohen's κ makes the 81% agreement rate uninterpretable. GPT stated the operational definition of "confirmed" is insufficiently specified. Gemini implicitly raised this through concerns about the validation's credibility. The lack of independent domain expert involvement was universally identified as undermining the validation's evidentiary value.
+**2. Winner Visibility / Anchoring / Sycophancy Confound**
+All reviewers flagged the 70% framework adoption rate (Section 6.4) as a serious threat to internal validity. Gemini called it "alarming" and suggested the system might be "an echo chamber generator." GPT identified winner visibility as "a first-order confound that undermines interpretation of 'deliberation.'" Claude noted the three competing interpretations but emphasized the confound remains unresolved. All three called for at minimum a small ablation study with winner identity hidden.
 
-**3. Head-Truncation Strategy as an Uncontrolled Confound**
-All three reviewers identified the first-1,000-words truncation strategy (Section 3.2.1) as a significant methodological concern. Gemini was most pointed: "Engineering proposals often contain critical risk analyses or cost data at the *end* of the document. Truncating the tail likely forces models to vote based on the 'Executive Summary' rather than the technical details." GPT noted it "plausibly biases what later-round models 'see'" and called it a first-order threat to validity. Claude requested "a brief argument for why head truncation is reasonable (or a sensitivity check)."
+**3. Non-Independent Quality Assessment of Divergent Views**
+All reviewers noted that the 12 "confirmed genuine trade-offs" (Section 5.5) were validated by the system's own designers, not independent domain experts. Claude: "This is not merely a limitation—it is a fundamental threat to the validity of the quality claims." Gemini required either external expert evaluation or at minimum Cohen's κ for the internal classification. GPT noted the extraction procedure itself is underspecified and "risks subjectivity."
 
-**4. Single-Run Design with No Variance Estimation**
-Claude and GPT both flagged that each of the 16 deliberations was conducted exactly once at temperature 0.7, making it impossible to distinguish signal from noise. Claude: "Without repeated trials, it is impossible to know whether the observed convergence patterns, voting dynamics, or divergent views are stable properties of the methodology or artifacts of a particular random seed." GPT noted the bootstrap CI for mean rounds may be misinterpreted as measuring run-to-run variability.
+**4. No Repeated Trials / Unknown Variance**
+All reviewers noted that with n=1 per question at T=0.7, every quantitative finding could be an artifact of a single stochastic realization. Claude: "the reproducibility of every reported result is unknown." GPT and Gemini both flagged this as undermining the interpretability of convergence statistics, voting patterns, and divergent view counts.
 
-**5. Model Version Verifiability**
-All three reviewers raised concerns about the cited model versions (Claude 4.6, Gemini 3 Pro, GPT-5.2). Gemini was most forceful: "If this paper is a 'design fiction' or simulation, this must be explicitly framed. If it is intended for current publication, this is a critical validity failure regarding reproducibility." Claude requested "verifiable evidence (e.g., model card hashes, API response headers)." GPT noted citation/year inconsistencies that compound this concern.
+**5. Confounded Aggregation-Only Comparison (Section 5.7/5.8)**
+All three reviewers noted that the post-hoc aggregation comparison is confounded by prompt structure differences (the aggregation condition explicitly requests a "Trade-offs" section while the deliberation conclusion does not). Claude highlighted the surprising reversal (aggregation identifies *more* trade-offs: 5.4 vs. 1.3) as potentially the most interesting finding but currently uninterpretable. GPT recommended either harmonizing prompts and rerunning or demoting the comparison to an appendix.
 
-**6. Insufficient Engagement with Engineering Trade Study Literature**
-Both Claude and GPT noted that the paper underrepresents established trade study methodologies (Pugh matrices, AHP, QFD) despite claiming to address engineering trade studies specifically. GPT recommended mapping artifacts to established trade study outputs (alternatives, criteria, assumptions, sensitivities, decision rationale). Claude noted the absence of recent mixture-of-agents literature and expanded LLM-as-judge work.
+**6. Insufficient Specification of Prompts, Schemas, and Parsing for Full Reproducibility**
+GPT and Claude both noted that despite the protocol-level clarity, exact prompt templates, JSON voting schemas, parsing/repair rules, and divergent-view extraction methods are not included in the paper or appendix. GPT: "Without including these... the paper is not reproducible in the 'independent reproduction' sense claimed." Claude noted the 8.3% Gemini JSON malformation rate makes parsing behavior part of the method itself.
 
 ---
 
 ## Divergent Opinions
 
-**1. Severity of the "No Baseline" Problem**
+**1. Severity of the Novelty Limitation**
 
-- **Gemini** took the hardest line, requiring both Experiment 1 (Aggregation vs. Deliberation) *and* Experiment 2 (Self-Refinement) before publication, stating the paper is unpublishable as a research article without them.
-- **Claude** required at minimum Experiment 1 and a minimal version of Experiment 4 (repeated trials), framing these as necessary to transform the paper "from a promising proposal into a publishable contribution."
-- **GPT** offered a softer alternative: either (a) substantially soften all improvement language to hypotheses/anecdotes, *or* (b) include the aggregation-only baseline. This allows a path to publication through language revision alone, without new experiments.
+- **Claude (3.5/5):** Characterized the contribution as "primarily one of integration and application rather than fundamental methodological innovation," noting that individual components (multi-agent debate, LLM-as-judge, structured schemas) are well-established.
+- **Gemini (4.0/5):** More generous, calling the shift from consensus to disagreement preservation "excellent" and the application to engineering trade studies a genuinely novel framing, while acknowledging the underlying mechanics are incremental.
+- **GPT (4.0/5):** Aligned with Gemini, noting the contribution is "partly method integration" but that the protocol-level specificity and divergent-view artifact represent a "meaningful step toward reproducible methods papers."
 
-**2. Single Synthesizer Model as a Concern**
+**2. Whether the Paper's Scope Fits the Target Venue**
 
-- **GPT** identified this as a **major issue**, noting that "the final conclusion artifact is not multi-model; it is 'Claude's synthesis of multi-model deliberation'" and suggesting comparative synthesis by all three models.
-- **Claude** and **Gemini** did not raise this as a distinct concern, though it is implicitly related to their broader methodological critiques.
+- **Claude:** Noted the paper "sits somewhat awkwardly between venues" (too LLM-focused for space systems, too space-focused for AI, too preliminary for design science), though acknowledged IEEE Intelligent Systems as the best fit.
+- **Gemini (5.0/5 Scope):** Rated scope as excellent, calling it "perfectly scoped for IEEE Intelligent Systems or Design Science."
+- **GPT (3.0/5 Scope):** More critical, noting referencing weaknesses (mismatched citations, dated references, insufficient engagement with trade study standards like NASA/SP guidance and INCOSE).
 
-**3. Application Domain Appropriateness**
+**3. Adequacy of the Voting Scale**
 
-- **Claude** explicitly argued the Dyson swarm domain weakens practical impact claims and recommended adding "a well-characterized engineering benchmark problem" where expert consensus or ground truth exists.
-- **GPT** and **Gemini** did not flag the domain choice as problematic per se, though GPT noted the paper "is not actually contributing new validated space engineering results."
+- **Claude:** Explicitly criticized the three-level scale (APPROVE/NEUTRAL/REJECT) as too coarse, noting limited discriminative power with only three voters, and recommended exploring 5- or 7-point scales.
+- **Gemini:** Briefly noted the coarseness of the scale in the context of rare REJECT votes (8%) but did not make it a major concern.
+- **GPT:** Did not raise the voting scale granularity as an issue, focusing instead on the scoring threshold interpretation (score ≥ 5.0 requiring perfect approval).
 
-**4. The "Knowledge Ceiling" Limitation**
+**4. The Aggregation Trade-Off Reversal**
 
-- **Claude** argued this is "arguably the methodology's most fundamental limitation" and deserves more prominent treatment, potentially as its own subsection.
-- **GPT** and **Gemini** acknowledged shared training data as a concern but did not elevate it to the same level of importance.
+- **Claude:** Identified the finding that aggregation-only produces *more* enumerated trade-offs (5.4 vs. 1.3) as "potentially the most interesting empirical result in the paper" and urged the authors to investigate whether deliberation genuinely reduces trade-off enumeration through premature convergence.
+- **Gemini and GPT:** Both noted the confound but did not elevate the reversal itself as a potentially important substantive finding, treating it primarily as a methodological artifact to be controlled.
 
-**5. Clarity Rating**
+**5. Depth of Ethical Concerns**
 
-- **Claude** rated clarity 5/5 (Excellent), calling it "an exceptionally well-written paper."
-- **GPT** rated clarity 4/5 (Good), noting that important elements deferred to the repository create a gap for archival evaluation.
-- **Gemini** rated clarity 5/5 (Excellent).
+- **Claude (5.0/5) and Gemini (5.0/5):** Both rated ethics as excellent without reservations.
+- **GPT (4.0/5):** Identified two additional gaps: (a) the conflict-of-interest/positionality issue of the team evaluating their own project's methodology, and (b) the risk of "laundering normative choices through 'AI consensus'" in governance-related questions, calling for clearer guidance on how outputs should and should not be used in organizational decision-making.
 
-**6. Whether the Paper Fits IEEE Intelligent Systems**
+**6. Head Truncation as a Validity Threat**
 
-- **Claude** expressed the most doubt about venue fit, noting the paper "sits awkwardly between venues" and suggesting Design Science (Cambridge) as potentially better suited.
-- **Gemini** stated the paper is "well-scoped for IEEE Intelligent Systems."
-- **GPT** acknowledged the cross-venue nature but did not express strong concern about fit.
+- **Gemini:** Specifically flagged head truncation (first 1,000 words) as a potential validity threat, noting that "Risk" and "Cost" sections often appear at the end of engineering proposals and may be systematically excluded.
+- **GPT:** Mentioned truncation as an uncontrolled variable but did not elaborate on its directional impact.
+- **Claude:** Did not raise truncation as a specific concern.
 
 ---
 
 ## Aggregated Ratings
 
-Since all three reviews evaluated the same version (D), the A/B distinction cannot be populated. Ratings are presented as received:
+Since all three reviews evaluate the same Version E, ratings are presented per reviewer rather than per A/B version:
 
-| Criterion | Claude (D) | Gemini (D) | GPT (D) | **Mean** |
+| Criterion | Claude (E) | Gemini (E) | GPT (E) | Mean |
 |---|---|---|---|---|
-| Significance & Novelty | 4 | 4 | 4 | **4.0** |
-| Methodological Soundness | 3 | 3 | 3 | **3.0** |
-| Validity & Logic | 4 | 3 | 3 | **3.3** |
-| Clarity & Structure | 5 | 5 | 4 | **4.7** |
-| Ethical Compliance | 5 | 5 | 4 | **4.7** |
-| Scope & Referencing | 3 | 4 | 3 | **3.3** |
-| **Overall** | **Major Revision** | **Major Revision** | **Major Revision** | **Major Revision** |
+| Significance & Novelty | 3.5 | 4.0 | 4.0 | 3.83 |
+| Methodological Soundness | 3.0 | 3.0 | 3.0 | 3.00 |
+| Validity & Logic | 4.0 | 3.0 | 3.0 | 3.33 |
+| Clarity & Structure | 4.5 | 5.0 | 4.0 | 4.50 |
+| Ethical Compliance | 5.0 | 5.0 | 4.0 | 4.67 |
+| Scope & Referencing | 3.5 | 5.0 | 3.0 | 3.83 |
+| **Overall Mean** | **3.92** | **4.00** | **3.50** | **3.81** |
 
-**Key observations:** Perfect consensus on Significance (4/5), Methodological Soundness (3/5), and the overall recommendation (Major Revision). The strongest dimensions are Clarity and Ethics (both ≥4 from all reviewers). The weakest are Methodological Soundness and Scope/Referencing, both averaging 3.0–3.3.
+**All three reviewers recommend: Major Revision.**
+
+*Note: GPT did not provide an explicit recommendation label but the review's content and tone are fully consistent with Major Revision.*
 
 ---
 
 ## Priority Action Items
 
-### 1. Execute the Aggregation-Only Baseline Experiment (Experiment 1)
-**Flagged by:** All three reviewers (Claude, Gemini, GPT)
-**Applies to:** Both versions
-**Impact:** This is the single highest-priority revision. All reviewers noted the authors themselves estimate this at $15–30 and already have the Round 1 data. Compare deliberation outputs against simple aggregation of independent Round 1 proposals using objective metrics (count of distinct trade-offs, explicit risks, divergent topics). Without this, the paper cannot distinguish deliberation value from token-budget effects. This alone would shift the paper from "methodology proposal" to "empirically grounded methodology."
+Ranked by importance, with cross-reviewer consensus noted:
 
-### 2. Conduct Repeated Trials for Variance Estimation (Experiment 4, Minimal Version)
-**Flagged by:** Claude (major issue), GPT (implicit in statistical concerns)
-**Applies to:** Both versions
-**Impact:** Run at least 3 repetitions of 4 representative questions (estimated $100–400). This addresses the fundamental inability to distinguish signal from noise in all quantitative findings. Report variance in convergence rounds, voting patterns, and divergent view counts across runs.
+### 1. Execute the Single-Model Self-Refinement Baseline (Experiment 2)
+**Flagged by: All three reviewers (Claude, Gemini, GPT) | Applies to: Both versions**
+Run at least 4 representative questions through a single-model iterative loop (Generate → Critique → Refine) for the same number of rounds as multi-model deliberation. Compare final output quality, trade-off identification, and divergent-view yield. This is the single most impactful change: it isolates whether multi-agent dynamics contribute beyond mere iteration. All reviewers noted the cost is trivial (~$100–$400 in API fees). Without this, the paper's central mechanism claim is unsupported.
 
-### 3. Obtain Independent Expert Validation of Divergent Views with Inter-Rater Statistics
-**Flagged by:** All three reviewers
-**Applies to:** Both versions
-**Impact:** Recruit 2–3 independent domain experts (not system designers) to classify a random subset of ≥20 divergent views using the four-category scheme. Report Cohen's κ or Krippendorff's α. Specify the literature validation protocol in-paper: databases searched, query formulation, inclusion/exclusion criteria, what constitutes "confirmed by literature," and how partial support was handled. Include at least one end-to-end "divergent view lifecycle" vignette showing the disagreement from proposal excerpts through YAML extraction to literature adjudication.
+### 2. Ablate Winner Visibility on a Subset of Questions
+**Flagged by: All three reviewers | Applies to: Both versions**
+Run at least 4 questions in a "winner hidden" condition (identical protocol but without revealing the winning proposal's identity or score in subsequent rounds). Compare framework adoption rate, convergence speed, and divergent-topic yield against the current "winner shown" condition. This directly addresses the sycophancy/anchoring confound that all reviewers identified as a first-order threat to internal validity.
 
-### 4. Resolve Model Version Verifiability
-**Flagged by:** All three reviewers
-**Applies to:** Both versions
-**Impact:** If Claude 4.6, Gemini 3 Pro, and GPT-5.2 are real models accessed through specific endpoints, provide verifiable evidence (model card hashes, API response headers, endpoint identifiers, access dates). If these are placeholders or projected versions, this must be explicitly disclosed and the paper reframed accordingly. This is a threshold credibility issue that could lead to desk rejection if unresolved.
+### 3. Obtain Independent Expert Evaluation of Divergent Views
+**Flagged by: All three reviewers | Applies to: Both versions**
+Recruit 2–3 domain experts (aerospace/space systems engineering) who are not affiliated with the project to blindly assess a stratified sample of 15–20 divergent views using the four-category scheme. Report Cohen's κ for inter-rater reliability. This addresses the most serious validity threat to the paper's strongest empirical claim. Claude specifically noted this is "not merely a limitation—it is a fundamental threat."
 
-### 5. Strengthen Engineering Trade Study Literature Engagement
-**Flagged by:** Claude, GPT
-**Applies to:** Both versions
-**Impact:** Integrate Pugh matrices, AHP/MAUT, QFD, and other established trade study methods into the related work and discussion. Map the methodology's artifacts to standard trade study outputs (alternatives, criteria, assumptions, sensitivities, decision rationale). Cite INCOSE/NASA SE Handbook in the main text where trade study processes are discussed, not just in the bibliography. Also add recent mixture-of-agents literature (e.g., Wang et al., 2024) and expanded LLM-as-judge work on position bias and self-enhancement bias.
+### 4. Provide Full Protocol Specification (Prompts, Schemas, Parsing Rules)
+**Flagged by: GPT (major issue), Claude (minor issue) | Applies to: Both versions**
+Include in an appendix or linked repository (with immutable commit hash/DOI): exact system prompts, per-phase user prompt templates, the complete JSON voting schema, parsing/repair rules for malformed responses, and the divergent-view extraction method (including whether it is human, model-assisted, or hybrid, and the specific prompt if model-assisted). The 8.3% Gemini JSON malformation rate makes parsing behavior a methodological variable, not an implementation detail.
 
-### 6. Address Head-Truncation and Synthesizer Bias as First-Order Design Variables
-**Flagged by:** All three reviewers (truncation); GPT (synthesizer)
-**Applies to:** Both versions
-**Impact:** Add an explicit "Threats to Validity" subsection enumerating truncation strategy, winner visibility, synthesizer identity, temperature, and JSON failure handling as first-order threats. For each, state the expected effect direction (e.g., head-truncation → anchoring on introductory framing → inflated convergence speed, reduced diversity) and planned mitigation or ablation. Consider implementing summary-based truncation (model generates structured summary of its own proposal) as an alternative, or at minimum justify the head-truncation choice with a pilot comparison.
+### 5. Run Repeated Trials for Variance Estimation (Experiment 4)
+**Flagged by: All three reviewers | Applies to: Both versions**
+Select 4 questions (one per convergence category) and run each 5 times at T=0.7. Report winner stability (proportion of runs selecting the same winner), convergence round variance, and Jaccard similarity of divergent topic sets across runs. Without this, no quantitative claim in the paper has a known error bar. Estimated cost: $100–$400.
 
-### 7. Tighten Evaluative Language Throughout
-**Flagged by:** GPT (explicitly), Claude (implicitly through "within-study comparisons" concern)
-**Applies to:** Both versions
-**Impact:** Audit all instances of "enriches," "produced richer," "improvement," and similar evaluative language. Replace with hypothesis-framed or descriptive alternatives unless directly supported by a controlled comparison. Ensure Table 6's within-study metrics (e.g., "Mean 1.2 vs. 2.8 explicit trade-offs per proposal") are accompanied by operationalization details: who counted, using what criteria, with what reliability.
+### 6. Harmonize the Aggregation Comparison or Reframe It
+**Flagged by: All three reviewers | Applies to: Both versions**
+Either (a) rerun both conditions with matched output format instructions (identical section headings and trade-off enumeration requirements) and report a controlled comparison, or (b) move the current confounded comparison to an appendix with explicit "not directly comparable" framing. Claude additionally recommends investigating whether the reversal (aggregation producing more trade-offs) reflects genuine premature convergence in deliberation—this could become a central finding if properly controlled.
+
+### 7. Report Appropriate Statistics and Strengthen Quantitative Claims
+**Flagged by: Claude (major/minor), GPT (major) | Applies to: Both versions**
+- Report Spearman's ρ (not just Pearson's r) for the self-vote/peer-vote correlation, given the ordinal scale.
+- Report Cohen's κ for the 81% inter-rater agreement on divergent view classification.
+- Clarify the vote count arithmetic (162 vs. expected ~331).
+- Explicitly state the theoretical score range for Eq. 1.
+- Formalize coding protocols for "contradictions," "framework adoption rate," and "trade-offs per proposal" with labeling rubrics and reliability statistics, or demote these to qualitative observations.
 
 ---
 
 ## Overall Assessment
 
-The manuscript presents a genuinely novel and practically useful contribution—the formalization of structured disagreement preservation in multi-LLM engineering deliberation—wrapped in exceptionally transparent and well-crafted scientific prose. All three reviewers recognized the divergent views schema as the paper's signature innovation and rated significance at 4/5. The writing quality, ethical framing, and intellectual honesty are already at or above publication standard.
+The manuscript presents a well-conceived, clearly written, and intellectually honest methodology for multi-model AI deliberation in engineering trade studies. Its signature contribution—the divergent views schema that treats structured disagreement as a first-class output—is recognized by all three reviewers as genuinely novel and potentially impactful for both the AI systems and engineering design communities. The ethical disclosure is exemplary, the protocol specification is admirably detailed, and the writing quality is consistently high (mean Clarity rating: 4.5/5).
 
-However, the unanimous recommendation is **Major Revision**, driven by a single overarching deficiency: the complete absence of controlled experimental evaluation. The paper currently reads as a rigorously specified methodology proposal illustrated by descriptive case studies, not as a validated research contribution. The irony—noted by all reviewers—is that the authors themselves have designed the necessary experiments, estimated their costs as modest ($15–$1,360), and yet did not execute them. The most impactful revision path is clear: (1) run the aggregation-only baseline ($15–30), (2) conduct minimal repeated trials ($100–400), (3) obtain independent expert validation with inter-rater statistics, and (4) resolve the model version verifiability question. These four actions, combined with tightened evaluative language and strengthened related work, would likely move the paper to acceptance at a venue like IEEE Intelligent Systems or Design Science. The authors should proceed with whichever voice version they prefer—the current prose quality is strong—but must prioritize empirical grounding over stylistic refinement.
+However, all three reviewers independently converge on the same fundamental diagnosis: **the paper is a strong methodology proposal that lacks the empirical foundation to support its claims.** The absence of controlled baselines (especially single-model self-refinement), the unresolved winner-visibility/sycophancy confound, the non-independent quality assessment, and the lack of repeated trials collectively mean that the paper's illustrative results cannot be distinguished from artifacts of protocol mechanics, anchoring effects, or stochastic variation. Critically, the authors themselves have already designed the necessary experiments (Section 6.2) and estimated their cost at $360–$1,360 in API fees—a trivially small barrier.
+
+**Recommendation: Major Revision.** The intellectual framework is strong and the writing needs minimal revision. The path to acceptance is clear and well-defined by the authors' own validation roadmap. Executing Priority Action Items 1–3 (self-refinement baseline, winner-visibility ablation, independent expert evaluation) would transform this from a methodology proposal into an empirical contribution suitable for a top-tier venue. Items 4–5 (full protocol specification, repeated trials) would further strengthen reproducibility and statistical grounding. Given that only a single version (E) was reviewed, no version-preference recommendation can be made; the authors should proceed with whichever voice style best fits the target venue while prioritizing the empirical additions identified above.
