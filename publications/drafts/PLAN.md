@@ -12,8 +12,8 @@
 | # | Paper | Tier | Status | Blocking |
 |---|-------|------|--------|----------|
 | 01 | ISRU Economic Crossover | 1 | **COMPLETE** (3/3 Accept, Version AM) | — |
-| 02 | Swarm Coordination Scaling | 1 | **Version F** — 1 Minor + 1 Major + 1 Unknown | Link model, optimization eval |
-| 03 | Multi-Model AI Consensus | 1 | **Version G** — 2 Major + 1 Unknown | Blind deliberation experiment |
+| 02 | Swarm Coordination Scaling | 1 | **Version G** — 1 Minor + 2 Major | Sectorized mesh, remaining text |
+| 03 | Multi-Model AI Consensus | 1 | **Version H** — 1 Accept + 2 Major | Repeated trials, matched baselines |
 | 04 | Microgravity Metallurgy | 2 | Inputs cataloged | — |
 | 05 | ISRU Water Extraction | 2 | Inputs cataloged | — |
 | 06 | Cryogenic Propellant Architecture | 2 | Inputs cataloged | — |
@@ -112,15 +112,19 @@ Track F:                                              │ 07,08,09  │───
   - [x] Implement exception-based telemetry as DES mechanism (configurable threshold)
   - [x] Add stochastic link availability model (Bernoulli per-message, coordinator tracking)
   - [x] Formal statistical testing for superlinear transition (AIC: linear vs power-law vs piecewise)
-- [ ] **Version G — Tex + Remaining Review Items**
-  - [ ] Reconcile overhead numbers across abstract/tables/figures (8% vs 10% vs 4.8% discrepancy)
-  - [ ] Run link availability sweep (40-80%) and report topology ranking preservation
-  - [ ] Run exception telemetry validation at N=10k and N=100k, compare to analytical projection
-  - [ ] Carry M/D/c analysis (c=10, c=100) through to main comparison tables/figures
-  - [ ] Formally define all performance metrics (coordination success, deadlines, availability)
-  - [ ] Fix U-shaped optimum causal explanation (handoff state size, not saturation at ρ=0.25)
-  - [ ] Write Version G tex with all code results
-  - [ ] Run Version G review cycle → 3/3 Accept
+- [x] **Version G — Tex Updates** (addressing all Version F review items)
+  - [x] Reconcile all overhead numbers (DES-measured 1.8%-12.8%, DES/Projected labels)
+  - [x] Add traffic accounting table (8 message types)
+  - [x] Add formal metric definitions (overhead, cycle period, success, latency, handoff)
+  - [x] Exception-based telemetry DES results (reduction 0.27 vs predicted 0.30)
+  - [x] Link availability sensitivity analysis (sweep 0.4-1.0, topology ranking preserved ≥0.7)
+  - [x] Formal statistical testing (piecewise AIC=-51.3, breakpoint N*=45k [40k,50k])
+  - [x] Fix U-shape explanation (topology effects, not saturation)
+  - [x] Frame mesh as intentional upper bound throughout
+  - [x] Run Version G review (1 Minor + 2 Major)
+- [ ] **Version H — Address Version G Reviews**
+  - [ ] Review summaries and identify remaining items
+  - [ ] Run Version H+ review cycle → 3/3 Accept
   - [ ] Create CHANGELOG
 - [ ] **Publication Package**
   - [ ] Assemble papers/02-swarm-coordination-scaling/
@@ -163,12 +167,20 @@ Track F:                                              │ 07,08,09  │───
   - [x] All 6 metrics decrease across rounds (decision Δ=-0.031, tech params Δ=-0.064)
   - [x] New fig-decision-similarity.pdf (decision-sentence vs tech parameter trends)
   - [x] Create divergent view coding manual with operational definitions + real examples
-- [ ] **Version H — Remaining Review Items** (requires API calls / external humans)
+- [x] **Version H — Tex Updates**
+  - [x] Expand similarity analysis to 6 metrics (all decreasing, decision Δ=-0.031, tech Δ=-0.064)
+  - [x] Add decision-similarity figure and comparison table
+  - [x] Strengthen sycophancy discussion with semantic-level evidence
+  - [x] Reference coding manual (Supplementary S1)
+  - [x] Add Design Decisions subsection (winner visibility, truncation, self-vote)
+  - [x] Sharpen novelty framing (3 precise contributions)
+  - [x] Add 3 citations (Sharma, Lakshminarayanan, Christensen)
+  - [x] Run Version H review (1 Accept + 2 Major)
+- [ ] **Version I — Address Version H Reviews** (requires API calls / external humans)
   - [ ] Run repeated trials: 4 questions × 5 repetitions at T=0.7 (est. $100-400)
   - [ ] Re-run baselines with matched prompts, output schemas, and temperature
   - [ ] Run self-refinement baseline on all 16 questions (not just 4)
   - [ ] Report inter-rater reliability (Cohen's κ) for DV categorization
-  - [ ] Elevate protocol choices (winner visibility, truncation, self-vote) as design decisions
   - [ ] Small-scale expert evaluation: 2-3 engineers, 4-5 questions, blinded comparison
   - [ ] Sharpen novelty framing (Delphi + DV schema + empirical characterization)
   - [ ] Add missing citations (Xiong et al. calibration, Sharma et al. sycophancy, INCOSE guidance)
