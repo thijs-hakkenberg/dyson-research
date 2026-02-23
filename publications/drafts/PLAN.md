@@ -12,8 +12,8 @@
 | # | Paper | Tier | Status | Blocking |
 |---|-------|------|--------|----------|
 | 01 | ISRU Economic Crossover | 1 | **COMPLETE** (3/3 Accept, Version AM) | — |
-| 02 | Swarm Coordination Scaling | 1 | **Version E** — 1 Minor + 2 Major (text ceiling) | Code fixes needed |
-| 03 | Multi-Model AI Consensus | 1 | **Version F** — 3/3 Major (text ceiling) | Experiments needed |
+| 02 | Swarm Coordination Scaling | 1 | **Version F** — 1 Minor + 1 Major + 1 Unknown | Link model, optimization eval |
+| 03 | Multi-Model AI Consensus | 1 | **Version G** — 2 Major + 1 Unknown | Blind deliberation experiment |
 | 04 | Microgravity Metallurgy | 2 | Inputs cataloged | — |
 | 05 | ISRU Water Extraction | 2 | Inputs cataloged | — |
 | 06 | Cryogenic Propellant Architecture | 2 | Inputs cataloged | — |
@@ -102,13 +102,16 @@ Track F:                                              │ 07,08,09  │───
   - [x] Write Version A (full LaTeX — 585 lines, 10 pages, 8 figures integrated)
   - [x] Write Versions B through E (5 review rounds)
   - [x] Fix figures (protocol overhead baseline subtraction, annotation positioning)
-- [ ] **Code-Level Fixes** (text ceiling reached — remaining issues require simulation changes)
-  - [ ] Fix bandwidth model inconsistency (coordinator k_c × 205 bps vs 1 kbps cap)
-  - [ ] Add intermediate-scale data points (20k, 30k, 40k, 60k, 80k nodes)
-  - [ ] Add per-tier message decomposition (intra-cluster vs inter-cluster vs central)
+- [x] **Code-Level Fixes** (Version F)
+  - [x] Fix bandwidth model — compressed summaries (512B cluster, 1024B region) between tiers
+  - [x] Add intermediate-scale data points (20k, 30k, 40k, 60k, 80k nodes)
+  - [x] Add per-tier message decomposition (Fig 9: intra-cluster vs inter-cluster vs central)
+  - [x] Write Version F with code fixes + run review (1 Minor + 1 Major + 1 Unknown)
+  - [x] Add Fig 9: per-tier message decomposition stacked area chart
+- [ ] **Remaining Issues** (from Version F reviews)
   - [ ] Add stochastic link availability model or strengthen idealised-link caveats
-  - [ ] Rigorous evaluation of three optimizations (gossip early-exit, lazy scheduling, batched power)
-  - [ ] Run Version F+ review cycle after code fixes → 3/3 Accept
+  - [ ] Rigorous DES-level evaluation of three optimizations (currently analytical projections)
+  - [ ] Run Version G+ review cycle → 3/3 Accept
   - [ ] Create CHANGELOG
 - [ ] **Publication Package**
   - [ ] Assemble papers/02-swarm-coordination-scaling/
@@ -139,13 +142,17 @@ Track F:                                              │ 07,08,09  │───
   - [x] Write Versions B through F (6 review rounds)
   - [x] Run aggregation-only baseline (16/16 questions)
   - [x] Run self-refinement baseline (4 stratified questions)
-- [ ] **Experiment-Level Work** (text ceiling reached — remaining issues require new experiments)
+- [x] **Version G Improvements**
+  - [x] Transcript-based similarity analysis (TF-IDF cosine, keyword Jaccard, heading overlap)
+  - [x] Key finding: cross-model similarity DECREASES across rounds (evidence against sycophancy)
+  - [x] Reduce paper length 27% (890→647 lines, targeting IEEE IS ~8k-9k words)
+  - [x] Add reproducibility metadata note (endpoint IDs, dates, system prompt hashes)
+  - [x] Soften overclaims per reviewer feedback
+  - [x] Run Version G review (2 Major + 1 Unknown)
+- [ ] **Remaining Issues** (from Version G reviews)
   - [ ] Run prompt-matched controlled experiment (Experiment 3: Blind Deliberation, est. <$1,400)
   - [ ] Recruit 2-3 independent domain experts for blinded divergent view evaluation
-  - [ ] Transcript-based similarity analysis (embedding similarity across rounds)
-  - [ ] Reduce paper length 20-30% (target 8,000-9,000 words for IEEE IS)
-  - [ ] Add reproducibility metadata appendix (endpoint IDs, dates, system prompt hashes)
-  - [ ] Run Version G+ review cycle after experiment work → 3/3 Accept
+  - [ ] Run Version H+ review cycle → 3/3 Accept
   - [ ] Create CHANGELOG
 - [ ] **Publication Package**
   - [ ] Assemble papers/03-multi-model-ai-consensus/
