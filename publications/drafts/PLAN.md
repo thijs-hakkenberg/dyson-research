@@ -108,14 +108,18 @@ Track F:                                              │ 07,08,09  │───
   - [x] Add per-tier message decomposition (Fig 9: intra-cluster vs inter-cluster vs central)
   - [x] Write Version F with code fixes + run review (1 Minor + 1 Major + 1 Unknown)
   - [x] Add Fig 9: per-tier message decomposition stacked area chart
-- [ ] **Version G — Address Version F Reviews** (consensus: Major Revision)
+- [x] **Version G Code Infrastructure** (addressing Version F review items)
+  - [x] Implement exception-based telemetry as DES mechanism (configurable threshold)
+  - [x] Add stochastic link availability model (Bernoulli per-message, coordinator tracking)
+  - [x] Formal statistical testing for superlinear transition (AIC: linear vs power-law vs piecewise)
+- [ ] **Version G — Tex + Remaining Review Items**
   - [ ] Reconcile overhead numbers across abstract/tables/figures (8% vs 10% vs 4.8% discrepancy)
-  - [ ] Implement exception-based telemetry in DES (simplest optimization to validate analytically)
-  - [ ] Add stochastic link availability model (Bernoulli on/off, 40-80% duty cycle sweep)
+  - [ ] Run link availability sweep (40-80%) and report topology ranking preservation
+  - [ ] Run exception telemetry validation at N=10k and N=100k, compare to analytical projection
   - [ ] Carry M/D/c analysis (c=10, c=100) through to main comparison tables/figures
   - [ ] Formally define all performance metrics (coordination success, deadlines, availability)
-  - [ ] Formal statistical testing for superlinear transition (AIC/BIC piecewise vs power-law)
   - [ ] Fix U-shaped optimum causal explanation (handoff state size, not saturation at ρ=0.25)
+  - [ ] Write Version G tex with all code results
   - [ ] Run Version G review cycle → 3/3 Accept
   - [ ] Create CHANGELOG
 - [ ] **Publication Package**
@@ -154,12 +158,15 @@ Track F:                                              │ 07,08,09  │───
   - [x] Add reproducibility metadata note (endpoint IDs, dates, system prompt hashes)
   - [x] Soften overclaims per reviewer feedback
   - [x] Run Version G review (2 Major + 1 Unknown)
-- [ ] **Version H — Address Version G Reviews** (consensus: Major Revision)
+- [x] **Version H Analysis Infrastructure** (addressing Version G review items)
+  - [x] Add semantic similarity: n-gram (1-3) TF-IDF, decision-sentence TF-IDF, tech parameter Jaccard
+  - [x] All 6 metrics decrease across rounds (decision Δ=-0.031, tech params Δ=-0.064)
+  - [x] New fig-decision-similarity.pdf (decision-sentence vs tech parameter trends)
+  - [x] Create divergent view coding manual with operational definitions + real examples
+- [ ] **Version H — Remaining Review Items** (requires API calls / external humans)
   - [ ] Run repeated trials: 4 questions × 5 repetitions at T=0.7 (est. $100-400)
   - [ ] Re-run baselines with matched prompts, output schemas, and temperature
   - [ ] Run self-refinement baseline on all 16 questions (not just 4)
-  - [ ] Add semantic embedding similarity (text-embedding-3-large) alongside TF-IDF
-  - [ ] Create divergent view coding manual with criteria + boundary examples
   - [ ] Report inter-rater reliability (Cohen's κ) for DV categorization
   - [ ] Elevate protocol choices (winner visibility, truncation, self-vote) as design decisions
   - [ ] Small-scale expert evaluation: 2-3 engineers, 4-5 questions, blinded comparison
