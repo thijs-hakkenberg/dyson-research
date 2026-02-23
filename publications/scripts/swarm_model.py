@@ -59,6 +59,8 @@ MESSAGE_SIZES: dict[str, int] = {
     "handoff": 8192,
     "gossip": 128,
     "collision": 64,
+    "cluster_summary": 512,
+    "region_summary": 1024,
 }
 """Message sizes in bytes by type."""
 
@@ -184,6 +186,16 @@ class PropagationStats:
 
 
 @dataclass
+class TierMessageBreakdown:
+    """Per-tier message counts for hierarchical topology analysis."""
+
+    intra_cluster_msgs: int = 0
+    inter_cluster_msgs: int = 0
+    central_msgs: int = 0
+    gossip_msgs: int = 0
+
+
+@dataclass
 class SwarmCoordinationRunResult:
     """Result of a single simulation run."""
 
@@ -201,6 +213,8 @@ class SwarmCoordinationRunResult:
     total_messages_delivered: int = 0
     avg_messages_per_node_per_day: float = 0.0
     total_energy_kwh: float = 0.0
+    coordinator_bandwidth_kbps: float = 0.0
+    tier_breakdown: Optional[TierMessageBreakdown] = None
 
 
 @dataclass
@@ -270,12 +284,17 @@ def calculate_bandwidth_requirement(
     if topology == "hierarchical":
         num_clusters = math.ceil(node_count / cluster_size)
         num_regions = math.ceil(num_clusters / 10)
+        # Intra-cluster: each member sends 256-byte ephemeris to coordinator
         cluster_msgs = node_count / update_interval_seconds
+        cluster_bps = cluster_msgs * ephemeris_size * 8
+        # Cluster->Region: coordinator sends a single compressed cluster summary
         region_msgs = num_clusters / update_interval_seconds
+        region_bps = region_msgs * MESSAGE_SIZES["cluster_summary"] * 8
+        # Region->Central: regional coordinator sends a single region summary
         central_msgs = num_regions / update_interval_seconds
-        total_msgs = cluster_msgs + region_msgs + central_msgs
-        bits_per_second = total_msgs * ephemeris_size * 8
-        return bits_per_second / 1_000
+        central_bps = central_msgs * MESSAGE_SIZES["region_summary"] * 8
+        total_bps = cluster_bps + region_bps + central_bps
+        return total_bps / 1_000
 
     # mesh
     gossip_fanout = min(5, math.ceil(math.log2(node_count)))
@@ -318,6 +337,24 @@ def calculate_communication_overhead(
     """Return communication overhead as a percentage of total capacity."""
     total_capacity_kbps = bandwidth_per_node_kbps * node_count
     return (required_kbps / total_capacity_kbps) * 100
+
+
+def per_coordinator_bandwidth_kbps(
+    cluster_size: int,
+    update_interval_seconds: float = 10.0,
+) -> float:
+    """Return the peak bandwidth required by a single cluster coordinator (kbps).
+
+    A coordinator receives *cluster_size* ephemeris messages per interval from
+    its members and sends one compressed cluster summary upstream.  This
+    function returns the peak inbound + outbound rate.
+    """
+    ephemeris_size = MESSAGE_SIZES["ephemeris"]
+    # Inbound: cluster_size ephemeris messages per interval
+    inbound_bps = (cluster_size * ephemeris_size * 8) / update_interval_seconds
+    # Outbound: one compressed cluster summary per interval
+    outbound_bps = (MESSAGE_SIZES["cluster_summary"] * 8) / update_interval_seconds
+    return (inbound_bps + outbound_bps) / 1_000
 
 
 def create_message(
@@ -999,6 +1036,7 @@ class SwarmCoordinationSimulator:
         self.total_messages_sent: int = 0
         self.total_messages_delivered: int = 0
         self.propagation_times: list[float] = []
+        self._tier_breakdown = TierMessageBreakdown()
 
         self._initialize_simulation()
 
@@ -1190,6 +1228,8 @@ class SwarmCoordinationSimulator:
                 sender = self._find_node(sender_id)
                 if sender:
                     sender.messages_sent += 1
+                # Classify message by tier for hierarchical topology
+                self._classify_tier_message(sender_id, receiver_id)
                 delay_ms = calculate_propagation_delay(
                     self.config.coordination_topology,
                     self.config.node_count,
@@ -1336,6 +1376,7 @@ class SwarmCoordinationSimulator:
                 if self.message_queue.enqueue(msg):
                     self.total_messages_sent += 1
                     node.messages_sent += 1
+                    self._tier_breakdown.gossip_msgs += 1
                     msgs_this_round += 1
                 else:
                     queue_has_space = False
@@ -1428,9 +1469,54 @@ class SwarmCoordinationSimulator:
                 / max(1, self.config.simulation_days)
             ),
             total_energy_kwh=calculate_total_energy(self.network.nodes),
+            coordinator_bandwidth_kbps=per_coordinator_bandwidth_kbps(
+                self.config.cluster_size, 10.0
+            ),
+            tier_breakdown=TierMessageBreakdown(
+                intra_cluster_msgs=self._tier_breakdown.intra_cluster_msgs,
+                inter_cluster_msgs=self._tier_breakdown.inter_cluster_msgs,
+                central_msgs=self._tier_breakdown.central_msgs,
+                gossip_msgs=self._tier_breakdown.gossip_msgs,
+            ),
         )
 
     # -- helpers -----------------------------------------------------------
+    def _classify_tier_message(self, sender_id: str, receiver_id: str) -> None:
+        """Classify a message by tier and update the breakdown counters."""
+        if self.config.coordination_topology != "hierarchical":
+            # For non-hierarchical topologies, all sync messages are intra-cluster
+            self._tier_breakdown.intra_cluster_msgs += 1
+            return
+
+        sender = self._find_node(sender_id)
+        receiver = self._find_node(receiver_id)
+        if sender is None or receiver is None:
+            self._tier_breakdown.intra_cluster_msgs += 1
+            return
+
+        # Check if receiver is the central coordinator
+        if receiver_id == self.network.central_coordinator_id and sender_id != receiver_id:
+            # Check if sender is a regional coordinator (i.e. it is a cluster
+            # coordinator that also serves as regional coordinator and is sending
+            # to central) -- treat as central tier message
+            sender_cluster = self._find_cluster(sender.cluster_id)
+            if sender_cluster and sender_cluster.regional_coordinator_id == sender_id:
+                self._tier_breakdown.central_msgs += 1
+                return
+
+        # Check if receiver is a regional coordinator (inter-cluster message)
+        sender_cluster = self._find_cluster(sender.cluster_id)
+        if sender_cluster is not None:
+            regional_id = sender_cluster.regional_coordinator_id
+            if regional_id and receiver_id == regional_id and sender_id != receiver_id:
+                # Sender is a cluster coordinator sending to regional coordinator
+                if sender.is_coordinator:
+                    self._tier_breakdown.inter_cluster_msgs += 1
+                    return
+
+        # Default: intra-cluster message (member <-> coordinator)
+        self._tier_breakdown.intra_cluster_msgs += 1
+
     def _find_node(self, node_id: str) -> Optional[SwarmNode]:
         return self.network.get_node(node_id)
 

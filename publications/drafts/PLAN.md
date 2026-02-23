@@ -12,8 +12,8 @@
 | # | Paper | Tier | Status | Blocking |
 |---|-------|------|--------|----------|
 | 01 | ISRU Economic Crossover | 1 | **COMPLETE** (3/3 Accept, Version AM) | — |
-| 02 | Swarm Coordination Scaling | 1 | Outline + simulator exists | — |
-| 03 | Multi-Model AI Consensus | 1 | Outline + 16 deliberations exist | — |
+| 02 | Swarm Coordination Scaling | 1 | **Version E** — 1 Minor + 2 Major (text ceiling) | Code fixes needed |
+| 03 | Multi-Model AI Consensus | 1 | **Version F** — 3/3 Major (text ceiling) | Experiments needed |
 | 04 | Microgravity Metallurgy | 2 | Inputs cataloged | — |
 | 05 | ISRU Water Extraction | 2 | Inputs cataloged | — |
 | 06 | Cryogenic Propellant Architecture | 2 | Inputs cataloged | — |
@@ -97,10 +97,18 @@ Track F:                                              │ 07,08,09  │───
   - [x] Fig 6: Architecture diagram (4-level hierarchy)
   - [x] Fig 7: Failure resilience vs. failure rate
   - [x] Fig 8: Topology comparison summary
-- [x] **Paper**
+- [x] **Paper — Version A through E** (5 review rounds: 1 Minor + 2 Major)
   - [x] Verify all arXiv citations exist (3 fixed: tolstaya year, li year, badescu title)
   - [x] Write Version A (full LaTeX — 585 lines, 10 pages, 8 figures integrated)
-  - [ ] Run iterative AI peer review → 3/3 Accept
+  - [x] Write Versions B through E (5 review rounds)
+  - [x] Fix figures (protocol overhead baseline subtraction, annotation positioning)
+- [ ] **Code-Level Fixes** (text ceiling reached — remaining issues require simulation changes)
+  - [ ] Fix bandwidth model inconsistency (coordinator k_c × 205 bps vs 1 kbps cap)
+  - [ ] Add intermediate-scale data points (20k, 30k, 40k, 60k, 80k nodes)
+  - [ ] Add per-tier message decomposition (intra-cluster vs inter-cluster vs central)
+  - [ ] Add stochastic link availability model or strengthen idealised-link caveats
+  - [ ] Rigorous evaluation of three optimizations (gossip early-exit, lazy scheduling, batched power)
+  - [ ] Run Version F+ review cycle after code fixes → 3/3 Accept
   - [ ] Create CHANGELOG
 - [ ] **Publication Package**
   - [ ] Assemble papers/02-swarm-coordination-scaling/
@@ -108,7 +116,7 @@ Track F:                                              │ 07,08,09  │───
   - [ ] Write blog article
 
 ### Paper 03: Multi-Model AI Consensus
-- [ ] **Data Extraction & Analysis**
+- [x] **Data Extraction & Analysis**
   - [x] Parse all 16 deliberation transcripts → structured dataset (`deliberation_analysis.py`)
   - [x] Compute convergence statistics (mean 1.44 rounds, 95% CI [1.19, 1.75])
   - [x] Analyze voting dynamics (71.5% APPROVE, 0% REJECT, self-vote r=0.13 n.s.)
@@ -125,10 +133,19 @@ Track F:                                              │ 07,08,09  │───
   - [x] Fig 6: System architecture diagram
   - [x] Fig 7: Word count distribution
   - [x] Fig 8: Termination voting patterns
-- [x] **Paper**
+- [x] **Paper — Version A through F** (6 review rounds: 3/3 Major)
   - [x] Verify all citations (5 fixed: arulmohan, wang, zheng year, chan venue, wu authors)
   - [x] Write Version A (full LaTeX — 580 lines, 24 pages, 8 figures integrated)
-  - [ ] Run iterative AI peer review → 3/3 Accept
+  - [x] Write Versions B through F (6 review rounds)
+  - [x] Run aggregation-only baseline (16/16 questions)
+  - [x] Run self-refinement baseline (4 stratified questions)
+- [ ] **Experiment-Level Work** (text ceiling reached — remaining issues require new experiments)
+  - [ ] Run prompt-matched controlled experiment (Experiment 3: Blind Deliberation, est. <$1,400)
+  - [ ] Recruit 2-3 independent domain experts for blinded divergent view evaluation
+  - [ ] Transcript-based similarity analysis (embedding similarity across rounds)
+  - [ ] Reduce paper length 20-30% (target 8,000-9,000 words for IEEE IS)
+  - [ ] Add reproducibility metadata appendix (endpoint IDs, dates, system prompt hashes)
+  - [ ] Run Version G+ review cycle after experiment work → 3/3 Accept
   - [ ] Create CHANGELOG
 - [ ] **Publication Package**
   - [ ] Assemble papers/03-multi-model-ai-consensus/

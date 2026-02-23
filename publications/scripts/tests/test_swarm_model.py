@@ -77,7 +77,8 @@ class TestConstants:
         assert MESSAGE_SIZES["collision"] == 64
 
     def test_message_sizes_keys(self):
-        expected_keys = {"ephemeris", "heartbeat", "handoff", "gossip", "collision"}
+        expected_keys = {"ephemeris", "heartbeat", "handoff", "gossip", "collision",
+                         "cluster_summary", "region_summary"}
         assert set(MESSAGE_SIZES.keys()) == expected_keys
 
     def test_handoff_state_size(self):

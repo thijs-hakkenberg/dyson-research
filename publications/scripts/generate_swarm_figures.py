@@ -2,7 +2,7 @@
 """Generate publication-quality figures for the Swarm Coordination Scaling paper.
 
 Imports model logic from swarm_model and MC engine from swarm_mc, then produces
-8 PDF figures:
+9 PDF figures:
   1. fig-overhead-vs-nodes.pdf       -- Comm overhead vs node count (3 topologies)
   2. fig-latency-distribution.pdf    -- Propagation latency box/violin plots
   3. fig-cluster-size-optimization.pdf -- Overhead vs cluster size (hierarchical)
@@ -11,6 +11,7 @@ Imports model logic from swarm_model and MC engine from swarm_mc, then produces
   6. fig-architecture-diagram.pdf    -- 4-level hierarchy diagram
   7. fig-failure-resilience.pdf      -- Availability vs failure rate
   8. fig-topology-summary.pdf        -- Grouped bar chart comparing topologies
+  9. fig-message-decomposition.pdf   -- Per-tier message breakdown (hierarchical)
 
 Usage:
     source publications/scripts/.venv/bin/activate
@@ -41,6 +42,7 @@ from matplotlib.ticker import FuncFormatter  # noqa: E402
 from swarm_model import (  # noqa: E402
     SwarmCoordinationConfig,
     SwarmCoordinationSimulator,
+    TierMessageBreakdown,
     calculate_bandwidth_requirement,
     calculate_communication_overhead,
     calculate_propagation_delay,
@@ -109,7 +111,7 @@ SCALE_FAST = {
     "max_events_factor": 3,  # max_events = node_count * factor (default 10*days)
 }
 SCALE_FULL = {
-    "node_counts": [1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000],
+    "node_counts": [1_000, 5_000, 10_000, 20_000, 30_000, 40_000, 50_000, 60_000, 80_000, 100_000, 500_000, 1_000_000],
     "n_runs": 20,
     "cluster_sizes": [10, 25, 50, 100, 200, 500],
     "failure_rates": [0.001, 0.005, 0.01, 0.02, 0.05, 0.1],
@@ -189,9 +191,15 @@ def fig_overhead_vs_nodes() -> None:
             ci_lo.append(lo)
             ci_hi.append(hi)
 
+        # Subtract topology-invariant baseline telemetry to show protocol overhead
+        baseline_telemetry_pct = 20.48
+        proto_means = [v - baseline_telemetry_pct for v in means]
+        proto_ci_lo = [v - baseline_telemetry_pct for v in ci_lo]
+        proto_ci_hi = [v - baseline_telemetry_pct for v in ci_hi]
+
         ax.plot(
             node_counts,
-            means,
+            proto_means,
             "o-",
             color=TOPO_COLORS[topo],
             linewidth=1.8,
@@ -200,16 +208,16 @@ def fig_overhead_vs_nodes() -> None:
         )
         ax.fill_between(
             node_counts,
-            ci_lo,
-            ci_hi,
+            proto_ci_lo,
+            proto_ci_hi,
             alpha=0.15,
             color=TOPO_COLORS[topo],
         )
 
     ax.set_xscale("log")
     ax.set_xlabel("Node Count")
-    ax.set_ylabel("Communication Overhead (%)")
-    ax.set_title("Communication Overhead vs Swarm Size")
+    ax.set_ylabel("Protocol Overhead (%)")
+    ax.set_title("Protocol Overhead vs Swarm Size")
     ax.legend(loc="best", framealpha=0.9)
     ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
 
@@ -347,44 +355,53 @@ def fig_cluster_size_optimization() -> None:
         latencies_ci_lo.append(lat_ci[0])
         latencies_ci_hi.append(lat_ci[1])
 
-    # Find optimal cluster size (minimum overhead)
-    opt_idx = int(np.argmin(overheads_mean))
+    # Subtract topology-invariant baseline telemetry to show protocol overhead
+    # Baseline = r * msg_size * 8 / bandwidth_per_node = 0.1 * 256 * 8 / 1000 * 100 = 20.48%
+    baseline_telemetry_pct = 20.48
+    proto_mean = [v - baseline_telemetry_pct for v in overheads_mean]
+    proto_ci_lo = [v - baseline_telemetry_pct for v in overheads_ci_lo]
+    proto_ci_hi = [v - baseline_telemetry_pct for v in overheads_ci_hi]
+
+    # Find optimal cluster size (minimum protocol overhead)
+    opt_idx = int(np.argmin(proto_mean))
     opt_cs = cluster_sizes[opt_idx]
 
     fig, ax1 = subplots(figsize=(7, 4.5))
 
-    # Primary axis: overhead
+    # Primary axis: protocol overhead
     color_oh = c_hierarchical
     ax1.plot(
         cluster_sizes,
-        overheads_mean,
+        proto_mean,
         "o-",
         color=color_oh,
         linewidth=1.8,
         markersize=5,
-        label="Overhead (%)",
+        label="Protocol Overhead (%)",
     )
     ax1.fill_between(
         cluster_sizes,
-        overheads_ci_lo,
-        overheads_ci_hi,
+        proto_ci_lo,
+        proto_ci_hi,
         alpha=0.15,
         color=color_oh,
     )
     ax1.axvline(
         opt_cs, color=c_optimized, linestyle="--", linewidth=1, alpha=0.7
     )
+    # Position annotation within plot bounds using axes transform for y
+    y_range = max(proto_mean) - min(proto_mean)
     ax1.annotate(
         f"Optimal: {opt_cs}",
-        xy=(opt_cs, overheads_mean[opt_idx]),
-        xytext=(opt_cs + 50, overheads_mean[opt_idx] * 1.15),
+        xy=(opt_cs, proto_mean[opt_idx]),
+        xytext=(opt_cs + 80, proto_mean[opt_idx] + y_range * 0.3),
         fontsize=9,
         color=c_optimized,
         fontweight="bold",
         arrowprops=dict(arrowstyle="->", color=c_optimized, lw=1.2),
     )
     ax1.set_xlabel("Cluster Size (nodes per cluster)")
-    ax1.set_ylabel("Communication Overhead (%)", color=color_oh)
+    ax1.set_ylabel("Protocol Overhead (%)", color=color_oh)
     ax1.tick_params(axis="y", labelcolor=color_oh)
 
     # Secondary axis: latency
@@ -583,11 +600,20 @@ def fig_scaling_trajectory() -> None:
         ci_lo_opt.append(lo)
         ci_hi_opt.append(hi)
 
+    # Subtract topology-invariant baseline telemetry to show protocol overhead
+    baseline_telemetry_pct = 20.48
+    proto_fixed = [v - baseline_telemetry_pct for v in means_fixed]
+    proto_ci_lo_fixed = [v - baseline_telemetry_pct for v in ci_lo_fixed]
+    proto_ci_hi_fixed = [v - baseline_telemetry_pct for v in ci_hi_fixed]
+    proto_opt = [v - baseline_telemetry_pct for v in means_opt]
+    proto_ci_lo_opt = [v - baseline_telemetry_pct for v in ci_lo_opt]
+    proto_ci_hi_opt = [v - baseline_telemetry_pct for v in ci_hi_opt]
+
     fig, ax = subplots()
 
     ax.plot(
         node_counts,
-        means_fixed,
+        proto_fixed,
         "o-",
         color=c_centralized,
         linewidth=1.8,
@@ -596,15 +622,15 @@ def fig_scaling_trajectory() -> None:
     )
     ax.fill_between(
         node_counts,
-        ci_lo_fixed,
-        ci_hi_fixed,
+        proto_ci_lo_fixed,
+        proto_ci_hi_fixed,
         alpha=0.15,
         color=c_centralized,
     )
 
     ax.plot(
         node_counts,
-        means_opt,
+        proto_opt,
         "s-",
         color=c_optimized,
         linewidth=1.8,
@@ -613,15 +639,15 @@ def fig_scaling_trajectory() -> None:
     )
     ax.fill_between(
         node_counts,
-        ci_lo_opt,
-        ci_hi_opt,
+        proto_ci_lo_opt,
+        proto_ci_hi_opt,
         alpha=0.15,
         color=c_optimized,
     )
 
     ax.set_xscale("log")
     ax.set_xlabel("Node Count")
-    ax.set_ylabel("Communication Overhead (%)")
+    ax.set_ylabel("Protocol Overhead (%)")
     ax.set_title("Scaling Trajectory: Fixed vs Optimized Cluster Size")
     ax.legend(loc="best", framealpha=0.9)
     ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
@@ -845,8 +871,9 @@ def fig_topology_summary() -> None:
     n_runs = SCALE["summary_runs"]
     sim_days = _sim_days(nc)
 
+    baseline_telemetry_pct = 20.48
     metrics = {
-        "Overhead (%)": [],
+        "Protocol OH (%)": [],
         "Availability (%)": [],
         "Latency (norm.)": [],
         "Drop Rate (%)": [],
@@ -872,12 +899,12 @@ def fig_topology_summary() -> None:
             )
             sim = SwarmCoordinationSimulator(cfg)
             result = sim.run()
-            overhead_vals.append(result.communication_overhead_percent)
+            overhead_vals.append(result.communication_overhead_percent - baseline_telemetry_pct)
             avail_vals.append(result.coordinator_availability_percent)
             latency_vals.append(result.avg_update_propagation_ms)
             drop_vals.append(result.message_drop_rate * 100)
 
-        metrics["Overhead (%)"].append(np.mean(overhead_vals))
+        metrics["Protocol OH (%)"].append(np.mean(overhead_vals))
         metrics["Availability (%)"].append(np.mean(avail_vals))
         raw_latencies.append(np.mean(latency_vals))
         metrics["Drop Rate (%)"].append(np.mean(drop_vals))
@@ -888,7 +915,7 @@ def fig_topology_summary() -> None:
         latency_ci = confidence_interval(latency_vals)
         drop_ci = confidence_interval(drop_vals)
 
-        errors["Overhead (%)"].append(
+        errors["Protocol OH (%)"].append(
             (np.mean(overhead_vals) - overhead_ci[0])
         )
         errors["Availability (%)"].append(
@@ -903,7 +930,7 @@ def fig_topology_summary() -> None:
     max_lat = max(raw_latencies) if max(raw_latencies) > 0 else 1.0
     for i in range(len(TOPOLOGIES)):
         metrics["Latency (norm.)"].append(raw_latencies[i] / max_lat * 100)
-        errors["Latency (norm.)"][i] = errors["Overhead (%)"][i]  # approximate error
+        errors["Latency (norm.)"][i] = errors["Protocol OH (%)"][i]  # approximate error
 
     metric_names = list(metrics.keys())
     n_metrics = len(metric_names)
@@ -940,10 +967,84 @@ def fig_topology_summary() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Figure 9: Message Decomposition
+# ---------------------------------------------------------------------------
+def fig_message_decomposition() -> None:
+    """Generate Figure 9: stacked area chart of per-tier message breakdown vs node count.
+
+    Runs hierarchical topology simulations at each node count and collects
+    TierMessageBreakdown data. Shows intra-cluster, inter-cluster, and central
+    message counts as stacked areas.
+    """
+    node_counts = SCALE["node_counts"]
+    n_runs = min(5, SCALE["n_runs"])
+
+    intra_means: list[float] = []
+    inter_means: list[float] = []
+    central_means: list[float] = []
+
+    for nc in node_counts:
+        sim_days = _sim_days(nc)
+        cluster_size = min(200, max(50, int(math.floor(math.sqrt(nc)))))
+
+        intra_vals: list[float] = []
+        inter_vals: list[float] = []
+        central_vals: list[float] = []
+
+        for run_i in range(n_runs):
+            cfg = SwarmCoordinationConfig(
+                node_count=nc,
+                coordination_topology="hierarchical",
+                cluster_size=cluster_size,
+                simulation_days=sim_days,
+                seed=SEED + run_i,
+                max_events=_max_events(nc),
+            )
+            sim = SwarmCoordinationSimulator(cfg)
+            result = sim.run()
+            tb = result.tier_breakdown
+            if tb is not None:
+                intra_vals.append(tb.intra_cluster_msgs)
+                inter_vals.append(tb.inter_cluster_msgs)
+                central_vals.append(tb.central_msgs)
+            else:
+                intra_vals.append(0)
+                inter_vals.append(0)
+                central_vals.append(0)
+
+        intra_means.append(float(np.mean(intra_vals)))
+        inter_means.append(float(np.mean(inter_vals)))
+        central_means.append(float(np.mean(central_vals)))
+
+    fig, ax = subplots(figsize=(7, 4.5))
+
+    ax.stackplot(
+        node_counts,
+        intra_means,
+        inter_means,
+        central_means,
+        labels=["Intra-cluster", "Inter-cluster (coord\u2192regional)", "Central (regional\u2192central)"],
+        colors=["#0891b2", "#d97706", "#7c3aed"],
+        alpha=0.85,
+    )
+
+    ax.set_xscale("log")
+    ax.set_xlabel("Node Count")
+    ax.set_ylabel("Message Count")
+    ax.set_title("Per-Tier Message Decomposition (Hierarchical)")
+    ax.legend(loc="upper left", framealpha=0.9)
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-message-decomposition.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
 def main() -> None:
-    """Generate all 8 figures sequentially with timing for each."""
+    """Generate all 9 figures sequentially with timing for each."""
     figures = [
         ("Fig 1: overhead vs nodes", fig_overhead_vs_nodes),
         ("Fig 2: latency distribution", fig_latency_distribution),
@@ -953,6 +1054,7 @@ def main() -> None:
         ("Fig 6: architecture diagram", fig_architecture_diagram),
         ("Fig 7: failure resilience", fig_failure_resilience),
         ("Fig 8: topology summary", fig_topology_summary),
+        ("Fig 9: message decomposition", fig_message_decomposition),
     ]
 
     total_t0 = time.perf_counter()
