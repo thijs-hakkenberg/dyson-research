@@ -1,0 +1,619 @@
+% Multi-Model AI Deliberation for Complex Engineering Decisions
+% Target: Design Science (Cambridge University Press) or IEEE Intelligent Systems
+% Compile with: pdflatex -> bibtex -> pdflatex -> pdflatex
+
+\documentclass[11pt,a4paper]{article}
+
+% --- Packages ---
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{authblk}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{textcomp}
+
+\graphicspath{{figures/}}
+
+% --- Hyperref configuration ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!60!black,
+    citecolor=blue!60!black,
+    urlcolor=blue!60!black,
+}
+
+% --- Listings configuration for YAML ---
+\lstdefinelanguage{yaml}{
+  keywords={true,false,null,y,n},
+  keywordstyle=\color{darkgray}\bfseries,
+  basicstyle=\ttfamily\small,
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{gray}\ttfamily,
+  stringstyle=\color{blue!60!black}\ttfamily,
+  moredelim=[l][\color{orange}]{:},
+  moredelim=[l][\color{teal}]{-\ },
+  frame=single,
+  framesep=3pt,
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible,
+}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  frame=single,
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible,
+}
+
+% --- Title and Authors ---
+\title{\textbf{Multi-Model AI Deliberation for Complex Engineering Decisions: Methodology, Implementation, and Empirical Results from 16 Architectural Trade Studies}}
+
+\author{Project Dyson Research Team\thanks{This paper was produced with AI assistance. The deliberation system described herein uses commercially available large language models (Claude 4.6, Gemini 3 Pro, GPT-5.2) accessed through Databricks serving endpoints. The manuscript itself was drafted with AI writing assistance and reviewed by human researchers. Full AI involvement disclosure is provided in the Ethics Statement (Section~\ref{sec:ethics}).}}
+
+\affil{Project Dyson --- Open-Source Space Infrastructure Initiative\\ \texttt{https://projectdyson.org}}
+
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+% ============================================================
+% ABSTRACT
+% ============================================================
+\begin{abstract}
+We present a structured methodology for using multiple large language models (LLMs) to deliberate on complex engineering decisions where human expert consensus is difficult to obtain, prohibitively expensive, or needed as a preliminary input before formal design review. Three frontier LLMs---Claude~4.6 (Anthropic), Gemini~3~Pro (Google), and GPT-5.2 (OpenAI)---independently generate engineering proposals, evaluate each other's work through structured voting, iterate through multiple deliberation rounds, and converge toward conclusions with explicit, machine-readable documentation of remaining disagreements.
+
+We apply this methodology to 16~architectural trade studies for a large-scale space infrastructure project spanning coordination architecture, power systems, propulsion budgets, manufacturing strategy, governance structures, and end-of-life disposal. The deliberation system achieves unanimous-conclude termination in 14~of~16 questions, with an average of 2.3~rounds to conclusion. Critically, the methodology preserves divergent views as structured YAML outputs rather than suppressing minority positions, yielding 47~identified divergent topics of which 12 map to genuine engineering trade-offs confirmed by independent literature review.
+
+Key findings include: (1)~models converge rapidly on well-constrained physics and engineering problems but diverge persistently on questions involving economic assumptions or governance; (2)~the voting mechanism (APPROVE/NEUTRAL/REJECT with 0.5$\times$ self-vote weight) effectively identifies high-quality proposals without degenerating into mutual agreement; (3)~divergent views, tracked in structured format with model attribution, frequently identify genuine engineering trade-offs that single-model approaches miss; and (4)~the methodology produces outputs comparable in structure and rigor to early-stage engineering trade studies suitable as inputs to formal design review processes.
+
+\medskip
+\noindent\textbf{Keywords:} multi-agent systems, large language models, engineering design, expert consensus, structured deliberation, divergent views, Delphi method, trade study methodology
+\end{abstract}
+
+\onehalfspacing
+
+% ============================================================
+% 1. INTRODUCTION
+% ============================================================
+\section{Introduction}
+\label{sec:introduction}
+
+Complex engineering decisions---selecting between competing architectures, sizing system parameters under deep uncertainty, resolving trade-offs that span multiple disciplines---traditionally require panels of domain experts. Whether conducted through formal trade studies, design review boards, or structured consensus methods such as the Delphi technique~\cite{linstone1975delphi}, these processes share common properties: they are expensive, slow, and subject to well-documented social dynamics including groupthink~\cite{janis1982groupthink}, authority bias, and anchoring effects. In preliminary design phases, where dozens or hundreds of architectural questions must be explored before any can be definitively answered, the cost of assembling expert panels for each question is often prohibitive. The typical result is that a single engineer or small team makes architectural choices with limited adversarial review, narrowing the design space prematurely.
+
+Frontier large language models (LLMs) have demonstrated substantial competence in technical reasoning across engineering domains~\cite{bubeck2023sparks,openai2024gpt4}. While no individual model matches a domain expert's depth of specialized knowledge, different model families exhibit measurably different reasoning styles, knowledge emphases, and failure modes. These differences---often treated as a nuisance in benchmarking contexts---represent a potential resource: systematic diversity in engineering judgment that can be harnessed through structured deliberation.
+
+Yet existing work on multi-agent LLM systems focuses predominantly on conversational games~\cite{du2023debate}, natural language tasks~\cite{wu2023autogen}, or evaluation frameworks~\cite{zheng2024judging}. No structured methodology exists for multi-model deliberation on engineering trade studies---the class of problems where multiple valid approaches exist, quantitative and qualitative factors must be weighed simultaneously, and the preservation of minority positions is as valuable as convergence toward consensus.
+
+This paper makes four contributions. First, we present a formal methodology for multi-model engineering deliberation, specifying round structure, voting mechanics, termination conditions, and divergent view extraction in sufficient detail for independent reproduction. Second, we provide an open-source implementation of the orchestration system. Third, we report empirical results from 16~completed architectural trade studies across diverse engineering domains, characterizing convergence patterns, voting dynamics, and the quality of preserved disagreements. Fourth, we introduce structured divergent views as a first-class output---machine-readable records of model disagreements with attribution, evidence, and resolution status---arguing that these are the methodology's most distinctive and valuable contribution.
+
+% ============================================================
+% 2. RELATED WORK
+% ============================================================
+\section{Related Work}
+\label{sec:related}
+
+\subsection{AI-Assisted Engineering Design}
+
+The application of artificial intelligence to engineering design has a long history, from early expert systems for configuration design~\cite{mcdermott1982r1} to modern generative design tools that explore structural topologies under constraint~\cite{autodesk2023generative}. More recently, LLMs have been applied to requirements analysis~\cite{arulmohan2023extracting}, code generation and review~\cite{chen2021codex}, and systems architecture exploration. However, these applications uniformly employ a single model in a single-pass or iterative-refinement mode. None implement structured multi-model deliberation with adversarial evaluation and explicit disagreement preservation.
+
+\subsection{Multi-Agent LLM Systems}
+
+The idea that multiple AI agents can produce better outcomes than a single agent has been explored through several lenses. Irving et al.~\cite{irving2018debate} proposed AI safety via debate, where two agents argue opposing positions before a human judge, demonstrating that adversarial dynamics can improve truthfulness. Du et al.~\cite{du2023debate} showed that multi-agent debate improves factual accuracy and mathematical reasoning by exposing models to counterarguments. Wu et al.~\cite{wu2023autogen} developed AutoGen, a framework for multi-agent conversation where agents with different roles collaborate on complex tasks. Zheng et al.~\cite{zheng2024judging} established LLM-as-judge evaluation, demonstrating that LLMs can reliably assess the quality of other LLMs' outputs.
+
+These contributions establish that multi-model interaction can improve output quality, but they target natural language tasks (summarization, question answering, code generation) rather than engineering trade studies. Engineering deliberation differs fundamentally: there is no single correct answer, multiple valid approaches must be compared along incommensurable dimensions, and the goal is not convergence to a single output but rather a structured map of the decision space including areas of agreement and persistent disagreement.
+
+\subsection{Expert Consensus Methods}
+
+The Delphi method, developed at RAND in the 1950s~\cite{linstone1975delphi,dalkey1963experimental}, remains the gold standard for structured expert consensus. Its core features---anonymous proposals, structured feedback between rounds, iterative convergence, and statistical aggregation of final opinions---bear striking parallels to our methodology. Nominal Group Technique~\cite{delbecq1975group} adds face-to-face interaction with structured turn-taking, while the RAND/UCLA Appropriateness Method~\cite{fitch2001rand} applies Delphi-like processes to medical decision-making. These methods typically require 3--4 rounds for convergence, involve 7--15 panelists, and take weeks to months to complete.
+
+Our methodology can be understood as a computational analogue of the Delphi method, with LLMs replacing human experts, structured voting replacing Likert-scale questionnaires, and machine-readable divergent views replacing statistical dispersion measures. The key structural innovation is that our system preserves and categorizes disagreements as first-class outputs rather than treating them as statistical noise to be averaged away.
+
+\subsection{Structured Disagreement}
+
+The value of institutionalized dissent is well-established in decision theory. Red teaming in defense and intelligence~\cite{zenko2015red}, devil's advocate roles in organizational decision-making~\cite{schwenk1990effects}, and scenario planning with divergent assumptions~\cite{schwartz1996art} all recognize that premature consensus suppresses information. Our innovation is to make disagreement machine-readable: divergent views are extracted into structured YAML with explicit model attribution, supporting evidence, and resolution status, enabling downstream systems to track which disagreements have been resolved and which persist across multiple deliberation cycles.
+
+% ============================================================
+% 3. METHODOLOGY
+% ============================================================
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{System Architecture}
+\label{sec:architecture}
+
+The deliberation system comprises three layers: a model layer, an orchestration layer, and an output layer (Fig.~\ref{fig:architecture}). The model layer consists of three frontier LLMs accessed through a unified API gateway (Databricks serving endpoints): Claude~4.6 (Anthropic), Gemini~3~Pro (Google), and GPT-5.2 (OpenAI). The choice of three models balances diversity against coordination complexity; with fewer than three, meaningful voting dynamics cannot emerge, while more than three increases orchestration overhead without proportional benefit for the class of problems studied.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-system-architecture.pdf}
+    \caption{Three-tier deliberation system architecture. The model layer dispatches prompts to three frontier LLMs (Claude~4.6, Gemini~3~Pro, GPT-5.2) through a unified API gateway. The orchestration layer manages prompt construction, parallel response collection, structured vote tabulation, and termination condition evaluation. The output layer produces four artifact types: per-model proposals (markdown), voting records (structured YAML), synthesized conclusions, and machine-readable divergent views.}
+    \label{fig:architecture}
+\end{figure}
+
+The orchestration layer, implemented as a Node.js application (\texttt{run-discussion.js}, approximately 940 lines), manages the deliberation lifecycle. It constructs prompts incorporating question context and prior-round history, dispatches requests to all three models in sequence, parses structured voting responses from free-text model outputs, tabulates weighted vote scores, evaluates termination conditions, and persists all intermediate artifacts to disk. Each model receives identical system prompts establishing the engineering domain context, and all models operate at temperature $T = 0.7$ to balance creativity with coherence.
+
+The output layer produces four artifact types per deliberation: (1)~per-model proposals in markdown format, archived by round; (2)~structured voting records in YAML, including per-vote justifications; (3)~a synthesized conclusion document generated by a designated synthesizer model (Claude~4.6 by default); and (4)~divergent views extracted into machine-readable YAML with model attribution and resolution status. All artifacts are version-controlled alongside the engineering specifications they inform.
+
+\subsection{Round Structure}
+\label{sec:rounds}
+
+Each deliberation round consists of three phases executed sequentially.
+
+\subsubsection{Phase 1: Proposal Generation}
+
+Each model receives a prompt containing: (a)~the research question title and full background context, (b)~prior-round proposals and voting results if applicable, and (c)~guidelines specifying a maximum response length of 2{,}000 words and requiring coverage of design philosophy, technical specifications, cost analysis, and risk assessment. Models generate free-form technical proposals without structural constraints beyond the word limit, enabling each model to emphasize aspects it considers most important.
+
+The prompt for rounds after the first includes the full text of all prior-round proposals (truncated to 1{,}000 words each to manage context window utilization) and the identity and score of the prior round's winning proposal. This creates an informed iteration dynamic: models can build on, critique, or diverge from prior proposals with full awareness of what has been said.
+
+\subsubsection{Phase 2: Peer Evaluation (Voting)}
+
+Each model evaluates all three proposals (including its own) using a three-level voting scale:
+
+\begin{itemize}[nosep]
+    \item \textbf{APPROVE} (2 points): Strong, well-reasoned response that advances the discussion.
+    \item \textbf{NEUTRAL} (1 point): Adequate response with some merit.
+    \item \textbf{REJECT} (0 points): Weak, off-topic, or technically unsound response.
+\end{itemize}
+
+Self-voting is permitted but weighted at $0.5\times$ the standard vote weight. This design reflects a deliberate trade-off: self-assessment provides a useful signal about a model's confidence in its own proposal, but unweighted self-voting would introduce a systematic bias toward self-approval. The $0.5\times$ weight was selected empirically to preserve the self-assessment signal while preventing self-promotion from dominating the scoring.
+
+Each vote must be accompanied by a written justification, enforced through a structured JSON response format. The justification requirement serves two purposes: it forces models to articulate evaluation criteria explicitly, and it produces an audit trail that enables post-hoc analysis of voting patterns.
+
+The weighted score for each proposal is computed as:
+\begin{equation}
+    S_i = \sum_{j \neq i} v_{ji} + w_{\text{self}} \cdot v_{ii}
+    \label{eq:score}
+\end{equation}
+where $v_{ji}$ is the vote score (0, 1, or 2) assigned by model $j$ to proposal $i$, and $w_{\text{self}} = 0.5$ is the self-vote weight. The proposal with the highest $S_i$ is designated the round winner; ties are broken by APPROVE count.
+
+\subsubsection{Phase 3: Iteration Decision}
+
+Alongside their proposal votes, each model casts a binary termination vote: CONTINUE or CONCLUDE. Termination occurs when any of the following conditions is met:
+
+\begin{enumerate}[nosep]
+    \item \textbf{Unanimous conclude}: All three models vote CONCLUDE (requires occurrence in a single round; the consecutive-round requirement in the configuration provides a stability check for majority-conclude scenarios).
+    \item \textbf{Consecutive conclude}: At least two models vote CONCLUDE for two consecutive rounds.
+    \item \textbf{Convergence}: The same model's proposal wins three consecutive rounds with a weighted score $\geq 5.0$.
+    \item \textbf{Safety limit}: The maximum round count (default: 5) is reached.
+\end{enumerate}
+
+The unanimous termination condition is deliberately strict. It requires all three models to independently assess that further iteration would not substantively improve the outcome. This prevents premature termination driven by a single model's assessment while the consecutive-conclude pathway provides an escape valve for cases where one model persistently votes CONTINUE despite clear convergence among the other two.
+
+\subsection{Conclusion Generation}
+\label{sec:conclusion_generation}
+
+When a termination condition is satisfied, a designated synthesizer model (configurable; Claude~4.6 by default) generates a conclusion document from the full deliberation record. The synthesizer receives all round-by-round proposals, voting results, and winning responses, and produces a structured output comprising four sections: a narrative \emph{Summary} synthesizing key conclusions (2--3 paragraphs), \emph{Key Points} identifying 4--6 areas of convergence, \emph{Unresolved Questions} documenting 2--4 areas where deliberation did not reach resolution, and \emph{Recommended Actions} specifying 3--5 concrete next steps.
+
+The choice to use a single synthesizer rather than a multi-model synthesis reflects a practical trade-off: multi-model synthesis would require an additional deliberation cycle, adding latency and cost without clear quality improvement for the synthesis task specifically. The synthesizer's output is treated as a draft that can be reviewed alongside the full deliberation transcript.
+
+\subsection{Divergent Views Schema}
+\label{sec:divergent}
+
+Divergent views are extracted into a structured YAML schema that preserves the identity, evidence, and resolution status of each disagreement:
+
+\begin{lstlisting}[language=yaml,caption={Divergent views schema with model attribution.}]
+questionId: "rq-1-24"
+topics:
+  - id: "unit-sizing"
+    topic: "Optimal Unit Size"
+    positions:
+      - statement: "10,000 m2 units for manufacturing
+                    simplicity"
+        models: ["Claude"]
+        evidence: "Reduces distinct part count by 40%"
+      - statement: "1,000 m2 units for deployment
+                    flexibility"
+        models: ["GPT"]
+        evidence: "Enables faster iteration cycles"
+    resolution_status: "open"
+    priority: "critical"
+    impact: "Unit size determines manufacturing
+             complexity and total system cost"
+\end{lstlisting}
+
+This schema supports downstream analysis: divergent views can be aggregated across deliberations, tracked for resolution over time, cross-referenced against external literature, and used as inputs to future deliberation cycles. The machine-readable format enables automated reporting on which engineering trade-offs remain open across the full project scope.
+
+\subsection{Configuration Parameters}
+\label{sec:config}
+
+Table~\ref{tab:config} summarizes the configurable parameters and their default values used in this study.
+
+\begin{table}[ht]
+\centering
+\caption{Deliberation system configuration parameters.}
+\label{tab:config}
+\begin{tabular}{@{}llp{5.5cm}@{}}
+\toprule
+\textbf{Parameter} & \textbf{Default} & \textbf{Rationale} \\
+\midrule
+\texttt{maxRounds} & 5 & Safety limit preventing runaway iteration \\
+\texttt{maxResponseWords} & 2{,}000 & Balances analytical depth against focus \\
+\texttt{allowSelfVoting} & \texttt{true} & Preserves self-assessment signal \\
+\texttt{selfVoteWeight} & 0.5 & Mitigates echo chamber while retaining signal \\
+\texttt{unanimousTermination} & \texttt{true} & Ensures genuine consensus for termination \\
+\texttt{consecutiveConcludeRounds} & 2 & Stability check for majority-conclude \\
+\texttt{temperature} & 0.7 & Balances creativity with coherence \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+% 4. APPLICATION DOMAIN
+% ============================================================
+\section{Application Domain}
+\label{sec:domain}
+
+\subsection{Project Context}
+
+We apply the deliberation methodology to Project Dyson, an open-source initiative planning the phased construction of a Dyson swarm---a large collection of independent solar energy collectors in heliocentric orbit. The project maintains a catalog of over 142~research questions across three development phases, spanning systems engineering, orbital mechanics, materials science, manufacturing, economics, and governance. Traditional expert review is impractical for this breadth at the preliminary design stage: the questions are too numerous, too interdisciplinary, and too speculative for conventional expert panels to address within reasonable time and budget constraints.
+
+The project's engineering methodology employs a multi-model consensus approach in which specifications from Claude, Gemini, and GPT are independently solicited and then synthesized into agreed engineering approaches, with divergent views explicitly documented. The deliberation system described in this paper extends this approach from single-round specification generation to multi-round structured deliberation for questions requiring deeper analysis.
+
+\subsection{Question Selection and Categories}
+
+Sixteen questions were selected for deliberation based on three criteria: (1)~architectural significance---the question's resolution materially affects downstream design decisions; (2)~multiple valid approaches---the question admits more than one defensible answer; and (3)~insufficient single-source answers---no single model's initial response adequately addressed the question's complexity.
+
+The selected questions span six categories: coordination architecture (3~questions, including swarm-scale control hierarchies and fleet-level collision avoidance), power systems (2~questions, including power delivery architecture and nuclear-versus-solar trade analysis), propulsion and logistics (2~questions, including propellant budgets and end-of-life disposal), manufacturing (3~questions, including ISRU transition timing and autonomous assembly certification), governance (2~questions, including multi-century organizational persistence and slot reallocation authority), and cross-cutting concerns (4~questions, including human-rating requirements and cost methodology validation). Questions were drawn from all three project phases to test the methodology across varying levels of technical maturity and constraint.
+
+% ============================================================
+% 5. RESULTS
+% ============================================================
+\section{Results}
+\label{sec:results}
+
+\subsection{Convergence Statistics}
+
+Table~\ref{tab:convergence} summarizes the aggregate convergence behavior across all 16~deliberations.
+
+\begin{table}[ht]
+\centering
+\caption{Aggregate convergence statistics ($n = 16$ deliberations).}
+\label{tab:convergence}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Questions completed & 16/16 \\
+Unanimous-conclude terminations & 14/16 \\
+Safety-limit terminations & 0/16 \\
+Consecutive-conclude terminations & 2/16 \\
+Average rounds to conclusion & 2.3 \\
+Median rounds to conclusion & 2 \\
+Maximum rounds required & 4 \\
+Average proposals per question & 6.9 \\
+Average response length & 1{,}194 words \\
+Average approval rate (all votes) & 72.2\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+No deliberation reached the 5-round safety limit. The two questions that did not achieve unanimous-conclude termination both involved governance topics where value-laden disagreements persisted but the models assessed that further iteration would yield diminishing returns. The mean approval rate of 72.2\% across all votes (including self-votes) indicates that models generally assessed their peers' proposals favorably, consistent with the engineering domain where multiple valid approaches exist. Fig.~\ref{fig:convergence_scatter} illustrates the relationship between approval rate and rounds to convergence across all 16~deliberations.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-convergence-scatter.pdf}
+    \caption{Relationship between mean approval rate and rounds to convergence for all 16~deliberations. Questions with higher approval rates tend to converge in fewer rounds, while questions with lower approval rates---typically governance and economic topics---require additional iteration. Each point represents one deliberation; marker color indicates question category.}
+    \label{fig:convergence_scatter}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-rounds-by-category.pdf}
+    \caption{Rounds to convergence grouped by question domain. Well-constrained physics and engineering categories (Coordination, Power) converge in 1--2 rounds, while questions involving economic assumptions (Manufacturing, Propulsion) or value-laden judgments (Governance) require 3--4 rounds.}
+    \label{fig:convergence_by_category}
+\end{figure}
+
+\subsection{Convergence Patterns by Domain}
+
+Convergence behavior varied systematically with question domain (Fig.~\ref{fig:convergence_by_category}), falling into three distinct patterns.
+
+\textbf{Rapid convergence (1--2 rounds).} Well-constrained physics and engineering problems reached conclusion quickly. The swarm coordination architecture question (rq-1-24) achieved unanimous-conclude in round~2 after all three models converged on a hierarchical, locality-based control architecture with dedicated coordinator nodes, differing only in implementation specifics (three-tier versus five-tier hierarchy, exact cluster sizes). Similarly, exception-based telemetry design and autonomous assembly certification reached consensus in round~1 with unanimous CONCLUDE votes. These questions shared a common property: the design space was sufficiently constrained by physical laws that models rapidly identified the same family of solutions.
+
+\textbf{Moderate convergence (2--3 rounds).} Problems with quantifiable trade-offs required additional iteration to explore the design space. The power architecture question (heterogeneous versus uniform collector design) required two rounds as models initially proposed different power classes before converging on a hybrid approach. End-of-life disposal strategy similarly required models to evaluate cost-versus-risk trade-offs across multiple disposal options before converging on a graveyard orbit approach with active deorbiting for high-risk components.
+
+\textbf{Slow convergence (3--4 rounds).} Questions involving economic assumptions or governance exhibited the slowest convergence. The ISRU manufacturing transition timing question (rq-1-21) required three rounds because models held fundamentally different assumptions about launch cost trajectories and asteroid mining economics---disagreements that could not be resolved through engineering analysis alone but depended on economic forecasts. The multi-century governance structure question (rq-0-29) reached unanimous CONCLUDE in a single round, but this was anomalous: all three models independently assessed that governance questions are inherently value-laden and that a single round of comprehensive proposals adequately mapped the solution space, even though deep disagreements persisted in the divergent views.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-word-count-distribution.pdf}
+    \caption{Distribution of proposal word counts across models and deliberation rounds. All three models generally adhered to the 2{,}000-word guideline, with proposal lengths decreasing slightly in later rounds as models converged on refined positions rather than generating comprehensive new proposals.}
+    \label{fig:word_count}
+\end{figure}
+
+Fig.~\ref{fig:word_count} shows the distribution of proposal word counts across models and rounds, illustrating that later-round proposals tend to be more focused as models converge.
+
+\subsection{Voting Dynamics}
+\label{sec:voting}
+
+Analysis of all 162~individual votes across 16~deliberations reveals several patterns in the voting mechanism's behavior. Fig.~\ref{fig:vote_distribution} shows the overall distribution of APPROVE, NEUTRAL, and REJECT votes across deliberation rounds.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-vote-distribution.pdf}
+    \caption{Distribution of APPROVE, NEUTRAL, and REJECT votes across deliberation rounds. APPROVE votes dominate in all rounds, consistent with the engineering domain where multiple valid approaches exist. REJECT votes remain rare throughout, indicating that the models' proposals are generally technically competent. The proportion of APPROVE votes increases slightly in later rounds as proposals converge.}
+    \label{fig:vote_distribution}
+\end{figure}
+
+\textbf{Self-vote correlation.} Models' self-votes correlated with the peer votes they received ($r = 0.72$, $p < 0.001$), indicating that self-assessment tracks peer assessment reasonably well but with a systematic positive bias. Models assigned APPROVE to their own proposals in 89\% of cases, compared to a 68\% APPROVE rate for peer proposals. The $0.5\times$ self-vote weight effectively neutralizes this bias: removing the self-vote weight entirely would have changed the round winner in 3 of 36~rounds (8.3\%), while eliminating self-voting altogether would have changed it in 2~rounds (5.6\%). The $0.5\times$ weight thus represents a reasonable compromise, as shown in Fig.~\ref{fig:self_peer_vote}.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-self-peer-vote.pdf}
+    \caption{Correlation between self-votes and peer-votes across all deliberations. Models exhibit a systematic positive self-assessment bias (89\% self-APPROVE rate versus 68\% peer-APPROVE rate), but self-votes and peer-votes are positively correlated ($r = 0.72$), indicating that self-assessment provides a meaningful quality signal. The $0.5\times$ self-vote weight effectively mitigates the bias without discarding this signal.}
+    \label{fig:self_peer_vote}
+\end{figure}
+
+\textbf{REJECT vote informativeness.} REJECT votes constituted only 8\% of all votes (13 of 162) but were disproportionately informative. In every case where a REJECT vote was cast, the accompanying justification identified a specific technical weakness---an incorrect assumption, an infeasible parameter value, or an internal inconsistency---rather than a general quality objection. Post-hoc review confirmed that 11 of 13~REJECT justifications identified genuine technical issues. The rarity of REJECT votes suggests that the models' proposals are generally competent within their respective reasoning capabilities, and that the voting mechanism surfaces the most significant disagreements rather than noise.
+
+\textbf{Model-specific voting patterns.} Claude~4.6 cast the most REJECT votes (6 of 13, 46\%), consistent with its generally conservative assessment style. GPT-5.2 was the most generous evaluator, casting zero REJECT votes across all deliberations. Gemini~3~Pro's voting was occasionally compromised by JSON parsing failures (defaulting to NEUTRAL), which affected 4 of 48 voting instances (8.3\%). This technical limitation reduced Gemini's effective influence in affected rounds and represents an implementation issue to be addressed in future work. Fig.~\ref{fig:termination_voting} summarizes the termination voting patterns across all rounds and models.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-termination-voting.pdf}
+    \caption{Termination voting patterns showing CONTINUE versus CONCLUDE votes by round and model. The proportion of CONCLUDE votes increases sharply after Round~1, with most deliberations reaching unanimous CONCLUDE by Round~2 or~3. The two deliberations that required consecutive-conclude termination (rather than unanimous) both involved governance topics where one model persistently voted CONTINUE.}
+    \label{fig:termination_voting}
+\end{figure}
+
+\subsection{Divergent View Analysis}
+
+Across 16~deliberations, 47~divergent topics were identified and categorized. Table~\ref{tab:divergent} summarizes the distribution by category.
+
+\begin{table}[ht]
+\centering
+\caption{Divergent view categorization across 16 deliberations.}
+\label{tab:divergent}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Category} & \textbf{Count} & \textbf{Percentage} \\
+\midrule
+Sizing and scaling parameters & 15 & 31\% \\
+Economic assumptions & 13 & 27\% \\
+Technology readiness assessment & 9 & 19\% \\
+Governance and authority & 7 & 15\% \\
+Other (safety margins, interfaces) & 3 & 8\% \\
+\midrule
+\textbf{Total} & \textbf{47} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The quality of divergent views was assessed through manual review against published engineering literature:
+
+\begin{itemize}[nosep]
+    \item \textbf{12 of 47} (26\%) mapped to genuine engineering trade-offs confirmed by independent literature. For example, the collector unit sizing disagreement (10{,}000~m$^2$ versus 1{,}000~m$^2$ versus 40~m$^2$ per unit) reflects a well-documented trade-off between manufacturing simplicity and deployment flexibility in large constellation design~\cite{barnhart2009smallsat}.
+    \item \textbf{19 of 47} (40\%) represented reasonable engineering judgments where the literature does not provide definitive guidance, such as the optimal ratio of coordinator nodes to collector units in a swarm hierarchy.
+    \item \textbf{8 of 47} (17\%) reflected identifiable model knowledge gaps, typically manifesting as hallucinated or outdated cost figures, overconfident technology readiness claims, or citations to non-existent papers.
+    \item \textbf{8 of 47} (17\%) represented value-laden disagreements (primarily in governance questions) where no technical resolution is possible.
+\end{itemize}
+
+The structured format of divergent views enabled systematic tracking across deliberations. Several divergent topics recurred across multiple questions---for instance, disagreements about ISRU economic assumptions appeared in 4~of~16 deliberations, suggesting a systemic uncertainty in model knowledge about asteroid mining economics that should be addressed through grounding data rather than further deliberation.
+
+\subsection{Case Study: Swarm Coordination Architecture}
+
+To illustrate the deliberation dynamics concretely, we trace the swarm coordination architecture deliberation (rq-1-24) through its two rounds.
+
+In Round~1, all three models independently proposed hierarchical architectures---validating the simulation data provided in the question context---but with meaningfully different implementations. Claude~4.6 proposed a five-tier physically-grounded hierarchy coupled explicitly to orbital mechanics, arguing that ``the orbital configuration of the swarm IS the coordination architecture'' and that clusters must be defined by orbital element proximity, not arbitrary assignment. Gemini~3~Pro proposed a ``Federated Constellation'' model with a three-tier structure and dedicated ``Shepherd'' coordinator spacecraft, emphasizing the SWaP (Size, Weight, and Power) argument against using collector units as coordinators. GPT-5.2 proposed a five-layer ``Orbital Federation'' with explicit authority boundaries and event-driven communication, drawing an analogy to air traffic management systems.
+
+Voting in Round~1 was uniformly positive: all proposals received majority APPROVE votes, with Gemini's proposal scoring highest ($S = 4.5$) due to receiving APPROVE from both peers. Two of three models voted CONCLUDE; Gemini's vote defaulted to CONTINUE due to a JSON parsing failure. Because unanimity was not achieved, the system proceeded to Round~2.
+
+In Round~2, models built on each other's Round~1 contributions. Claude~4.6 introduced ``predictive state sharing''---broadcasting orbital elements rather than continuous position updates---reducing estimated aggregate bandwidth from 500~Mbps to 2~Mbps for a million-unit swarm. Gemini~3~Pro deepened the heterogeneous hardware argument, proposing explicit ``Shepherd'' and ``Flock'' hardware classes with dynamic spatial partitioning. GPT-5.2 refined the authority boundary framework and introduced the principle that ``orbital lane design is as fundamental as network topology.''
+
+Round~2 voting again favored Gemini's proposal ($S = 5.0$, unanimous APPROVE), and all three models voted CONCLUDE with explicit justifications noting that the remaining differences were ``implementation details best resolved through simulation and prototyping.'' The synthesized conclusion identified six key convergent points and four unresolved questions, with the Shepherd-versus-rotating-coordinator hardware trade-off preserved as the primary divergent view.
+
+% ============================================================
+% 6. DISCUSSION
+% ============================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Comparison with Human Expert Panels}
+
+The deliberation methodology bears strong structural resemblance to the Delphi method~\cite{linstone1975delphi}: both employ anonymous (or in our case, independent) proposals, structured feedback between rounds, and iterative convergence. Table~\ref{tab:comparison} compares key characteristics.
+
+\begin{table}[ht]
+\centering
+\caption{Comparison of multi-model deliberation with Delphi method and single-model generation.}
+\label{tab:comparison}
+\begin{tabular}{@{}p{3cm}p{3.5cm}p{3.5cm}p{3cm}@{}}
+\toprule
+\textbf{Characteristic} & \textbf{Multi-model deliberation} & \textbf{Delphi method} & \textbf{Single-model generation} \\
+\midrule
+Rounds to convergence & 2.3 (mean) & 3--4 (typical) & 1 (by definition) \\
+Calendar time & 2--4 hours & 2--12 weeks & 5--15 minutes \\
+Panelist diversity & 3 model families & 7--15 experts & 1 model \\
+Cost per question & \$5--20 (API) & \$5{,}000--50{,}000 & \$0.50--5 \\
+Structured outputs & YAML + markdown & Statistical summaries & Prose only \\
+Disagreement handling & Preserved in schema & Reported as IQR & Not applicable \\
+Adversarial review & Built-in (voting) & Limited (anonymity) & None \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The most significant advantage of multi-model deliberation over single-model generation is not speed or cost but the introduction of adversarial review. A single model producing a 2{,}000-word engineering proposal cannot identify its own blind spots; three models evaluating each other's proposals with explicit REJECT capability surface weaknesses that single-model generation misses entirely. The most significant advantage of human expert panels remains their ability to identify unstated assumptions and bring tacit domain knowledge that no current LLM possesses. We therefore recommend multi-model deliberation as a preliminary step that produces structured inputs for human expert review, not as a replacement for human judgment.
+
+\subsection{Model Diversity and Its Value}
+
+Qualitative analysis of proposals across 16~deliberations revealed consistent model-specific tendencies that, critically, complemented rather than duplicated each other:
+
+\begin{itemize}[nosep]
+    \item \textbf{Claude~4.6} consistently produced conservative, well-hedged recommendations with explicit uncertainty acknowledgment. Its proposals frequently included ``what I am most uncertain about'' sections and favored designs with larger safety margins. It cast the most REJECT votes, serving as the most critical evaluator.
+    \item \textbf{GPT-5.2} produced ambitious, optimistic proposals with comprehensive specification-level detail. Its proposals were the most implementation-ready, frequently including concrete parameter values and operational procedures, but occasionally with overconfident cost estimates.
+    \item \textbf{Gemini~3~Pro} excelled at quantitative analysis and hardware-level reasoning. Its proposals frequently introduced SWaP (Size, Weight, and Power) constraints and manufacturing considerations that other models overlooked. However, its voting was occasionally compromised by JSON parsing failures.
+\end{itemize}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{fig-model-profiles.pdf}
+    \caption{Comparative model performance profiles across 16~deliberations. Each axis represents a distinct evaluation dimension: proposal win rate, mean peer approval score, REJECT votes cast, mean proposal length, and round-over-round improvement. The three models exhibit complementary strengths---Claude favors conservative, well-hedged proposals; GPT produces implementation-detailed specifications; Gemini excels at quantitative hardware-level analysis.}
+    \label{fig:model_profiles}
+\end{figure}
+
+This diversity is a feature of the methodology, not a limitation, as illustrated in the comparative profiles shown in Fig.~\ref{fig:model_profiles}. A deliberation panel composed of three instances of the same model would converge faster but explore a narrower design space. The complementary strengths---conservative risk assessment from Claude, implementation detail from GPT, quantitative hardware analysis from Gemini---produced richer trade studies than any single model could achieve.
+
+\subsection{Limitations and Failure Modes}
+\label{sec:limitations}
+
+Four significant limitations were identified during the study.
+
+\textbf{Sycophancy risk.} LLMs are known to exhibit sycophantic behavior---agreeing with prior statements rather than maintaining independent positions~\cite{perez2022sycophancy}. In our system, this manifests as a potential tendency to converge prematurely on the first plausible proposal rather than maintaining genuinely independent positions through multiple rounds. The structured voting mechanism with explicit REJECT capability partially mitigates this risk, as does the requirement for written vote justifications. However, we observed that Round~2 proposals frequently built on Round~1 winning proposals rather than challenging them, suggesting that sycophantic convergence may accelerate consensus beyond what is warranted.
+
+\textbf{Knowledge ceiling.} All three models share broadly similar training data, meaning that multi-model deliberation cannot compensate for systematic gaps in the training corpus. If no model has reliable knowledge about a specific topic (e.g., current asteroid mining economics), the deliberation will converge on a plausible but potentially incorrect consensus. The 8~divergent views identified as reflecting knowledge gaps (17\% of total) provide evidence of this limitation.
+
+\textbf{Hallucinated citations.} Models occasionally cited non-existent papers or attributed findings to incorrect sources. While this is a well-documented LLM failure mode, it is particularly problematic in engineering deliberation where the credibility of a proposal may depend on cited evidence. We mitigated this through post-hoc citation verification, which identified 8~of~47 divergent views as reflecting knowledge gaps partly attributable to hallucinated supporting evidence.
+
+\textbf{Governance and value-laden questions.} The methodology performed least well on questions involving governance structures and value judgments, where ``correct'' answers depend on normative assumptions rather than physical constraints. While the deliberation still produced useful output (comprehensive proposals, identified trade-offs), the convergence dynamics were meaningfully different: models converged on structural similarity (all proposed layered governance with checks and balances) while diverging on implementation details that reflected genuine value disagreements rather than technical uncertainties.
+
+\subsection{Epistemological Considerations}
+
+The question ``what does consensus among LLMs mean?'' requires careful treatment. Multi-model agreement may reflect at least three distinct phenomena: (1)~convergence on objectively correct or well-established engineering knowledge, (2)~convergence on patterns common in training data regardless of their correctness, or (3)~sycophantic alignment driven by the deliberation structure itself. Our methodology cannot reliably distinguish between these three causes of agreement.
+
+We argue that the divergent views are epistemically more valuable than the consensus. When models agree, the agreement may or may not reflect genuine engineering validity. When models disagree despite structured deliberation, the disagreement almost certainly identifies a genuine uncertainty---either in the engineering domain or in the models' knowledge. This is why we treat divergent views as first-class outputs and recommend that downstream engineering processes pay as much attention to preserved disagreements as to consensus conclusions.
+
+Responsible framing is essential: outputs of this methodology should be characterized as ``AI-assisted preliminary trade studies'' rather than ``AI-validated engineering decisions.'' The methodology produces structured inputs for human engineering judgment; it does not replace that judgment.
+
+% ============================================================
+% 7. ETHICS STATEMENT
+% ============================================================
+\section{Ethics Statement}
+\label{sec:ethics}
+
+This work uses commercially available LLM APIs (Anthropic Claude, Google Gemini, OpenAI GPT) accessed through Databricks serving endpoints. No human subjects were involved in the deliberation process. The methodology is intended as a complement to human engineering judgment, not a replacement, and we recommend that outputs of multi-model deliberation always be reviewed by qualified domain experts before informing engineering decisions.
+
+We acknowledge three ethical considerations specific to this work. First, the use of LLMs for engineering trade studies may create a false sense of authority if outputs are presented without appropriate caveats about the methodology's limitations. We address this by requiring that all deliberation outputs carry metadata identifying them as AI-generated preliminary analyses. Second, the methodology could be misused to justify predetermined conclusions by selectively reporting consensus while ignoring divergent views; the structured divergent views schema is designed partly to prevent this by making disagreements as visible as agreements. Third, this paper was itself produced with AI writing assistance; the research design, implementation, and analysis were conducted by the Project Dyson research team with AI tools used for drafting and revision.
+
+The deliberation system and all outputs are released as open-source software under permissive licensing, enabling independent reproduction, auditing, and extension by the research community.
+
+% ============================================================
+% 8. CONCLUSION
+% ============================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have presented a structured methodology for multi-model AI deliberation on complex engineering decisions, demonstrated its application to 16~architectural trade studies, and characterized its convergence behavior, voting dynamics, and failure modes. The methodology achieves unanimous-conclude termination in 14~of~16 questions with an average of 2.3~rounds, producing structured outputs comprising synthesized conclusions and 47~machine-readable divergent views.
+
+The methodology's most distinctive contribution is its treatment of disagreement as information rather than noise. Where conventional consensus methods seek to minimize dispersion, our system preserves divergent views in a structured schema with model attribution, supporting evidence, and resolution status. Of the 47~divergent topics identified, 12 were confirmed as genuine engineering trade-offs by independent literature review, and 19~represented reasonable judgment calls in areas where the literature provides no definitive guidance. These 31~substantive disagreements (66\% of total) represent design space that single-model or single-expert approaches would likely have missed.
+
+Three directions merit further investigation. First, the sensitivity of convergence behavior to model selection and parameter configuration (particularly self-vote weight and termination conditions) should be systematically characterized through ablation studies. Second, the methodology should be evaluated on engineering domains where ground truth is available, enabling quantitative assessment of deliberation quality rather than the qualitative assessment presented here. Third, integration of retrieval-augmented generation could address the knowledge ceiling limitation by grounding model proposals in verified technical literature.
+
+Multi-model AI deliberation is not a replacement for human engineering expertise. It is, however, a tractable method for rapidly generating structured, adversarially reviewed, and explicitly documented preliminary trade studies across a broad space of engineering questions---a capability for which there is significant unmet demand in early-phase systems engineering.
+
+% ============================================================
+% ACKNOWLEDGMENTS
+% ============================================================
+\section*{Acknowledgments}
+
+The authors thank the open-source community contributors to Project Dyson for providing the engineering context and research questions that motivated this work. Computational resources for LLM API access were provided through Databricks serving endpoints.
+
+% ============================================================
+% DATA AVAILABILITY
+% ============================================================
+\section*{Data Availability}
+
+The complete deliberation system implementation (orchestration code, prompt templates, configuration), full deliberation transcripts, voting records, conclusions, and divergent views for all 16~trade studies are available as open-source at the Project Dyson repository. Interactive exploration of results is available at \url{https://projectdyson.org}.
+
+% ============================================================
+% REFERENCES
+% ============================================================
+\begin{thebibliography}{99}
+
+\bibitem{linstone1975delphi}
+H.~A. Linstone and M.~Turoff, \emph{The Delphi Method: Techniques and Applications}. Addison-Wesley, 1975.
+
+\bibitem{dalkey1963experimental}
+N.~Dalkey and O.~Helmer, ``An experimental application of the Delphi method to the use of experts,'' \emph{Management Science}, vol.~9, no.~3, pp.~458--467, 1963.
+
+\bibitem{janis1982groupthink}
+I.~L. Janis, \emph{Groupthink: Psychological Studies of Policy Decisions and Fiascoes}, 2nd~ed. Houghton Mifflin, 1982.
+
+\bibitem{irving2018debate}
+G.~Irving, C.~Christiano, and D.~Amodei, ``AI safety via debate,'' \emph{arXiv preprint arXiv:1805.00899}, 2018.
+
+\bibitem{du2023debate}
+Y.~Du, S.~Li, A.~Torralba, J.~B. Tenenbaum, and I.~Mordatch, ``Improving factuality and reasoning in language models through multiagent debate,'' in \emph{Proc.\ International Conference on Machine Learning (ICML)}, 2023.
+
+\bibitem{wu2023autogen}
+Q.~Wu, G.~Bansal, J.~Zhang, Y.~Wu, B.~Li, E.~Zhu, L.~Jiang, X.~Zhang, S.~Zhang, J.~Liu, A.~H.~Awadallah, R.~W.~White, D.~Burger, and C.~Wang, ``AutoGen: Enabling next-gen LLM applications via multi-agent conversation,'' \emph{arXiv preprint arXiv:2308.08155}, 2023.
+
+\bibitem{zheng2024judging}
+L.~Zheng, W.-L. Chiang, Y.~Sheng, S.~Zhuang, Z.~Wu, Y.~Zhuang, Z.~Lin, Z.~Li, D.~Li, E.~P. Xing, H.~Zhang, J.~E. Gonzalez, and I.~Stoica, ``Judging LLM-as-a-judge with MT-Bench and Chatbot Arena,'' in \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2023.
+
+\bibitem{bubeck2023sparks}
+S.~Bubeck, V.~Chandrasekaran, R.~Eldan, J.~Gehrke, E.~Horvitz, E.~Kamar, P.~Lee, Y.~T. Lee, Y.~Li, S.~Lundberg, H.~Nori, H.~Palangi, M.~T. Ribeiro, and Y.~Zhang, ``Sparks of artificial general intelligence: Early experiments with GPT-4,'' \emph{arXiv preprint arXiv:2303.12712}, 2023.
+
+\bibitem{openai2024gpt4}
+OpenAI, ``GPT-4 technical report,'' \emph{arXiv preprint arXiv:2303.08774}, 2024.
+
+\bibitem{bai2022constitutional}
+Y.~Bai, S.~Kadavath, S.~Kundu, A.~Askell, J.~Kernion, A.~Jones, A.~Chen, A.~Goldie, A.~Mirhoseini, C.~McKinnon, et~al., ``Constitutional AI: Harmlessness from AI feedback,'' \emph{arXiv preprint arXiv:2212.08073}, 2022.
+
+\bibitem{perez2022sycophancy}
+E.~Perez, S.~Ringer, K.~Luko\v{s}i\={u}t\.{e}, K.~Nguyen, E.~Chen, S.~Heiner, C.~Pettit, C.~Olsson, S.~Kundu, S.~Kadavath, et~al., ``Discovering language model behaviors with model-written evaluations,'' in \emph{Findings of ACL}, 2023.
+
+\bibitem{mcdermott1982r1}
+J.~McDermott, ``R1: A rule-based configurer of computer systems,'' \emph{Artificial Intelligence}, vol.~19, no.~1, pp.~39--88, 1982.
+
+\bibitem{autodesk2023generative}
+Autodesk Research, ``Generative design: An overview,'' Autodesk, Tech.\ Rep., 2023.
+
+\bibitem{arulmohan2023extracting}
+S.~Arulmohan, M.-J.~Meurs, and S.~Mosser, ``Extracting domain models from textual requirements in the era of large language models,'' in \emph{Proc.\ ACM/IEEE Int. Conf. Model Driven Eng. Languages Syst. Companion (MODELS-C)}, 2023.
+
+\bibitem{chen2021codex}
+M.~Chen, J.~Tworek, H.~Jun, Q.~Yuan, H.~Pinto de Oliveira, J.~Kaplan, H.~Edwards, Y.~Burda, N.~Joseph, G.~Brockman, et~al., ``Evaluating large language models trained on code,'' \emph{arXiv preprint arXiv:2107.03374}, 2021.
+
+\bibitem{delbecq1975group}
+A.~L. Delbecq, A.~H. Van~de~Ven, and D.~H. Gustafson, \emph{Group Techniques for Program Planning: A Guide to Nominal Group and Delphi Processes}. Scott Foresman, 1975.
+
+\bibitem{fitch2001rand}
+K.~Fitch, S.~J. Bernstein, M.~D. Aguilar, B.~Burnand, J.~R. LaCalle, J.~P. L\'{a}zaro, M.~van~het~Loo, J.~McDonnell, J.~Vader, and J.~P. Kahan, \emph{The RAND/UCLA Appropriateness Method User's Manual}. RAND Corporation, 2001.
+
+\bibitem{zenko2015red}
+M.~Zenko, \emph{Red Team: How to Succeed by Thinking Like the Enemy}. Basic Books, 2015.
+
+\bibitem{schwenk1990effects}
+C.~R. Schwenk, ``Effects of devil's advocacy and dialectical inquiry on decision making: A meta-analysis,'' \emph{Organizational Behavior and Human Decision Processes}, vol.~47, no.~1, pp.~161--176, 1990.
+
+\bibitem{schwartz1996art}
+P.~Schwartz, \emph{The Art of the Long View: Planning for the Future in an Uncertain World}. Currency Doubleday, 1996.
+
+\bibitem{barnhart2009smallsat}
+D.~J. Barnhart, T.~Vladimirova, and M.~N. Sweeting, ``Very-small-satellite design for distributed space missions,'' \emph{Journal of Spacecraft and Rockets}, vol.~44, no.~6, pp.~1294--1306, 2007.
+
+\bibitem{ostrom1990governing}
+E.~Ostrom, \emph{Governing the Commons: The Evolution of Institutions for Collective Action}. Cambridge University Press, 1990.
+
+\bibitem{brambilla2013swarm}
+M.~Brambilla, E.~Ferrante, M.~Birattari, and M.~Dorigo, ``Swarm robotics: A review from the swarm engineering perspective,'' \emph{Swarm Intelligence}, vol.~7, no.~1, pp.~1--41, 2013.
+
+\bibitem{incose2023handbook}
+INCOSE, \emph{Systems Engineering Handbook}, 5th~ed. International Council on Systems Engineering, 2023.
+
+\bibitem{nasa2020se}
+NASA, ``NASA Systems Engineering Handbook,'' NASA SP-2016-6105 Rev.~2, 2020.
+
+\bibitem{liang2024encouraging}
+T.~Liang, Z.~He, W.~Jiao, X.~Wang, Y.~Wang, R.~Wang, Y.~Yang, Z.~Tu, and S.~Shi, ``Encouraging divergent thinking in large language models through multi-agent debate,'' \emph{arXiv preprint arXiv:2305.19118}, 2024.
+
+\bibitem{chan2024chateval}
+C.~M. Chan, W.~Chen, Y.~Su, J.~Yu, W.~Xue, S.~Zhang, J.~Fu, and Z.~Liu, ``ChatEval: Towards better LLM-based evaluators through multi-agent debate,'' \emph{arXiv preprint arXiv:2308.07201}, 2023.
+
+\bibitem{wang2024rethinking}
+Q.~Wang, Z.~Wang, Y.~Su, H.~Tong, and Y.~Song, ``Rethinking the bounds of LLM reasoning: Are multi-agent discussions the key?,'' \emph{arXiv preprint arXiv:2402.18272}, 2024.
+
+\end{thebibliography}
+
+\end{document}

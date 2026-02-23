@@ -59,14 +59,40 @@ const MODELS = {
 
 const REVIEW_MODELS = ['claude-opus-4-6', 'gemini-3-pro', 'gpt-5-2'];
 
-const SYSTEM_PROMPT = `You are an expert academic peer reviewer for a high-impact journal in space systems engineering, economics, and resource utilization. You have deep expertise in:
+const SYSTEM_PROMPTS = {
+  '01-isru-economic-crossover': `You are an expert academic peer reviewer for a high-impact journal in space systems engineering, economics, and resource utilization. You have deep expertise in:
 
 - Space resource economics (ISRU, lunar/asteroid mining)
 - Parametric cost modeling and learning curve analysis
 - Monte Carlo simulation methods
 - Publication standards for journals like Acta Astronautica, Space Policy, and New Space
 
-Provide a thorough, constructive peer review. Be specific with line references where possible. Your review should be rigorous but fair — acknowledge strengths as well as weaknesses.`;
+Provide a thorough, constructive peer review. Be specific with line references where possible. Your review should be rigorous but fair — acknowledge strengths as well as weaknesses.`,
+
+  '02-swarm-coordination-scaling': `You are an expert academic peer reviewer for IEEE Transactions on Aerospace and Electronic Systems. You have deep expertise in:
+
+- Distributed systems and multi-agent coordination
+- Swarm robotics and autonomous spacecraft operations
+- Discrete event simulation and queueing theory
+- Scalability analysis of communication architectures
+- Monte Carlo methods and statistical analysis
+- Mega-constellation operations (Starlink, Kuiper, OneWeb)
+
+Provide a thorough, constructive peer review. Be specific with line references where possible. Your review should be rigorous but fair — acknowledge strengths as well as weaknesses.`,
+
+  '03-multi-model-ai-consensus': `You are an expert academic peer reviewer for IEEE Intelligent Systems or a comparable AI/systems journal. You have deep expertise in:
+
+- Multi-agent AI systems and LLM-based collaboration
+- Expert consensus methods (Delphi, Nominal Group Technique)
+- Engineering design methodology and trade studies
+- Structured decision-making under uncertainty
+- Empirical evaluation of AI systems
+- Epistemology of machine-generated knowledge
+
+Provide a thorough, constructive peer review. Be specific with line references where possible. Your review should be rigorous but fair — acknowledge strengths as well as weaknesses.`
+};
+
+const DEFAULT_SYSTEM_PROMPT = SYSTEM_PROMPTS['01-isru-economic-crossover'];
 
 function buildReviewPrompt(paperContent, version) {
   return `Please review the following academic paper manuscript (Version ${version.toUpperCase()}). The paper is provided in LaTeX source format.
@@ -187,15 +213,18 @@ async function queryDatabricks(modelKey, systemPrompt, userPrompt) {
  */
 async function loadPaper(paperSlug, version) {
   const filename = `${paperSlug}-${version}.tex`;
-  const filepath = path.join(DRAFTS_DIR, filename);
+  // Try per-paper subdirectory first (reorganized structure), then flat
+  const subdir = path.join(DRAFTS_DIR, paperSlug, filename);
+  const flat = path.join(DRAFTS_DIR, filename);
 
-  try {
-    return await fs.readFile(filepath, 'utf-8');
-  } catch (error) {
-    console.error(`Could not read paper: ${filepath}`);
-    console.error(`  ${error.message}`);
-    return null;
+  for (const filepath of [subdir, flat]) {
+    try {
+      return await fs.readFile(filepath, 'utf-8');
+    } catch { /* try next */ }
   }
+
+  console.error(`Could not read paper: ${subdir} (also tried ${flat})`);
+  return null;
 }
 
 /**
@@ -203,7 +232,7 @@ async function loadPaper(paperSlug, version) {
  */
 async function saveReview(paperSlug, version, modelKey, content, recommendation) {
   const model = MODELS[modelKey];
-  const outputDir = path.join(DRAFTS_DIR, 'reviews', `version-${version}`);
+  const outputDir = path.join(DRAFTS_DIR, paperSlug, 'reviews', `version-${version}`);
   const outputPath = path.join(outputDir, model.filename);
 
   await fs.mkdir(outputDir, { recursive: true });
@@ -248,7 +277,7 @@ function extractRecommendation(content) {
  */
 async function loadReview(paperSlug, version, modelKey) {
   const model = MODELS[modelKey];
-  const reviewPath = path.join(DRAFTS_DIR, 'reviews', `version-${version}`, model.filename);
+  const reviewPath = path.join(DRAFTS_DIR, paperSlug, 'reviews', `version-${version}`, model.filename);
 
   try {
     const content = await fs.readFile(reviewPath, 'utf-8');
@@ -265,8 +294,9 @@ async function reviewVersion(paperSlug, version, modelKey, paperContent) {
   const model = MODELS[modelKey];
   console.log(`  ${model.name} reviewing version ${version.toUpperCase()}...`);
 
+  const systemPrompt = SYSTEM_PROMPTS[paperSlug] || DEFAULT_SYSTEM_PROMPT;
   const userPrompt = buildReviewPrompt(paperContent, version);
-  const content = await queryDatabricks(modelKey, SYSTEM_PROMPT, userPrompt);
+  const content = await queryDatabricks(modelKey, systemPrompt, userPrompt);
 
   if (!content) {
     console.log(`    ${model.name} API unavailable — skipping`);
@@ -333,14 +363,15 @@ List the top 5-7 most impactful changes to make, ranked by importance. For each,
 
 A brief paragraph summarizing the paper's readiness for submission and which version to proceed with.`;
 
-  const content = await queryDatabricks('claude-opus-4-6', SYSTEM_PROMPT, summaryPrompt);
+  const systemPrompt = SYSTEM_PROMPTS[paperSlug] || DEFAULT_SYSTEM_PROMPT;
+  const content = await queryDatabricks('claude-opus-4-6', systemPrompt, summaryPrompt);
 
   if (!content) {
     console.log('  Failed to generate summary');
     return null;
   }
 
-  const outputPath = path.join(DRAFTS_DIR, 'reviews', 'summary.md');
+  const outputPath = path.join(DRAFTS_DIR, paperSlug, 'reviews', 'summary.md');
   const date = new Date().toISOString().split('T')[0];
   const frontmatter = `---
 paper: "${paperSlug}"
