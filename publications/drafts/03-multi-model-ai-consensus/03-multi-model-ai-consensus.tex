@@ -1,6 +1,6 @@
 % Multi-Model AI Deliberation for Complex Engineering Decisions
 % Target: IEEE Intelligent Systems
-% Version G — February 2026
+% Version H — February 2026
 % Compile with: pdflatex -> bibtex -> pdflatex -> pdflatex
 
 \documentclass[11pt,a4paper]{article}
@@ -75,7 +75,7 @@
 % ABSTRACT
 % ============================================================
 \begin{abstract}
-We present a structured methodology for multi-model engineering deliberation in which multiple large language models independently generate proposals, evaluate each other's work through weighted voting, and iterate toward conclusions while preserving disagreements as machine-readable artifacts. The methodology's most distinctive contribution is its treatment of disagreement as information: a divergent views schema captures model attribution, evidence, and resolution status for each persisting disagreement. We illustrate the methodology through 16~architectural trade studies for a space infrastructure project. Deliberations terminate in 1--4 rounds, producing 47~divergent topics, of which 12 were confirmed as genuine engineering trade-offs through literature review. Two preliminary baselines---aggregation-only synthesis and single-model self-refinement---suggest that multi-model deliberation produces analytically different outputs than alternatives, though both comparisons are confounded. Transcript-based similarity analysis provides partial evidence against sycophantic convergence: cross-model textual similarity \emph{decreases} across rounds ($\Delta_{\text{TF-IDF}} = -0.022$), with 0\% heading adoption between models. These results are illustrative; controlled experiments including blind deliberation and repeated trials remain necessary for definitive evaluation.
+We present a structured methodology for multi-model engineering deliberation in which multiple large language models independently generate proposals, evaluate each other's work through weighted voting, and iterate toward conclusions while preserving disagreements as machine-readable artifacts. The methodology's most distinctive contribution is its treatment of disagreement as information: a divergent views schema captures model attribution, evidence, and resolution status for each persisting disagreement. We illustrate the methodology through 16~architectural trade studies for a space infrastructure project. Deliberations terminate in 1--4 rounds, producing 47~divergent topics, of which 12 were confirmed as genuine engineering trade-offs through literature review. Two preliminary baselines---aggregation-only synthesis and single-model self-refinement---suggest that multi-model deliberation produces analytically different outputs than alternatives, though both comparisons are confounded. Transcript-based similarity analysis across six semantic metrics provides partial evidence against sycophantic convergence: all metrics \emph{decrease} across rounds, with the largest decreases in decision-sentence TF-IDF ($\Delta = -0.031$) and technical parameter Jaccard ($\Delta = -0.064$), indicating models diverge most in substantive recommendations. These results are illustrative; controlled experiments including blind deliberation and repeated trials remain necessary for definitive evaluation.
 
 \medskip
 \noindent\textbf{Keywords:} multi-agent systems, large language models, engineering design, structured deliberation, divergent views, design rationale, Delphi method
@@ -95,7 +95,7 @@ Frontier large language models (LLMs)---here denoting the most capable commercia
 
 Yet existing work on multi-agent LLM systems focuses predominantly on conversational games~\cite{du2023debate}, natural language tasks~\cite{wu2023autogen}, or evaluation frameworks~\cite{zheng2024judging}. To our knowledge, no structured methodology has been published for multi-model deliberation on engineering trade studies---problems where multiple valid approaches exist and the preservation of minority positions is as valuable as convergence.
 
-This paper makes four contributions. First, we present a formal methodology for multi-model engineering deliberation, specifying round structure, voting mechanics, termination conditions, and divergent view extraction in sufficient detail for independent reproduction. Second, we introduce structured divergent views as a first-class output---machine-readable records of model disagreements with attribution, evidence, and resolution status---arguing that these are the methodology's most distinctive contribution. Third, we provide an open-source implementation of the orchestration system. Fourth, we illustrate the methodology through 16~trade studies with preliminary baseline comparisons and transcript-based similarity analysis that provides partial evidence against the sycophancy concern.\footnote{Individual author names and affiliations will be provided for final publication.}
+This paper makes three specific contributions: (1)~the first application of structured multi-model LLM deliberation to engineering trade studies, adapting the computational Delphi paradigm to heterogeneous AI models; (2)~the divergent views schema, a structured representation for preserving attributed disagreements with evidence and resolution status as a first-class design rationale artifact; and (3)~empirical characterization of multi-model deliberation dynamics, including convergence behavior, voting patterns, and transcript-based similarity analysis across 16 engineering questions.\footnote{Individual author names and affiliations will be provided for final publication.}
 
 % ============================================================
 % 2. RELATED WORK
@@ -103,13 +103,13 @@ This paper makes four contributions. First, we present a formal methodology for 
 \section{Related Work}
 \label{sec:related}
 
-\textbf{Multi-agent LLM systems.} The ``wisdom of crowds'' literature~\cite{surowiecki2004wisdom} identifies conditions---diversity, independence, decentralization---under which group aggregation outperforms individual judgment. Irving et al.~\cite{irving2018debate} proposed AI safety via debate, demonstrating that adversarial dynamics improve truthfulness. Du et al.~\cite{du2023debate} showed that multi-agent debate improves factual accuracy through counterarguments. Wu et al.~\cite{wu2023autogen} developed AutoGen for multi-agent conversation, while Zheng et al.~\cite{zheng2024judging} established LLM-as-judge evaluation. Liang et al.~\cite{liang2024encouraging} explored multi-agent debate for divergent thinking, and Chan et al.~\cite{chan2024chateval} proposed ChatEval for multi-agent evaluation. Wang et al.~\cite{wang2024rethinking} examined the bounds of LLM reasoning through multi-agent discussions, finding that benefits depend heavily on task characteristics and discussion structure. A complementary line of work explores single-model self-refinement: Madaan et al.~\cite{madaan2023self} demonstrated that LLMs can iteratively improve outputs through self-generated feedback without multi-model interaction. These contributions target natural language tasks rather than engineering trade studies, where no single correct answer exists and multiple valid approaches must be compared along incommensurable dimensions~\cite{keeney1976decisions}.
+\textbf{Multi-agent LLM systems.} The ``wisdom of crowds'' literature~\cite{surowiecki2004wisdom} identifies conditions---diversity, independence, decentralization---under which group aggregation outperforms individual judgment. Irving et al.~\cite{irving2018debate} proposed AI safety via debate, demonstrating that adversarial dynamics improve truthfulness. Du et al.~\cite{du2023debate} showed that multi-agent debate improves factual accuracy through counterarguments. Wu et al.~\cite{wu2023autogen} developed AutoGen for multi-agent conversation, while Zheng et al.~\cite{zheng2024judging} established LLM-as-judge evaluation. Liang et al.~\cite{liang2024encouraging} explored multi-agent debate for divergent thinking, and Chan et al.~\cite{chan2024chateval} proposed ChatEval for multi-agent evaluation. Wang et al.~\cite{wang2024rethinking} examined the bounds of LLM reasoning through multi-agent discussions, finding that benefits depend heavily on task characteristics and discussion structure. A complementary line of work explores single-model self-refinement: Madaan et al.~\cite{madaan2023self} demonstrated that LLMs can iteratively improve outputs through self-generated feedback without multi-model interaction. Sharma et al.~\cite{sharma2024sycophancy} provided a systematic study of sycophancy in LLMs, showing that models tend to align with user preferences even when doing so is incorrect---a concern directly relevant to multi-model deliberation where models see each other's outputs. These contributions target natural language tasks rather than engineering trade studies, where no single correct answer exists and multiple valid approaches must be compared along incommensurable dimensions~\cite{keeney1976decisions}.
 
 \textbf{Expert consensus methods.} The Delphi method~\cite{linstone1975delphi,dalkey1963experimental}---anonymous proposals, structured feedback between rounds, iterative convergence, and statistical aggregation---bears striking parallels to our methodology. Nominal Group Technique~\cite{delbecq1975group} adds structured turn-taking, while the RAND/UCLA Appropriateness Method~\cite{fitch2001rand} applies Delphi-like processes to medical decision-making. These methods typically require 3--4 rounds for convergence, involve 7--15 panelists, and take weeks to months. Our system can be understood as a computational analogue, with LLMs replacing human experts, structured voting replacing questionnaires, and machine-readable divergent views replacing statistical dispersion measures. The key innovation is that our system preserves and categorizes disagreements as first-class outputs rather than treating them as noise.
 
 \textbf{Engineering trade study methods.} Pugh's concept selection~\cite{pugh1991total}, the Analytic Hierarchy Process~\cite{saaty1980ahp}, and Multi-Attribute Utility Theory~\cite{keeney1976decisions} formalize multi-criteria evaluation. Our methodology differs in generating alternatives and criteria simultaneously through LLM proposals. The divergent views schema extends the design rationale tradition (DRL~\cite{lee1991drl}; QOC~\cite{maclean1991qoc}) by automating capture through multi-model deliberation with model attribution.
 
-\textbf{Structured disagreement.} Red teaming~\cite{zenko2015red}, devil's advocacy~\cite{schwenk1990effects}, and scenario planning~\cite{schwartz1996art} recognize that premature consensus suppresses information. Our innovation is making disagreement machine-readable with explicit model attribution, evidence, and resolution status.
+\textbf{Structured disagreement.} Red teaming~\cite{zenko2015red}, devil's advocacy~\cite{schwenk1990effects}, and scenario planning~\cite{schwartz1996art} recognize that premature consensus suppresses information. In the machine learning literature, Lakshminarayanan et al.~\cite{lakshminarayanan2017simple} demonstrated that disagreement among ensemble members provides a well-calibrated measure of epistemic uncertainty---a principle we extend from predictive models to deliberative agents. The epistemology of disagreement~\cite{christensen2013epistemology} provides theoretical grounding: when epistemic peers disagree, the disagreement itself constitutes evidence that should be preserved rather than resolved through averaging. Our innovation is making disagreement machine-readable with explicit model attribution, evidence, and resolution status.
 
 % ============================================================
 % 3. METHODOLOGY
@@ -192,6 +192,17 @@ Table~\ref{tab:config} summarizes the system's configurable parameters.
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Design Decisions and Rationale}
+\label{sec:design_decisions}
+
+Several protocol design choices plausibly influence deliberation dynamics and should be understood as first-order experimental factors rather than implementation details:
+
+\textit{Winner visibility.} The winning proposal's identity and score are included in subsequent round prompts (Table~\ref{tab:config}). This was chosen to enable targeted critique of the leading proposal, but may anchor models toward the winner. An ablation (winner-hidden vs.\ winner-shown) is identified as a priority experiment (Table~\ref{tab:experiments}).
+
+\textit{Head truncation.} Model responses exceeding the context window are truncated from the tail, preserving introductory framing and potentially biasing toward models that front-load their key arguments. Summary-based truncation is an identified alternative.
+
+\textit{Self-vote weighting.} Models vote on all proposals including their own, with self-votes weighted equally. The observed self-vote rate of 71.5\% is consistent with reasonable self-confidence rather than bias ($r = 0.13$ with outcome, $p > 0.05$), but equal weighting means self-votes influence outcomes.
 
 % ============================================================
 % 4. APPLICATION DOMAIN
@@ -307,7 +318,7 @@ $w_{\text{self}}$ & \textbf{Changed Winners} & \textbf{\% Affected} \\
 
 \subsection{Divergent View Analysis}
 
-Across 16~deliberations, 47~divergent topics were identified and categorized (Table~\ref{tab:divergent}). Three reviewers independently classified each topic using targeted literature searches, with 81\% initial agreement (38/47); all nine disagreements were resolved through discussion. The absence of formal inter-rater reliability statistics (e.g., Cohen's $\kappa$) and the use of system designers rather than independent experts represent limitations.
+Across 16~deliberations, 47~divergent topics were identified and categorized (Table~\ref{tab:divergent}). Three reviewers independently classified each topic using targeted literature searches, with 81\% initial agreement (38/47); all nine disagreements were resolved through discussion. A structured coding manual with operational definitions, inclusion/exclusion criteria, prototypical examples, and boundary cases for each category is provided as Supplementary Material~S1. The manual includes a three-phase inter-rater protocol (training, independent coding, reconciliation) to enable reproducible categorization by independent coders. The absence of formal inter-rater reliability statistics (e.g., Cohen's $\kappa$) and the use of system designers rather than independent experts represent limitations.
 
 \begin{table}[ht]
 \centering
@@ -372,17 +383,35 @@ Self-refinement conclusions were 2.0--3.3$\times$ longer (mean~2{,}864 versus~1{
 \subsection{Transcript-Based Similarity Analysis}
 \label{sec:similarity}
 
-To partially address the anchoring concern identified in Section~\ref{sec:limitations}, we computed round-to-round text similarity across all multi-round deliberations ($n = 6$ questions with 2+ rounds, 63 within-model comparisons, 414 cross-model comparisons). Three metrics were used: TF-IDF cosine similarity, keyword Jaccard overlap, and heading structure overlap.
+To partially address the anchoring concern identified in Section~\ref{sec:limitations}, we computed six similarity metrics across all multi-round deliberations ($n = 6$ questions with 2+ rounds): unigram TF-IDF cosine, n-gram (1-3) TF-IDF cosine, decision-sentence TF-IDF cosine, keyword Jaccard, heading Jaccard, and technical parameter Jaccard.
+
+\textbf{All six metrics decrease from Round~1 to Round~2} (Table~\ref{tab:similarity}). The largest decreases occur in the most semantically meaningful metrics: decision-sentence TF-IDF ($\Delta = -0.031$) and technical parameter Jaccard ($\Delta = -0.064$). Models not only use increasingly different vocabulary across rounds, but also propose increasingly different quantitative specifications and substantive recommendations. This pattern is the opposite of what sycophancy or herding would predict.
+
+\begin{table}[t]
+\centering
+\caption{Cross-model similarity across deliberation rounds. All metrics decrease, with the largest decreases in decision-relevant metrics.}
+\label{tab:similarity}
+\begin{tabular}{lccc}
+\toprule
+Metric & Round 1 & Round 2 & $\Delta$ \\
+\midrule
+Unigram TF-IDF cosine & 0.458 & 0.436 & $-0.022$ \\
+N-gram (1-3) TF-IDF cosine & 0.259 & 0.251 & $-0.008$ \\
+Decision-sentence TF-IDF & 0.159 & 0.128 & $-0.031$ \\
+Keyword Jaccard & 0.172 & 0.161 & $-0.011$ \\
+Heading Jaccard & 0.003 & 0.002 & $-0.001$ \\
+Tech parameter Jaccard & 0.148 & 0.084 & $-0.064$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \textbf{Within-model consistency.} Models show moderate self-similarity across rounds (mean TF-IDF cosine = 0.58), indicating substantial revision rather than repetition.
-
-\textbf{Cross-model convergence.} Contrary to the sycophancy hypothesis, cross-model similarity \emph{decreases} from Round~1 to Round~2 (TF-IDF cosine: 0.458 $\to$ 0.436, $\Delta = -0.022$; keyword Jaccard: 0.172 $\to$ 0.161, $\Delta = -0.011$). Models diverge textually as they refine their positions, even as they may converge on high-level recommendations through the voting mechanism.
 
 \textbf{Heading adoption.} Zero cross-model heading adoption was observed: no model adopted another model's section structure in subsequent rounds (0\% adoption rate across all 36 model pairs). This indicates that the 70\% framework adoption reported in Section~\ref{sec:limitations} operates at the conceptual/recommendation level rather than the structural/textual level.
 
 These findings are inconsistent with naive sycophancy (which would predict increasing similarity) and consistent with genuine adversarial refinement: models respond to each other's critiques by developing their own positions more distinctly, while selectively adopting high-quality recommendations through the voting mechanism. The pattern suggests a dissociation between textual convergence (which decreases) and conceptual convergence (which may increase through the voting mechanism)---a distinction that would be lost in analyses examining only final outputs without round-by-round textual comparison.
 
-Fig.~\ref{fig:similarity_heatmap} and Fig.~\ref{fig:convergence_trend} visualize the pairwise similarity structure and cross-round trend.
+Fig.~\ref{fig:similarity_heatmap}, Fig.~\ref{fig:convergence_trend}, and Fig.~\ref{fig:decision_similarity} visualize the pairwise similarity structure, cross-round trend, and decision-level similarity decomposition.
 
 \begin{figure}[t]
     \centering
@@ -394,8 +423,15 @@ Fig.~\ref{fig:similarity_heatmap} and Fig.~\ref{fig:convergence_trend} visualize
 \begin{figure}[t]
     \centering
     \includegraphics[width=\columnwidth]{fig-convergence-trend.pdf}
-    \caption{Cross-model similarity trend across deliberation rounds for three metrics. All metrics decrease, with 95\% bootstrap confidence intervals shown. The decreasing trend is inconsistent with the sycophancy hypothesis.}
+    \caption{Cross-model similarity trend across deliberation rounds for six metrics. All metrics decrease, with 95\% bootstrap confidence intervals shown. The decreasing trend is inconsistent with the sycophancy hypothesis.}
     \label{fig:convergence_trend}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{fig-decision-similarity.pdf}
+    \caption{Decision-level similarity trend across deliberation rounds. Decision-sentence TF-IDF (extracted sentences containing recommendation keywords) and technical parameter Jaccard (extracted numeric specifications) both decrease more steeply than lexical TF-IDF, indicating models diverge in substantive recommendations even more than in general vocabulary.}
+    \label{fig:decision_similarity}
 \end{figure}
 
 % ============================================================
@@ -451,7 +487,7 @@ This diversity partially satisfies Surowiecki's conditions for effective group j
 
 \textbf{Sycophancy and framework adoption.} Of 20~Round~2+ proposals, 14~(70\%) adopted the previous winner's architectural framework, while only 6~(30\%) maintained independent frameworks. Three interpretations apply: (a)~genuine quality recognition, (b)~anchoring analogous to human Delphi studies (which report 60--80\% convergence), or (c)~LLM-specific sycophantic alignment. We cannot definitively distinguish between these without the blind deliberation experiment (Experiment~3, Section~\ref{sec:validation_roadmap}).
 
-However, the transcript-based similarity analysis (Section~\ref{sec:similarity}) provides partial quantitative evidence against the sycophancy interpretation. If models were simply echoing the previous winner, we would expect increasing cross-model similarity across rounds; instead, we observe a decrease ($\Delta_{\text{TF-IDF}} = -0.022$). This suggests that the 70\% framework adoption operates at the recommendation level---models adopt a specific technical approach because it is well-argued---rather than the textual level. However, this evidence is not conclusive: models could exhibit \emph{conceptual} sycophancy while maintaining textual independence. The blind deliberation experiment remains necessary for definitive resolution.
+The expanded transcript analysis (Section~\ref{sec:similarity}, Table~\ref{tab:similarity}) provides quantitative evidence against the sycophancy hypothesis across multiple semantic levels. Critically, the \emph{most semantically meaningful} metrics show the \emph{largest} decreases: decision-sentence TF-IDF ($\Delta = -0.031$) and technical parameter Jaccard ($\Delta = -0.064$) indicate that models propose increasingly different engineering recommendations and specifications across rounds, even as the deliberation protocol surfaces conceptual agreement through the voting mechanism. This dissociation---textual and conceptual divergence alongside procedural convergence via voting---is consistent with genuine adversarial refinement and inconsistent with naive sycophancy. However, we note two important caveats: (1) the sample size ($n = 6$ multi-round deliberations) limits statistical power, and (2) more sophisticated forms of strategic agreement (e.g., converging on framing while maintaining surface-level lexical diversity) cannot be ruled out without the blind deliberation experiment (Experiment~3).
 
 \textbf{Knowledge ceiling and hallucinated citations.} All models share broadly similar training data, meaning deliberation cannot compensate for systematic gaps in the training corpus. If no model has reliable knowledge about a specific topic (e.g., current asteroid mining economics), the deliberation will converge on a plausible but potentially incorrect consensus. The 8~divergent views reflecting knowledge gaps (17\%) provide evidence of this limitation. Models occasionally cited non-existent papers or attributed findings to incorrect sources; post-hoc verification identified these as partly attributable to hallucinated supporting evidence.
 
@@ -527,7 +563,7 @@ We have presented a structured methodology for multi-model AI deliberation on co
 
 The methodology's most distinctive contribution is its treatment of disagreement as information rather than noise. Where conventional consensus methods seek to minimize dispersion, our system preserves divergent views in a structured schema with model attribution, evidence, and resolution status. The 31~substantive disagreements (genuine trade-offs plus reasonable judgments, 66\% of total) represent design space that was not surfaced in the single-model baselines tested.
 
-Preliminary evidence addresses key concerns about sycophancy. Transcript-based similarity analysis shows that cross-model textual similarity \emph{decreases} across rounds ($\Delta_{\text{TF-IDF}} = -0.022$, 0\% heading adoption), providing evidence against naive sycophantic convergence. Two baseline comparisons suggest analytically different outputs from alternatives, though both are confounded by prompt differences.
+Preliminary evidence addresses key concerns about sycophancy. Transcript-based similarity analysis across six semantic metrics shows that cross-model similarity \emph{decreases} across rounds, with the largest decreases in decision-sentence TF-IDF ($\Delta = -0.031$) and technical parameter Jaccard ($\Delta = -0.064$), providing evidence against naive sycophantic convergence at both lexical and substantive levels. Two baseline comparisons suggest analytically different outputs from alternatives, though both are confounded by prompt differences.
 
 Full empirical validation requires the controlled experiments identified in Section~\ref{sec:validation_roadmap}: blind deliberation for sycophancy assessment, repeated trials for variance estimation, full-corpus self-refinement comparison, and independent expert evaluation. The modest cost (\$360--1{,}360 in API costs) underscores that the primary barrier is experimental design effort, not resources; we encourage independent research groups to conduct these comparisons.
 
@@ -641,6 +677,15 @@ C.~R. Schwenk, ``Effects of devil's advocacy and dialectical inquiry on decision
 
 \bibitem{schwartz1996art}
 P.~Schwartz, \emph{The Art of the Long View}. Currency Doubleday, 1996.
+
+\bibitem{sharma2024sycophancy}
+M.~Sharma, M.~Tong, T.~Korbak, D.~Duvenaud, A.~Askell, S.~R. Bowman, E.~Perez, et~al., ``Towards understanding sycophancy in language models,'' in \emph{Proc.\ ICLR}, 2024.
+
+\bibitem{lakshminarayanan2017simple}
+B.~Lakshminarayanan, A.~Pritzel, and C.~Blundell, ``Simple and scalable predictive uncertainty estimation using deep ensembles,'' in \emph{NeurIPS}, 2017.
+
+\bibitem{christensen2013epistemology}
+D.~Christensen and J.~Lackey, Eds., \emph{The Epistemology of Disagreement: New Essays}. Oxford University Press, 2013.
 
 \end{thebibliography}
 
