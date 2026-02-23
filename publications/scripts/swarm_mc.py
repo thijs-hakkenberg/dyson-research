@@ -203,6 +203,9 @@ def run_swarm_coordination_mc(
             simulation_days=config.simulation_days,
             seed=seed,
             max_events=config.max_events,
+            enable_exception_telemetry=config.enable_exception_telemetry,
+            exception_threshold=config.exception_threshold,
+            link_availability=config.link_availability,
         )
         sim = SwarmCoordinationSimulator(run_cfg)
         result = sim.run()

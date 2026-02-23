@@ -39,6 +39,8 @@ from matplotlib.pyplot import close, rcParams, subplots  # noqa: E402
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch  # noqa: E402
 from matplotlib.ticker import FuncFormatter  # noqa: E402
 
+from scipy.optimize import curve_fit  # noqa: E402
+
 from swarm_model import (  # noqa: E402
     SwarmCoordinationConfig,
     SwarmCoordinationSimulator,
@@ -547,6 +549,153 @@ def fig_duty_cycle_pareto() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Statistical model fitting for superlinear transition detection
+# ---------------------------------------------------------------------------
+def _linear_model(x: np.ndarray, a: float, b: float) -> np.ndarray:
+    """Linear model: overhead = a * N + b."""
+    return a * x + b
+
+
+def _power_law_model(x: np.ndarray, a: float, b: float) -> np.ndarray:
+    """Power-law model: overhead = a * N^b."""
+    return a * np.power(x, b)
+
+
+def _piecewise_linear(x: np.ndarray, a1: float, b1: float, a2: float, b2: float,
+                      bp: float) -> np.ndarray:
+    """Piecewise-linear model with breakpoint bp."""
+    return np.where(x < bp, a1 * x + b1, a2 * x + b2)
+
+
+def _compute_aic(n: int, rss: float, k: int) -> float:
+    """Compute AIC = n * ln(RSS/n) + 2k."""
+    if rss <= 0 or n <= 0:
+        return float("inf")
+    return n * np.log(rss / n) + 2 * k
+
+
+def fit_scaling_models(
+    node_counts: list[int],
+    overhead_means: list[float],
+    min_nodes: int = 10_000,
+) -> dict:
+    """Fit linear, power-law, and piecewise-linear models to overhead data.
+
+    Only uses data points where node_count >= min_nodes.
+    Returns a dict with model names, parameters, AIC values, and best model info.
+    """
+    # Filter to N >= min_nodes
+    mask = [i for i, nc in enumerate(node_counts) if nc >= min_nodes]
+    if len(mask) < 3:
+        # Not enough data points for meaningful fitting; use all points
+        mask = list(range(len(node_counts)))
+
+    x = np.array([node_counts[i] for i in mask], dtype=float)
+    y = np.array([overhead_means[i] for i in mask], dtype=float)
+    n = len(x)
+
+    results: dict = {"models": {}, "best_model": None, "best_aic": float("inf"),
+                     "breakpoint": None, "breakpoint_ci": None}
+
+    # 1. Linear fit: overhead = a * N + b  (k=2)
+    try:
+        popt_lin, _ = curve_fit(_linear_model, x, y, p0=[1e-6, 0.0], maxfev=5000)
+        y_pred_lin = _linear_model(x, *popt_lin)
+        rss_lin = float(np.sum((y - y_pred_lin) ** 2))
+        aic_lin = _compute_aic(n, rss_lin, 2)
+        results["models"]["linear"] = {
+            "params": {"a": popt_lin[0], "b": popt_lin[1]},
+            "aic": aic_lin, "rss": rss_lin,
+        }
+        if aic_lin < results["best_aic"]:
+            results["best_aic"] = aic_lin
+            results["best_model"] = "linear"
+    except (RuntimeError, ValueError):
+        pass
+
+    # 2. Power-law fit: overhead = a * N^b  (k=2)
+    try:
+        # Need positive y values
+        y_pos = np.maximum(y, 1e-10)
+        popt_pow, _ = curve_fit(_power_law_model, x, y_pos, p0=[1e-3, 1.0],
+                                maxfev=5000)
+        y_pred_pow = _power_law_model(x, *popt_pow)
+        rss_pow = float(np.sum((y - y_pred_pow) ** 2))
+        aic_pow = _compute_aic(n, rss_pow, 2)
+        results["models"]["power_law"] = {
+            "params": {"a": popt_pow[0], "b": popt_pow[1]},
+            "aic": aic_pow, "rss": rss_pow,
+        }
+        if aic_pow < results["best_aic"]:
+            results["best_aic"] = aic_pow
+            results["best_model"] = "power_law"
+    except (RuntimeError, ValueError):
+        pass
+
+    # 3. Piecewise-linear: sweep breakpoint from 20k to 80k in steps of 5k  (k=5)
+    best_pw_aic = float("inf")
+    best_pw_bp = None
+    best_pw_params = None
+    best_pw_rss = None
+
+    # Determine breakpoint sweep range based on available data
+    x_min, x_max = float(x.min()), float(x.max())
+    bp_lo = max(20_000, x_min + (x_max - x_min) * 0.1)
+    bp_hi = min(80_000, x_max - (x_max - x_min) * 0.1)
+    if bp_lo >= bp_hi:
+        # Fallback: sweep over middle 60% of data range
+        bp_lo = x_min + (x_max - x_min) * 0.2
+        bp_hi = x_min + (x_max - x_min) * 0.8
+
+    bp_step = max(5_000, (bp_hi - bp_lo) / 12)  # at most ~12 breakpoints
+    bp_candidates = np.arange(bp_lo, bp_hi + 1, bp_step)
+
+    for bp in bp_candidates:
+        # Need at least 2 points on each side
+        left = x[x < bp]
+        right = x[x >= bp]
+        if len(left) < 2 or len(right) < 2:
+            continue
+        try:
+            def _pw(xv: np.ndarray, a1: float, b1: float, a2: float,
+                    b2: float) -> np.ndarray:
+                return np.where(xv < bp, a1 * xv + b1, a2 * xv + b2)
+
+            popt, _ = curve_fit(_pw, x, y, p0=[1e-6, 0.0, 1e-6, 0.0], maxfev=5000)
+            y_pred = _pw(x, *popt)
+            rss = float(np.sum((y - y_pred) ** 2))
+            aic = _compute_aic(n, rss, 5)  # 4 params + breakpoint = 5
+            if aic < best_pw_aic:
+                best_pw_aic = aic
+                best_pw_bp = float(bp)
+                best_pw_params = popt
+                best_pw_rss = rss
+        except (RuntimeError, ValueError):
+            continue
+
+    if best_pw_params is not None:
+        results["models"]["piecewise_linear"] = {
+            "params": {
+                "a1": best_pw_params[0], "b1": best_pw_params[1],
+                "a2": best_pw_params[2], "b2": best_pw_params[3],
+                "breakpoint": best_pw_bp,
+            },
+            "aic": best_pw_aic, "rss": best_pw_rss,
+        }
+        results["breakpoint"] = best_pw_bp
+        # Simple CI: +/- one step
+        results["breakpoint_ci"] = (
+            max(x_min, best_pw_bp - bp_step),
+            min(x_max, best_pw_bp + bp_step),
+        )
+        if best_pw_aic < results["best_aic"]:
+            results["best_aic"] = best_pw_aic
+            results["best_model"] = "piecewise_linear"
+
+    return results
+
+
+# ---------------------------------------------------------------------------
 # Figure 5: Scaling Trajectory
 # ---------------------------------------------------------------------------
 def fig_scaling_trajectory() -> None:
@@ -554,6 +703,7 @@ def fig_scaling_trajectory() -> None:
 
     Hierarchical topology, with/without auto-scaling cluster size via
     min(200, max(50, floor(sqrt(N)))). 10 runs per point.
+    Also performs formal statistical testing for superlinear transition.
     """
     node_counts = SCALE["node_counts"]
     n_runs = SCALE["n_runs"]
@@ -609,6 +759,21 @@ def fig_scaling_trajectory() -> None:
     proto_ci_lo_opt = [v - baseline_telemetry_pct for v in ci_lo_opt]
     proto_ci_hi_opt = [v - baseline_telemetry_pct for v in ci_hi_opt]
 
+    # --- Formal statistical testing for superlinear transition ---
+    fit_results = fit_scaling_models(node_counts, proto_fixed)
+
+    print("\n  --- Superlinear transition analysis (fixed cluster size) ---")
+    for model_name, model_data in fit_results["models"].items():
+        print(f"    {model_name}: AIC={model_data['aic']:.2f}, "
+              f"RSS={model_data['rss']:.4f}, params={model_data['params']}")
+    if fit_results["best_model"]:
+        print(f"    Best model: {fit_results['best_model']} "
+              f"(AIC={fit_results['best_aic']:.2f})")
+    if fit_results["breakpoint"] is not None:
+        bp_ci = fit_results["breakpoint_ci"]
+        print(f"    Breakpoint: {fit_results['breakpoint']:,.0f} nodes "
+              f"(CI: [{bp_ci[0]:,.0f}, {bp_ci[1]:,.0f}])")
+
     fig, ax = subplots()
 
     ax.plot(
@@ -644,6 +809,28 @@ def fig_scaling_trajectory() -> None:
         alpha=0.15,
         color=c_optimized,
     )
+
+    # --- Add statistical annotation to figure ---
+    if fit_results["best_model"]:
+        best = fit_results["best_model"]
+        aic = fit_results["best_aic"]
+        annotation_lines = [f"Best fit: {best.replace('_', '-')} (AIC={aic:.1f})"]
+        if best == "power_law" and "power_law" in fit_results["models"]:
+            b_exp = fit_results["models"]["power_law"]["params"]["b"]
+            annotation_lines.append(f"Exponent b={b_exp:.3f}")
+        if fit_results["breakpoint"] is not None:
+            bp = fit_results["breakpoint"]
+            bp_ci = fit_results["breakpoint_ci"]
+            annotation_lines.append(
+                f"Breakpoint: {bp / 1000:.0f}K [{bp_ci[0] / 1000:.0f}K, {bp_ci[1] / 1000:.0f}K]"
+            )
+        annotation_text = "\n".join(annotation_lines)
+        ax.text(
+            0.03, 0.97, annotation_text,
+            transform=ax.transAxes,
+            fontsize=7.5, verticalalignment="top",
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="wheat", alpha=0.7),
+        )
 
     ax.set_xscale("log")
     ax.set_xlabel("Node Count")

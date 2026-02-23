@@ -3,19 +3,21 @@
 
 Loads all deliberation transcripts from the research-questions directory, computes
 round-to-round similarity metrics (TF-IDF cosine similarity, keyword Jaccard overlap,
-heading structure overlap), and cross-model convergence statistics.  Results are
-printed to stdout, exported as a CSV, and visualised in two publication-quality
-PDF figures for Paper 03 (Multi-Model AI Consensus).
+heading structure overlap, n-gram TF-IDF cosine, decision-sentence similarity, and
+technical parameter Jaccard overlap), and cross-model convergence statistics.  Results
+are printed to stdout, exported as a CSV, and visualised in publication-quality PDF
+figures for Paper 03 (Multi-Model AI Consensus).
 
 Figures:
-  1. fig-similarity-heatmap.pdf   -- Pairwise model similarity per round
-  2. fig-convergence-trend.pdf    -- Cross-model similarity across rounds (with CI bands)
+  1. fig-similarity-heatmap.pdf      -- Pairwise model similarity per round
+  2. fig-convergence-trend.pdf       -- Cross-model similarity across rounds (with CI bands)
+  3. fig-decision-similarity.pdf     -- Decision-sentence similarity trend across rounds
 
 Requires: PyYAML, numpy, scikit-learn, matplotlib
 """
 from __future__ import annotations
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 
 import csv
 import os
@@ -260,6 +262,129 @@ def _extract_keywords(text: str, min_length: int = 4) -> set[str]:
         t for t in tokens
         if len(t) >= min_length and t not in stop_words
     }
+
+
+def _ngram_tfidf_cosine_pair(text_a: str, text_b: str) -> float:
+    """Compute n-gram (1-3) TF-IDF cosine similarity between two texts.
+
+    Uses unigram + bigram + trigram features with a 5000-feature cap,
+    capturing richer semantic structure than unigram-only TF-IDF.
+
+    Parameters
+    ----------
+    text_a, text_b:
+        Document texts.
+
+    Returns
+    -------
+    float
+        Cosine similarity in [0, 1].
+    """
+    if not text_a.strip() or not text_b.strip():
+        return 0.0
+    vectorizer = TfidfVectorizer(
+        stop_words="english",
+        ngram_range=(1, 3),
+        max_features=5000,
+    )
+    try:
+        tfidf_matrix = vectorizer.fit_transform([text_a, text_b])
+        sim = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
+        return float(sim[0, 0])
+    except ValueError:
+        return 0.0
+
+
+# Decision keywords used to extract recommendation/proposal sentences
+_DECISION_KEYWORDS = re.compile(
+    r"\b(recommend|propose|suggest|should|optimal|prefer|select|choose|design)\b",
+    re.IGNORECASE,
+)
+
+
+def _extract_decision_sentences(text: str) -> str:
+    """Extract sentences containing decision-relevant keywords.
+
+    Splits text into sentences and returns those containing words like
+    *recommend*, *propose*, *suggest*, *should*, *optimal*, *prefer*,
+    *select*, *choose*, *design*.
+
+    Parameters
+    ----------
+    text:
+        Body text (frontmatter stripped).
+
+    Returns
+    -------
+    str
+        Concatenated decision sentences (may be empty).
+    """
+    # Simple sentence splitting on period/exclamation/question + whitespace
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    decision_sentences = [s for s in sentences if _DECISION_KEYWORDS.search(s)]
+    return " ".join(decision_sentences)
+
+
+def _decision_tfidf_cosine_pair(text_a: str, text_b: str) -> float:
+    """Compute TF-IDF cosine similarity on decision-extracted sentences only.
+
+    Parameters
+    ----------
+    text_a, text_b:
+        Full body texts; decision sentences are extracted internally.
+
+    Returns
+    -------
+    float
+        Cosine similarity of decision sentences in [0, 1].
+    """
+    dec_a = _extract_decision_sentences(text_a)
+    dec_b = _extract_decision_sentences(text_b)
+    if not dec_a.strip() or not dec_b.strip():
+        return 0.0
+    vectorizer = TfidfVectorizer(stop_words="english", max_features=3000)
+    try:
+        tfidf_matrix = vectorizer.fit_transform([dec_a, dec_b])
+        sim = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
+        return float(sim[0, 0])
+    except ValueError:
+        return 0.0
+
+
+# Regex for technical parameters: numeric value + unit
+_TECH_PARAM_RE = re.compile(
+    r"\b(\d[\d,]*(?:\.\d+)?)\s*"
+    r"(m[²³]?|km[²³]?|cm[²³]?|mm|AU|kW[h]?|MW[h]?|GW[h]?|TW[h]?|"
+    r"kg|[gt]|kN|N|Pa|MPa|GPa|kPa|bar|°C|°K|K|W|"
+    r"m/s|km/s|km/h|RPM|Hz|kHz|MHz|GHz|THz|"
+    r"Isp|dB|dBm|nm|μm|um|yr|year|month|day|hour|hr|min|"
+    r"rad|deg|mrad|arcsec|V|kV|mA|A)\b"
+)
+
+
+def _extract_technical_parameters(text: str) -> set[str]:
+    """Extract technical parameters (value + unit) from text.
+
+    Finds patterns like "100 m\u00b2", "10 kW", "500 kg" and returns a
+    normalised set of ``"<number> <unit>"`` strings for Jaccard comparison.
+
+    Parameters
+    ----------
+    text:
+        Body text (frontmatter stripped).
+
+    Returns
+    -------
+    set[str]
+        Set of normalised ``"value unit"`` strings.
+    """
+    params: set[str] = set()
+    for match in _TECH_PARAM_RE.finditer(text):
+        # Normalise: strip commas from number, lowercase unit
+        number = match.group(1).replace(",", "")
+        unit = match.group(2)
+        params.add(f"{number} {unit}")
+    return params
 
 
 def _load_transcript(filepath: Path, question_slug: str) -> Optional[Transcript]:
@@ -553,6 +678,47 @@ def compute_within_model_similarity(
                     value=h_jacc,
                 ))
 
+                # N-gram (1-3) TF-IDF cosine
+                ngram_sim = _ngram_tfidf_cosine_pair(t_curr.body_text, t_next.body_text)
+                records.append(SimilarityRecord(
+                    question_slug=slug,
+                    phase_id=qdata.phase_id,
+                    model_id=model_id,
+                    round_number=rn_curr,
+                    metric="ngram_tfidf_cosine",
+                    comparison_type="within_model_round_to_round",
+                    comparison_target=comparison_label,
+                    value=ngram_sim,
+                ))
+
+                # Decision-sentence TF-IDF cosine
+                dec_sim = _decision_tfidf_cosine_pair(t_curr.body_text, t_next.body_text)
+                records.append(SimilarityRecord(
+                    question_slug=slug,
+                    phase_id=qdata.phase_id,
+                    model_id=model_id,
+                    round_number=rn_curr,
+                    metric="decision_tfidf_cosine",
+                    comparison_type="within_model_round_to_round",
+                    comparison_target=comparison_label,
+                    value=dec_sim,
+                ))
+
+                # Technical parameter Jaccard
+                tp_curr = _extract_technical_parameters(t_curr.body_text)
+                tp_next = _extract_technical_parameters(t_next.body_text)
+                tp_jacc = _jaccard(tp_curr, tp_next)
+                records.append(SimilarityRecord(
+                    question_slug=slug,
+                    phase_id=qdata.phase_id,
+                    model_id=model_id,
+                    round_number=rn_curr,
+                    metric="tech_param_jaccard",
+                    comparison_type="within_model_round_to_round",
+                    comparison_target=comparison_label,
+                    value=tp_jacc,
+                ))
+
     return records
 
 
@@ -638,6 +804,50 @@ def compute_cross_model_similarity(
                             comparison_type="cross_model_within_round",
                             comparison_target=pair_label,
                             value=h_jacc,
+                        ))
+
+                    # N-gram (1-3) TF-IDF cosine
+                    ngram_sim = _ngram_tfidf_cosine_pair(t_a.body_text, t_b.body_text)
+                    for model_id in (m_a, m_b):
+                        records.append(SimilarityRecord(
+                            question_slug=slug,
+                            phase_id=qdata.phase_id,
+                            model_id=model_id,
+                            round_number=rn,
+                            metric="ngram_tfidf_cosine",
+                            comparison_type="cross_model_within_round",
+                            comparison_target=pair_label,
+                            value=ngram_sim,
+                        ))
+
+                    # Decision-sentence TF-IDF cosine
+                    dec_sim = _decision_tfidf_cosine_pair(t_a.body_text, t_b.body_text)
+                    for model_id in (m_a, m_b):
+                        records.append(SimilarityRecord(
+                            question_slug=slug,
+                            phase_id=qdata.phase_id,
+                            model_id=model_id,
+                            round_number=rn,
+                            metric="decision_tfidf_cosine",
+                            comparison_type="cross_model_within_round",
+                            comparison_target=pair_label,
+                            value=dec_sim,
+                        ))
+
+                    # Technical parameter Jaccard
+                    tp_a = _extract_technical_parameters(t_a.body_text)
+                    tp_b = _extract_technical_parameters(t_b.body_text)
+                    tp_jacc = _jaccard(tp_a, tp_b)
+                    for model_id in (m_a, m_b):
+                        records.append(SimilarityRecord(
+                            question_slug=slug,
+                            phase_id=qdata.phase_id,
+                            model_id=model_id,
+                            round_number=rn,
+                            metric="tech_param_jaccard",
+                            comparison_type="cross_model_within_round",
+                            comparison_target=pair_label,
+                            value=tp_jacc,
                         ))
 
     return records
@@ -826,7 +1036,8 @@ def compute_aggregate_stats(
 
     # --- Convergence hypothesis: is Round 2 cross-model sim > Round 1? ---
     convergence: dict[str, Any] = {}
-    for metric in ["tfidf_cosine", "keyword_jaccard", "heading_jaccard"]:
+    for metric in ["tfidf_cosine", "keyword_jaccard", "heading_jaccard",
+                    "ngram_tfidf_cosine", "decision_tfidf_cosine", "tech_param_jaccard"]:
         r1_vals = by_round_metric.get((1, metric), [])
         r2_vals = by_round_metric.get((2, metric), [])
         if r1_vals and r2_vals:
@@ -1182,15 +1393,18 @@ def generate_convergence_trend(
             ci_lowers.append(float(arr[0]) if len(arr) else 0.0)
             ci_uppers.append(float(arr[0]) if len(arr) else 0.0)
 
-    # Also compute per-metric trends for keyword and heading Jaccard
+    # Also compute per-metric trends for keyword, heading, and n-gram
     metrics_data: dict[str, dict[int, list[float]]] = {
         "tfidf_cosine": {},
         "keyword_jaccard": {},
         "heading_jaccard": {},
+        "ngram_tfidf_cosine": {},
     }
 
     seen2: set[str] = set()
     for r in cross_records:
+        if r.metric not in metrics_data:
+            continue
         key = f"{r.question_slug}|{r.round_number}|{r.metric}|{r.comparison_target}"
         if key not in seen2:
             seen2.add(key)
@@ -1199,9 +1413,10 @@ def generate_convergence_trend(
     fig, ax = subplots(figsize=(6, 4))
 
     metric_styles = {
-        "tfidf_cosine": {"color": "#3b82f6", "marker": "o", "label": "TF-IDF Cosine"},
+        "tfidf_cosine": {"color": "#3b82f6", "marker": "o", "label": "Unigram TF-IDF Cosine"},
         "keyword_jaccard": {"color": "#f97316", "marker": "s", "label": "Keyword Jaccard"},
         "heading_jaccard": {"color": "#22c55e", "marker": "^", "label": "Heading Jaccard"},
+        "ngram_tfidf_cosine": {"color": "#a855f7", "marker": "D", "label": "N-gram (1-3) TF-IDF Cosine"},
     }
 
     for metric, round_vals in sorted(metrics_data.items()):
@@ -1264,6 +1479,205 @@ def generate_convergence_trend(
     print(f"  Saved figure: {output_path}")
 
 
+def generate_decision_similarity_trend(
+    cross_records: list[SimilarityRecord],
+    output_path: str,
+) -> None:
+    """Generate line plot showing decision-sentence similarity trend across rounds.
+
+    Compares unigram TF-IDF, decision-sentence TF-IDF, and technical parameter
+    Jaccard to show whether conceptual convergence differs from textual convergence.
+
+    Parameters
+    ----------
+    cross_records:
+        Cross-model similarity records (including new metrics).
+    output_path:
+        Path to save the PDF figure.
+    """
+    # Collect metrics relevant to this figure
+    target_metrics = {
+        "tfidf_cosine": {},
+        "decision_tfidf_cosine": {},
+        "tech_param_jaccard": {},
+    }
+
+    seen: set[str] = set()
+    for r in cross_records:
+        if r.metric not in target_metrics:
+            continue
+        key = f"{r.question_slug}|{r.round_number}|{r.metric}|{r.comparison_target}"
+        if key not in seen:
+            seen.add(key)
+            target_metrics[r.metric].setdefault(r.round_number, []).append(r.value)
+
+    if not any(target_metrics.values()):
+        print("  WARNING: No data for decision similarity trend.", file=sys.stderr)
+        return
+
+    fig, ax = subplots(figsize=(6, 4))
+
+    style_map = {
+        "tfidf_cosine": {
+            "color": "#94a3b8",
+            "marker": "o",
+            "label": "Unigram TF-IDF (lexical)",
+            "linestyle": "--",
+            "linewidth": 1.5,
+        },
+        "decision_tfidf_cosine": {
+            "color": "#e11d48",
+            "marker": "s",
+            "label": "Decision-Sentence TF-IDF",
+            "linestyle": "-",
+            "linewidth": 2.5,
+        },
+        "tech_param_jaccard": {
+            "color": "#0891b2",
+            "marker": "^",
+            "label": "Technical Parameter Jaccard",
+            "linestyle": "-",
+            "linewidth": 2.0,
+        },
+    }
+
+    all_rounds: set[int] = set()
+    for metric, round_vals in target_metrics.items():
+        if not round_vals:
+            continue
+        style = style_map[metric]
+        rs = sorted(round_vals.keys())
+        all_rounds.update(rs)
+        m_means = []
+        m_ci_lo = []
+        m_ci_hi = []
+        for rn in rs:
+            arr = np.array(round_vals[rn])
+            m_means.append(float(np.mean(arr)))
+            if len(arr) >= 2:
+                ci = _bootstrap_ci(arr)
+                m_ci_lo.append(ci[0])
+                m_ci_hi.append(ci[1])
+            else:
+                val = float(arr[0]) if len(arr) else 0.0
+                m_ci_lo.append(val)
+                m_ci_hi.append(val)
+
+        ax.plot(
+            rs, m_means,
+            color=style["color"],
+            marker=style["marker"],
+            linewidth=style["linewidth"],
+            linestyle=style["linestyle"],
+            markersize=7,
+            label=style["label"],
+            zorder=3,
+        )
+        ax.fill_between(
+            rs, m_ci_lo, m_ci_hi,
+            color=style["color"],
+            alpha=0.12,
+            zorder=2,
+        )
+
+    rounds_sorted = sorted(all_rounds)
+    ax.set_xlabel("Round Number")
+    ax.set_ylabel("Mean Cross-Model Similarity")
+    ax.set_title(
+        "Decision-Level vs. Lexical Convergence Across Rounds",
+        fontweight="bold",
+    )
+    ax.set_xticks(rounds_sorted)
+    ax.set_xticklabels([f"Round {r}" for r in rounds_sorted])
+    ax.set_ylim(0, 1.0)
+    ax.legend(loc="best", framealpha=0.9, fontsize=8)
+
+    # Add sample size annotations from decision metric
+    dec_data = target_metrics.get("decision_tfidf_cosine", {})
+    for rn in rounds_sorted:
+        n = len(dec_data.get(rn, []))
+        ax.annotate(
+            f"n={n}",
+            xy=(rn, 0.02),
+            ha="center",
+            fontsize=7,
+            color="gray",
+        )
+
+    fig.savefig(output_path, format="pdf")
+    close(fig)
+    print(f"  Saved figure: {output_path}")
+
+
+def print_semantic_comparison_table(
+    agg_stats: dict[str, Any],
+) -> None:
+    """Print comparison table: unigram vs n-gram vs decision-sentence deltas.
+
+    Shows whether conceptual similarity (n-gram, decision-sentence) behaves
+    differently from lexical similarity (unigram TF-IDF) across rounds.
+
+    Parameters
+    ----------
+    agg_stats:
+        Aggregate statistics dict from ``compute_aggregate_stats``.
+    """
+    conv = agg_stats.get("convergence_hypothesis", {})
+    if not conv:
+        print("  No convergence data available for comparison table.")
+        return
+
+    sep = "=" * 90
+    print()
+    print(sep)
+    print("  SEMANTIC vs. LEXICAL CONVERGENCE COMPARISON")
+    print(sep)
+    print()
+    print(f"  {'Metric':<30} {'R1 Mean':>10} {'R2 Mean':>10} {'Delta':>10} {'Direction':>15}")
+    print("  " + "-" * 78)
+
+    metric_labels = {
+        "tfidf_cosine": "Unigram TF-IDF",
+        "ngram_tfidf_cosine": "N-gram (1-3) TF-IDF",
+        "decision_tfidf_cosine": "Decision-Sentence TF-IDF",
+        "keyword_jaccard": "Keyword Jaccard",
+        "heading_jaccard": "Heading Jaccard",
+        "tech_param_jaccard": "Tech Parameter Jaccard",
+    }
+
+    display_order = [
+        "tfidf_cosine",
+        "ngram_tfidf_cosine",
+        "decision_tfidf_cosine",
+        "keyword_jaccard",
+        "heading_jaccard",
+        "tech_param_jaccard",
+    ]
+
+    for metric in display_order:
+        vals = conv.get(metric)
+        if vals is None:
+            continue
+        label = metric_labels.get(metric, metric)
+        direction = "INCREASE" if vals["delta"] > 0 else "DECREASE"
+        print(
+            f"  {label:<30} "
+            f"{_fmt_f(vals['round_1_mean']):>10} "
+            f"{_fmt_f(vals['round_2_mean']):>10} "
+            f"{_fmt_f(vals['delta']):>10} "
+            f"{direction:>15}"
+        )
+
+    print()
+    print("  Interpretation: If lexical similarity increases but decision-sentence")
+    print("  similarity does not, models may converge in vocabulary without converging")
+    print("  in substantive recommendations (surface-level herding).")
+    print("  Conversely, if decision-sentence similarity increases more than lexical,")
+    print("  models are converging on recommendations even when using different phrasing.")
+    print()
+    print(sep)
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -1315,6 +1729,9 @@ def main() -> None:
     # Print summary
     print_summary(questions, within_records, cross_records, agg_stats, heading_adoption)
 
+    # Print semantic vs lexical comparison table
+    print_semantic_comparison_table(agg_stats)
+
     # Export CSV
     print("\nExporting CSV...")
     export_csv(within_records, cross_records, csv_out_path)
@@ -1329,6 +1746,10 @@ def main() -> None:
         questions,
         cross_records,
         join(fig_dir, "fig-convergence-trend.pdf"),
+    )
+    generate_decision_similarity_trend(
+        cross_records,
+        join(fig_dir, "fig-decision-similarity.pdf"),
     )
 
     print("\nDone.")

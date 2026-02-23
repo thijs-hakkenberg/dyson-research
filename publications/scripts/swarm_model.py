@@ -16,6 +16,7 @@ __version__ = "1.0.0"
 
 import heapq
 import math
+import random as _stdlib_random
 from dataclasses import dataclass, field
 from typing import Any, Literal, Optional
 
@@ -116,6 +117,22 @@ class SwarmCoordinationConfig:
     max_events: Optional[int] = None
     """Override maximum events processed (default: node_count * simulation_days * 10)."""
 
+    enable_exception_telemetry: bool = False
+    """When True, hierarchical nodes only report when state changes exceed threshold."""
+
+    exception_threshold: float = 0.01
+    """Probability that a node's state has changed enough to require a report (0--1).
+
+    For exception_threshold=0.01, ~1% of nodes report each cycle.
+    For exception_threshold=0.30, ~30% of nodes report each cycle.
+    """
+
+    link_availability: float = 1.0
+    """Probability that any given message is successfully delivered (0--1).
+
+    1.0 = perfect links, 0.5 = 50% duty-cycle / link availability.
+    """
+
 
 @dataclass
 class SwarmNode:
@@ -215,6 +232,12 @@ class SwarmCoordinationRunResult:
     total_energy_kwh: float = 0.0
     coordinator_bandwidth_kbps: float = 0.0
     tier_breakdown: Optional[TierMessageBreakdown] = None
+    exception_telemetry_reduction: float = 1.0
+    """Ratio of actual to expected messages under exception telemetry (1.0 = no reduction)."""
+    message_loss_rate: float = 0.0
+    """Fraction of messages lost due to link unavailability (0.0 = no loss)."""
+    coordinator_unavailability_events: int = 0
+    """Number of times a coordinator's link failed (hierarchical topology)."""
 
 
 @dataclass
@@ -1038,6 +1061,18 @@ class SwarmCoordinationSimulator:
         self.propagation_times: list[float] = []
         self._tier_breakdown = TierMessageBreakdown()
 
+        # Exception telemetry tracking
+        self._exception_expected_msgs: int = 0
+        self._exception_actual_msgs: int = 0
+
+        # Link availability tracking
+        self._link_lost_msgs: int = 0
+        self._link_attempted_msgs: int = 0
+        self._coordinator_unavailability_events: int = 0
+
+        # Stdlib RNG seeded from config for exception/link Bernoulli draws
+        self._stdlib_rng = _stdlib_random.Random(config.seed)
+
         self._initialize_simulation()
 
     # -- initialization helpers --------------------------------------------
@@ -1218,10 +1253,43 @@ class SwarmCoordinationSimulator:
         if node is None or node.status == "failed":
             return
 
+        # --- Exception-based telemetry filtering (hierarchical only) ---
+        # When enabled, only nodes whose state changed beyond threshold report.
+        # Modelled probabilistically: each node has exception_threshold probability
+        # of being "unstable" (needing to report) per cycle.
+        if (
+            self.config.enable_exception_telemetry
+            and self.config.coordination_topology == "hierarchical"
+            and not node.is_coordinator
+        ):
+            self._exception_expected_msgs += 1
+            if self._stdlib_rng.random() > self.config.exception_threshold:
+                # Node is stable -- skip reporting this cycle
+                node.last_update_time = self.current_time
+                self._reschedule_state_sync(node, self.current_time)
+                return
+            self._exception_actual_msgs += 1
+
         routes = get_message_routing(
             self.config.coordination_topology, self.network, event.node_id
         )
         for sender_id, receiver_id in routes:
+            # --- Link availability filter ---
+            self._link_attempted_msgs += 1
+            if self.config.link_availability < 1.0:
+                if self._stdlib_rng.random() > self.config.link_availability:
+                    # Message lost due to link unavailability
+                    self._link_lost_msgs += 1
+                    # Track coordinator unavailability for hierarchical
+                    if self.config.coordination_topology == "hierarchical":
+                        receiver_node = self._find_node(receiver_id)
+                        sender_node = self._find_node(sender_id)
+                        if (receiver_node and receiver_node.is_coordinator) or (
+                            sender_node and sender_node.is_coordinator
+                        ):
+                            self._coordinator_unavailability_events += 1
+                    continue
+
             msg = create_message(sender_id, receiver_id, "ephemeris", self.current_time)
             if self.message_queue.enqueue(msg):
                 self.total_messages_sent += 1
@@ -1372,6 +1440,12 @@ class SwarmCoordinationSimulator:
                 neighbor = self.network.get_node(nid)
                 if neighbor is None or neighbor.status == "failed":
                     continue
+                # --- Link availability filter ---
+                self._link_attempted_msgs += 1
+                if self.config.link_availability < 1.0:
+                    if self._stdlib_rng.random() > self.config.link_availability:
+                        self._link_lost_msgs += 1
+                        continue
                 msg = create_message(node.id, nid, "gossip", self.current_time)
                 if self.message_queue.enqueue(msg):
                     self.total_messages_sent += 1
@@ -1450,6 +1524,20 @@ class SwarmCoordinationSimulator:
             )
             max_prop = avg_prop * 2.0
 
+        # Exception telemetry reduction factor
+        if self._exception_expected_msgs > 0:
+            exception_reduction = (
+                self._exception_actual_msgs / self._exception_expected_msgs
+            )
+        else:
+            exception_reduction = 1.0
+
+        # Link availability loss rate
+        if self._link_attempted_msgs > 0:
+            link_loss_rate = self._link_lost_msgs / self._link_attempted_msgs
+        else:
+            link_loss_rate = 0.0
+
         return SwarmCoordinationRunResult(
             run_id=0,
             config=self.config,
@@ -1478,6 +1566,9 @@ class SwarmCoordinationSimulator:
                 central_msgs=self._tier_breakdown.central_msgs,
                 gossip_msgs=self._tier_breakdown.gossip_msgs,
             ),
+            exception_telemetry_reduction=exception_reduction,
+            message_loss_rate=link_loss_rate,
+            coordinator_unavailability_events=self._coordinator_unavailability_events,
         )
 
     # -- helpers -----------------------------------------------------------
