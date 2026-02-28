@@ -1,6 +1,6 @@
 ---
 paper: "02-swarm-coordination-scaling"
-generated: "2026-02-23"
+generated: "2026-02-28"
 type: "review-summary"
 reviewers:
   - claude-opus-4-6
@@ -12,154 +12,145 @@ reviewers:
 
 # Comparative Peer Review Synthesis
 
-**Paper:** "Characterizing Hierarchical Coordination Scaling for Large Autonomous Space Swarms: A Discrete Event Simulation Study"
+**Paper:** "Design Equations and Parametric Sizing for Hierarchical Coordination in Large Autonomous Space Swarms"
 
-**Reviewers:** Claude Opus 4.6, Gemini 3 Pro, GPT-5.2 — Each reviewing Version A (formal academic voice) and Version B (humanized voice)
+**Venue:** IEEE Transactions on Aerospace and Electronic Systems
+
+**Reviews Synthesized:** Claude Opus 4.6 (Version BZ), Gemini 3 Pro (Version BZ), GPT-5.2 (Version BZ)
+
+> **Note:** All three reviews were conducted on Version BZ (humanized voice) only. No Version A reviews were provided. The Version Comparison section below reflects this constraint; all other sections synthesize across the three available reviews.
 
 ---
 
 ## Version Comparison
 
-All three reviews provided here are labeled "Version G," and no explicit A/B version differentiation is present in the submitted reviews. This means the reviewers either reviewed a single merged version or the version labels were not preserved in the final review documents. Consequently, a direct voice-style comparison (formal academic vs. humanized) cannot be performed with confidence from the available data.
+All three reviews evaluated only Version BZ (the humanized voice). No Version A (formal academic voice) reviews were available for comparison. Therefore, a direct A-vs-B comparison of perceived rigor versus readability cannot be performed.
 
-However, indirect signals suggest the following: **Gemini 3 Pro** rated Clarity & Structure at 5/5 and described the paper as "exceptionally well-written," suggesting it may have reviewed a version with stronger narrative flow (possibly Version B). **Claude Opus 4.6** rated Clarity at 4/5 and flagged the paper as "very long (~12,000 words)" with dense subsections, possibly reflecting a more formal, exhaustive version (possibly Version A). **GPT-5.2** rated Clarity at 4/5 and praised the traffic accounting and metric definitions but flagged internal inconsistencies (coordination cycle timing), suggesting it reviewed a version where technical precision occasionally faltered despite good structural organization.
+Within the BZ reviews, there is an implicit signal about voice style: Gemini 3 Pro found the paper "dense but logically organized" (Clarity: 4/5) and raised no concerns about tone or register. Claude Opus 4.6 similarly rated Clarity at 4/5 but noted the paper is "excessively long for its core contribution," suggesting the humanized voice may have contributed to verbosity through extensive caveats and qualifications. GPT-5.2 rated Clarity at 4/5 and praised the "design equation narrative" but flagged that some labeling and conditioning parameters were insufficiently precise—a concern that could be exacerbated by a more conversational register if it trades precision for accessibility.
 
-**Net assessment on voice:** No reviewer penalized readability or flagged inappropriate informality, suggesting that if Version B was reviewed, the humanized voice did not compromise perceived rigor. Gemini's higher clarity rating may indicate a slight preference for more accessible prose, but this cannot be definitively attributed to version differences without explicit A/B labeling. The trade-off between rigor and readability appears minimal—all reviewers focused overwhelmingly on substantive technical issues rather than stylistic concerns.
+**Tentative inference:** The humanized voice was generally well-received for structure and readability, but may have encouraged over-qualification and length inflation. Without Version A reviews, we cannot determine whether the formal voice would have scored higher on conciseness or lower on accessibility. For future revision, the authors should consider whether a tighter, more formal register would address the length concerns raised by Claude and GPT without sacrificing the organizational clarity praised by all three reviewers.
 
 ---
 
 ## Consensus Strengths
 
-1. **Timely and important problem framing.** All three reviewers agreed that scaling coordination architectures from $10^3$ to $10^6$ nodes for mega-constellations and autonomous swarms is a genuine, operationally relevant gap in the literature. Claude called it a "genuine gap"; Gemini rated significance 5/5 and called it "critical and rapidly approaching"; GPT described it as a "genuinely important question."
+1. **Three-layer feasibility decomposition is a genuine conceptual contribution.** All three reviewers highlighted the separation of (i) byte-budget utilization η, (ii) MAC efficiency γ, and (iii) TDMA airtime schedulability as a useful and original framing. Claude called it "a useful conceptual contribution that could serve as a design checklist"; Gemini termed the byte-budget vs. airtime distinction "a significant contribution that prevents the common error of assuming raw bandwidth equals throughput"; GPT described it as "easy to follow" and noted it "helps prevent readers from conflating byte budgets with airtime schedulability."
 
-2. **Rigorous traffic accounting and metric definitions.** All reviewers specifically praised the explicit separation of topology-invariant baseline telemetry from topology-dependent protocol overhead, the traffic accounting table (Table IV/V), and the formal metric definitions (Section III-G/H). GPT called this "unusually clear for a simulation paper"; Claude described it as demonstrating "commendable rigor."
+2. **CCSDS Proximity-1 packet-level γ validation (Section IV-J) is the strongest verification element.** All reviewers singled out this section as providing genuinely independent confirmation. Claude: "the packet-level CCSDS validation is the strongest verification element"; Gemini: "strengthens the results significantly"; GPT: "particularly valuable because it tightens the feasibility boundary and avoids the common pitfall of assuming optimistic MAC efficiency."
 
-3. **Sound statistical methodology for the superlinear transition claim.** The use of AIC-based model comparison to identify the piecewise-linear breakpoint at $N^* \approx 45{,}000$ was recognized by all reviewers as a methodological strength. Claude called it "a welcome addition"; Gemini noted it "adds statistical rigor"; GPT acknowledged it as a "potentially valuable scaling insight."
+3. **Open-source commitment and reproducibility infrastructure.** All reviewers praised the data availability statement, repository URL, tagged release, and environment specification. Claude called it "exemplary"; Gemini noted it "aligns with emerging transparency standards"; GPT stated "reproducibility is a strong point."
 
-4. **Transparent limitation acknowledgment and baseline framing.** The "Baseline Interpretation Note" (Section I-C) was praised by all three reviewers as an effective preemptive defense against strawman criticism. Gemini called it "wise"; GPT described it as "a good move [that] reduces reviewer confusion"; Claude termed it "an excellent structural choice."
+4. **Well-structured tables and cross-model comparison.** The verification taxonomy table (Table XII/XVIII), the cross-model comparison (Table XI/XVII), and the TDMA superframe budget were consistently praised. Gemini highlighted Tables V and XIV; GPT highlighted Tables VIII, IX, and XVII; Claude highlighted Table XI and the GE sensitivity curves (Fig. 5b).
 
-5. **Appropriate Monte Carlo design and validation approach.** The 50–100 runs per configuration, bootstrap BCa confidence intervals, and validation against closed-form $M/D/1$ and gossip convergence bounds were recognized as methodologically appropriate by all reviewers.
+5. **Honest scoping of limitations and unvalidated claims.** All reviewers noted the paper's transparency about what is verified versus what remains a gap. Claude: "commendably honest about what is verified versus what remains unvalidated"; GPT: "the paper does a good job separating what is modeled vs. deferred."
 
-6. **Clear structural organization.** All reviewers found the paper's progression—from problem definition through baselines, DES framework, results, to discussion—logical and well-executed, with effective use of tables and figures.
+6. **Design equations summary (Section V-C) is highly actionable.** Gemini called it "excellent" and suggested it would be "the most cited/used part of the paper." GPT praised the "design equation narrative." Claude noted the core contribution is the framework and design equations.
 
 ---
 
 ## Consensus Weaknesses
 
-1. **The superlinear scaling transition mechanism is insufficiently explained and potentially inconsistent with the stated model.** All three reviewers identified this as a critical issue. Claude noted that with fixed $k_c = 100$ and a four-level hierarchy, message counts at each level are strictly $O(N)$, and asked "which inter-cluster messages grow superlinearly and why." GPT stated this "appears inconsistent with Eq. (6)" since the hierarchical message model is linear in $N$ for fixed parameters, and called it "a major logic gap." Gemini was less critical but implicitly flagged the issue by noting the projected curve's reliance on analytical assumptions. All reviewers demanded explicit identification and derivation of the superlinear component.
+1. **Circular verification architecture: DES and analytics implement the same model.** Claude and GPT both identified that the DES, slot-level simulator, and analytical equations share the same sizing model, making their sub-0.1% agreement tautological rather than independently validating. Claude: "their agreement is by construction, not independent validation"; GPT: "drops, latency, and buffering behavior in the DES depend on fluid service and drop-tail, while feasibility is later asserted via TDMA slot budgets." Gemini acknowledged the NS-3 gap but considered it "acceptable." The consensus is that the paper must more clearly distinguish internal consistency checks from independent validation.
 
-2. **Projected optimizations are inadequately validated.** All reviewers flagged that two of three projected optimizations (dynamic spatial partitioning, heterogeneous hardware) have zero DES validation, while the third (exception-based telemetry) is validated at only a single point ($N = 10^4$). Claude recommended either implementing additional optimizations in DES or relegating the projection to "future directions." Gemini suggested splitting the projected curve in Fig. 8 into DES-validated and purely theoretical components. GPT called for "transparent factors and uncertainty bounds."
+2. **Stress-case workload (p_cmd = 1.0, 512 B/node/cycle) lacks operational justification.** All three reviewers flagged this. Claude: "no evidence is provided that any real or planned constellation operation requires this command rate"; GPT: "needs (a) an operational justification…and/or (b) an additional 'campaign duty factor' parameter"; Gemini did not flag this as a major issue but implicitly accepted the framing. The dominant concern is that the headline η_S ≈ 46% result may represent a scenario that never occurs, distorting design implications.
 
-3. **Coordinator bandwidth pooling assumption is physically under-specified and potentially distortive.** All reviewers identified the assumption that coordinators can use the "combined coordination bandwidth of its cluster" as a major concern. Claude called it "physically hand-waved" and noted the unspecified MAC scheme. GPT flagged it as "a major architectural assumption that changes feasibility and scaling" and recommended parameterizing and stress-testing it. Gemini implicitly addressed this through the power/mass penalty discussion, noting that coordinator-mode requirements affect the entire fleet.
+3. **Fluid-server DES vs. TDMA slot-level service discipline mismatch.** Claude and GPT both identified that the DES cannot capture MAC contention, slot-level timing, or half-duplex scheduling conflicts—precisely the phenomena that determine feasibility at the 1 kbps design point. GPT recommended either incorporating TDMA service into the DES or restricting DES outputs to byte counts only. Claude noted the "missing MAC-layer dynamics at the design-driving operating point" as a major issue.
 
-4. **Physical-layer and link-loss modeling is too abstract for the quantitative precision claimed.** All reviewers noted the absence of orbital mechanics, Earth occlusion geometry, realistic ISL contact schedules, retransmission/ARQ mechanisms, and correlated link failures. Claude stated the Bernoulli model "does not capture correlated outages" and recommended at least simplified orbital geometry. GPT noted the absence of "retransmission, coding, contact windows, and correlated fades/occlusion" and argued the link-loss sensitivity conclusions may be overstated. Gemini flagged the "availability cliff" at $p_{\text{link}} < 0.6$ as important but did not challenge the model's fidelity as strongly.
+4. **Unfair or misleading topology comparison.** Claude and GPT both noted that the four architectures compared (hierarchical, centralized, global-state mesh, sectorized mesh) have fundamentally different functional scopes and modeling completeness. Claude: "the centralized baseline has no communication overhead modeled…this framing inflates the apparent advantage of the hierarchical architecture"; GPT: "the referencing and framing around that section should be tightened to avoid readers perceiving an apples-to-apples architecture comparison." Gemini did not flag this issue.
 
-5. **Comparison against only extreme-case baselines limits practical contribution.** Claude and GPT both emphasized that comparing against a single-server centralized system and a full-state mesh—acknowledged by the authors as "intentional bounds, not realistic competitors"—limits the paper's actionable value. Claude called this "the single most significant weakness" and recommended including a sectorized mesh simulation. GPT noted the need to cite "representative scalable decentralized approaches" to avoid the appearance of a strawman. Gemini acknowledged this but was more accepting of the bounding approach, suggesting only that a sectorized mesh comparison be discussed in terms of latency.
+5. **γ value progression is confusing (0.949 → 0.85 → 0.76).** Claude explicitly flagged the three-value progression as confusing and recommended retiring γ = 0.85. GPT noted an inconsistency between the abstract and Section V-C regarding whether C_coord includes γ. Gemini suggested a footnote to clarify. All agree the γ treatment needs unification.
 
-6. **Internal inconsistencies in coordination cycle timing.** GPT identified a specific inconsistency between the 10-second coordination cycle ($T_c = 1/r = 10$ s at $r = 0.1$ msg/s) and the one-minute reporting resolution referenced elsewhere, calling this a major issue affecting success metrics and latency interpretation. Claude did not flag this explicitly but noted related notation inconsistencies. Gemini did not identify this issue.
+6. **Tail statistic reporting is insufficient for safety-critical sizing.** Claude and GPT both noted that P99 AoI and P95 GE recovery are reported as means across replications without adequate uncertainty quantification. Claude: "for a design equation intended to size safety-critical systems, the distribution of the tail statistic matters"; GPT: "the dependence structure…is not fully addressed." Both recommended reporting 95% confidence intervals on tail statistics.
 
 ---
 
 ## Divergent Opinions
 
-1. **Overall recommendation severity.**
-   - **Gemini 3 Pro: Minor Revision.** Gemini viewed the major issues as primarily concerning interpretation (mass penalty, projected curve visualization) rather than fundamental simulation flaws, and rated the paper more favorably across most criteria.
-   - **Claude Opus 4.6: Major Revision.** Claude identified three "fundamental weaknesses" (unfair baselines, physical-layer abstraction, unexplained superlinear mechanism) and argued the paper cannot be accepted without substantial rework.
-   - **GPT-5.2: Major Revision.** GPT identified five major issues including internal inconsistencies requiring re-analysis and re-simulation.
+1. **Overall publication readiness.**
+   - **Gemini 3 Pro: Accept / Minor Revision.** Found no major issues and considered the validation gap (NS-3) acceptable for a sizing-equations paper. Rated Methodology and Significance both at 5/5.
+   - **Claude Opus 4.6: Major Revision.** Identified five major issues (circular verification, missing MAC dynamics, unfair comparison, stress-case realism, tail statistics) and recommended 30–40% length reduction.
+   - **GPT-5.2: Major Revision.** Identified four major issues (workload realism, service discipline mismatch, coordinator election modeling, γ specification) and emphasized the risk of misinterpretation by practitioners.
 
-2. **Significance and novelty rating.**
-   - **Gemini: 5/5** — Called the superlinear transition "novel and operationally significant."
-   - **GPT: 4/5** — Acknowledged value but noted novelty is "partially constrained" by idealized communication model.
-   - **Claude: 3/5** — Argued the core finding is "well-established in distributed systems theory" and the contribution is quantifying constants rather than discovering new principles.
+2. **Novelty assessment.**
+   - **Gemini: 5/5 (Excellent).** Viewed the gap as critical and the contribution as filling it comprehensively.
+   - **Claude: 3/5 (Adequate).** Argued the core results are individually well-known and the novelty is in assembly, which "should be presented more modestly."
+   - **GPT: 4/5 (Good).** Acknowledged the integration is original but noted the novelty claim "could be better defended with a more targeted comparison" to LEACH/WSN sizing.
 
-3. **Severity of the baseline comparison issue.**
-   - **Claude** considered this the paper's most critical weakness and recommended either adding a sectorized mesh simulation or fundamentally reframing the contribution.
-   - **Gemini** accepted the bounding approach as valid and only suggested the authors soften language about where practical alternatives would fall (use "likely" rather than definitive statements).
-   - **GPT** fell between, recommending better contextualization through citations of scalable decentralized approaches.
+3. **Methodological rigor.**
+   - **Gemini: 5/5 (Exceptional).** Called the methodology "exceptionally rigorous" and the verification taxonomy "rarely seen."
+   - **Claude: 3/5 (Adequate).** Identified the circular verification as a fundamental flaw and the missing MAC dynamics as a critical gap.
+   - **GPT: 3/5 (Adequate).** Agreed with Claude on the service discipline mismatch and workload concerns but was more measured in tone.
 
-4. **Service model / message size treatment.**
-   - **GPT** flagged the conflation of widely varying message sizes (256 B reports vs. 10–50 MB handoff transfers) as a major issue requiring byte-based service modeling.
-   - **Claude** and **Gemini** did not identify this as a significant concern.
+4. **Sectorized mesh comparator.**
+   - **Claude:** Recommended removing it entirely or committing to a fair comparison. Viewed the extensive caveats as evidence the comparison should not be presented.
+   - **GPT:** Recommended tightening the framing but did not advocate removal.
+   - **Gemini:** Did not flag this as an issue.
 
-5. **Power budget and mass penalty implications.**
-   - **Gemini** uniquely identified the peak-power sizing problem as a major issue: in a homogeneous swarm with rotating coordinators, every spacecraft must be hardware-sized for coordinator mode, creating a fleet-wide mass penalty not captured by average power metrics.
-   - **Claude** mentioned the power analysis only as a minor issue (non-uniform duty distributions).
-   - **GPT** did not flag the power analysis.
+5. **Paper length.**
+   - **Claude:** Explicitly called the paper "excessively long" and recommended 30–40% reduction.
+   - **GPT:** Did not flag length as a concern.
+   - **Gemini:** Noted density but framed it as a clarity issue, not a length issue.
 
-6. **Coordination cycle timing inconsistency.**
-   - **GPT** identified this as a major issue requiring resolution and potential re-simulation.
-   - **Claude** and **Gemini** did not flag this specific inconsistency.
+6. **Coordinator failure / RF-backup election timing.**
+   - **GPT:** Flagged the ~113 s Raft election time as under-modeled and requiring a contention model or simulation (Major Issue #3).
+   - **Claude:** Noted the independence assumption between ISL outage and coordinator failure but did not elevate it to a major issue.
+   - **Gemini:** Did not flag this.
 
 ---
 
 ## Aggregated Ratings
 
-| Criterion | Claude | Gemini | GPT |
-|-----------|--------|--------|-----|
-| Significance & Novelty | 3 | 5 | 4 |
-| Methodological Soundness | 2 | 4 | 3 |
-| Validity & Logic | 3 | 4 | 3 |
-| Clarity & Structure | 4 | 5 | 4 |
-| Ethical Compliance | 4 | 5 | 4 |
-| Scope & Referencing | 3 | 5 | 3 |
-| **Overall Recommendation** | **Major Revision** | **Minor Revision** | **Major Revision** |
+| Criterion | Claude A | Claude B | Gemini A | Gemini B | GPT A | GPT B |
+|-----------|----------|----------|----------|----------|-------|-------|
+| Significance & Novelty | — | 3 | — | 5 | — | 4 |
+| Methodological Soundness | — | 3 | — | 5 | — | 3 |
+| Validity & Logic | — | 3 | — | 4 | — | 3 |
+| Clarity & Structure | — | 4 | — | 4 | — | 4 |
+| Ethical Compliance | — | 4 | — | 5 | — | 4 |
+| Scope & Referencing | — | 3 | — | 5 | — | 4 |
 
-*Note: Only single-version (G) reviews were provided by each reviewer; A/B version-specific ratings are not available from the submitted materials.*
+**Cross-reviewer averages (Version B only):** Significance 4.0; Methodology 3.7; Validity 3.3; Clarity 4.0; Ethics 4.3; Scope 4.0.
+
+*Note: Version A columns are empty because no Version A reviews were provided.*
 
 ---
 
 ## Priority Action Items
 
-### 1. Resolve and explicitly derive the superlinear scaling mechanism (Critical)
-**Flagged by:** Claude, GPT, Gemini (implicitly)
-**Applies to:** Both versions
+### 1. Ground the stress-case workload in operational reality or reframe as a parametric bound (All three reviewers; applies to both versions)
 
-The paper's central novel claim—a superlinear transition at $N^* \approx 45{,}000$—is currently an empirical observation without adequate analytical explanation. The stated hierarchical message model (Eq. 6) is strictly $O(N)$ for fixed parameters, creating a logical inconsistency. **Action:** Instrument the DES to log every inter-tier message type; identify which specific component grows superlinearly (e.g., cross-cluster collision screening scaling as $O((N/k_c)^2)$, regional reconciliation, handoff cascades); derive an analytical expression; and verify against simulation logs. If no true superlinear mechanism exists, reframe the claim as a change in slope within linear scaling or an artifact of fixed per-tier constants.
+**Impact: Critical.** The headline result (η_S ≈ 46%) drives most design conclusions but rests on p_cmd = 1.0 with 512 B/node/cycle, which no reviewer found operationally justified. **Action:** Either (a) cite published operational data (SpaceX FCC filings, ESA conjunction statistics, OneWeb operational reports) to justify the command rate, or (b) introduce a campaign duty factor *d* ∈ [0,1] and report η as a function of *d*, explicitly reframing 46% as the upper bound at *d* = 1. Show that realistic duty factors (d = 0.01–0.10) yield η ≈ 5–10%, and discuss how this changes the TDMA requirement and coordinator bottleneck conclusions.
 
-### 2. Parameterize and stress-test the coordinator bandwidth pooling assumption (Critical)
-**Flagged by:** Claude, GPT
-**Applies to:** Both versions
+### 2. Disambiguate internal consistency checks from independent validation (Claude, GPT; both versions)
 
-The assumption that coordinators can pool cluster bandwidth is architecturally consequential and currently unspecified at the MAC layer. **Action:** Introduce a coordinator ingress/egress capacity parameter $C_{\text{coord-link}}$ (kbps); evaluate overhead and latency when coordinators are limited to (i) 1 kbps, (ii) $\beta k_c$ kbps with $\beta \in [0.1, 1]$, and (iii) a realistic ISL schedule share. Report the minimum coordinator link rate required to sustain $k_c = 100$ without drops, and how this changes the optimal $k_c$.
+**Impact: High.** The current four-tier verification taxonomy conflates DES-vs-analytics agreement (tautological) with packet-level CCSDS validation (genuinely independent). **Action:** Relabel the verification tiers: Tier 1 = "internal consistency" (code verification, DES vs. analytics); Tier 2 = "cross-model validation" (packet-level γ derivation, slot-level timing); Tier 3 = "external validation" (NS-3 or hardware-in-the-loop, currently absent). Revise Table XII/XVIII accordingly. If feasible, implement even a single-cluster NS-3 simulation to provide Tier 3 evidence.
 
-### 3. Resolve coordination cycle timing inconsistency (Critical)
-**Flagged by:** GPT
-**Applies to:** Both versions
+### 3. Unify γ treatment and resolve the 0.949/0.85/0.76 progression (All three reviewers; both versions)
 
-The paper uses both 10-second ($T_c = 1/r$) and 60-second (reporting cycle) periods in ways that affect success criteria, latency interpretation, and per-cycle traffic calculations. **Action:** Define a single coordination round period, ensure $r$, $T_c$, event scheduling resolution, and success deadlines are mutually consistent, and recompute any affected metrics.
+**Impact: High.** The three γ values from three different models confuse readers and create inconsistency between the abstract and body. **Action:** Present γ = 0.76 (CCSDS-derived) as the validated baseline throughout. Provide a generalized expression γ(S_payload, R_FEC, T_guard, T_acq) so practitioners can adapt to their framing assumptions. Retire γ = 0.85 as a historical artifact. Show that γ = 0.949 (slot-level) is a sub-component confirming guard-time contributions only. Ensure C_coord definitions consistently specify whether they include γ (abstract, Section IV-A, Section V-C).
 
-### 4. Strengthen validation of projected optimizations (High)
-**Flagged by:** Claude, Gemini, GPT
-**Applies to:** Both versions
+### 4. Address the DES fluid-server vs. TDMA service discipline mismatch (Claude, GPT; both versions)
 
-Two of three projected optimizations lack any DES validation, and the third is validated at a single point. **Action:** At minimum, (a) extend exception-based telemetry validation to $N \in \{10^4, 10^5, 5 \times 10^5\}$ with multiple $p_{\text{exc}}$ values; (b) split the projected curve in Fig. 5/8 into a DES-validated component and a purely theoretical component; (c) provide explicit reduction factors, calibration methodology, and uncertainty bounds for each optimization; and (d) soften the abstract's "5.1% at $10^6$" claim or remove it.
+**Impact: High.** The DES reports drop and latency metrics under fluid service, but feasibility is asserted under TDMA scheduling—these are not the same service discipline. **Action:** Either (a) incorporate a simplified TDMA service model into the DES (deterministic service per cycle with slot alignment delay), or (b) explicitly restrict DES outputs to byte-budget accounting and inter-cycle metrics, moving all latency/drop claims to the slot-level and packet-level simulators. Add a row to latency tables for "TDMA alignment delay: [0, T_c]" when applicable.
 
-### 5. Add a realistic competitor architecture or reframe the contribution (High)
-**Flagged by:** Claude (critical), GPT (moderate), Gemini (minor)
-**Applies to:** Both versions
+### 5. Fix or remove the unfair topology comparison (Claude, GPT; both versions)
 
-The comparison against only extreme-case baselines limits practical value. **Action:** Either (a) implement a sectorized mesh simulation (e.g., orbital shell divided into $\sqrt{N}$ sectors with intra-sector gossip and inter-sector aggregation)—the analytical framework in Section V-C already outlines the approach—or (b) substantially reframe the contribution as "characterizing hierarchical scaling properties" rather than "demonstrating hierarchical superiority," removing comparative language from the abstract and conclusions.
+**Impact: Moderate-High.** The four-architecture comparison (Table VIII, Fig. 7) presents overhead numbers for architectures with different functional scopes and different modeling completeness. **Action:** Either (a) define equivalent functional requirements and model all architectures at the same level of completeness (including centralized communication overhead), or (b) remove the comparative framing entirely—present the hierarchical architecture's absolute performance and relegate the other topologies to a brief appendix with explicit "illustrative only" labeling. Option (b) would also address the paper length concern.
 
-### 6. Improve physical-layer and link-loss modeling fidelity (Moderate-High)
-**Flagged by:** Claude, GPT, Gemini (partially)
-**Applies to:** Both versions
+### 6. Strengthen tail statistic reporting for safety-critical sizing (Claude, GPT; both versions)
 
-The Bernoulli per-message loss model omits correlated outages, deterministic Earth occlusion, retransmission/ARQ, and contact schedules. **Action:** At minimum, (a) add a simple retransmission mechanism (1–2 attempts within $T_c$) and show whether the $p_{\text{link}} = 0.6$ cliff persists; (b) replace or supplement the Bernoulli model with deterministic periodic outages representing Earth occlusion; and (c) present all quantitative results as ranges reflecting physical-layer uncertainty rather than point estimates.
+**Impact: Moderate.** P99 AoI and P95 GE recovery are headline design parameters but are reported without adequate uncertainty quantification. **Action:** For all P95/P99 metrics, report the 95% confidence interval across MC replications (partially done for AoI P99: [438, 444] s—extend to all tail metrics). Report inter-replication variability of the P99 (not just the mean). For GE P95 recovery, report the range and CI. Consider bootstrap or order-statistic methods appropriate for tail estimation. Add a sensitivity table for η_0 showing dependence on heartbeat interval, heartbeat size (including security/authentication overhead), and summary size.
 
-### 7. Address message-size heterogeneity in the service model (Moderate)
-**Flagged by:** GPT
-**Applies to:** Both versions
+### 7. Reduce paper length by 25–35% (Claude; both versions)
 
-Treating 256 B status reports and 10–50 MB handoff transfers as equivalent "messages" in the queueing model can distort latency distributions and coordination success metrics. **Action:** Implement size-dependent service times or byte-based service rates; separate control-plane message processing from bulk transfer serialization; and report the impact on tail latency and handoff success.
+**Impact: Moderate.** At ~12,000 words plus 15+ tables and 10+ figures, the paper substantially exceeds typical IEEE T-AES length. **Action:** Condense or move to supplementary material: (a) the sectorized mesh model and its extensive caveats (saves ~2 pages); (b) the global-state mesh and centralized baseline columns if the comparative framing is removed (saves ~1 page); (c) redundant scope notes and qualifications that individually are reasonable but collectively obscure the main results. Tighten the abstract to foreground the key finding (architecture-specific overhead is small; commands dominate; three-layer feasibility framework) with explicit conditioning parameters.
 
 ---
 
 ## Overall Assessment
 
-This paper addresses a timely and operationally important problem—scaling coordination architectures for autonomous space swarms at $10^3$–$10^6$ nodes—and demonstrates a generally competent DES methodology with commendable transparency in traffic accounting, metric definitions, and limitation acknowledgment. The identification of a superlinear scaling transition and the formal AIC-based model comparison are potentially valuable contributions.
+The paper addresses a legitimate and timely gap—closed-form sizing equations for coordination traffic in mega-constellations at the 10³–10⁵ scale—and offers several genuine contributions: the three-layer feasibility decomposition, the CCSDS-grounded γ validation, actionable design equations, and commendable transparency about limitations. The open-source release and verification taxonomy set a positive standard for reproducibility.
 
-However, the paper has several significant issues that preclude acceptance in its current form. The most critical is the logical inconsistency between the stated $O(N)$ hierarchical message model and the claimed superlinear transition: this is the paper's central novel finding and it must be analytically grounded, not merely observed. The coordinator bandwidth pooling assumption, coordination cycle timing inconsistency, and reliance on unvalidated projected optimizations further weaken the quantitative claims. The comparison against only extreme-case baselines, while honestly framed, limits the practical contribution.
+However, two of three reviewers recommend **Major Revision**, and the consensus weaknesses are substantive rather than cosmetic. The most critical issues are: (1) the stress-case workload that drives the headline result lacks operational grounding; (2) the verification architecture is partially circular, with the strongest independent validation covering only one parameter; (3) the service discipline mismatch between the DES and TDMA models undermines latency and drop claims at the design-driving operating point; and (4) the topology comparison is structurally unfair. Gemini's more favorable assessment (Accept/Minor Revision) appears to reflect a focus on the sizing equations themselves rather than the broader validation and framing concerns.
 
-Two of three reviewers recommend **Major Revision**; one recommends **Minor Revision**. The consensus recommendation is **Major Revision**, with the understanding that the required changes are substantive but tractable within the existing simulation framework. The authors should prioritize (1) deriving the superlinear mechanism, (2) parameterizing coordinator bandwidth, (3) resolving timing inconsistencies, and (4) strengthening optimization validation before resubmission.
-
-Regarding version selection: without clear A/B differentiation in the submitted reviews, no definitive recommendation can be made on voice style. The high clarity ratings across all reviewers (4–5/5) suggest the current writing quality is strong. The authors should focus revision effort on technical substance rather than prose style, and target the IEEE T-AES word limit by condensing the related work section and tangential discussion material.
+**Recommendation: Major Revision.** The paper should proceed with Version BZ as the base, incorporating the priority action items above. The most impactful changes—grounding the stress workload, disambiguating verification tiers, unifying γ, and fixing or removing the topology comparison—would transform this from a promising theoretical framework into a validated, practitioner-ready design tool appropriate for IEEE T-AES. Significant length reduction (targeting ~8,000 words of body text) would sharpen the narrative and bring the paper within typical journal bounds.

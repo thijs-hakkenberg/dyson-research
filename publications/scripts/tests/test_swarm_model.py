@@ -78,7 +78,9 @@ class TestConstants:
 
     def test_message_sizes_keys(self):
         expected_keys = {"ephemeris", "heartbeat", "handoff", "gossip", "collision",
-                         "cluster_summary", "region_summary"}
+                         "cluster_summary", "region_summary",
+                         "coordination_command", "coordination_heartbeat",
+                         "collision_alert"}
         assert set(MESSAGE_SIZES.keys()) == expected_keys
 
     def test_handoff_state_size(self):
@@ -917,3 +919,350 @@ class TestCalculateTotalEnergy:
 
     def test_empty(self):
         assert calculate_total_energy([]) == pytest.approx(0.0)
+
+
+# ===== TestDESBasedOverhead =====
+
+
+class TestDESBasedOverhead:
+    """Test that overhead is now computed from DES message byte counts."""
+
+    def test_overhead_positive(self):
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert result.communication_overhead_percent > 0
+
+    def test_overhead_varies_with_topology(self):
+        """Different topologies should produce different overheads.
+
+        Protocol overhead (η) excludes baseline ephemeris, so centralized
+        topology (which only generates ephemeris messages in the DES) has
+        η = 0.  Hierarchical and mesh have protocol messages (commands,
+        summaries, gossip) that produce η > 0.
+        """
+        results = {}
+        for topo in ["centralized", "hierarchical", "mesh"]:
+            cfg = SwarmCoordinationConfig(
+                node_count=100,
+                coordination_topology=topo,
+                cluster_size=25,
+                simulation_days=1,
+                seed=42,
+            )
+            results[topo] = SwarmCoordinationSimulator(cfg).run().communication_overhead_percent
+        # Centralized has 0 protocol overhead (only baseline ephemeris)
+        assert results["centralized"] == 0.0
+        # Hierarchical and mesh have positive protocol overhead
+        assert results["hierarchical"] > 0
+        assert results["mesh"] > 0
+        # Not all identical
+        assert len(set(round(v, 1) for v in results.values())) > 1
+
+    def test_bytes_sent_tracked(self):
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert result.total_bytes_sent > 0
+
+    def test_consistent_sync_interval(self):
+        """All topologies should use the same 10s sync interval."""
+        for topo in ["centralized", "hierarchical", "mesh"]:
+            cfg = SwarmCoordinationConfig(
+                node_count=100,
+                coordination_topology=topo,
+                cluster_size=25,
+                simulation_days=1,
+                seed=42,
+            )
+            sim = SwarmCoordinationSimulator(cfg)
+            assert sim._sync_interval == 10.0
+
+
+# ===== TestCoordinatorBandwidthCap =====
+
+
+class TestCoordinatorBandwidthCap:
+    """Test coordinator_link_capacity_kbps parameter."""
+
+    def test_default_unlimited(self):
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert result.coordinator_drops == 0
+
+    def test_tight_cap_causes_drops(self):
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            coordinator_link_capacity_kbps=0.1,  # very tight
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert result.coordinator_drops > 0
+
+
+# ===== TestRetransmission =====
+
+
+class TestRetransmission:
+    """Test max_retransmissions parameter."""
+
+    def test_no_retransmission_default(self):
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            link_availability=0.8,
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert result.retransmission_count == 0
+        assert result.message_loss_rate > 0
+
+    def test_retransmission_reduces_loss(self):
+        cfg_no_retry = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            link_availability=0.8,
+            max_retransmissions=0,
+        )
+        cfg_with_retry = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            link_availability=0.8,
+            max_retransmissions=2,
+        )
+        r_no = SwarmCoordinationSimulator(cfg_no_retry).run()
+        r_yes = SwarmCoordinationSimulator(cfg_with_retry).run()
+        assert r_yes.retransmission_count > 0
+        # With retransmission, loss rate should be lower or equal
+        assert r_yes.message_loss_rate <= r_no.message_loss_rate + 0.01
+
+
+# ===== TestCrossCycleRecovery =====
+
+
+class TestCrossCycleRecovery:
+    """Test cross-cycle recovery tracking under Gilbert-Elliott loss."""
+
+    def test_no_recovery_without_loss(self):
+        """Perfect links produce zero recovery events."""
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            link_model="bernoulli",
+            link_availability=1.0,
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert result.cross_cycle_recovery_count == 0
+        assert result.cross_cycle_recovery_mean == 0.0
+        assert result.cross_cycle_max_streak == 0
+        assert result.cross_cycle_recovery_rate_by_cycle == []
+
+    def test_ge_loss_produces_recoveries(self):
+        """GE correlated loss should produce recovery events."""
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            link_model="gilbert_elliott",
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert result.cross_cycle_recovery_count > 0
+        assert result.cross_cycle_recovery_mean > 0.0
+        assert result.cross_cycle_max_streak >= 1
+
+    def test_recovery_p95_within_7_cycles(self):
+        """P95 recovery should be within ~7 cycles for default GE params."""
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            link_model="gilbert_elliott",
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        # The analytical prediction is ~4 cycles for P95; allow up to 7
+        assert result.cross_cycle_recovery_p95 <= 7.0
+
+    def test_recovery_cdf_monotonic(self):
+        """CDF should be monotonically non-decreasing."""
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            link_model="gilbert_elliott",
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        cdf = result.cross_cycle_recovery_rate_by_cycle
+        assert len(cdf) == 10
+        for i in range(1, len(cdf)):
+            assert cdf[i] >= cdf[i - 1]
+        # CDF at cycle 10 should be very close to 1.0
+        assert cdf[9] > 0.99
+
+
+# ===== TestAirtimeEnforcement =====
+
+
+class TestAirtimeEnforcement:
+    """Test optional per-cycle airtime enforcement."""
+
+    def test_airtime_off_matches_original(self):
+        """enforce_airtime=False should produce identical results to baseline."""
+        cfg_base = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+        )
+        cfg_airtime = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            enforce_airtime=False,
+        )
+        r_base = SwarmCoordinationSimulator(cfg_base).run()
+        r_airtime = SwarmCoordinationSimulator(cfg_airtime).run()
+        assert r_base.total_messages_sent == r_airtime.total_messages_sent
+        assert r_airtime.airtime_deadline_misses == 0
+        assert r_airtime.airtime_utilization_mean == 0.0
+
+    def test_airtime_on_catches_overflows(self):
+        """With enforce_airtime=True and a very large k_c / short slot,
+        the airtime enforcement should detect deadline misses."""
+        cfg = SwarmCoordinationConfig(
+            node_count=200,
+            coordination_topology="hierarchical",
+            cluster_size=200,  # large cluster → lots of ingress airtime
+            simulation_days=1,
+            seed=42,
+            enforce_airtime=True,
+            airtime_slot_duration_ms=92.7,  # ~92.7 ms per slot
+            sync_sample_rate=1.0,  # full fidelity
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        # 199 members × 92.7 ms = ~18,447 ms > T_c=10,000 ms → should miss
+        assert result.airtime_deadline_misses > 0
+
+    def test_airtime_metrics_in_output(self):
+        """Airtime enforcement metrics should appear in result."""
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            enforce_airtime=True,
+            airtime_slot_duration_ms=50.0,  # small enough to fit
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert hasattr(result, "airtime_utilization_mean")
+        assert hasattr(result, "airtime_deadline_misses")
+        assert hasattr(result, "airtime_limited_delivery")
+
+
+# ===== TestDistributedWorkload =====
+
+
+class TestDistributedWorkload:
+    """Test distributed consensus workload profile."""
+
+    def test_distributed_overhead_higher(self):
+        """Distributed workload should produce more protocol bytes than nominal."""
+        cfg_nominal = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            workload_profile="nominal",
+        )
+        cfg_distributed = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            workload_profile="distributed",
+        )
+        r_nom = SwarmCoordinationSimulator(cfg_nominal).run()
+        r_dist = SwarmCoordinationSimulator(cfg_distributed).run()
+        assert r_dist.protocol_bytes_sent > r_nom.protocol_bytes_sent
+        assert r_dist.distributed_consensus_bytes > 0
+
+    def test_distributed_scales_with_rounds(self):
+        """More consensus rounds should produce more consensus bytes."""
+        cfg_3 = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            workload_profile="distributed",
+            distributed_consensus_rounds=3,
+        )
+        cfg_5 = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            workload_profile="distributed",
+            distributed_consensus_rounds=5,
+        )
+        r_3 = SwarmCoordinationSimulator(cfg_3).run()
+        r_5 = SwarmCoordinationSimulator(cfg_5).run()
+        assert r_5.distributed_consensus_bytes > r_3.distributed_consensus_bytes
+
+    def test_structure_unchanged(self):
+        """Distributed workload should produce the same result structure."""
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            workload_profile="distributed",
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert isinstance(result, SwarmCoordinationRunResult)
+        assert result.communication_overhead_percent >= 0
+        assert result.total_messages_sent > 0
+        assert hasattr(result, "distributed_consensus_bytes")
