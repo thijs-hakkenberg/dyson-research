@@ -201,6 +201,32 @@ class SwarmCoordinationConfig:
     ~1% of nodes receive per-node commands each cycle on average.
     """
 
+    campaign_duty_factor: float = 1.0
+    """Fraction of cycles in which commands are active (d in [0,1]).
+
+    Scales all command traffic uniformly.  d=1.0 = continuous (stress-case).
+    d=0.01 = commands active 1% of cycles (realistic orbit-raising campaign).
+    d=0.10 = commands active 10% of cycles (intensive reconfiguration).
+    Applied to all workload profiles except "nominal" (which has no commands).
+    """
+
+    campaign_mode: str = "bernoulli"
+    """Campaign activation model: "bernoulli" or "on_off".
+
+    "bernoulli": i.i.d. per-cycle coin flip with probability d.
+    "on_off": Markov ON/OFF model with geometric ON/OFF durations.
+      Mean ON length = campaign_on_length cycles.
+      Mean OFF length computed from d: L_off = L_on * (1-d) / d.
+      Produces identical marginal d but temporally correlated bursts.
+    """
+
+    campaign_on_length: int = 1
+    """Mean ON duration in cycles for ON/OFF campaign model.
+
+    Only used when campaign_mode="on_off".  L_on=1 is equivalent to Bernoulli.
+    L_on=100 means campaigns persist for ~100 consecutive active cycles.
+    """
+
     distributed_consensus_rounds: int = 3
     """Number of Raft consensus rounds for distributed workload profile.
 
@@ -459,6 +485,8 @@ class SwarmCoordinationRunResult:
     """Maximum consecutive failed cycles observed for any member."""
     cross_cycle_recovery_rate_by_cycle: list[float] = field(default_factory=list)
     """Cumulative recovery fraction at each cycle count [1, 2, ..., 10]."""
+    coordinator_ingress_bytes_per_cycle: list[int] = field(default_factory=list)
+    """Per-cycle coordinator ingress bytes (summed across all coordinators)."""
 
 
 @dataclass
@@ -779,7 +807,7 @@ def create_node(
     node_id: str,
     cluster_id: str,
     is_coordinator: bool = False,
-) -> SwarmNode:
+) -> "SwarmNode":
     """Create a new :class:`SwarmNode`."""
     return SwarmNode(
         id=node_id,
@@ -793,7 +821,7 @@ def create_cluster(
     cluster_id: str,
     node_count: int,
     coordinator_node_id: str,
-) -> tuple[Cluster, list[SwarmNode]]:
+) -> tuple["Cluster", list["SwarmNode"]]:
     """Create a :class:`Cluster` with *node_count* nodes.
 
     Returns a ``(cluster, nodes)`` tuple.
@@ -838,7 +866,7 @@ def update_node_power(
     duration_seconds: float,
     base_power_w: float,
     coordinator_power_w: float,
-) -> SwarmNode:
+) -> "SwarmNode":
     """Return a copy of *node* with updated power and coordinator time."""
     power_wh = calculate_power_consumption(
         node, duration_seconds, base_power_w, coordinator_power_w
@@ -884,7 +912,7 @@ def perform_handoff(
     nodes: list[SwarmNode],
     current_time: float,
     rng: Generator,
-) -> HandoffResult:
+) -> "HandoffResult":
     """Attempt a coordinator handoff.  Returns a :class:`HandoffResult`."""
     # Find eligible candidates
     candidates = [
@@ -984,13 +1012,9 @@ def calculate_power_variance(nodes: list[SwarmNode]) -> float:
     """Return the coefficient of variation of power consumption (percent)."""
     if not nodes:
         return 0.0
-    powers = [n.power_consumed_wh for n in nodes]
-    mean_p = sum(powers) / len(powers)
-    if mean_p == 0.0:
-        return 0.0
-    variance = sum((p - mean_p) ** 2 for p in powers) / len(powers)
-    std_dev = math.sqrt(variance)
-    return (std_dev / mean_p) * 100.0
+    powers = np.array([n.power_consumed_wh for n in nodes])
+    mean_p = powers.mean()
+    return 0.0 if mean_p == 0.0 else 100.0 * (powers.std() / mean_p)
 
 
 def fail_node(node: SwarmNode, failure_time: float) -> SwarmNode:
@@ -1533,6 +1557,25 @@ class SwarmCoordinationSimulator:
         # Distributed consensus traffic tracking
         self._distributed_consensus_bytes: int = 0
 
+        # Per-cycle coordinator ingress tracking (for distributional analysis)
+        self._coordinator_ingress_this_cycle: int = 0
+        self._coordinator_ingress_per_cycle: list[int] = []
+
+        # ON/OFF Markov campaign state
+        self._campaign_on: bool = False  # start OFF
+        d = self.config.campaign_duty_factor
+        L_on = max(1, self.config.campaign_on_length)
+        # Transition probabilities: P(ON→OFF) = 1/L_on, P(OFF→ON) derived from steady-state d
+        self._campaign_p_on_to_off = 1.0 / L_on
+        if d > 0 and d < 1:
+            L_off = L_on * (1.0 - d) / d
+            self._campaign_p_off_to_on = 1.0 / max(1.0, L_off)
+        elif d >= 1:
+            self._campaign_p_off_to_on = 1.0  # always ON
+            self._campaign_on = True
+        else:
+            self._campaign_p_off_to_on = 0.0  # always OFF
+
         self._initialize_simulation()
 
     # -- initialization helpers --------------------------------------------
@@ -1868,6 +1911,11 @@ class SwarmCoordinationSimulator:
             msg_type = self._classify_message_type(sender_id, receiver_id)
             msg_size = MESSAGE_SIZES.get(msg_type, MESSAGE_SIZES["ephemeris"])
 
+            # --- Per-cycle coordinator ingress tracking (distributional) ---
+            recv_node = self._find_node(receiver_id)
+            if recv_node and recv_node.is_coordinator:
+                self._coordinator_ingress_this_cycle += msg_size
+
             # --- Coordinator bandwidth cap ---
             if self.config.coordinator_link_capacity_kbps > 0:
                 # Check if receiver is a coordinator -- inbound traffic
@@ -2042,13 +2090,27 @@ class SwarmCoordinationSimulator:
         ):
             cluster = self._find_cluster(node.cluster_id)
             if cluster and self.config.workload_profile != "nominal":
+                # Campaign duty factor: determine if commands are active this cycle.
+                if self.config.campaign_mode == "on_off":
+                    # ON/OFF Markov: transition state, then use current state
+                    if self._campaign_on:
+                        if self._stdlib_rng.random() < self._campaign_p_on_to_off:
+                            self._campaign_on = False
+                    else:
+                        if self._stdlib_rng.random() < self._campaign_p_off_to_on:
+                            self._campaign_on = True
+                    duty_active = self._campaign_on
+                else:
+                    # Bernoulli: i.i.d. per-cycle coin flip with probability d.
+                    duty_active = self._stdlib_rng.random() <= self.config.campaign_duty_factor
                 cmd_size = MESSAGE_SIZES["coordination_command"]
                 n_members = 0
-                for mid in cluster.node_ids:
-                    if mid != node.id:
-                        m = self._find_node(mid)
-                        if m is not None and m.status != "failed":
-                            n_members += 1
+                if duty_active:
+                    for mid in cluster.node_ids:
+                        if mid != node.id:
+                            m = self._find_node(mid)
+                            if m is not None and m.status != "failed":
+                                n_members += 1
                 # Event-driven: only a fraction of members need commands
                 if self.config.workload_profile == "event_driven":
                     n_event = 0
@@ -2146,6 +2208,9 @@ class SwarmCoordinationSimulator:
         # Reset per-coordinator byte counters periodically
         if self.current_time - self._coordinator_interval_start >= self._sync_interval:
             self._coordinator_bytes_this_interval.clear()
+            # Record per-cycle coordinator ingress for distributional analysis
+            self._coordinator_ingress_per_cycle.append(self._coordinator_ingress_this_cycle)
+            self._coordinator_ingress_this_cycle = 0
             # Record airtime utilization for this cycle before resetting
             if self.config.enforce_airtime and self._coordinator_airtime_this_cycle:
                 T_c_ms = self._sync_interval * 1000
@@ -2515,6 +2580,8 @@ class SwarmCoordinationSimulator:
             ),
             # Distributed workload metrics
             distributed_consensus_bytes=self._distributed_consensus_bytes,
+            # Per-cycle coordinator ingress distribution
+            coordinator_ingress_bytes_per_cycle=self._coordinator_ingress_per_cycle,
         )
 
     # -- helpers -----------------------------------------------------------

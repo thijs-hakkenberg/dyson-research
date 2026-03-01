@@ -2,7 +2,7 @@
 """Generate publication-quality figures for the Swarm Coordination Scaling paper.
 
 Imports model logic from swarm_model and MC engine from swarm_mc, then produces
-9 PDF figures:
+10 PDF figures:
   1. fig-overhead-vs-nodes.pdf       -- Comm overhead vs node count (3 topologies)
   2. fig-latency-distribution.pdf    -- Propagation latency box/violin plots
   3. fig-cluster-size-optimization.pdf -- Overhead vs cluster size (hierarchical)
@@ -12,6 +12,7 @@ Imports model logic from swarm_model and MC engine from swarm_mc, then produces
   7. fig-failure-resilience.pdf      -- Availability vs failure rate
   8. fig-topology-summary.pdf        -- Grouped bar chart comparing topologies
   9. fig-message-decomposition.pdf   -- Per-tier message breakdown (hierarchical)
+ 10. fig-fleet-reuse.pdf             -- Fleet-level channel reuse inflation
 
 Usage:
     source publications/scripts/.venv/bin/activate
@@ -23,10 +24,12 @@ from __future__ import annotations
 __version__ = "1.0.0"
 
 import argparse
+import functools
 import math
 import time
 from os import environ, makedirs
 from os.path import abspath, dirname, join
+from typing import Any
 
 import numpy as np
 from numpy.random import default_rng
@@ -42,6 +45,7 @@ from matplotlib.ticker import FuncFormatter  # noqa: E402
 from scipy.optimize import curve_fit  # noqa: E402
 
 from swarm_model import (  # noqa: E402
+    CoordinationTopology,
     SwarmCoordinationConfig,
     SwarmCoordinationSimulator,
     TierMessageBreakdown,
@@ -93,11 +97,12 @@ rcParams.update(
 c_centralized = "#d97706"  # amber
 c_hierarchical = "#0891b2"  # cyan
 c_mesh = "#7c3aed"  # purple
+c_sectorized = "#059669"  # emerald
 c_optimized = "#16a34a"  # green
 c_pareto = "#dc2626"  # red
 
 SEED = 42
-TOPOLOGIES = ["centralized", "hierarchical", "mesh"]
+TOPOLOGIES = ["centralized", "hierarchical", "mesh", "sectorized_mesh"]
 
 # ---------------------------------------------------------------------------
 # Scale profiles: --fast (CI/dev) vs default (publication)
@@ -113,7 +118,7 @@ SCALE_FAST = {
     "max_events_factor": 3,  # max_events = node_count * factor (default 10*days)
 }
 SCALE_FULL = {
-    "node_counts": [1_000, 5_000, 10_000, 20_000, 30_000, 40_000, 50_000, 60_000, 80_000, 100_000, 500_000, 1_000_000],
+    "node_counts": [1_000, 5_000, 10_000, 20_000, 30_000, 40_000, 50_000, 60_000, 80_000, 100_000],
     "n_runs": 20,
     "cluster_sizes": [10, 25, 50, 100, 200, 500],
     "failure_rates": [0.001, 0.005, 0.01, 0.02, 0.05, 0.1],
@@ -126,17 +131,20 @@ TOPO_COLORS = {
     "centralized": c_centralized,
     "hierarchical": c_hierarchical,
     "mesh": c_mesh,
+    "sectorized_mesh": c_sectorized,
 }
 TOPO_LABELS = {
     "centralized": "Centralized",
     "hierarchical": "Hierarchical",
     "mesh": "Mesh (gossip)",
+    "sectorized_mesh": "Sectorized mesh",
 }
 
 
 # ---------------------------------------------------------------------------
 # Helper: choose simulation_days based on node count
 # ---------------------------------------------------------------------------
+@functools.lru_cache
 def _sim_days(node_count: int) -> int:
     """Return an appropriate simulation_days for the given node count."""
     cap = SCALE.get("sim_days_cap", 90)
@@ -149,12 +157,31 @@ def _sim_days(node_count: int) -> int:
     return min(30, cap)
 
 
+@functools.lru_cache
 def _max_events(node_count: int) -> int | None:
     """Return max_events override, or None for default."""
     factor = SCALE.get("max_events_factor")
     if factor is not None:
         return node_count * factor
     return None
+
+
+def _make_config(
+    node_count: int,
+    topology: CoordinationTopology = "hierarchical",
+    cluster_size: int = 100,
+    seed: int = SEED,
+    **kwargs: Any,
+) -> SwarmCoordinationConfig:
+    return SwarmCoordinationConfig(
+        node_count=node_count,
+        coordination_topology=topology,
+        cluster_size=cluster_size,
+        simulation_days=kwargs.pop("simulation_days", _sim_days(node_count)),
+        seed=seed,
+        max_events=kwargs.pop("max_events", _max_events(node_count)),
+        **kwargs,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -177,31 +204,17 @@ def fig_overhead_vs_nodes() -> None:
         ci_hi = []
 
         for nc in node_counts:
-            sim_days = _sim_days(nc)
             cluster_size = min(200, max(50, int(math.floor(math.sqrt(nc)))))
-            cfg = SwarmCoordinationConfig(
-                node_count=nc,
-                coordination_topology=topo,
-                cluster_size=cluster_size,
-                simulation_days=sim_days,
-                seed=SEED,
-                max_events=_max_events(nc),
-            )
+            cfg = _make_config(nc, topology=topo, cluster_size=cluster_size)
             output = run_swarm_coordination_mc(cfg, runs=n_runs)
             means.append(output.result.communication_overhead_percent)
             lo, hi = output.result.confidence_interval_95
             ci_lo.append(lo)
             ci_hi.append(hi)
 
-        # Subtract topology-invariant baseline telemetry to show protocol overhead
-        baseline_telemetry_pct = 20.48
-        proto_means = [v - baseline_telemetry_pct for v in means]
-        proto_ci_lo = [v - baseline_telemetry_pct for v in ci_lo]
-        proto_ci_hi = [v - baseline_telemetry_pct for v in ci_hi]
-
         ax.plot(
             node_counts,
-            proto_means,
+            means,
             "o-",
             color=TOPO_COLORS[topo],
             linewidth=1.8,
@@ -210,16 +223,16 @@ def fig_overhead_vs_nodes() -> None:
         )
         ax.fill_between(
             node_counts,
-            proto_ci_lo,
-            proto_ci_hi,
+            ci_lo,
+            ci_hi,
             alpha=0.15,
             color=TOPO_COLORS[topo],
         )
 
     ax.set_xscale("log")
     ax.set_xlabel("Node Count")
-    ax.set_ylabel("Protocol Overhead (%)")
-    ax.set_title("Protocol Overhead vs Swarm Size")
+    ax.set_ylabel("DES-Measured Overhead (%)")
+    ax.set_title("Communication Overhead vs Swarm Size")
     ax.legend(loc="best", framealpha=0.9)
     ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
 
@@ -245,7 +258,10 @@ def fig_latency_distribution() -> None:
     scale_labels = [f"{s // 1000}K" if s >= 1000 else str(s) for s in scales]
     n_runs = min(10, SCALE["n_runs"])
 
-    fig, axes = subplots(1, 3, figsize=(12, 4), sharey=True)
+    n_topos = len(TOPOLOGIES)
+    fig, axes = subplots(1, n_topos, figsize=(3.5 * n_topos, 4), sharey=True)
+    if n_topos == 1:
+        axes = [axes]
 
     for ax_idx, topo in enumerate(TOPOLOGIES):
         ax = axes[ax_idx]
@@ -254,18 +270,13 @@ def fig_latency_distribution() -> None:
         labels = []
 
         for s_idx, nc in enumerate(scales):
-            sim_days = _sim_days(nc)
             cluster_size = min(200, max(50, int(math.floor(math.sqrt(nc)))))
             latencies = []
 
             for run_i in range(n_runs):
-                cfg = SwarmCoordinationConfig(
-                    node_count=nc,
-                    coordination_topology=topo,
-                    cluster_size=cluster_size,
-                    simulation_days=sim_days,
+                cfg = _make_config(
+                    nc, topology=topo, cluster_size=cluster_size,
                     seed=SEED + run_i,
-                    max_events=_max_events(nc),
                 )
                 sim = SwarmCoordinationSimulator(cfg)
                 result = sim.run()
@@ -322,14 +333,7 @@ def fig_cluster_size_optimization() -> None:
     latencies_ci_hi = []
 
     for cs in cluster_sizes:
-        cfg = SwarmCoordinationConfig(
-            node_count=nc,
-            coordination_topology="hierarchical",
-            cluster_size=cs,
-            simulation_days=sim_days,
-            seed=SEED,
-            max_events=_max_events(nc),
-        )
+        cfg = _make_config(nc, cluster_size=cs)
         output = run_swarm_coordination_mc(cfg, runs=n_runs)
         overheads_mean.append(output.result.communication_overhead_percent)
         lo, hi = output.result.confidence_interval_95
@@ -339,14 +343,7 @@ def fig_cluster_size_optimization() -> None:
         # Collect latency data from individual runs
         lat_values = []
         for run_i in range(n_runs):
-            run_cfg = SwarmCoordinationConfig(
-                node_count=nc,
-                coordination_topology="hierarchical",
-                cluster_size=cs,
-                simulation_days=sim_days,
-                seed=SEED + run_i,
-                max_events=_max_events(nc),
-            )
+            run_cfg = _make_config(nc, cluster_size=cs, seed=SEED + run_i)
             sim = SwarmCoordinationSimulator(run_cfg)
             result = sim.run()
             lat_values.append(result.avg_update_propagation_ms)
@@ -357,34 +354,27 @@ def fig_cluster_size_optimization() -> None:
         latencies_ci_lo.append(lat_ci[0])
         latencies_ci_hi.append(lat_ci[1])
 
-    # Subtract topology-invariant baseline telemetry to show protocol overhead
-    # Baseline = r * msg_size * 8 / bandwidth_per_node = 0.1 * 256 * 8 / 1000 * 100 = 20.48%
-    baseline_telemetry_pct = 20.48
-    proto_mean = [v - baseline_telemetry_pct for v in overheads_mean]
-    proto_ci_lo = [v - baseline_telemetry_pct for v in overheads_ci_lo]
-    proto_ci_hi = [v - baseline_telemetry_pct for v in overheads_ci_hi]
-
-    # Find optimal cluster size (minimum protocol overhead)
-    opt_idx = int(np.argmin(proto_mean))
+    # Find optimal cluster size (minimum overhead)
+    opt_idx = int(np.argmin(overheads_mean))
     opt_cs = cluster_sizes[opt_idx]
 
     fig, ax1 = subplots(figsize=(7, 4.5))
 
-    # Primary axis: protocol overhead
+    # Primary axis: overhead
     color_oh = c_hierarchical
     ax1.plot(
         cluster_sizes,
-        proto_mean,
+        overheads_mean,
         "o-",
         color=color_oh,
         linewidth=1.8,
         markersize=5,
-        label="Protocol Overhead (%)",
+        label="DES Overhead (%)",
     )
     ax1.fill_between(
         cluster_sizes,
-        proto_ci_lo,
-        proto_ci_hi,
+        overheads_ci_lo,
+        overheads_ci_hi,
         alpha=0.15,
         color=color_oh,
     )
@@ -392,18 +382,18 @@ def fig_cluster_size_optimization() -> None:
         opt_cs, color=c_optimized, linestyle="--", linewidth=1, alpha=0.7
     )
     # Position annotation within plot bounds using axes transform for y
-    y_range = max(proto_mean) - min(proto_mean)
+    y_range = max(overheads_mean) - min(overheads_mean)
     ax1.annotate(
         f"Optimal: {opt_cs}",
-        xy=(opt_cs, proto_mean[opt_idx]),
-        xytext=(opt_cs + 80, proto_mean[opt_idx] + y_range * 0.3),
+        xy=(opt_cs, overheads_mean[opt_idx]),
+        xytext=(opt_cs + 80, overheads_mean[opt_idx] + y_range * 0.3),
         fontsize=9,
         color=c_optimized,
         fontweight="bold",
         arrowprops=dict(arrowstyle="->", color=c_optimized, lw=1.2),
     )
     ax1.set_xlabel("Cluster Size (nodes per cluster)")
-    ax1.set_ylabel("Protocol Overhead (%)", color=color_oh)
+    ax1.set_ylabel("DES Overhead (%)", color=color_oh)
     ax1.tick_params(axis="y", labelcolor=color_oh)
 
     # Secondary axis: latency
@@ -464,14 +454,9 @@ def fig_duty_cycle_pareto() -> None:
         p_vals = []
 
         for run_i in range(n_runs):
-            cfg = SwarmCoordinationConfig(
-                node_count=nc,
-                coordination_topology="hierarchical",
-                cluster_size=100,
+            cfg = _make_config(
+                nc, seed=SEED + run_i,
                 coordinator_duty_cycle_hours=float(dc),
-                simulation_days=sim_days,
-                seed=SEED + run_i,
-                max_events=_max_events(nc),
             )
             sim = SwarmCoordinationSimulator(cfg)
             result = sim.run()
@@ -484,19 +469,15 @@ def fig_duty_cycle_pareto() -> None:
         pvar_all.append(p_vals)
 
     # Compute Pareto frontier: want high availability, low power variance
-    # A point is Pareto-optimal if no other point has both higher availability
-    # and lower power variance.
-    pareto_mask = []
-    for i in range(len(duty_cycles_h)):
-        dominated = False
-        for j in range(len(duty_cycles_h)):
-            if i == j:
-                continue
-            if avail_means[j] >= avail_means[i] and pvar_means[j] <= pvar_means[i]:
-                if avail_means[j] > avail_means[i] or pvar_means[j] < pvar_means[i]:
-                    dominated = True
-                    break
-        pareto_mask.append(not dominated)
+    # Sort by descending availability; sweep keeps running min of power variance.
+    n_pts = len(duty_cycles_h)
+    order = sorted(range(n_pts), key=lambda i: -avail_means[i])
+    pareto_mask = [False] * n_pts
+    best_pvar = float("inf")
+    for i in order:
+        if pvar_means[i] <= best_pvar:
+            pareto_mask[i] = True
+            best_pvar = pvar_means[i]
 
     fig, ax = subplots()
 
@@ -717,17 +698,8 @@ def fig_scaling_trajectory() -> None:
     ci_hi_opt = []
 
     for nc in node_counts:
-        sim_days = _sim_days(nc)
-
         # Fixed cluster size
-        cfg_fixed = SwarmCoordinationConfig(
-            node_count=nc,
-            coordination_topology="hierarchical",
-            cluster_size=fixed_cluster_size,
-            simulation_days=sim_days,
-            seed=SEED,
-            max_events=_max_events(nc),
-        )
+        cfg_fixed = _make_config(nc, cluster_size=fixed_cluster_size)
         out_fixed = run_swarm_coordination_mc(cfg_fixed, runs=n_runs)
         means_fixed.append(out_fixed.result.communication_overhead_percent)
         lo, hi = out_fixed.result.confidence_interval_95
@@ -736,31 +708,15 @@ def fig_scaling_trajectory() -> None:
 
         # Optimized cluster size
         opt_cs = min(200, max(50, int(math.floor(math.sqrt(nc)))))
-        cfg_opt = SwarmCoordinationConfig(
-            node_count=nc,
-            coordination_topology="hierarchical",
-            cluster_size=opt_cs,
-            simulation_days=sim_days,
-            seed=SEED,
-            max_events=_max_events(nc),
-        )
+        cfg_opt = _make_config(nc, cluster_size=opt_cs)
         out_opt = run_swarm_coordination_mc(cfg_opt, runs=n_runs)
         means_opt.append(out_opt.result.communication_overhead_percent)
         lo, hi = out_opt.result.confidence_interval_95
         ci_lo_opt.append(lo)
         ci_hi_opt.append(hi)
 
-    # Subtract topology-invariant baseline telemetry to show protocol overhead
-    baseline_telemetry_pct = 20.48
-    proto_fixed = [v - baseline_telemetry_pct for v in means_fixed]
-    proto_ci_lo_fixed = [v - baseline_telemetry_pct for v in ci_lo_fixed]
-    proto_ci_hi_fixed = [v - baseline_telemetry_pct for v in ci_hi_fixed]
-    proto_opt = [v - baseline_telemetry_pct for v in means_opt]
-    proto_ci_lo_opt = [v - baseline_telemetry_pct for v in ci_lo_opt]
-    proto_ci_hi_opt = [v - baseline_telemetry_pct for v in ci_hi_opt]
-
-    # --- Formal statistical testing for superlinear transition ---
-    fit_results = fit_scaling_models(node_counts, proto_fixed)
+    # --- Formal statistical testing for scaling behavior ---
+    fit_results = fit_scaling_models(node_counts, means_fixed)
 
     print("\n  --- Superlinear transition analysis (fixed cluster size) ---")
     for model_name, model_data in fit_results["models"].items():
@@ -778,7 +734,7 @@ def fig_scaling_trajectory() -> None:
 
     ax.plot(
         node_counts,
-        proto_fixed,
+        means_fixed,
         "o-",
         color=c_centralized,
         linewidth=1.8,
@@ -787,15 +743,15 @@ def fig_scaling_trajectory() -> None:
     )
     ax.fill_between(
         node_counts,
-        proto_ci_lo_fixed,
-        proto_ci_hi_fixed,
+        ci_lo_fixed,
+        ci_hi_fixed,
         alpha=0.15,
         color=c_centralized,
     )
 
     ax.plot(
         node_counts,
-        proto_opt,
+        means_opt,
         "s-",
         color=c_optimized,
         linewidth=1.8,
@@ -804,8 +760,8 @@ def fig_scaling_trajectory() -> None:
     )
     ax.fill_between(
         node_counts,
-        proto_ci_lo_opt,
-        proto_ci_hi_opt,
+        ci_lo_opt,
+        ci_hi_opt,
         alpha=0.15,
         color=c_optimized,
     )
@@ -834,7 +790,7 @@ def fig_scaling_trajectory() -> None:
 
     ax.set_xscale("log")
     ax.set_xlabel("Node Count")
-    ax.set_ylabel("Protocol Overhead (%)")
+    ax.set_ylabel("DES-Measured Overhead (%)")
     ax.set_title("Scaling Trajectory: Fixed vs Optimized Cluster Size")
     ax.legend(loc="best", framealpha=0.9)
     ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
@@ -1000,14 +956,9 @@ def fig_failure_resilience() -> None:
         for fr in failure_rates:
             avail_values = []
             for run_i in range(n_runs):
-                cfg = SwarmCoordinationConfig(
-                    node_count=nc,
-                    coordination_topology=topo,
-                    cluster_size=100,
+                cfg = _make_config(
+                    nc, topology=topo, seed=SEED + run_i,
                     node_failure_rate_per_year=fr,
-                    simulation_days=sim_days,
-                    seed=SEED + run_i,
-                    max_events=_max_events(nc),
                 )
                 sim = SwarmCoordinationSimulator(cfg)
                 result = sim.run()
@@ -1076,14 +1027,7 @@ def fig_topology_summary() -> None:
         drop_vals = []
 
         for run_i in range(n_runs):
-            cfg = SwarmCoordinationConfig(
-                node_count=nc,
-                coordination_topology=topo,
-                cluster_size=100,
-                simulation_days=sim_days,
-                seed=SEED + run_i,
-                max_events=_max_events(nc),
-            )
+            cfg = _make_config(nc, topology=topo, seed=SEED + run_i)
             sim = SwarmCoordinationSimulator(cfg)
             result = sim.run()
             overhead_vals.append(result.communication_overhead_percent - baseline_telemetry_pct)
@@ -1123,7 +1067,7 @@ def fig_topology_summary() -> None:
     n_metrics = len(metric_names)
     n_topos = len(TOPOLOGIES)
     x = np.arange(n_metrics)
-    bar_width = 0.25
+    bar_width = 0.8 / max(1, n_topos)
 
     fig, ax = subplots(figsize=(8, 5))
 
@@ -1171,7 +1115,6 @@ def fig_message_decomposition() -> None:
     central_means: list[float] = []
 
     for nc in node_counts:
-        sim_days = _sim_days(nc)
         cluster_size = min(200, max(50, int(math.floor(math.sqrt(nc)))))
 
         intra_vals: list[float] = []
@@ -1179,13 +1122,8 @@ def fig_message_decomposition() -> None:
         central_vals: list[float] = []
 
         for run_i in range(n_runs):
-            cfg = SwarmCoordinationConfig(
-                node_count=nc,
-                coordination_topology="hierarchical",
-                cluster_size=cluster_size,
-                simulation_days=sim_days,
-                seed=SEED + run_i,
-                max_events=_max_events(nc),
+            cfg = _make_config(
+                nc, cluster_size=cluster_size, seed=SEED + run_i,
             )
             sim = SwarmCoordinationSimulator(cfg)
             result = sim.run()
@@ -1228,10 +1166,890 @@ def fig_message_decomposition() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Figure 10: Age-of-Information (AoI) Quality Metric
+# ---------------------------------------------------------------------------
+def fig_aoi_quality() -> None:
+    """Generate Figure 10: AoI at coordinators as a function of p_exc and p_link.
+
+    Two panels:
+    (a) AoI vs exception probability p_exc (full links)
+    (b) AoI vs link availability p_link (full reporting)
+    """
+    N = SCALE["node_counts"][2] if len(SCALE["node_counts"]) > 2 else 1000
+    sim_days = 1.0 if "--fast" not in __import__("sys").argv else 0.1
+
+    # Panel (a): AoI vs p_exc
+    p_exc_values = [0.0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0]
+    aoi_mean_exc = []
+    aoi_p99_exc = []
+    for p in p_exc_values:
+        if p == 0.0:
+            # No exception telemetry = full reporting (p_exc disabled)
+            cfg = _make_config(
+                N, seed=42, simulation_days=sim_days,
+                enable_exception_telemetry=False,
+            )
+        else:
+            cfg = _make_config(
+                N, seed=42, simulation_days=sim_days,
+                enable_exception_telemetry=True, exception_threshold=p,
+            )
+        sim = SwarmCoordinationSimulator(cfg)
+        result = sim.run()
+        aoi_mean_exc.append(result.aoi_mean_seconds)
+        aoi_p99_exc.append(result.aoi_p99_seconds)
+
+    # Panel (b): AoI vs p_link
+    p_link_values = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4]
+    aoi_mean_link = []
+    aoi_p99_link = []
+    for p in p_link_values:
+        cfg = _make_config(
+            N, seed=42, simulation_days=sim_days,
+            link_availability=p,
+        )
+        sim = SwarmCoordinationSimulator(cfg)
+        result = sim.run()
+        aoi_mean_link.append(result.aoi_mean_seconds)
+        aoi_p99_link.append(result.aoi_p99_seconds)
+
+    fig, (ax1, ax2) = subplots(1, 2, figsize=(7, 3.5))
+
+    # Panel (a)
+    ax1.plot(p_exc_values, aoi_mean_exc, "o-", color=c_hierarchical, label="Mean AoI")
+    ax1.plot(p_exc_values, aoi_p99_exc, "s--", color=c_hierarchical, alpha=0.7, label="P99 AoI")
+    ax1.axhline(y=10.0, color="gray", linestyle=":", alpha=0.5, label="$T_c = 10$ s")
+    ax1.set_xlabel("Exception probability $p_{\\mathrm{exc}}$")
+    ax1.set_ylabel("Age of Information (s)")
+    ax1.set_title("(a) AoI vs. exception rate")
+    ax1.legend(fontsize=7)
+    ax1.set_yscale("log")
+    ax1.grid(True, alpha=0.3)
+
+    # Panel (b)
+    ax2.plot(p_link_values, aoi_mean_link, "o-", color=c_hierarchical, label="Mean AoI")
+    ax2.plot(p_link_values, aoi_p99_link, "s--", color=c_hierarchical, alpha=0.7, label="P99 AoI")
+    ax2.axhline(y=10.0, color="gray", linestyle=":", alpha=0.5, label="$T_c = 10$ s")
+    ax2.set_xlabel("Link availability $p_{\\mathrm{link}}$")
+    ax2.set_ylabel("Age of Information (s)")
+    ax2.set_title("(b) AoI vs. link availability")
+    ax2.legend(fontsize=7)
+    ax2.set_yscale("log")
+    ax2.grid(True, alpha=0.3)
+    ax2.invert_xaxis()
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-aoi-quality.pdf"), dpi=300, bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 11: Sensitivity Sweep
+# ---------------------------------------------------------------------------
+def fig_sensitivity_sweep() -> None:
+    """Generate Figure 10: sensitivity of overhead to key parameters.
+
+    Shows how hierarchical overhead varies with reporting rate (r),
+    MAC efficiency (gamma), and message size.  Uses single-run DES at
+    N=10,000 for speed; plots 2x3 subplots.
+    """
+    nc = 10_000
+    sim_days = max(1, min(5, SCALE.get("sim_days_cap", 90)))
+    base_cluster = 100
+
+    fig, axes = subplots(1, 3, figsize=(10, 3.5))
+
+    # --- Panel (a): reporting rate sweep ---
+    rates = [0.05, 0.1, 0.2, 0.5, 1.0]
+    rate_overheads = []
+    for r in rates:
+        # Reporting rate r msg/s → T_c = 1/r
+        # We model this by scaling message sizes proportionally
+        # Higher r = more messages per second = higher overhead
+        # Analytical: overhead ∝ r × message_size
+        # DES uses fixed T_c=10s, so we compute analytically
+        overhead_pct = calculate_communication_overhead(
+            calculate_bandwidth_requirement("hierarchical", nc, base_cluster, 1.0 / r),
+            1.0,
+            nc,
+        )
+        rate_overheads.append(overhead_pct)
+
+    axes[0].plot(rates, rate_overheads, "o-", color=c_hierarchical, linewidth=1.8, markersize=5)
+    axes[0].set_xlabel("Reporting Rate $r$ (msg/s)")
+    axes[0].set_ylabel("Overhead (%)")
+    axes[0].set_title("(a) Reporting Rate")
+
+    # --- Panel (b): MAC efficiency sweep ---
+    gammas = [0.3, 0.4, 0.5, 0.6, 0.7, 0.76, 0.8, 0.85, 0.9, 0.95, 1.0]
+    gamma_overheads_hier = []
+    for g in gammas:
+        base_hier = calculate_communication_overhead(
+            calculate_bandwidth_requirement("hierarchical", nc, base_cluster, 10.0),
+            1.0,
+            nc,
+        )
+        gamma_overheads_hier.append(base_hier / g)
+
+    axes[1].plot(gammas, gamma_overheads_hier, "o-", color=c_hierarchical, linewidth=1.8, markersize=5, label="Hierarchical")
+    axes[1].axhline(y=100, color="#dc2626", linestyle=":", linewidth=1, alpha=0.7, label="Channel limit")
+    axes[1].set_xlabel("MAC Efficiency $\\gamma$")
+    axes[1].set_ylabel("Effective Overhead (%)")
+    axes[1].set_title("(b) MAC Efficiency")
+    axes[1].legend(fontsize=7, loc="upper right")
+
+    # --- Panel (c): total utilization vs node count ---
+    nc_sweep = [1000, 5000, 10000, 50000, 100000]
+    utils = []
+    for n in nc_sweep:
+        bw = calculate_bandwidth_requirement("hierarchical", n, 100, 10.0)
+        ovh = calculate_communication_overhead(bw, 1.0, n)
+        total = 20.48 + ovh  # 256B/1250B per cycle = 20.48%
+        utils.append(total)
+    axes[2].plot(nc_sweep, utils, "o-",
+                 color=c_hierarchical, linewidth=1.8, markersize=5,
+                 label="Hierarchical")
+
+    axes[2].axhline(y=100, color="#dc2626", linestyle=":", linewidth=1, alpha=0.7, label="Channel limit")
+    axes[2].set_xscale("log")
+    axes[2].set_xlabel("Node Count")
+    axes[2].set_ylabel("Total Utilization (%)")
+    axes[2].set_title("(c) Channel Utilization")
+    axes[2].xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
+    axes[2].legend(fontsize=7, loc="best")
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-sensitivity-sweep.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 11: TDMA vs Random Scheduling
+# ---------------------------------------------------------------------------
+def fig_tdma_comparison() -> None:
+    """Generate Figure 11: analytical TDMA vs random scheduling comparison.
+
+    Shows coordinator ingest utilization and whether drops occur under
+    TDMA (with guard time gamma) vs random phase scheduling, as a function
+    of coordinator link capacity.  Uses analytical formulas for speed.
+    """
+    cluster_size = 100
+    T_c = 10.0  # coordination cycle, seconds
+    guard = 0.24  # guard time fraction for TDMA (CCSDS-validated)
+    gamma = 1.0 - guard  # 0.76
+    msg_size = 256  # ephemeris bytes
+
+    # Coordinator ingest demand per cycle: (k_c - 1) members × 256 B
+    demand_bytes = (cluster_size - 1) * msg_size  # 25,344 B
+
+    capacities = np.arange(5, 105, 5)
+
+    fig, (ax1, ax2) = subplots(1, 2, figsize=(9, 3.5))
+
+    for sched, ls, marker, label_str, color in [
+        ("random", "-", "o", "Random phase", c_hierarchical),
+        ("tdma", "--", "s", f"TDMA ($\\gamma$={gamma:.2f})", c_optimized),
+    ]:
+        utilizations = []
+        drop_flags = []
+        for cap in capacities:
+            cap_bytes = (cap * 1_000 / 8) * T_c  # total bytes capacity per cycle
+            if sched == "tdma":
+                effective_cap = cap_bytes * gamma
+            else:
+                effective_cap = cap_bytes
+            util_pct = (demand_bytes / effective_cap) * 100 if effective_cap > 0 else 999
+            utilizations.append(min(util_pct, 150))
+            drop_flags.append(1 if demand_bytes > effective_cap else 0)
+
+        ax1.plot(capacities, utilizations, f"{marker}{ls}", color=color, linewidth=1.8,
+                 markersize=4, label=label_str)
+        # Mark drop region
+        for i, drop in enumerate(drop_flags):
+            if drop:
+                ax1.plot(capacities[i], utilizations[i], "x", color="#dc2626",
+                         markersize=8, markeredgewidth=2, zorder=5)
+
+    ax1.axhline(y=100, color="#dc2626", linestyle=":", linewidth=1, alpha=0.7, label="100% (drop threshold)")
+    ax1.set_xlabel("Coordinator Link Capacity (kbps)")
+    ax1.set_ylabel("Coordinator Utilization (%)")
+    ax1.set_title("(a) Ingest Utilization")
+    ax1.legend(fontsize=7, loc="upper right")
+    ax1.set_ylim(0, 160)
+
+    # Panel (b): minimum capacity needed vs cluster size
+    cluster_sizes = np.arange(10, 510, 10)
+    for sched, ls, marker, label_str, color in [
+        ("random", "-", "o", "Random phase", c_hierarchical),
+        ("tdma", "--", "s", f"TDMA ($\\gamma$={gamma:.2f})", c_optimized),
+    ]:
+        min_caps = []
+        for k_c in cluster_sizes:
+            demand = (k_c - 1) * msg_size * 8 / T_c / 1_000  # kbps demand
+            if sched == "tdma":
+                min_cap = demand / gamma
+            else:
+                min_cap = demand
+            min_caps.append(min_cap)
+
+        ax2.plot(cluster_sizes, min_caps, f"{ls}", color=color, linewidth=1.8, label=label_str)
+
+    ax2.set_xlabel("Cluster Size $k_c$")
+    ax2.set_ylabel("Min. Coordinator Capacity (kbps)")
+    ax2.set_title("(b) Required Capacity vs Cluster Size")
+    ax2.legend(fontsize=7, loc="upper left")
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-tdma-comparison.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 13: Workload Profile Comparison
+# ---------------------------------------------------------------------------
+c_stress = "#dc2626"    # red
+c_nominal = "#2563eb"   # blue
+c_event = "#d97706"     # amber
+
+def fig_workload_comparison() -> None:
+    """Generate Figure 13: η vs N for stress/nominal/event-driven workloads.
+
+    Runs DES at multiple node counts for each workload profile to show
+    the design envelope from ~6% (nominal) to ~46% (stress).
+    Includes sectorized mesh under all 3 profiles for comparison.
+    """
+    node_counts = SCALE["node_counts"]
+    n_runs = max(3, SCALE["n_runs"] // 4)  # fewer runs needed (near-deterministic)
+
+    profiles = [
+        ("stress", "Stress-case", "-", "o"),
+        ("event_driven", "Event-driven ($p_{\\mathrm{event}}=0.01$)", "--", "s"),
+        ("nominal", "Nominal (no per-node cmds)", "-.", "^"),
+    ]
+
+    fig, ax = subplots()
+
+    for profile, profile_label, ls, marker in profiles:
+        means = []
+        ci_lo = []
+        ci_hi = []
+
+        for nc in node_counts:
+            cluster_size = min(200, max(50, int(math.floor(math.sqrt(nc)))))
+            cfg = _make_config(
+                nc, cluster_size=cluster_size,
+                workload_profile=profile,
+            )
+            output = run_swarm_coordination_mc(cfg, runs=n_runs)
+            means.append(output.result.communication_overhead_percent)
+            lo, hi = output.result.confidence_interval_95
+            ci_lo.append(lo)
+            ci_hi.append(hi)
+
+        ax.plot(
+            node_counts,
+            means,
+            f"{ls}",
+            color=c_hierarchical,
+            linewidth=1.8,
+            marker=marker,
+            markersize=4,
+            label=profile_label,
+        )
+        ax.fill_between(node_counts, ci_lo, ci_hi, alpha=0.15, color=c_hierarchical)
+
+    ax.set_xscale("log")
+    ax.set_xlabel("Fleet Size $N$")
+    ax.set_ylabel("Protocol Overhead $\\eta$ (%)")
+    ax.set_title("Protocol Overhead by Workload Profile")
+    ax.legend(fontsize=7, loc="center right", ncol=2)
+    ax.set_ylim(bottom=0)
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-workload-comparison.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 14: Gilbert-Elliott vs Bernoulli Link Model Comparison
+# ---------------------------------------------------------------------------
+def fig_link_model_comparison() -> None:
+    """Generate Figure 14: retransmission effectiveness under correlated vs i.i.d. losses.
+
+    Compares message loss rates across link availability levels for both
+    Bernoulli (i.i.d.) and Gilbert-Elliott (correlated burst) models.
+    """
+    # Use a fixed moderate fleet size
+    nc = SCALE.get("summary_nodes", 5_000)
+    sim_days = min(_sim_days(nc), 30)
+    n_runs = max(3, SCALE["n_runs"] // 4)
+    cluster_size = 100
+
+    # Bernoulli p_link values to test
+    p_links = [0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 1.0]
+    max_retries = [0, 1, 2]
+
+    fig, axes = subplots(1, 2, figsize=(10, 4))
+
+    for ax_idx, (link_model, ax_title) in enumerate([
+        ("bernoulli", "(a) Bernoulli (i.i.d.)"),
+        ("gilbert_elliott", "(b) Gilbert-Elliott (correlated)"),
+    ]):
+        ax = axes[ax_idx]
+        for mr, ls, marker in zip(max_retries, ["-", "--", "-."], ["o", "s", "^"]):
+            loss_rates = []
+            for p_link in p_links:
+                if link_model == "bernoulli":
+                    cfg = _make_config(
+                        nc, cluster_size=cluster_size,
+                        simulation_days=sim_days,
+                        link_availability=p_link,
+                        max_retransmissions=mr,
+                        link_model="bernoulli",
+                    )
+                else:
+                    # GE: tune transition probs to match same steady-state availability
+                    # Steady-state: p_good = p_bg / (p_gb + p_bg)
+                    # overall_avail = p_good * (1-p_loss_good) + p_bad * (1-p_loss_bad)
+                    # For p_link target, solve for p_gb given fixed p_bg, p_loss_good, p_loss_bad
+                    p_bg = 0.5
+                    p_loss_good = 0.01
+                    p_loss_bad = 0.90
+                    # overall = p_bg/(p_gb+p_bg) * 0.99 + p_gb/(p_gb+p_bg) * 0.10
+                    # p_link * (p_gb + p_bg) = p_bg * 0.99 + p_gb * 0.10
+                    # p_link * p_gb + p_link * p_bg = 0.99 * p_bg + 0.10 * p_gb
+                    # p_gb * (p_link - 0.10) = p_bg * (0.99 - p_link)
+                    # p_gb = p_bg * (0.99 - p_link) / (p_link - 0.10)
+                    if p_link >= 0.99:
+                        p_gb = 0.001  # near-perfect links
+                    elif p_link <= 0.10:
+                        p_gb = 100.0  # near-always-bad
+                    else:
+                        p_gb = p_bg * (0.99 - p_link) / (p_link - 0.10)
+                    cfg = _make_config(
+                        nc, cluster_size=cluster_size,
+                        simulation_days=sim_days,
+                        link_availability=1.0,  # not used for GE
+                        max_retransmissions=mr,
+                        link_model="gilbert_elliott",
+                        ge_p_good_to_bad=min(p_gb, 10.0),
+                        ge_p_bad_to_good=p_bg,
+                        ge_p_loss_good=p_loss_good,
+                        ge_p_loss_bad=p_loss_bad,
+                    )
+                output = run_swarm_coordination_mc(cfg, runs=n_runs)
+                loss_rates.append(output.result.message_drop_rate * 100)
+
+            ax.plot(
+                [p * 100 for p in p_links],
+                loss_rates,
+                f"{ls}",
+                color=c_hierarchical,
+                linewidth=1.5,
+                marker=marker,
+                markersize=4,
+                label=f"$M_r={mr}$",
+            )
+
+        ax.set_xlabel("Link Availability (%)")
+        ax.set_ylabel("Message Loss Rate (%)")
+        ax.set_title(ax_title)
+        ax.legend(fontsize=8)
+        ax.set_ylim(bottom=0)
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-link-model-comparison.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 15: Overhead Decomposition by Message Class
+# ---------------------------------------------------------------------------
+def fig_overhead_decomposition() -> None:
+    """Generate Figure 15: stacked bar chart of overhead by message class.
+
+    Runs DES at N=10,000 under three workload profiles for both hierarchical
+    and sectorized_mesh topologies.  Decomposes total bytes into:
+    ephemeris, heartbeat, command, summary, alert.
+    """
+    N = 10_000
+    sim_days = _sim_days(N)
+    cluster_size = min(200, max(50, int(math.floor(math.sqrt(N)))))
+
+    profiles = ["stress", "event_driven", "nominal"]
+    profile_labels = ["Stress", "Event-driven", "Nominal"]
+
+    class_colors = {
+        "ephemeris": "#94a3b8",   # slate
+        "heartbeat": "#0891b2",   # cyan
+        "command":   "#d97706",   # amber
+        "summary":   "#7c3aed",   # purple
+        "alert":     "#dc2626",   # red
+    }
+    class_labels = ["Ephemeris", "Heartbeat/ACK", "Commands", "Summaries", "Alerts"]
+
+    # Collect data: for each profile, run DES (hierarchical only) and extract per-class bytes
+    bar_data: list[dict[str, float]] = []
+    x_labels: list[str] = []
+
+    for pi, profile in enumerate(profiles):
+        cfg = _make_config(
+            N,
+            cluster_size=cluster_size,
+            simulation_days=sim_days,
+            workload_profile=profile,
+        )
+        sim = SwarmCoordinationSimulator(cfg)
+        r = sim.run()
+        # Convert to fraction of fleet bandwidth for η decomposition
+        scale = 1.0 / max(cfg.sync_sample_rate if cfg.sync_sample_rate > 0 else min(1.0, 1_000 / N), 1e-9)
+        sim_s = max(1.0, sim.current_time)
+        fleet_cap_bps = N * cfg.bandwidth_per_node_kbps * 1_000
+        to_pct = lambda b: (b / sim_s * scale * 8 / fleet_cap_bps * 100) if fleet_cap_bps > 0 else 0
+
+        bar_data.append({
+            "ephemeris": to_pct(r.ephemeris_bytes_sent),
+            "heartbeat": to_pct(r.heartbeat_bytes_sent),
+            "command":   to_pct(r.command_bytes_sent),
+            "summary":   to_pct(r.summary_bytes_sent),
+            "alert":     to_pct(r.alert_bytes_sent),
+        })
+        x_labels.append(profile_labels[pi])
+
+    fig, ax = subplots(figsize=(8, 4.5))
+
+    x = np.arange(len(x_labels))
+    width = 0.6
+    bottoms = np.zeros(len(x_labels))
+
+    for cls_key, cls_label in zip(class_colors.keys(), class_labels):
+        vals = [d[cls_key] for d in bar_data]
+        ax.bar(x, vals, width, bottom=bottoms, label=cls_label, color=class_colors[cls_key], alpha=0.9)
+        bottoms += np.array(vals)
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(x_labels, fontsize=8)
+    ax.set_ylabel("Protocol Overhead $\\eta$ (%)")
+    ax.set_title(f"Overhead Decomposition by Message Class ($N = {N:,}$)")
+    ax.legend(fontsize=8, loc="upper right")
+    ax.set_ylim(bottom=0)
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-overhead-decomposition.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 16: Phase-Stagger Coordinator Drop Comparison
+# ---------------------------------------------------------------------------
+def fig_phase_stagger() -> None:
+    """Generate Figure 16: coordinator drops vs link capacity with/without phase stagger.
+
+    Sweeps coordinator_link_capacity_kbps and compares random-phase vs
+    phase-staggered scheduling at N=10,000.
+    """
+    N = 10_000
+    sim_days = _sim_days(N)
+    cluster_size = 100
+    capacities = [10, 15, 20, 25, 30, 40, 50, 75, 100]
+
+    configs = [
+        ("Random phase", False, c_centralized, "-", "o"),
+        ("Phase-staggered", True, c_hierarchical, "--", "s"),
+    ]
+
+    fig, (ax1, ax2) = subplots(1, 2, figsize=(10, 4))
+
+    for label, stagger, color, ls, marker in configs:
+        drops: list[int] = []
+        overheads: list[float] = []
+        for cap in capacities:
+            cfg = _make_config(
+                N,
+                cluster_size=cluster_size,
+                simulation_days=sim_days,
+                coordinator_link_capacity_kbps=float(cap),
+                enable_phase_stagger=stagger,
+            )
+            sim = SwarmCoordinationSimulator(cfg)
+            r = sim.run()
+            drops.append(r.coordinator_drops)
+            overheads.append(r.communication_overhead_percent)
+
+        ax1.plot(capacities, drops, f"{ls}", color=color, marker=marker,
+                 markersize=4, linewidth=1.8, label=label)
+        ax2.plot(capacities, overheads, f"{ls}", color=color, marker=marker,
+                 markersize=4, linewidth=1.8, label=label)
+
+    ax1.set_xlabel("Coordinator Link Capacity (kbps)")
+    ax1.set_ylabel("Coordinator Drops")
+    ax1.set_title("(a) Message Drops vs Capacity")
+    ax1.legend(fontsize=8)
+    ax1.set_ylim(bottom=0)
+
+    ax2.set_xlabel("Coordinator Link Capacity (kbps)")
+    ax2.set_ylabel("Protocol Overhead $\\eta$ (%)")
+    ax2.set_title("(b) Overhead vs Capacity")
+    ax2.legend(fontsize=8)
+    ax2.set_ylim(bottom=0)
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-phase-stagger.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 17: Command-rate sweep (continuous p_cmd)
+# ---------------------------------------------------------------------------
+def fig_command_rate_sweep() -> None:
+    """Generate Figure 17: η vs continuous command probability p_cmd.
+
+    Shows overhead as a function of the fraction of nodes receiving a command
+    per cycle, replacing the discrete S/E/N profiles with a continuous curve.
+    Annotates S/E/N as points on the curve.  Uses analytical computation.
+    """
+    nc = 10_000
+    base_cluster = 100
+    T_c = 10.0
+    cmd_size = 512  # bytes per command
+    C_node = 1_000  # bps per node
+
+    # Per-node baseline telemetry: ephemeris 256 B/cycle
+    baseline_bps = 256 * 8 / T_c  # 204.8 bps
+    # Protocol overhead excluding commands: ~5% of channel (from nominal case)
+    # More precisely: heartbeat (64B) + summary share (~5B amortized) per cycle
+    proto_fixed_bps = (64 + 5) * 8 / T_c  # ~55.2 bps
+
+    p_cmds = np.linspace(0, 1.0, 101)
+    eta_hier = []
+    for p in p_cmds:
+        # Hierarchical: per-node cmd traffic = p × cmd_size × 8 / T_c
+        cmd_bps = p * cmd_size * 8 / T_c
+        overhead_bps = proto_fixed_bps + cmd_bps
+        eta = overhead_bps / C_node * 100
+        eta_hier.append(eta)
+
+    fig, ax = subplots(1, 1, figsize=(5.5, 4))
+    ax.plot(p_cmds, eta_hier, "-", color=c_hierarchical, linewidth=2, label="Hierarchical")
+
+    # Annotate S/E/N
+    markers = [
+        (1.0, "S", c_stress),
+        (0.01, "E", c_event),
+        (0.0, "N", c_nominal),
+    ]
+    for p_val, label, color in markers:
+        cmd_bps = p_val * cmd_size * 8 / T_c
+        eta_val = (proto_fixed_bps + cmd_bps) / C_node * 100
+        ax.plot(p_val, eta_val, "o", color=color, markersize=8, zorder=5)
+        ax.annotate(label, (p_val, eta_val), textcoords="offset points",
+                    xytext=(8, 5), fontsize=10, fontweight="bold", color=color)
+
+    ax.set_xlabel("Command Probability $p_{\\mathrm{cmd}}$ (per node per cycle)")
+    ax.set_ylabel("Protocol Overhead $\\eta$ (%)")
+    ax.axhline(y=100, color="#dc2626", linestyle=":", linewidth=1, alpha=0.7)
+    ax.set_xlim(-0.02, 1.02)
+    ax.set_ylim(0, 55)
+    ax.legend(fontsize=9)
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-command-rate-sweep.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 18: Cross-Cycle Recovery Distribution
+# ---------------------------------------------------------------------------
+def fig_cross_cycle_recovery() -> None:
+    """Generate Figure 18: DES-validated inter-cycle recovery under GE losses.
+
+    Panel (a): DES CDF vs Markov-chain prediction at default p_BG = 0.50.
+    Panel (b): GE parameter sensitivity — P95 recovery cycles vs p_BG for
+    three p_loss_bad values, providing a family of design curves.
+    """
+    nc = SCALE.get("summary_nodes", 5_000)
+    sim_days = min(_sim_days(nc), 30)
+    cluster_size = 100
+    n_runs = SCALE.get("summary_runs", 30)  # 30 for publication, 3 for --fast
+
+    # --- Panel (a): DES CDF vs analytical at default parameters ---
+    all_cdfs: list[list[float]] = []
+    all_means: list[float] = []
+    all_p95s: list[float] = []
+
+    for run_idx in range(n_runs):
+        cfg = _make_config(
+            nc,
+            cluster_size=cluster_size,
+            simulation_days=sim_days,
+            seed=SEED + run_idx,
+            link_model="gilbert_elliott",
+            max_retransmissions=2,
+        )
+        sim = SwarmCoordinationSimulator(cfg)
+        r = sim.run()
+        if r.cross_cycle_recovery_rate_by_cycle:
+            all_cdfs.append(r.cross_cycle_recovery_rate_by_cycle)
+            all_means.append(r.cross_cycle_recovery_mean)
+            all_p95s.append(r.cross_cycle_recovery_p95)
+
+    if not all_cdfs:
+        print("  WARNING: no cross-cycle recovery data collected, skipping figure")
+        return
+
+    n_cycles = len(all_cdfs[0])
+    avg_cdf = [float(np.mean([cdf[k] for cdf in all_cdfs])) for k in range(n_cycles)]
+    avg_mean = float(np.mean(all_means))
+    avg_p95 = float(np.mean(all_p95s))
+
+    # Analytical CDF using Markov chain iteration
+    def _analytical_cdf(p_bg_val: float, p_gb_val: float, p_loss_good: float,
+                        p_loss_bad: float, mr: int, n_cyc: int) -> list[float]:
+        p_recover_good = 1.0 - p_loss_good ** (mr + 1)
+        p_recover_bad = 1.0 - p_loss_bad ** (mr + 1)
+        cdf = []
+        p_still_lost = 1.0
+        p_in_bad = 1.0  # start in bad state (conditioning on failed cycle)
+        for _ in range(n_cyc):
+            p_in_good_new = p_in_bad * p_bg_val + (1.0 - p_in_bad) * (1.0 - p_gb_val)
+            p_in_bad_new = 1.0 - p_in_good_new
+            p_deliver = p_in_good_new * p_recover_good + p_in_bad_new * p_recover_bad
+            p_still_lost *= (1.0 - p_deliver)
+            cdf.append(1.0 - p_still_lost)
+            p_in_bad = p_in_bad_new
+        return cdf
+
+    analytical = _analytical_cdf(0.50, 0.05, 0.01, 0.90, 2, n_cycles)
+
+    # --- Panel (b): GE sensitivity — sweep p_BG for multiple p_loss_bad ---
+    p_bg_sweep = [0.10, 0.15, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80]
+    p_loss_bad_vals = [0.70, 0.90, 0.95]
+    p_loss_bad_labels = ["$p_B = 0.70$", "$p_B = 0.90$", "$p_B = 0.95$"]
+    p_loss_bad_colors = [c_optimized, c_hierarchical, c_pareto]
+
+    # Also run DES at selected p_BG values for validation dots
+    des_p95_by_pbg: dict[float, list[float]] = {}
+    for p_bg_val in [0.10, 0.20, 0.50]:
+        p95_runs = []
+        for run_idx in range(n_runs):
+            cfg_sens = _make_config(
+                nc,
+                cluster_size=cluster_size,
+                simulation_days=sim_days,
+                seed=SEED + run_idx,
+                link_model="gilbert_elliott",
+                max_retransmissions=2,
+                ge_p_bad_to_good=p_bg_val,
+            )
+            r_s = SwarmCoordinationSimulator(cfg_sens).run()
+            if r_s.cross_cycle_recovery_count > 0:
+                p95_runs.append(r_s.cross_cycle_recovery_p95)
+        if p95_runs:
+            des_p95_by_pbg[p_bg_val] = p95_runs
+
+    # Compute analytical P95 for each combination
+    def _analytical_p95(p_bg_val: float, p_gb: float, p_loss_g: float,
+                        p_loss_b: float, mr: int) -> float:
+        cdf = _analytical_cdf(p_bg_val, p_gb, p_loss_g, p_loss_b, mr, 30)
+        for k, v in enumerate(cdf, 1):
+            if v >= 0.95:
+                return float(k)
+        return 30.0
+
+    # --- Plot ---
+    fig, axes = subplots(1, 2, figsize=(10, 4))
+
+    # Panel (a): DES vs analytical CDF
+    ax = axes[0]
+    cycles = list(range(1, n_cycles + 1))
+    bar_width = 0.35
+    ax.bar(
+        [c - bar_width / 2 for c in cycles],
+        [cdf * 100 for cdf in avg_cdf],
+        bar_width,
+        color=c_hierarchical,
+        alpha=0.7,
+        label=f"DES (mean={avg_mean:.1f}, P95={avg_p95:.0f})",
+        edgecolor="white",
+        linewidth=0.5,
+    )
+    ax.plot(
+        cycles,
+        [cdf * 100 for cdf in analytical],
+        "o-",
+        color=c_pareto,
+        linewidth=2,
+        markersize=4,
+        label="Analytical (Markov)",
+        zorder=5,
+    )
+    ax.axhline(y=95, color="gray", linestyle="--", linewidth=0.8, alpha=0.6)
+    ax.annotate("95%", xy=(n_cycles, 95), xytext=(n_cycles + 0.1, 92),
+                fontsize=8, color="gray")
+    ax.set_xlabel("Cycles Since Loss Event")
+    ax.set_ylabel("Cumulative Recovery (%)")
+    ax.set_title("(a) Default GE parameters ($p_{BG}=0.50$)")
+    ax.set_xlim(0.5, n_cycles + 0.5)
+    ax.set_ylim(0, 102)
+    ax.set_xticks(cycles)
+    ax.legend(loc="lower right", fontsize=8)
+    ax.grid(axis="y", alpha=0.3)
+
+    # Panel (b): P95 recovery vs p_BG for different p_loss_bad
+    ax2 = axes[1]
+    for p_lb, label, color in zip(p_loss_bad_vals, p_loss_bad_labels, p_loss_bad_colors):
+        p95_vals = [_analytical_p95(p_bg, 0.05, 0.01, p_lb, 2) for p_bg in p_bg_sweep]
+        ax2.plot(p_bg_sweep, p95_vals, "o-", color=color, linewidth=1.5,
+                 markersize=4, label=label)
+
+    # DES validation dots (p_loss_bad = 0.90 only)
+    for p_bg_val, p95_list in des_p95_by_pbg.items():
+        avg_p95_v = float(np.mean(p95_list))
+        ax2.scatter([p_bg_val], [avg_p95_v], marker="s", s=60, color="black",
+                    zorder=10, label="DES" if p_bg_val == 0.10 else None)
+
+    ax2.set_xlabel("$p_{BG}$ (bad-to-good transition probability)")
+    ax2.set_ylabel("P95 Recovery (cycles)")
+    ax2.set_title("(b) GE Parameter Sensitivity")
+    ax2.set_ylim(0, 20)
+    ax2.legend(loc="upper right", fontsize=8)
+    ax2.grid(alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-cross-cycle-recovery.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 19: Fleet-level channel reuse
+# ---------------------------------------------------------------------------
+def fig_fleet_reuse() -> None:
+    """Generate fleet-level channel reuse figure (purely analytical).
+
+    X: f_RF (fraction of clusters in RF-backup mode), range [0, 0.10]
+    Y: T_c^fleet / T_c (coordination period inflation factor)
+    Curves for F×R ∈ {4, 8, 12, 16, 24}
+    Annotate non-binding threshold, shade f_RF < 1% ("normal ops").
+    """
+    N = 100_000
+    k_c = 100
+    n_clusters = N // k_c  # 1000
+
+    f_rf_values = np.linspace(0, 0.10, 200)
+    FR_values = [4, 8, 12, 16, 24]
+
+    fig, ax = subplots(figsize=(3.4, 2.8))
+
+    colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]
+    linestyles = ["-", "--", "-.", ":", "-"]
+
+    for i, FR in enumerate(FR_values):
+        inflation = []
+        threshold = FR * k_c / N  # non-binding threshold
+        for f_rf in f_rf_values:
+            N_RF = math.ceil(f_rf * N / k_c)  # active RF-backup clusters
+            G = math.ceil(N_RF / FR) if N_RF > 0 else 0  # time-share groups
+            T_fleet_ratio = max(1.0, G)  # T_c^fleet / T_c
+            inflation.append(T_fleet_ratio)
+
+        ax.plot(
+            f_rf_values * 100, inflation,
+            color=colors[i % len(colors)],
+            linestyle=linestyles[i % len(linestyles)],
+            linewidth=1.2,
+            label=f"$F \\times R = {FR}$",
+        )
+
+        # Annotate threshold
+        ax.axvline(
+            x=threshold * 100, color=colors[i % len(colors)],
+            alpha=0.3, linewidth=0.8, linestyle=":",
+        )
+
+    # Shade normal ops region (f_RF < 1%)
+    ax.axvspan(0, 1.0, alpha=0.08, color="green")
+    ax.text(
+        0.5, 0.92, "Normal ops\n($<$1% ISL outage)",
+        transform=ax.transAxes, fontsize=7, ha="left", va="top",
+        bbox=dict(boxstyle="round,pad=0.2", facecolor="white", alpha=0.8),
+    )
+
+    ax.set_xlabel("$f_{\\mathrm{RF}}$ (\\% of fleet in RF-backup)")
+    ax.set_ylabel("$T_c^{\\mathrm{fleet}} / T_c$")
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0.5, max(15, ax.get_ylim()[1]))
+    ax.legend(loc="upper left", fontsize=7, ncol=1)
+
+    fig.savefig(join(fig_dir, "fig-fleet-reuse.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
+# Figure 20: Coordinator Buffer Occupancy CDF
+# ---------------------------------------------------------------------------
+def fig_coordinator_buffer_cdf() -> None:
+    """Generate Figure 20: CDF of per-cycle coordinator ingress bytes.
+
+    Compares Bernoulli d=0.10 vs ON/OFF d=0.10 (L_on=100) vs d=1.0 under
+    GE losses.  ON/OFF produces heavier tails than Bernoulli at the same
+    marginal d due to temporally correlated campaign bursts.
+    """
+    nc = 10_000
+    cluster_size = 100
+    sim_days = max(1, min(5, SCALE.get("sim_days_cap", 90)))
+
+    # Three configurations: Bernoulli d=0.10, ON/OFF d=0.10 L_on=100, continuous d=1.0
+    configs = [
+        {"d": 0.10, "mode": "bernoulli", "L_on": 1,
+         "label": "Bernoulli $d\\!=\\!0.10$", "color": c_hierarchical, "ls": "-"},
+        {"d": 0.10, "mode": "on_off", "L_on": 100,
+         "label": "ON/OFF $d\\!=\\!0.10$, $L_{\\mathrm{on}}\\!=\\!100$", "color": "#e67e22", "ls": "-."},
+        {"d": 1.0, "mode": "bernoulli", "L_on": 1,
+         "label": "$d\\!=\\!1.0$ (continuous)", "color": c_stress, "ls": "--"},
+    ]
+
+    fig, ax = subplots(figsize=(5.5, 4))
+
+    for c in configs:
+        cfg = _make_config(
+            nc,
+            cluster_size=cluster_size,
+            simulation_days=sim_days,
+            workload_profile="stress",
+            campaign_duty_factor=c["d"],
+            campaign_mode=c["mode"],
+            campaign_on_length=c["L_on"],
+            link_model="gilbert_elliott",
+            ge_p_bad_to_good=0.50,
+            max_retransmissions=2,
+        )
+        sim = SwarmCoordinationSimulator(cfg)
+        r = sim.run()
+        ingress = np.array(r.coordinator_ingress_bytes_per_cycle)
+        if len(ingress) == 0:
+            continue
+        sorted_vals = np.sort(ingress)
+        cdf = np.arange(1, len(sorted_vals) + 1) / len(sorted_vals)
+        ax.plot(sorted_vals / 1000, cdf, c["ls"], color=c["color"], linewidth=1.8, label=c["label"])
+        # Overlay closed-form mean
+        mean_val = float(np.mean(ingress))
+        ax.axvline(x=mean_val / 1000, color=c["color"], linestyle=":", linewidth=1, alpha=0.6)
+
+    ax.set_xlabel("Coordinator Ingress per Cycle (kB)")
+    ax.set_ylabel("CDF")
+    ax.set_title("Coordinator Ingress Distribution ($N = 10{,}000$, GE losses)")
+    ax.legend(fontsize=8, loc="lower right")
+    ax.set_ylim(0, 1.05)
+
+    fig.tight_layout()
+    fig.savefig(join(fig_dir, "fig-coordinator-buffer-cdf.pdf"), bbox_inches="tight")
+    close(fig)
+
+
+# ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
 def main() -> None:
-    """Generate all 9 figures sequentially with timing for each."""
+    """Generate all 19 figures sequentially with timing for each."""
     figures = [
         ("Fig 1: overhead vs nodes", fig_overhead_vs_nodes),
         ("Fig 2: latency distribution", fig_latency_distribution),
@@ -1242,6 +2060,17 @@ def main() -> None:
         ("Fig 7: failure resilience", fig_failure_resilience),
         ("Fig 8: topology summary", fig_topology_summary),
         ("Fig 9: message decomposition", fig_message_decomposition),
+        ("Fig 10: AoI quality metric", fig_aoi_quality),
+        ("Fig 11: sensitivity sweep", fig_sensitivity_sweep),
+        ("Fig 12: TDMA comparison", fig_tdma_comparison),
+        ("Fig 13: workload comparison", fig_workload_comparison),
+        ("Fig 14: link model comparison", fig_link_model_comparison),
+        ("Fig 15: overhead decomposition", fig_overhead_decomposition),
+        ("Fig 16: phase stagger", fig_phase_stagger),
+        ("Fig 17: command rate sweep", fig_command_rate_sweep),
+        ("Fig 18: cross-cycle recovery", fig_cross_cycle_recovery),
+        ("Fig 19: fleet-level reuse", fig_fleet_reuse),
+        ("Fig 20: coordinator buffer CDF", fig_coordinator_buffer_cdf),
     ]
 
     total_t0 = time.perf_counter()

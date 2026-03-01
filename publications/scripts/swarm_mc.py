@@ -13,8 +13,8 @@ __version__ = "1.0.0"
 
 import math
 import time
-from dataclasses import dataclass, field
-from typing import Any, Callable, NamedTuple, Optional
+from dataclasses import dataclass, field, replace
+from typing import Any, Callable, NamedTuple, Optional, TypedDict
 
 import numpy as np
 from numpy.random import Generator
@@ -30,6 +30,15 @@ from swarm_model import (
 )
 
 NDFloat = NDArray[np.floating[Any]]
+
+
+class TopologyAnalysis(TypedDict):
+    """Analysis dict produced by :func:`_analyze_comparison`."""
+
+    bestLatency: CoordinationTopology
+    bestBandwidth: CoordinationTopology
+    bestPower: CoordinationTopology
+    recommendation: str
 
 # ---------------------------------------------------------------------------
 # Default configuration
@@ -141,7 +150,7 @@ class TopologyComparisonResult:
     configs: list[SwarmCoordinationConfig]
     results: list[SwarmCoordinationResult]
     optimal_config_index: int
-    analysis: dict[str, Any]
+    analysis: TopologyAnalysis
 
 
 @dataclass
@@ -191,25 +200,9 @@ def run_swarm_coordination_mc(
 
     for i in range(runs):
         seed = config.seed + i
-        run_cfg = SwarmCoordinationConfig(
-            node_count=config.node_count,
-            coordination_topology=config.coordination_topology,
-            cluster_size=config.cluster_size,
-            coordinator_duty_cycle_hours=config.coordinator_duty_cycle_hours,
-            bandwidth_per_node_kbps=config.bandwidth_per_node_kbps,
-            node_failure_rate_per_year=config.node_failure_rate_per_year,
-            coordinator_power_w=config.coordinator_power_w,
-            base_power_w=config.base_power_w,
-            simulation_days=config.simulation_days,
-            seed=seed,
-            max_events=config.max_events,
-            enable_exception_telemetry=config.enable_exception_telemetry,
-            exception_threshold=config.exception_threshold,
-            link_availability=config.link_availability,
-        )
+        run_cfg = replace(config, seed=seed)
         sim = SwarmCoordinationSimulator(run_cfg)
         result = sim.run()
-        result.run_id = i
         results.append(result)
 
         if on_progress is not None:
@@ -231,14 +224,29 @@ def aggregate_results(
     results: list[SwarmCoordinationRunResult],
 ) -> SwarmCoordinationResult:
     """Compute statistics across an ensemble of run results."""
-    overheads = np.array([r.communication_overhead_percent for r in results])
-    bottlenecks = np.array([r.bottleneck_threshold_nodes for r in results])
-    availabilities = np.array([r.coordinator_availability_percent for r in results])
-    power_vars = np.array([r.power_variance_percent for r in results])
-    avg_props = np.array([r.avg_update_propagation_ms for r in results])
-    max_props = np.array([r.max_update_propagation_ms for r in results])
-    handoffs = np.array([r.failed_handoffs for r in results], dtype=float)
-    drop_rates = np.array([r.message_drop_rate for r in results])
+    arrays = np.array([
+        (
+            r.communication_overhead_percent,
+            r.bottleneck_threshold_nodes,
+            r.coordinator_availability_percent,
+            r.power_variance_percent,
+            r.avg_update_propagation_ms,
+            r.max_update_propagation_ms,
+            float(r.failed_handoffs),
+            r.message_drop_rate,
+        )
+        for r in results
+    ])
+    (
+        overheads,
+        bottlenecks,
+        availabilities,
+        power_vars,
+        avg_props,
+        max_props,
+        handoffs,
+        drop_rates,
+    ) = arrays.T
 
     overhead_stats = calculate_stats(overheads)
     bottleneck_stats = calculate_stats(bottlenecks)
@@ -304,7 +312,7 @@ def find_optimal_config(
 def _analyze_comparison(
     topologies: list[CoordinationTopology],
     results: list[SwarmCoordinationResult],
-) -> dict[str, Any]:
+) -> TopologyAnalysis:
     """Produce an analysis dict for the topology comparison."""
     best_lat = 0
     best_bw = 0
@@ -375,18 +383,7 @@ def run_topology_comparison(
     completed = 0
 
     for topo in topologies:
-        cfg = SwarmCoordinationConfig(
-            node_count=base_config.node_count,
-            coordination_topology=topo,
-            cluster_size=base_config.cluster_size,
-            coordinator_duty_cycle_hours=base_config.coordinator_duty_cycle_hours,
-            bandwidth_per_node_kbps=base_config.bandwidth_per_node_kbps,
-            node_failure_rate_per_year=base_config.node_failure_rate_per_year,
-            coordinator_power_w=base_config.coordinator_power_w,
-            base_power_w=base_config.base_power_w,
-            simulation_days=base_config.simulation_days,
-            seed=base_config.seed,
-        )
+        cfg = replace(base_config, coordination_topology=topo)
         configs.append(cfg)
 
         def _progress(cur: int, tot: int, pct: float, _topo: str = topo) -> None:
@@ -420,20 +417,7 @@ def generate_scaling_configs(
     configs: list[SwarmCoordinationConfig] = []
     for nc in node_counts:
         cs = min(200, max(50, int(math.floor(math.sqrt(nc)))))
-        configs.append(
-            SwarmCoordinationConfig(
-                node_count=nc,
-                coordination_topology=base_config.coordination_topology,
-                cluster_size=cs,
-                coordinator_duty_cycle_hours=base_config.coordinator_duty_cycle_hours,
-                bandwidth_per_node_kbps=base_config.bandwidth_per_node_kbps,
-                node_failure_rate_per_year=base_config.node_failure_rate_per_year,
-                coordinator_power_w=base_config.coordinator_power_w,
-                base_power_w=base_config.base_power_w,
-                simulation_days=base_config.simulation_days,
-                seed=base_config.seed,
-            )
-        )
+        configs.append(replace(base_config, node_count=nc, cluster_size=cs))
     return configs
 
 
@@ -520,15 +504,11 @@ def compute_prcc_sensitivity(
     print(f"PRCC sensitivity: running {runs} samples ...")
 
     for i in range(runs):
-        cfg = SwarmCoordinationConfig(
+        cfg = replace(
+            base_config,
             node_count=int(node_counts[i]),
-            coordination_topology=base_config.coordination_topology,
             cluster_size=int(cluster_sizes[i]),
             coordinator_duty_cycle_hours=float(duty_cycles[i]),
-            bandwidth_per_node_kbps=base_config.bandwidth_per_node_kbps,
-            node_failure_rate_per_year=base_config.node_failure_rate_per_year,
-            coordinator_power_w=base_config.coordinator_power_w,
-            base_power_w=base_config.base_power_w,
             simulation_days=min(30, base_config.simulation_days),
             seed=base_config.seed + i,
         )
