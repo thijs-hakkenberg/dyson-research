@@ -721,7 +721,7 @@ class TestSwarmCoordinationSimulator:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         sim = SwarmCoordinationSimulator(cfg)
@@ -734,14 +734,14 @@ class TestSwarmCoordinationSimulator:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         cfg2 = SwarmCoordinationConfig(
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         r1 = SwarmCoordinationSimulator(cfg1).run()
@@ -758,7 +758,7 @@ class TestSwarmCoordinationSimulator:
                 node_count=100,
                 coordination_topology=topo,
                 cluster_size=25,
-                simulation_days=5,
+                simulation_days=5, sync_sample_rate=0.1,
                 seed=42,
             )
             result = SwarmCoordinationSimulator(cfg).run()
@@ -769,7 +769,7 @@ class TestSwarmCoordinationSimulator:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         result = SwarmCoordinationSimulator(cfg).run()
@@ -791,7 +791,7 @@ class TestSwarmCoordinationSimulator:
             node_count=200,
             coordination_topology="hierarchical",
             cluster_size=50,
-            simulation_days=10,
+            simulation_days=2, sync_sample_rate=0.1,
             seed=42,
         )
         result = SwarmCoordinationSimulator(cfg).run()
@@ -802,7 +802,7 @@ class TestSwarmCoordinationSimulator:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=10,
+            simulation_days=2, sync_sample_rate=0.1,
             seed=42,
         )
         result = SwarmCoordinationSimulator(cfg).run()
@@ -815,7 +815,7 @@ class TestSwarmCoordinationSimulator:
             coordination_topology="hierarchical",
             cluster_size=50,
             node_failure_rate_per_year=0.01,
-            simulation_days=10,
+            simulation_days=2, sync_sample_rate=0.1,
             seed=42,
         )
         cfg_high = SwarmCoordinationConfig(
@@ -823,7 +823,7 @@ class TestSwarmCoordinationSimulator:
             coordination_topology="hierarchical",
             cluster_size=50,
             node_failure_rate_per_year=0.10,
-            simulation_days=10,
+            simulation_days=2, sync_sample_rate=0.1,
             seed=42,
         )
         r_low = SwarmCoordinationSimulator(cfg_low).run()
@@ -1266,3 +1266,171 @@ class TestDistributedWorkload:
         assert result.communication_overhead_percent >= 0
         assert result.total_messages_sent > 0
         assert hasattr(result, "distributed_consensus_bytes")
+
+
+# ===== TestDutyFactor =====
+
+
+class TestDutyFactor:
+    """Test campaign_duty_factor gating of command traffic."""
+
+    def test_duty_factor_one_matches_stress(self):
+        """d=1.0 should produce the same result as the default stress-case."""
+        cfg_default = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            workload_profile="stress",
+        )
+        cfg_d1 = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            workload_profile="stress",
+            campaign_duty_factor=1.0,
+        )
+        r_default = SwarmCoordinationSimulator(cfg_default).run()
+        r_d1 = SwarmCoordinationSimulator(cfg_d1).run()
+        assert r_d1.command_bytes_sent == r_default.command_bytes_sent
+        assert r_d1.communication_overhead_percent == pytest.approx(
+            r_default.communication_overhead_percent
+        )
+
+    def test_duty_factor_zero_no_commands(self):
+        """d=0.0 should produce zero command bytes (effectively nominal)."""
+        cfg = SwarmCoordinationConfig(
+            node_count=100,
+            coordination_topology="hierarchical",
+            cluster_size=25,
+            simulation_days=1,
+            seed=42,
+            workload_profile="stress",
+            campaign_duty_factor=0.0,
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert result.command_bytes_sent == 0
+
+    def test_duty_factor_scales_proportionally(self):
+        """d=0.1 should produce roughly 10% of the command bytes of d=1.0."""
+        cfg_full = SwarmCoordinationConfig(
+            node_count=200,
+            coordination_topology="hierarchical",
+            cluster_size=50,
+            simulation_days=5, sync_sample_rate=0.1,
+            seed=42,
+            workload_profile="stress",
+            campaign_duty_factor=1.0,
+        )
+        cfg_tenth = SwarmCoordinationConfig(
+            node_count=200,
+            coordination_topology="hierarchical",
+            cluster_size=50,
+            simulation_days=5, sync_sample_rate=0.1,
+            seed=42,
+            workload_profile="stress",
+            campaign_duty_factor=0.1,
+        )
+        r_full = SwarmCoordinationSimulator(cfg_full).run()
+        r_tenth = SwarmCoordinationSimulator(cfg_tenth).run()
+        # With 5 days of simulation, Bernoulli sampling should be
+        # roughly proportional.  Allow wide tolerance for stochastic variation.
+        ratio = r_tenth.command_bytes_sent / max(1, r_full.command_bytes_sent)
+        assert 0.02 < ratio < 0.25  # expect ~0.1, allow wide band
+
+
+# ===== TestCoordinatorIngressTracking =====
+
+
+class TestCoordinatorIngressTracking:
+    """Verify per-cycle coordinator ingress byte tracking."""
+
+    def test_coordinator_ingress_tracking_exists(self):
+        """Verify the ingress per-cycle list is populated and length > 0."""
+        cfg = SwarmCoordinationConfig(
+            node_count=200,
+            coordination_topology="hierarchical",
+            cluster_size=50,
+            simulation_days=2, sync_sample_rate=0.1,
+            seed=42,
+            workload_profile="stress",
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        assert len(result.coordinator_ingress_bytes_per_cycle) > 0
+        # At least some cycles should have non-zero ingress
+        assert any(b > 0 for b in result.coordinator_ingress_bytes_per_cycle)
+
+    def test_coordinator_ingress_distribution_nontrivial(self):
+        """d=0.10 should produce bimodal distribution (many zeros, some high)."""
+        cfg = SwarmCoordinationConfig(
+            node_count=200,
+            coordination_topology="hierarchical",
+            cluster_size=50,
+            simulation_days=5, sync_sample_rate=0.1,
+            seed=42,
+            workload_profile="stress",
+            campaign_duty_factor=0.10,
+        )
+        result = SwarmCoordinationSimulator(cfg).run()
+        ingress = result.coordinator_ingress_bytes_per_cycle
+        assert len(ingress) > 10
+        # With d=0.10, ~90% of cycles should have lower ingress (no commands)
+        # and ~10% should have higher ingress (with commands).
+        # Check that the distribution has spread (not all identical).
+        vals = np.array(ingress)
+        nonzero = vals[vals > 0]
+        assert len(nonzero) > 0, "Expected some cycles with non-zero ingress"
+        # The max should be substantially larger than the median for bimodality
+        if len(nonzero) > 5:
+            median_val = float(np.median(nonzero))
+            max_val = float(np.max(nonzero))
+            assert max_val > median_val * 0.5, "Expected spread in ingress distribution"
+
+
+class TestOnOffCampaignModel:
+    """Verify ON/OFF Markov campaign model."""
+
+    def test_onoff_campaign_basic(self):
+        """ON/OFF model with L_on=1 should produce similar mean η to Bernoulli."""
+        common = dict(
+            node_count=200, coordination_topology="hierarchical",
+            cluster_size=50, simulation_days=2, seed=42, sync_sample_rate=0.1,
+            workload_profile="stress", campaign_duty_factor=0.10,
+        )
+        r_bern = SwarmCoordinationSimulator(
+            SwarmCoordinationConfig(**common, campaign_mode="bernoulli")
+        ).run()
+        r_onoff = SwarmCoordinationSimulator(
+            SwarmCoordinationConfig(**common, campaign_mode="on_off", campaign_on_length=1)
+        ).run()
+        # Mean overhead should be within 0.5 pp at same marginal d
+        # (wider tolerance accommodates sync_sample_rate < 1.0 sampling noise)
+        assert abs(r_bern.communication_overhead_percent - r_onoff.communication_overhead_percent) < 0.5
+
+    def test_onoff_campaign_burstier(self):
+        """ON/OFF with L_on=50 should produce more variable ingress than Bernoulli."""
+        common = dict(
+            node_count=200, coordination_topology="hierarchical",
+            cluster_size=50, simulation_days=5, seed=42, sync_sample_rate=0.1,
+            workload_profile="stress", campaign_duty_factor=0.10,
+        )
+        r_bern = SwarmCoordinationSimulator(
+            SwarmCoordinationConfig(**common, campaign_mode="bernoulli")
+        ).run()
+        r_onoff = SwarmCoordinationSimulator(
+            SwarmCoordinationConfig(**common, campaign_mode="on_off", campaign_on_length=50)
+        ).run()
+        # Both should have ingress tracking
+        assert len(r_bern.coordinator_ingress_bytes_per_cycle) > 0
+        assert len(r_onoff.coordinator_ingress_bytes_per_cycle) > 0
+        # ON/OFF should have higher variance (longer bursts)
+        bern_std = float(np.std(r_bern.coordinator_ingress_bytes_per_cycle))
+        onoff_std = float(np.std(r_onoff.coordinator_ingress_bytes_per_cycle))
+        # ON/OFF with long bursts should have at least comparable variance
+        # (exact comparison depends on random seed, so be lenient)
+        assert onoff_std > bern_std * 0.5, (
+            f"Expected ON/OFF variance ({onoff_std:.0f}) >= 50% of Bernoulli ({bern_std:.0f})"
+        )

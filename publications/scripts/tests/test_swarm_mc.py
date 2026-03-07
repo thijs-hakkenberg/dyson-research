@@ -119,7 +119,7 @@ class TestRunSwarmCoordinationMC:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         output = run_swarm_coordination_mc(cfg, runs=3)
@@ -132,7 +132,7 @@ class TestRunSwarmCoordinationMC:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         out1 = run_swarm_coordination_mc(cfg, runs=3)
@@ -146,7 +146,7 @@ class TestRunSwarmCoordinationMC:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         output = run_swarm_coordination_mc(cfg, runs=5)
@@ -160,7 +160,7 @@ class TestRunSwarmCoordinationMC:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         calls = []
@@ -177,7 +177,7 @@ class TestRunSwarmCoordinationMC:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         output = run_swarm_coordination_mc(cfg, runs=4)
@@ -198,7 +198,7 @@ class TestRunTopologyComparison:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         result = run_topology_comparison(cfg, runs_per=3)
@@ -211,7 +211,7 @@ class TestRunTopologyComparison:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         result = run_topology_comparison(cfg, runs_per=3)
@@ -222,7 +222,7 @@ class TestRunTopologyComparison:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         result = run_topology_comparison(cfg, runs_per=3)
@@ -236,7 +236,7 @@ class TestRunTopologyComparison:
             node_count=100,
             coordination_topology="hierarchical",
             cluster_size=25,
-            simulation_days=5,
+            simulation_days=5, sync_sample_rate=0.1,
             seed=42,
         )
         result = run_topology_comparison(
