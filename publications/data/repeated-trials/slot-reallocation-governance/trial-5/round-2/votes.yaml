@@ -1,0 +1,104 @@
+votes:
+  - voterId: claude-opus-4-6
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Exceptionally strong response. The detection problem analysis with three-observable fusion (heartbeat, ranging residuals, optical signature) is the most rigorous treatment across all responses. The insight that 'a communicating but drifting node is more dangerous than a silent but station-keeping one' is critical and was underspecified in Round 1. The quarantine zone sizing via propagated reachable sets with 3σ covariance is properly grounded in orbital mechanics. The witness-based confirmation protocol is a pragmatic and well-justified alternative to full BFT. The ΔV economics by operational phase (buildup vs steady-state) and the formal verification scoping within seL4's Isabelle/HOL toolchain are both concrete and actionable. The sovereignty principle table for authority boundaries is clear and resolves the Tier 2/3 ambiguity decisively.
+  - voterId: claude-opus-4-6
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: The 'Phantom Slot' concept is essentially the same as the quarantine zone / hazard tube proposed by the other two responses but with a new name and less mathematical rigor—no explicit covariance propagation model or sizing algorithm is provided. The Predictive Lease model is sound but less developed than the other responses' lease frameworks. The ΔV auction concept is interesting but underspecified (no mechanism details, no convergence analysis). The catalog bifurcation into global vs local is a good point but obvious given the architecture. Overall the response has merit but is less precise and less actionable than the other two, and some ideas are presented as novel when they are restatements of concepts already on the table.
+  - voterId: claude-opus-4-6
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: Comprehensive and well-structured protocol design. The five-state slot state machine (ASSIGNED/PROBATION/QUARANTINED/VACANT/REASSIGNED) with the crucial rule that no direct ASSIGNED→REASSIGNED transition is allowed is a strong safety invariant. The two-phase commit (local selection + beacon ratification) is well-reasoned. The ΔV escrow concept (20-40% reserve) and max concurrent migrations cap are practical governance mechanisms not fully addressed elsewhere. The slot adjacency graph with criticality scores and k-hop hazard neighborhoods adds useful graph-theoretic structure. The F0-F4 failure taxonomy is slightly more complete than the other responses by including the Byzantine/malicious case. The concrete next steps section is actionable. Slightly less deep on orbital mechanics specifics than Claude's response but broader in protocol coverage.
+  - voterId: gemini-3-pro
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Excellent technical depth. The distinction between 'communicating' and 'station-keeping' is a critical insight for detection. The 'witness-based' consensus protocol is a pragmatic engineering solution that avoids the overhead of full BFT while maintaining safety. The specific handling of the 30-day autonomy constraint via provisional leases is robust.
+  - voterId: gemini-3-pro
+    targetId: gemini-3-pro
+    vote: APPROVE
+    reasoning: Strong conceptual contributions. The 'Phantom Slot' is a useful mental model for expanding uncertainty zones. The concept of 'Strategic Stranding' (leaving slots empty to save ΔV) is a vital economic insight that the other models touched on but didn't emphasize as clearly. The 'Predictive Lease' aligns well with the need for speed.
+  - voterId: gemini-3-pro
+    targetId: gpt-5-2
+    vote: NEUTRAL
+    reasoning: Solid taxonomy and state machine definition, but the proposal relies too heavily on Tier-3 (Beacon) ratification for reassignment ('Phase B'). This conflicts with the 30-day autonomy requirement mentioned in the prompt, where Tier-2 needs more provisional authority. It is a safe, standard response but less insightful than the others.
+  - voterId: gpt-5-2
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: 'Strong Round-2 refinement: clarifies hard parts (multi-sensor failure detection, reachable-set quarantine sizing, authority boundaries, witness confirmation vs full BFT, ΔV-aware reassignment policy). Concrete thresholds/timeouts and autonomy-under-outage handling (provisional leases) meaningfully advance implementability.'
+  - voterId: gpt-5-2
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: Good conceptual framing (phantom slots as expanding uncertainty volumes, predictive leases, local vs global catalog split, explicit acceptance of gaps for ΔV preservation). However, it’s lighter on crisp protocol mechanics (state transitions, authority limits, conflict resolution/rollback safety) and some ideas duplicate others without tightening edge cases.
+  - voterId: gpt-5-2
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: 'Well-structured and actionable: clear separation of node health vs slot state machine, quarantine/hazard tubes with Tier-2 immediate authority, two-phase reallocation with Tier-3 notarization, ΔV escrow/limits, adjacency-graph blast-radius control, and concrete deliverables. Balanced on consensus complexity (quorum without full PBFT).'
+terminationVotes:
+  - modelId: claude-opus-4-6
+    vote: CONCLUDE
+    reasoning: 'The three responses collectively provide a thorough and convergent protocol design. Claude and GPT-5.2 are strongly complementary—Claude excels on detection physics, quarantine sizing, and witness-based confirmation while GPT-5.2 excels on the state machine formalism, two-phase commit structure, and ΔV governance policies. The core architecture is now well-defined: quarantine-first with ranging-fused detection, lease-based slot ownership, cluster coordinator autonomy for safety-critical decisions with beacon ratification for catalog consistency, and formally verified state machines. Further rounds would likely yield diminishing returns; the next productive step is formal specification and simulation, not more discussion.'
+  - modelId: gemini-3-pro
+    vote: CONCLUDE
+    reasoning: The discussion has converged on a robust architecture. We have a consensus on detection (sensor fusion), response (quarantine/phantom slots), authority (Tier 2 provisional / Tier 3 final), and economics (strategic stranding). Further rounds are unlikely to yield significantly better high-level architectural insights.
+  - modelId: gpt-5-2
+    vote: CONCLUDE
+    reasoning: 'Across Claude and GPT-5.2 the protocol is now coherent and implementable: leases + quarantine/hazard tubes + Tier-2 autonomy with Tier-3 ratification, plus detection/tracking and ΔV governance. Further rounds would likely be parameter tuning and message-schema details rather than resolving core governance questions.'
+voteResults:
+  - targetId: claude-opus-4-6
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Exceptionally strong response. The detection problem analysis with three-observable fusion (heartbeat, ranging residuals, optical signature) is the most rigorous treatment across all responses. The insight that 'a communicating but drifting node is more dangerous than a silent but station-keeping one' is critical and was underspecified in Round 1. The quarantine zone sizing via propagated reachable sets with 3σ covariance is properly grounded in orbital mechanics. The witness-based confirmation protocol is a pragmatic and well-justified alternative to full BFT. The ΔV economics by operational phase (buildup vs steady-state) and the formal verification scoping within seL4's Isabelle/HOL toolchain are both concrete and actionable. The sovereignty principle table for authority boundaries is clear and resolves the Tier 2/3 ambiguity decisively.
+      - voterId: gemini-3-pro
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Excellent technical depth. The distinction between 'communicating' and 'station-keeping' is a critical insight for detection. The 'witness-based' consensus protocol is a pragmatic engineering solution that avoids the overhead of full BFT while maintaining safety. The specific handling of the 30-day autonomy constraint via provisional leases is robust.
+      - voterId: gpt-5-2
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: 'Strong Round-2 refinement: clarifies hard parts (multi-sensor failure detection, reachable-set quarantine sizing, authority boundaries, witness confirmation vs full BFT, ΔV-aware reassignment policy). Concrete thresholds/timeouts and autonomy-under-outage handling (provisional leases) meaningfully advance implementability.'
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+  - targetId: gemini-3-pro
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: The 'Phantom Slot' concept is essentially the same as the quarantine zone / hazard tube proposed by the other two responses but with a new name and less mathematical rigor—no explicit covariance propagation model or sizing algorithm is provided. The Predictive Lease model is sound but less developed than the other responses' lease frameworks. The ΔV auction concept is interesting but underspecified (no mechanism details, no convergence analysis). The catalog bifurcation into global vs local is a good point but obvious given the architecture. Overall the response has merit but is less precise and less actionable than the other two, and some ideas are presented as novel when they are restatements of concepts already on the table.
+      - voterId: gemini-3-pro
+        targetId: gemini-3-pro
+        vote: APPROVE
+        reasoning: Strong conceptual contributions. The 'Phantom Slot' is a useful mental model for expanding uncertainty zones. The concept of 'Strategic Stranding' (leaving slots empty to save ΔV) is a vital economic insight that the other models touched on but didn't emphasize as clearly. The 'Predictive Lease' aligns well with the need for speed.
+      - voterId: gpt-5-2
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: Good conceptual framing (phantom slots as expanding uncertainty volumes, predictive leases, local vs global catalog split, explicit acceptance of gaps for ΔV preservation). However, it’s lighter on crisp protocol mechanics (state transitions, authority limits, conflict resolution/rollback safety) and some ideas duplicate others without tightening edge cases.
+    rawScore: 4
+    weightedScore: 3
+    approveCount: 1
+    rejectCount: 0
+  - targetId: gpt-5-2
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: Comprehensive and well-structured protocol design. The five-state slot state machine (ASSIGNED/PROBATION/QUARANTINED/VACANT/REASSIGNED) with the crucial rule that no direct ASSIGNED→REASSIGNED transition is allowed is a strong safety invariant. The two-phase commit (local selection + beacon ratification) is well-reasoned. The ΔV escrow concept (20-40% reserve) and max concurrent migrations cap are practical governance mechanisms not fully addressed elsewhere. The slot adjacency graph with criticality scores and k-hop hazard neighborhoods adds useful graph-theoretic structure. The F0-F4 failure taxonomy is slightly more complete than the other responses by including the Byzantine/malicious case. The concrete next steps section is actionable. Slightly less deep on orbital mechanics specifics than Claude's response but broader in protocol coverage.
+      - voterId: gemini-3-pro
+        targetId: gpt-5-2
+        vote: NEUTRAL
+        reasoning: Solid taxonomy and state machine definition, but the proposal relies too heavily on Tier-3 (Beacon) ratification for reassignment ('Phase B'). This conflicts with the 30-day autonomy requirement mentioned in the prompt, where Tier-2 needs more provisional authority. It is a safe, standard response but less insightful than the others.
+      - voterId: gpt-5-2
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: 'Well-structured and actionable: clear separation of node health vs slot state machine, quarantine/hazard tubes with Tier-2 immediate authority, two-phase reallocation with Tier-3 notarization, ΔV escrow/limits, adjacency-graph blast-radius control, and concrete deliverables. Balanced on consensus complexity (quorum without full PBFT).'
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+winnerId: claude-opus-4-6
+winnerScore: 5

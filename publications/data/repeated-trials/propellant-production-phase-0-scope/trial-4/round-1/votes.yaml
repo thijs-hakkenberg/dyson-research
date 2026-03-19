@@ -1,0 +1,112 @@
+votes:
+  - voterId: claude-opus-4-6
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: 'Exceptionally thorough and well-structured response. The ''Prepared Deferral'' framework is architecturally sound, with clear trigger conditions for propellant module installation, quantified cost estimates, and honest treatment of the hydrogen storage risk. The three-condition gate for module activation is a particularly strong contribution. The economic analysis ($700M-$1.6B/yr propellant logistics cost) provides concrete justification. Minor quibble: the 100-200 tonnes/year demand estimate could be better sourced, but the author acknowledges this uncertainty.'
+  - voterId: claude-opus-4-6
+    targetId: gemini-3-pro
+    vote: APPROVE
+    reasoning: 'Strong response with several distinctive contributions: the ''feedstock-opportunistic'' framing is compelling, the thermal synergy argument (using solar concentration for bake-out) is a genuine engineering insight, and the recommendation to target water/LOX rather than LH2 is well-reasoned. The ''scarred interface'' concept aligns well with the other responses but is articulated crisply. The 200 kW cryo-cooling allocation with zero dedicated electrolysis power is a creative operational concept. Slightly weaker on implementation timeline specifics compared to Opus, but the strategic reasoning is sound.'
+  - voterId: claude-opus-4-6
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: Excellent response that adds unique value through its pragmatic focus on avoiding the cryogenic trap entirely in Phase 0. The three-bin propellant demand model (RCS/utility, local tug ops, long-haul transport) is a useful analytical framework not present in the other responses. The water-as-propellant advocacy is the most developed of the three responses and represents a genuinely different architectural path worth serious consideration. The power reality check math is clean and well-presented. The ICD deliverable recommendation is a concrete, actionable output. Slightly less polished in narrative structure but compensates with operational realism.
+  - voterId: gemini-3-pro
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Excellent programmatic framework. The 'Prepared Deferral' concept perfectly balances the strategic need for propellant with the immediate risks of the critical path. The financial analysis of the 'logistics trap' is compelling.
+  - voterId: gemini-3-pro
+    targetId: gemini-3-pro
+    vote: APPROVE
+    reasoning: Strong technical insight regarding the integration of volatile capture with the solar thermal pre-heating phase of smelting. The argument against Hydrogen in Phase 0 due to storage penalties is a crucial technical differentiator.
+  - voterId: gemini-3-pro
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: Provides necessary quantitative grounding, specifically the power-to-yield calculations (500kW = ~80t water). The recommendation for a small-scale demonstrator bridges the gap between the other two proposals.
+  - voterId: gemini-3-pro
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: Provides necessary quantitative grounding, specifically the power-to-yield calculations (500kW = ~80t water). The recommendation for a small-scale demonstrator bridges the gap between the other two proposals.
+  - voterId: gpt-5-2
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Strong systems-engineering framing (design-in, defer install), ties to Phase 0 constraints (power/TRL/critical path), and offers concrete triggers, interfaces, and a fallback plan. Some numbers are speculative, but the overall architecture guidance is actionable and on-scope.
+  - voterId: gpt-5-2
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: Good high-level recommendation (capture/store first, modular ‘scarred’ interfaces) and correctly flags LH2 storage pain. However, it introduces questionable specifics (e.g., 200 kW continuous for cryocooling, water-NTP assumption) and some chemistry/ops claims are under-supported, reducing reliability.
+  - voterId: gpt-5-2
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: 'Well-balanced proposal: ISRU-ready architecture plus small early demonstrator, explicitly avoids making cryogenic depot ops the Phase 0 pacing item, and provides clear power/scale reasoning and next-step trade studies. Stays aligned with Phase 0 mission priorities while addressing logistics lock-in.'
+terminationVotes:
+  - modelId: claude-opus-4-6
+    vote: CONCLUDE
+    reasoning: 'All three responses converge on a remarkably consistent core recommendation: design for propellant from day one, defer full implementation, capture volatiles as a byproduct of metal refining, and avoid cryogenic hydrogen in Phase 0. The differences are productive variations on implementation details (power allocation strategy, propellant type priorities, timeline triggers) rather than fundamental disagreements. Together they provide a comprehensive treatment of the question with quantified economics, technical risk assessment, and actionable architecture recommendations. Further rounds would likely yield diminishing returns—the key decision framework is well-established.'
+  - modelId: gemini-3-pro
+    vote: CONCLUDE
+    reasoning: 'The discussion has reached a high-quality consensus. All models agree on the core architectural decision: propellant production must be in scope for design/interfaces (''ISRU-ready'') but deferred or limited in initial implementation to protect the primary metal refining mission. The remaining differences (Hydrolox vs. Methalox vs. Water) are trade studies suitable for the next phase of design, not high-level scope questions.'
+  - modelId: gpt-5-2
+    vote: CONCLUDE
+    reasoning: 'Across responses there is convergent resolution: include propellant capability architecturally (interfaces/volatile capture) but defer high-rate cryogenic production to later, with early low-power demos. Further rounds would likely refine numbers rather than change the decision.'
+voteResults:
+  - targetId: claude-opus-4-6
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: 'Exceptionally thorough and well-structured response. The ''Prepared Deferral'' framework is architecturally sound, with clear trigger conditions for propellant module installation, quantified cost estimates, and honest treatment of the hydrogen storage risk. The three-condition gate for module activation is a particularly strong contribution. The economic analysis ($700M-$1.6B/yr propellant logistics cost) provides concrete justification. Minor quibble: the 100-200 tonnes/year demand estimate could be better sourced, but the author acknowledges this uncertainty.'
+      - voterId: gemini-3-pro
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Excellent programmatic framework. The 'Prepared Deferral' concept perfectly balances the strategic need for propellant with the immediate risks of the critical path. The financial analysis of the 'logistics trap' is compelling.
+      - voterId: gpt-5-2
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Strong systems-engineering framing (design-in, defer install), ties to Phase 0 constraints (power/TRL/critical path), and offers concrete triggers, interfaces, and a fallback plan. Some numbers are speculative, but the overall architecture guidance is actionable and on-scope.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+  - targetId: gemini-3-pro
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gemini-3-pro
+        vote: APPROVE
+        reasoning: 'Strong response with several distinctive contributions: the ''feedstock-opportunistic'' framing is compelling, the thermal synergy argument (using solar concentration for bake-out) is a genuine engineering insight, and the recommendation to target water/LOX rather than LH2 is well-reasoned. The ''scarred interface'' concept aligns well with the other responses but is articulated crisply. The 200 kW cryo-cooling allocation with zero dedicated electrolysis power is a creative operational concept. Slightly weaker on implementation timeline specifics compared to Opus, but the strategic reasoning is sound.'
+      - voterId: gemini-3-pro
+        targetId: gemini-3-pro
+        vote: APPROVE
+        reasoning: Strong technical insight regarding the integration of volatile capture with the solar thermal pre-heating phase of smelting. The argument against Hydrogen in Phase 0 due to storage penalties is a crucial technical differentiator.
+      - voterId: gpt-5-2
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: Good high-level recommendation (capture/store first, modular ‘scarred’ interfaces) and correctly flags LH2 storage pain. However, it introduces questionable specifics (e.g., 200 kW continuous for cryocooling, water-NTP assumption) and some chemistry/ops claims are under-supported, reducing reliability.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gpt-5-2
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: Excellent response that adds unique value through its pragmatic focus on avoiding the cryogenic trap entirely in Phase 0. The three-bin propellant demand model (RCS/utility, local tug ops, long-haul transport) is a useful analytical framework not present in the other responses. The water-as-propellant advocacy is the most developed of the three responses and represents a genuinely different architectural path worth serious consideration. The power reality check math is clean and well-presented. The ICD deliverable recommendation is a concrete, actionable output. Slightly less polished in narrative structure but compensates with operational realism.
+      - voterId: gemini-3-pro
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: Provides necessary quantitative grounding, specifically the power-to-yield calculations (500kW = ~80t water). The recommendation for a small-scale demonstrator bridges the gap between the other two proposals.
+      - voterId: gemini-3-pro
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: Provides necessary quantitative grounding, specifically the power-to-yield calculations (500kW = ~80t water). The recommendation for a small-scale demonstrator bridges the gap between the other two proposals.
+      - voterId: gpt-5-2
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: 'Well-balanced proposal: ISRU-ready architecture plus small early demonstrator, explicitly avoids making cryogenic depot ops the Phase 0 pacing item, and provides clear power/scale reasoning and next-step trade studies. Stays aligned with Phase 0 mission priorities while addressing logistics lock-in.'
+    rawScore: 8
+    weightedScore: 7
+    approveCount: 4
+    rejectCount: 0
+winnerId: gpt-5-2
+winnerScore: 7

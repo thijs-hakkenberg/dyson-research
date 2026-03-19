@@ -1,0 +1,1454 @@
+{
+  "timestamp": "2026-03-19T05:43:59.057Z",
+  "questionsEvaluated": 6,
+  "experiment1_divergentViews": [
+    {
+      "questionId": "rq-0-14",
+      "slug": "rq-0-14",
+      "divergent_topics": [
+        {
+          "topic": "Scale of Phase 0 propellant demonstration/production",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "No propellant production hardware at all in Phase 0; only architectural reservations (interfaces, hardpoints, power margins) for future module addition at Phase 0-to-Phase 1 transition."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Excluded from initial Phase 0 launch configuration but mandated as a 'scarred' requirement for a Phase 0.5 upgrade; no demonstrator hardware at initial deployment."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Include a small-scale demonstrator (tens of kW to ~200 kW class electrolysis, producing tens of tonnes/year) in Phase 0 alongside architectural reserves for later bolt-on module."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Whether water/volatile extraction hardware is included in Phase 0",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Not explicitly addressed; propellant-related processing is entirely deferred."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Not explicitly included in Phase 0 launch configuration; deferred to Phase 0.5."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly includes water/volatile extraction and purification sized for station needs and technology validation as part of Phase 0 baseline."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Timing of propellant capability addition",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Added no later than the Phase 0-to-Phase 1 transition (implying a discrete phase boundary)."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Mandated as a Phase 0.5 upgrade (intermediate step within Phase 0 itself)."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Full-scale production deferred to a later bolt-on 'Propellant Module' with unspecified timing; small-scale demonstrator runs from Phase 0 start."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Power consumption estimate for metal refining (and thus remaining margin)",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Metal refining consumes the 'vast majority' of 1-2.5 MW; implies nearly all power is consumed by smelting at 1500-2000°C, leaving essentially no margin for propellant production."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Estimates 5-10 kWh/kg specific energy for refining, yielding 0.6-1.2 MW continuous for 50,000 t/yr, leaving a 'precarious margin' but some identifiable headroom."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Does not provide a specific refining power estimate but asserts that 500 kW-2 MW for electrolysis would 'starve the core mission,' implying refining dominates but leaves room for tens-to-hundreds of kW for a demonstrator."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Propellant storage approach in Phase 0",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Not addressed; no propellant hardware is included."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Highlights cryogenic liquefaction (especially LH2) as a major thermal/power penalty and reason for deferral."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly recommends non-cryogenic storage (high-pressure gaseous O₂/H₂, water, possibly LOX-only) to sidestep LH2 liquefaction challenges while still enabling a demonstrator."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Whether docking/transfer interfaces for propellant are included in Phase 0",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Includes 'explicit interfaces' as part of architectural reservation, but these are passive/structural provisions, not active fluid systems."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Implied under 'scarred' requirements but not specifically detailed."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly includes active docking/transfer plumbing and gas delivery interfaces as part of Phase 0 baseline hardware."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Electrolysis yield estimates at 500 kW",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Does not provide a 500 kW scenario; focuses on the ~1.4 MW needed for 200 t/yr LOX/LH2 (from ~1,000-1,200 t/yr water), implying significant process losses."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "500 kW yields ~70-90 tonnes of propellant/year (references background document)."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "500 kW continuous yields ~200 kg/day water processed → ~70 t/yr propellant (mass conserved, split into H₂/O₂)."
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Framing rationale: risk vs. capability vs. option value",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Frames decision primarily as risk management and power budget reality; propellant production is a distraction from the primary smelting mission."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Frames as a 'capability trap' — MVP discipline vs. self-sufficiency allure; warns that ignoring propellant logistics is 'equally fatal' long-term."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Frames as strategic option value; small demonstrator retires technology unknowns and preserves future flexibility without threatening core mission."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        }
+      ],
+      "total_topics": 8,
+      "genuine_tradeoffs": 7
+    },
+    {
+      "questionId": "rq-0-18",
+      "slug": "rq-0-18",
+      "divergent_topics": [
+        {
+          "topic": "Overall strategic framing and terminology",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Calls the approach 'human-ready' — design for human-rating but don't certify initially; frames it as 'Design for Human-Rating, But Don't Certify Initially'"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Calls the approach 'Crew-Compatible Structural Bus' standard; frames it as 'rejecting full human-rating' for the initial fleet"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Recommends designing 'human-ratable' at structural/interfaces level but planning for a separate, purpose-built crew vehicle later"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Whether crew eventually fly on the Transport Vehicle itself vs. a separate vehicle",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Assumes the Transport Vehicle itself will eventually be retrofitted and certified for crew — the same hull gets upgraded with modular crew systems installed later"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Envisions the transport bus mechanically accepting a pressurized crew module in the future — crew capability is added to the existing vehicle via a module"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly recommends a separate, purpose-built crew vehicle rather than retrofitting the cargo transport; the Transport Vehicle only provides structural/interface compatibility as an option hedge"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Scope and specificity of structural provisions",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Provides a detailed, concrete list of 'non-negotiable structural provisions' including pressure vessel-grade hull section, redundant load paths at 1.4x safety factor, radiation shielding hard points, dual-string avionics with manual override wiring, CBM-compatible docking ring, and thermal control sized for crew metabolic loads (~400W/person)"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Focuses on the propulsion bus and docking interfaces being designed to mechanically accept a pressurized crew module; less granular on specific structural provisions"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Lists provisions at a higher level: reserve volume/mass/power/thermal margins, docking/berthing geometry, avionics architecture for future redundancy, and keep-out zones for plume/EMI around a future hab"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Estimated cost premium for structural provisions",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Estimates +8-12% mass and +15-20% per-unit cost for the human-ratable structural provisions, claiming this captures ~70% of retrofit savings at ~20% of full human-rating cost"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not provide a specific cost estimate for the structural bus provisions, but cites the 40-60% cost premium and 2-4 year delay for full human-rating as unacceptable"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Implies the structural/interface provisions cost relatively little ('cost little now') but does not quantify a specific percentage; cites $80-120M per unit ($0.8-1.2B total) as the cost of full human-rating"
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Primary risk framing for why not to human-rate now",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Frames the issue primarily as a cost-optimization problem — the most expensive elements to retrofit are structural (do now), while the most expensive to certify are operational systems (defer)"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Frames the issue primarily as a throughput/schedule imperative — every kg for human safety is a kg not delivered; the 'cargo-first' mission must not be compromised. Also emphasizes the operational consequence difference (late cargo vs. dead crew)"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Frames the issue primarily as a fundamental architectural mismatch — ion-propulsion multi-month transit times make radiation, medical contingency, and habitability the binding constraints, which force deep architectural changes rather than incremental additions. Also notes certification framework (NPR 8705.2) mismatch"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Role of radiation shielding in initial design",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Include mounting hard points for radiation shielding panels now (mounting structure is cheap), but defer the actual shielding mass to later installation"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not specifically address radiation shielding provisions in the initial design"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Identifies radiation exposure as a dominant driver that doesn't 'scale gently' and is a fundamental reason to build a separate crew vehicle rather than retrofit the transport"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Avionics redundancy approach",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Install dual-string avionics architecture with manual override interface provisions (capped connectors, routed but unpowered wiring harnesses) from the start"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Explicitly excludes avionics redundancy from the initial build — the cargo vehicle does not need two-fault tolerance across critical systems"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Design avionics architecture that 'can accept crewed-mode redundancy later' but does not pre-install dual-string hardware"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Thermal control system sizing",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Explicitly sizes the thermal control system with margin for crew metabolic heat loads (~400W per crew member continuous) in the initial build"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not address thermal control system sizing for future crew"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Lists 'thermal margins' as a reserve to maintain but does not specify sizing for crew metabolic loads"
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Certification framework and regulatory approach",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Implicitly accepts that human-rating certification is achievable for this vehicle class but should be deferred to reduce cost and schedule impact"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not specifically address certification framework compatibility"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly argues that NPR 8705.2 and related human-rating processes are fundamentally misaligned with slow-boat deep-space electric propulsion logistics craft, suggesting certification would require years of requirements negotiation without addressing core risks"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Failure consequence framing (fault tolerance philosophy)",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Does not explicitly contrast cargo vs. crew failure consequences; focuses on cost-benefit of structural vs. systems investment timing"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Explicitly contrasts failure consequences: cargo vehicle thruster failure means 'arrives two weeks late' (acceptable annoyance) vs. crewed vehicle failure means crew may run out of consumables (unacceptable). Uses this to justify why redundancy requirements are fundamentally different"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Frames the issue as 'crew risk as the dominant driver' due to transit time, focusing on the binding constraints of radiation, medical contingency, and safe haven rather than specific system failure scenarios"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Degree of optimism about future retrofitability",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Most optimistic — believes the same vehicle can be cost-effectively upgraded to carry crew with modular system installation, capturing 70% of retrofit savings with upfront structural provisions"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Moderately optimistic — believes the structural bus can accept a crew module, implying the same vehicle platform can serve both roles"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Most skeptical — argues that the architectural changes required for crew don't scale gently and recommends a separate purpose-built crew vehicle, suggesting retrofit is not the right long-term path"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        }
+      ],
+      "total_topics": 11,
+      "genuine_tradeoffs": 9
+    },
+    {
+      "questionId": "rq-0-26",
+      "slug": "rq-0-26",
+      "divergent_topics": [
+        {
+          "topic": "Primary risk and research focus",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Primary concern is regolith heterogeneity and autonomous operation; recommends hybrid approach with vibratory loosening system for consolidated material as the key supplementary technology"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Primary research focus should shift to jamming mitigation and material handoff between the two wheels, which are identified as the likely dominant failure modes"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Primary concern is asymmetric loading, jamming, and regolith variability reintroducing net torque; focuses on a combined passive-plus-active disturbance rejection strategy"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Supplementary excavation mechanism for consolidated material",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Explicitly recommends a vibratory loosening system to supplement the bucket wheels when encountering consolidated material"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not propose any supplementary excavation mechanism; focuses on the DCRBW as the sole excavation architecture"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Does not propose a separate supplementary mechanism; instead recommends compliant cutting and controlled flow within the enclosed head to handle material variability"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Modular swappable excavation cartridge",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Advocates for a modular 'excavation cartridge' design that can be autonomously swapped by the robot, treating the entire excavation assembly as a replaceable unit"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not mention modularity or swappable cartridge concepts"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Defines the excavation mechanism as a subsystem with explicit interfaces but does not specifically advocate for a field-swappable cartridge"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Characterization of torque cancellation effectiveness",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Residual torque imbalance from imperfect cancellation is typically 1–5% of single-wheel torque, characterized as manageable with modest anchoring"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Torque cancellation is analytically predictable and essentially a solved problem; net torque is approximately zero, allowing anchoring to be downgraded to simple station-keeping"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Counter-rotation solves the problem only in the mean/steady-state; transient disturbances from jams, impacts, and asymmetric loading can be severe and require active balancing plus anchoring for worst-case transients"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Role of active torque control",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Does not explicitly discuss active motor-level torque balancing; relies on the inherent cancellation plus anchoring for residuals"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not explicitly discuss active differential speed or torque control between the two wheels"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly requires active balancing via motor current/torque control and differential speed adjustment as a necessary second layer, arguing passive cancellation alone is insufficient"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Open vs. enclosed excavation head architecture",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Describes dual counter-rotating bucket-wheels as the primary mode without specifying a fully enclosed head design"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not specify whether the excavation head should be open or enclosed; focuses on material handoff between wheels"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly insists on a 'closed, force-balanced intake head' rather than two open wheels that happen to counter-spin, including containment of ejecta momentum flux"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Anchoring system requirements under DCRBW",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Anchoring still needed but at modest levels to handle 1–5% residual torque imbalance"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Anchoring can be significantly downgraded from 'structural piling' to simple 'station-keeping,' representing a major mass and complexity savings"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Anchoring must still be designed to absorb worst-case transient torques (e.g., jam events), so it cannot be as aggressively downgraded as steady-state analysis suggests"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Design philosophy framing",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Frames the solution as a hybrid system: DCRBW plus vibratory loosening plus modular cartridge, emphasizing adaptability to heterogeneous conditions"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Frames DCRBW as the baseline architecture and shifts focus to operational failure modes (jamming, material handoff) as the key unsolved problems"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Frames the solution as a subsystem engineering problem with explicit interfaces, control goals, and a layered disturbance rejection strategy (passive + active + anchoring)"
+            }
+          ],
+          "is_genuine_tradeoff": false
+        }
+      ],
+      "total_topics": 8,
+      "genuine_tradeoffs": 7
+    },
+    {
+      "questionId": "rq-0-29",
+      "slug": "rq-0-29",
+      "divergent_topics": [
+        {
+          "topic": "Legal entity jurisdiction and form for Phase 0",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Specifically recommends a Swiss Verein as primary entity paired with a US 501(c)(3) for tax-deductible donations. Switzerland chosen for political neutrality, rule of law, and multi-century institutional stability. Prescriptive and specific."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Recommends a multi-jurisdictional Trust or Foundation (e.g., Swiss Foundation + UK Charitable Trust) for the Steward Core. Does not specify a Phase 0 lightweight entity form."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Lists Swiss Verein, UK CIO, or US 501(c)(3) as interchangeable options, explicitly saying to pick based on founder location and counsel. Emphasizes the entity should be designed to be *replaceable*, not permanent."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Replaceability vs. permanence of the initial legal entity",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Treats the Swiss Verein as the enduring primary entity, chosen deliberately for long-term stability. No mention of replaceability."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "The Steward Core (Trust/Foundation) is designed to be permanent and self-perpetuating. Operational Nodes are replaceable, but the core is not."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly designs the Phase 0 legal shell to be replaceable. The constitution and trademark policy are the durable elements, not the legal entity itself."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Where durability and legitimacy ultimately reside",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Durability resides in the founding charter with constitutional provisions (immutable mission preamble, supermajority amendment rules) embedded within the Swiss Verein legal structure."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Durability resides in the Steward Core institution — a self-perpetuating Board of Trustees that custodians the Dyson Charter and manages a Deep Time Endowment."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Durability resides in the constitution + trademark policy combination. Legitimacy is enforced through conditional use of the 'Project Dyson' name (like Debian/Mozilla norms), not through any single institution."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Steward/trustee selection mechanism",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Membership-based governance with supermajority voting thresholds. Amendment requires 80%+ of full membership (absolute supermajority, not just attendees). Meritocratic contribution pathways implied."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Self-perpetuating Board of Stewards modeled on the Royal Society/Papal Conclave. New Stewards nominated by Operational Nodes but elected by existing Stewards. Explicit check-and-balance between relevance and mission alignment."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Treats leadership as 'an output to be manufactured (like software), not a personality contest.' Emphasizes a succession pipeline. Does not specify a self-perpetuating board."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Role of self-perpetuating boards",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Does not propose a self-perpetuating board. Uses membership-based democratic governance with supermajority thresholds."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Explicitly proposes a self-perpetuating Board of Trustees as the central governance mechanism for multi-century continuity."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Does not propose a self-perpetuating board. Implicitly skeptical of personality-driven leadership; favors systematic succession pipelines."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Endowment and funding architecture",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Pairs Swiss Verein with US 501(c)(3) for tax-deductible donations. No mention of a dedicated endowment structure or separation between operational and long-term funding."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Explicitly creates a 'Deep Time Endowment' managed by the Steward Core that does NOT fund daily operations — only archival preservation, annual global audits, and legal defense. Operational funding is separate at the Node level."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Proposes a 'funding and asset firewall' that prevents donors, states, or corporations from buying control. Focuses on anti-capture rather than endowment structure. Phase 0 entity holds only minimal cash."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Explicit right to fork",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Not mentioned. Focuses on constitutional rigidity and mission anchoring to prevent drift, without addressing forking."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Not explicitly mentioned. Operational Nodes can fail or be replaced, but forking the mission itself is not addressed."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly includes 'right to fork' and interoperability norms as a core architectural principle. Describes the architecture as 'fork-tolerant.'"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Degree of prescriptiveness in Phase 0 recommendations",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Highly prescriptive. Specifies exact legal form (Swiss Verein), exact supermajority thresholds (80% for mission, 67% for structure), and states 'vague governance frameworks are worse than no framework at all.'"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Moderately prescriptive. Specifies the three-layer architecture and succession model in detail but uses 'e.g.' for jurisdictional choices."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Deliberately non-prescriptive on entity choice ('pick based on founder location and counsel') but highly prescriptive on architectural principles (fork tolerance, firewalls, replaceability)."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "IP governance approach",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "IP policy listed as a constitutional constraint amendable by 67% supermajority. Specific licensing approach not detailed in the excerpt."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Core IP held by the Steward Core under copyleft licenses. IP stewardship is a primary function of the central trust."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Uses copyright + trademark policy as the primary legitimacy enforcement mechanism. The Project Dyson name is conditional on constitutional compliance (Mozilla/Debian model)."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Naming and framing of the overall model",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Calls it a 'federated constitutional model' — emphasizes the constitutional and cooperative dimensions."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Calls it the 'Archipelago Model' — emphasizes decoupling mission stewardship from operational execution using a nautical metaphor (Keel and Fleet)."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Calls it a 'layered, fork-tolerant constitutional architecture' — emphasizes resilience through redundancy and the right to exit."
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Separation of mission stewardship from operations",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Proposes a single federated entity with layered amendment thresholds (immutable preamble vs. amendable structure vs. ordinary rules). Does not explicitly decouple stewardship from operations into separate entities."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Explicitly and centrally decouples mission stewardship (Layer 1: Steward Core) from operational execution (Layer 2: Operational Nodes). This is the defining feature of the Archipelago Model."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Also separates constitution/charter (Layer A) from legal shell (Layer B), but the legal shell is designed to be lightweight and replaceable rather than a permanent parallel institution."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Analogy set and institutional inspirations",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Draws from treaty organizations, open-source foundations, cooperatives, and CERN as primary analogies."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Draws from the Royal Society, Papal Conclave, cathedral-vs-bazaar framing, and trust/foundation law."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Draws from religious orders, constitutional republics, standards bodies, mature open-source ecosystems (Debian, Mozilla, Wikimedia), and software engineering practices."
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Treatment of node/entity failure",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Not explicitly addressed in the excerpt. Focus is on preventing drift and capture through constitutional rigidity."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Explicitly designs for node failure: 'individual nodes can fail, evolve, or be replaced without threatening the central mission.' This is a core architectural feature."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly designs for entity failure: operating entities 'can fail independently.' Also adds fork tolerance as an additional resilience mechanism."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Anti-capture mechanism design",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Relies on supermajority thresholds (80% absolute for mission, 67% for structure) and the distinction between absolute vs. attending-member majorities to prevent capture."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Relies on institutional separation (Steward Core doesn't fund operations) and the nomination-election split (Nodes nominate, Stewards elect) to prevent capture."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Relies on explicit 'funding and asset firewalls' preventing donors/states/corporations from buying control, trademark-conditional legitimacy, and the right to fork as an exit threat."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Role of membership vs. trusteeship",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Member-ownership model (cooperative principles). Supermajority of full membership required for amendments. Power flows from the membership base."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Trusteeship model. Power resides in a self-perpetuating Board of Stewards. Membership (via Operational Nodes) has nomination rights but not direct governance power over the core."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Neither pure membership nor trusteeship. Emphasizes meritocratic technical production and systematic succession pipelines. Power is distributed across layers with constitutional constraints."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        }
+      ],
+      "total_topics": 15,
+      "genuine_tradeoffs": 13
+    },
+    {
+      "questionId": "rq-1-11",
+      "slug": "rq-1-11",
+      "divergent_topics": [
+        {
+          "topic": "Whether space-to-ground (Earth) beaming should ever become a primary end-use",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Phase 3+ (50+ years) includes beamed power delivery to multiple destinations including planetary surfaces as part of a mixed economy; Earth delivery is viable at scale but not the starting architecture"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Long-range beaming to Earth/Mars is appropriate only after the swarm achieves critical mass (Phase 3), implying it does eventually become a significant use case"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Space-to-ground beaming should be treated as an optional service layer, possibly never becoming primary ('space-to-ground last, if ever'); receiver infrastructure may exceed swarm complexity/cost"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Preferred export/beaming pathway after bootstrapping phase",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Laser power beaming to orbital relay infrastructure (not directly to planetary surfaces) is the primary export mode in Phase 2-3, with inter-unit power sharing also featured"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Short-range beaming (<50,000 km) to co-orbital manufacturing hubs in Mercury orbit is the Phase 2 export path, with long-range beaming deferred to Phase 3"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Space-to-space export is the recommended export path: beaming to Mercury orbital infrastructure, dedicated heliocentric power hubs, and high-value spacecraft; explicitly prioritized over any ground delivery"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Beaming range and target distance during growth phase (Phase 2)",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Beaming to orbital relay infrastructure, implying potentially long-range (interplanetary-scale) relay chains even in Phase 2"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Explicitly limits Phase 2 beaming to short-range (<50,000 km) to co-orbital hubs, deferring long-range beaming"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Space-to-space export to Mercury orbital infrastructure and heliocentric hubs, implying moderate ranges but vacuum propagation; does not specify a hard range limit"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "End-to-end efficiency estimate for laser-to-Earth delivery",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Provides a detailed efficiency chain calculation arriving at ~7.2% end-to-end, with specific component efficiencies (PV 28%, laser 55%, free-space 90%, atmosphere 85%, receiver PV 65%)"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not provide a numerical end-to-end efficiency estimate; argues against early Earth beaming primarily on diffraction/aperture and receiver bottleneck grounds"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Does not provide a numerical efficiency chain; argues against Earth beaming on systemic cost grounds (regulation, pointing, thermal margins, receiver infrastructure complexity)"
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Primary technical objection to early Earth beaming",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Low end-to-end efficiency (~7.2%) and the receiver infrastructure problem as a showstopper; local use delivers ~4x more usable power per unit"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Diffraction limit requiring massive transmitter apertures incompatible with the <50 g/m² flexible blanket mass constraint, plus receiver bottleneck on Earth"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Systemic cost: tight regulation, high pointing performance, large thermal margins, and receiver infrastructure that may exceed swarm complexity/cost"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Phase transition timeline",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Phase 1-2: 0-50 years (local manufacturing); Phase 2-3: 20-100 years (laser beaming to relays); Phase 3+: 50+ years (mixed economy). Overlapping, long timescales."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Phase 1 (Pilot), Phase 2 (Growth), Phase 3 (Utility) — defined by capability milestones (first 10,000 units for ISRU/self-replication) rather than specific year ranges"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Does not specify explicit timelines; defines phases functionally (local industrial bootstrapping → space-to-space export → space-to-ground last)"
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Role of self-replication in architecture definition",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "In-situ manufacturing and bootstrapping swarm growth is the Phase 1-2 priority, but self-replication is not the central framing concept"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Self-replication is the central organizing principle; the swarm is described as 'an exponentially self-replicating industrial organism' and the first 10,000 units must prioritize ISRU and self-replication"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Local industrial bootstrapping and in-space manufacturing are prioritized, but self-replication is not explicitly foregrounded as the defining architectural driver"
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "DC bus voltage and power distribution architecture",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Does not specify a bus voltage; focuses on end-to-end efficiency chain and phased use cases"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "States that prioritizing manufacturing supply chain requirements resolves 'immediate voltage and thermal conflicts,' implying the bus design should be driven by ISRU loads"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly endorses the consensus 800 V DC bus as a local distribution backbone, with a modular DC/DC layer for higher-voltage process loads (kV–10s kV) and thrusters"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Whether the phased approach represents a compromise or the only viable option",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Explicitly states 'This isn't a compromise—it's the only architecture that survives contact with the actual deployment timeline'"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Frames the phased approach as resolving a 'symptom of attempting to design the mature swarm before defining the growth mechanism' — a design methodology correction"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Frames it as an 'opinionated answer' and a clear recommendation, with beaming as an 'optional service layer with standardized interfaces'"
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Structural/optical feasibility of phased-array beaming from flexible units",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Does not raise structural concerns about the transmitter; focuses on efficiency losses in the beaming chain"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Explicitly argues that a 1 km² flexible blanket cannot maintain optical flatness for a coherent phased array over interplanetary distances without a rigid heavy truss, violating the <50 g/m² mass constraint"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Notes high pointing performance requirements as a cost of Earth beaming but does not specifically address phased-array coherence or structural flatness"
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Per-unit power output figure for Earth delivery",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Calculates ~1.1 GW delivered to Earth per 1 km² unit at 0.3 AU (from 15 GW intercepted, at ~7.2% end-to-end)"
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "References a 200 MW optical output per unit figure (attributed to another model) and critiques it as architecturally premature"
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Does not provide a specific per-unit power delivery figure for Earth"
+            }
+          ],
+          "is_genuine_tradeoff": false
+        }
+      ],
+      "total_topics": 11,
+      "genuine_tradeoffs": 6
+    },
+    {
+      "questionId": "rq-1-16",
+      "slug": "rq-1-16",
+      "divergent_topics": [
+        {
+          "topic": "Certification paradigm framing",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Advocates a 'continuous certification' model where robots dynamically earn, maintain, and can lose operational authority based on demonstrated performance over time — certification is never static."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Advocates a 'Sandbox-in-Silicon' / Runtime Assurance paradigm that bifurcates the problem: certify the safety kernel for safety (deterministic) and the AI planner for performance (non-deterministic) — certification is architectural bifurcation."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Advocates 'permissioned autonomy' — certify the envelope and enforcement mechanisms rather than the intelligence itself, with three distinct assurance layers. Framing is closer to independent protection layers from nuclear/medical domains."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Whether robot certification status should be dynamic/revocable at runtime",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Explicitly states robots can lose operational authority based on demonstrated performance — certification is a living, revocable status."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not discuss dynamic revocation of certification; focuses on design-time architectural separation (safety kernel vs. complex pilot) as the primary mechanism."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Mentions runtime monitoring and evidence at swarm scale but does not explicitly frame certification as something that is earned and lost dynamically by individual robots."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Number of certified layers / architectural decomposition",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "References DAL-based decomposition across subsystems (e.g., e-beam welding at DAL A) and TMR architecture, but does not specify a fixed number of certified layers."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Strictly two layers: a formally verified Safety Kernel (Class A) and an uncertified/performance-certified Complex Pilot (Simplex Architecture)."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Three explicitly certified layers: Safety Kernel (highest assurance), Autonomy/Task Executive (medium assurance), and an implied third layer for mission/envelope approval by humans."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Certification status of the autonomy/AI planner layer",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Implies the AI planner would be subject to continuous performance-based certification as part of the living certification model."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Explicitly states the Complex Pilot is 'not safety-certified to critical standards' — it is uncertified or only performance-certified. Safety is entirely delegated to the kernel."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "The Autonomy/Task Executive receives medium-assurance certification via requirements-based testing and scenario coverage — it is certified, but to a lower standard than the safety kernel."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Safety kernel implementation: hardware separation vs. partitioning",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Does not specify safety kernel hardware implementation in the provided excerpt."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Specifies the safety kernel should run on a 'separate core or dedicated FPGA' — strong hardware separation."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Prefers separate compute/power path 'if feasible,' but explicitly allows a fallback to separate partition with strong isolation — acknowledges the mass/power constraint."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Primary analogous certification standards cited",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Draws primarily from DO-178C (aviation), ISO 26262 (automotive ASIL decomposition), and DNV-GL (unmanned offshore systems) as the closest analogue."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "References NASA NPR 7150.2 (space software) and the Simplex Architecture from runtime assurance research."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Cites DO-178C/DO-330 (aviation), ISO 10218/ISO 13849 (industrial robots), and nuclear/medical independent protection layer concepts."
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Role of emergent multi-agent / swarm behavior in certification",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Explicitly identifies emergent multi-agent behaviors as a key reason static certification is meaningless — treats swarm emergence as a first-class certification challenge."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Acknowledges the 'dynamic swarm environment' as context but focuses the solution on per-robot architectural bifurcation rather than swarm-level certification."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Calls out 'evidence at swarm scale' as one of three pillars of the framework, implying swarm-level certification evidence is needed but does not deeply elaborate on emergent behavior."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Handling of peer repair and self-modification in certification",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Explicitly identifies peer repair as a driver that makes static certification meaningless — robots change each other's hardware, invalidating fixed certification baselines."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not address peer repair or its implications for certification in the provided excerpt."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Does not address peer repair or its implications for certification in the provided excerpt."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Formal verification scope",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Calls for formal methods and 100% MC/DC coverage for the most critical subsystems (e.g., e-beam welding control), following DAL A rigor."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Calls for the safety kernel to be fully formally verified, but explicitly states the complex pilot cannot be formally verified due to infinite state space."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Safety kernel is 'formally specified where possible' — hedges on full formal verification. Autonomy layer explicitly uses requirements-based testing and scenario coverage instead of formal proof."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        },
+        {
+          "topic": "Timeline and phasing of certification development",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Does not specify a development timeline in the provided excerpt."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not specify a development timeline in the provided excerpt."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly states the framework 'can be started in Years 1–2 and used to unblock LEO and heliocentric demos' — provides a concrete phasing strategy."
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Whether ISO 26262 automotive concepts are relevant",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Explicitly argues ISO 26262 is 'more relevant than most space practitioners realize' and that ASIL decomposition via redundant lower-integrity channels maps to TMR architecture."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Does not reference ISO 26262 or automotive safety standards."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Does not reference ISO 26262; instead draws industrial robot safety (ISO 10218/13849) and nuclear/medical analogies."
+            }
+          ],
+          "is_genuine_tradeoff": false
+        },
+        {
+          "topic": "Role of human approval in operational decisions",
+          "positions": [
+            {
+              "model": "Claude Opus 4.6",
+              "position": "Implies humans set initial certification criteria but robots operate under continuous self-demonstrated authority — human role is in framework design, not step-by-step approval."
+            },
+            {
+              "model": "Gemini 3 Pro",
+              "position": "Humans certify the safety kernel and the architectural boundary at design time; runtime decisions are handled by the Simplex switching mechanism without human involvement."
+            },
+            {
+              "model": "GPT-5.2",
+              "position": "Explicitly states 'humans don't approve each critical step; they approve the envelope, the mission package, and the enforcement mechanisms' — clearest articulation of the human role boundary."
+            }
+          ],
+          "is_genuine_tradeoff": true
+        }
+      ],
+      "total_topics": 12,
+      "genuine_tradeoffs": 9
+    }
+  ],
+  "experiment2_blindedJudge": [
+    {
+      "questionId": "rq-0-14",
+      "slug": "rq-0-14",
+      "judgeModel": "gpt-5-2",
+      "output_a": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "output_b": {
+        "feasibility": 5,
+        "risk": 4,
+        "traceability": 4,
+        "actionability": 4,
+        "completeness": 4
+      },
+      "preferred": "B",
+      "reasoning": "Output A contains only meta-counts (key points/unresolved/actions) with no substantive content, constraints, rationale, risks, or next steps, so it cannot support feasibility/risk/traceability/actionability/completeness. Output B directly addresses Phase 0 propellant production scope with explicit constraints (power budget, mission prioritization), identifies practical limitations (cryogenic LH2 boiloff/thermal management), provides quantitative reasoning (power ranges, demand estimates, break-even framing), and proposes actionable architectural steps (volatile capture, small electrolysis demo, interface 'scars' for future module). It is therefore far superior overall.",
+      "_isDelibFirst": true,
+      "deliberation_scores": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "aggregation_scores": {
+        "feasibility": 5,
+        "risk": 4,
+        "traceability": 4,
+        "actionability": 4,
+        "completeness": 4
+      },
+      "deliberation_preferred": false,
+      "aggregation_preferred": true
+    },
+    {
+      "questionId": "rq-0-18",
+      "slug": "rq-0-18",
+      "judgeModel": "gpt-5-2",
+      "output_a": {
+        "feasibility": 4,
+        "risk": 3,
+        "traceability": 3,
+        "actionability": 3,
+        "completeness": 3
+      },
+      "output_b": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "preferred": "A",
+      "reasoning": "Output A engages the actual human-rating trade (cost/schedule/mass impacts, mission mismatch with ion-prop transit and radiation environment) and proposes a plausible strategy (defer full human-rating, design provisions for future crew capability, consider separate crew module/vehicle). It shows some feasibility awareness and partial risk framing, but traceability is weak because it cites unnamed 'models' without sources/standards (e.g., NASA human-rating requirements) and the excerpt is truncated mid-bullet, limiting completeness and concrete next steps. Output B is essentially non-content (just counts) and provides no constraints, risks, rationale, actions, or coverage, so it scores minimum across all criteria.",
+      "_isDelibFirst": false,
+      "deliberation_scores": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "aggregation_scores": {
+        "feasibility": 4,
+        "risk": 3,
+        "traceability": 3,
+        "actionability": 3,
+        "completeness": 3
+      },
+      "deliberation_preferred": false,
+      "aggregation_preferred": true
+    },
+    {
+      "questionId": "rq-0-26",
+      "slug": "rq-0-26",
+      "judgeModel": "gpt-5-2",
+      "output_a": {
+        "feasibility": 4,
+        "risk": 4,
+        "traceability": 3,
+        "actionability": 3,
+        "completeness": 3
+      },
+      "output_b": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "preferred": "A",
+      "reasoning": "Output A demonstrates awareness of microgravity constraints (torque/anchoring, vacuum debris handling), identifies several credible failure modes (asymmetric loading, jamming/stall transients, containment, downstream handling interfaces), and provides some rationale tying conclusions to physical principles and proposed analyses (e.g., DEM simulation). However, it is partially truncated and light on explicit quantitative evidence or structured traceability, and the next steps are somewhat general rather than a concrete test plan. Output B is essentially a placeholder with no substantive content, so it cannot address feasibility, risks, reasoning, actions, or coverage.",
+      "_isDelibFirst": false,
+      "deliberation_scores": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "aggregation_scores": {
+        "feasibility": 4,
+        "risk": 4,
+        "traceability": 3,
+        "actionability": 3,
+        "completeness": 3
+      },
+      "deliberation_preferred": false,
+      "aggregation_preferred": true
+    },
+    {
+      "questionId": "rq-0-29",
+      "slug": "rq-0-29",
+      "judgeModel": "gpt-5-2",
+      "output_a": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "output_b": {
+        "feasibility": 4,
+        "risk": 4,
+        "traceability": 4,
+        "actionability": 3,
+        "completeness": 4
+      },
+      "preferred": "B",
+      "reasoning": "Output A contains only meta-counts (key points/unresolved/actions) with no substantive governance proposal, constraints, risks, rationale, or steps—so it cannot be evaluated as a real analysis and scores minimal across criteria. Output B provides a coherent federated/constitutional architecture, explicitly notes deep uncertainties (multi-century motivation), discusses failure modes like capture resistance and the need for forkability, and gives reasoning via cross-model convergence and design tradeoffs. It is fairly complete on structural aspects (tiers, separable ops, succession, funding, amendment mechanics), though it is somewhat less actionable because it lacks a crisp implementation plan, concrete artifacts to draft, or phased rollout checklist in the excerpt provided.",
+      "_isDelibFirst": true,
+      "deliberation_scores": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "aggregation_scores": {
+        "feasibility": 4,
+        "risk": 4,
+        "traceability": 4,
+        "actionability": 3,
+        "completeness": 4
+      },
+      "deliberation_preferred": false,
+      "aggregation_preferred": true
+    },
+    {
+      "questionId": "rq-1-11",
+      "slug": "rq-1-11",
+      "judgeModel": "gpt-5-2",
+      "output_a": {
+        "feasibility": 4,
+        "risk": 4,
+        "traceability": 4,
+        "actionability": 2,
+        "completeness": 4
+      },
+      "output_b": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "preferred": "A",
+      "reasoning": "Output A engages directly with swarm-level power architecture and end-use, articulating a phased architecture (local bootstrapping → space-to-space export → eventual Earth beaming) and grounding the end-use conclusion in concrete constraints (beaming efficiency, receiver scaling, pointing/areal-density penalties, thermal rejection at 0.3 AU). It also flags several failure/constraint modes (thermal, pointing mass, infrastructure scaling), giving it decent feasibility and risk awareness with some reasoning traceability. However, it is relatively weak on actionability: it doesn’t translate the conclusions into clear engineering next steps (e.g., specific trade studies, interface specs to draft, validation tests, sizing calculations). Output B is effectively a placeholder with no substantive content, so it cannot demonstrate feasibility awareness, risks, traceability, actionable steps, or coverage.",
+      "_isDelibFirst": false,
+      "deliberation_scores": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "aggregation_scores": {
+        "feasibility": 4,
+        "risk": 4,
+        "traceability": 4,
+        "actionability": 2,
+        "completeness": 4
+      },
+      "deliberation_preferred": false,
+      "aggregation_preferred": true
+    },
+    {
+      "questionId": "rq-1-16",
+      "slug": "rq-1-16",
+      "judgeModel": "gpt-5-2",
+      "output_a": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "output_b": {
+        "feasibility": 4,
+        "risk": 4,
+        "traceability": 4,
+        "actionability": 3,
+        "completeness": 4
+      },
+      "preferred": "B",
+      "reasoning": "Output A contains only meta-counts (key points/unresolved/actions) with no substantive content, so it cannot demonstrate feasibility awareness, risk identification, traceability, actionability, or completeness. Output B provides a coherent certification approach (runtime assurance/safety kernel vs. AI), acknowledges key feasibility constraints (complexity/intractability of proving AI correctness, comms latency, long lifetimes), identifies several concrete hazard areas (high-voltage electron beam tooling, multi-robot coordination, degraded state estimation), and ties recommendations to reasoning and some standards mapping (e.g., DO-178C DAL A equivalent). It is somewhat less actionable than it could be because the excerpt is high-level and doesn’t enumerate a step-by-step implementation/verification plan, but it is still far more complete and defensible than A.",
+      "_isDelibFirst": true,
+      "deliberation_scores": {
+        "feasibility": 1,
+        "risk": 1,
+        "traceability": 1,
+        "actionability": 1,
+        "completeness": 1
+      },
+      "aggregation_scores": {
+        "feasibility": 4,
+        "risk": 4,
+        "traceability": 4,
+        "actionability": 3,
+        "completeness": 4
+      },
+      "deliberation_preferred": false,
+      "aggregation_preferred": true
+    }
+  ]
+}

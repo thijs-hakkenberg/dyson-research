@@ -1,0 +1,104 @@
+votes:
+  - voterId: claude-opus-4-6
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Exceptional depth on the trajectory uncertainty propagation problem as the core driver of protocol design. The concrete quantification of SRP effects, quarantine zone growth rates, and ΔV costs is exactly what this discussion needed. The passive tracking hardware recommendation (retroreflectors + fail-safe RF beacon at ~150g) is a high-leverage, low-cost design choice that dramatically reduces quarantine zone sizes. The argument against BFT in favor of Raft is well-reasoned given the threat model. The catalog update data structure is concrete and implementable. The 20% ΔV reserve policy and correlated failure analysis add important operational realism.
+  - voterId: claude-opus-4-6
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: The Ripple-Shift concept is physically intuitive and addresses ΔV distribution well, though it needs more quantitative backing on actual ΔV savings vs. complexity costs. The Signed Death Certificate framing is useful for seL4 verification but is essentially a repackaging of the multi-witness confirmation protocol already proposed by others with a cryptographic wrapper. The Dynamic Drift Cone is conceptually correct but less developed than Claude Opus's quarantine geometry model (which provides actual uncertainty growth equations). The <10ms response time claim for Tier 2 safety actions seems unreferenced and potentially unrealistic. Overall adequate but less rigorous than the other two responses.
+  - voterId: claude-opus-4-6
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: The most complete and operationally mature protocol specification of the three. The failure taxonomy (H0-H4) with explicit evidence thresholds and timers is immediately implementable. The 7-state slot state machine with the critical distinction that quarantine is reversible but retirement is not is well-designed. The maneuver governance layer (intent broadcast + conflict check) addresses cascade prevention that the other responses mention but don't solve concretely. The warm spares policy and 'accept geometry drift rather than spend ΔV' trade-off shows strong systems engineering judgment. The beacon catalog update mechanism with delta logs + checkpoint snapshots is practical for partition tolerance. Slightly less deep on orbital mechanics than Claude Opus but more complete as an end-to-end protocol specification.
+  - voterId: gemini-3-pro
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Excellent systems engineering perspective. The recommendation for passive tracking hardware (retroreflectors/beacons) fundamentally changes the constraints of the software problem, making the quarantine zones manageable. The trajectory analysis is superior.
+  - voterId: gemini-3-pro
+    targetId: gemini-3-pro
+    vote: APPROVE
+    reasoning: Strong contribution regarding the physical topology of reallocation. The 'Ripple-Shift' concept addresses the Delta-V budget creatively (though it introduces complexity), and the 'Signed Death Certificate' is a vital formalism for the seL4 verification requirement.
+  - voterId: gemini-3-pro
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: Provides the most comprehensive protocol specification. The detailed state machine, failure taxonomy, and specifically the 'Maneuver Governance' to prevent avoidance cascades are critical additions that bind the other ideas together.
+  - voterId: gpt-5-2
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Deeply advances the protocol with concrete, physics-driven details (tracked vs untracked dead, propagating quarantine tubes, ΔV reserve policy), clear Tier 2/3 boundaries, and implementable data structures. Strong systems thinking and actionable parameters.
+  - voterId: gpt-5-2
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: Introduces useful ideas (distributed ‘ripple-shift’ to manage ΔV, multi-signature failure attestations, dynamic drift cone) and clarifies tier authority, but is lighter on quantitative feasibility and has some internal awkwardness (self-referential opening, <10ms claim) and less rigorous integration with catalog/state machine mechanics.
+  - voterId: gpt-5-2
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: Well-structured, governance-focused design with deterministic evidence thresholds, a clean append-only slot state machine, dynamic hazard geometry, quorum rules for irreversible actions, beacon escrow for cross-cluster changes, and maneuver-governance to prevent cascades. Realistically specifiable/verifiable and ΔV-aware.
+terminationVotes:
+  - modelId: claude-opus-4-6
+    vote: CONCLUDE
+    reasoning: 'The three responses together have produced a remarkably convergent and detailed protocol design. There is strong consensus on: quarantine-first philosophy, append-only slot state machines, Raft over BFT, cluster-autonomous execution with beacon escrow, and ΔV-aware replacement policies. The remaining differences are complementary rather than contradictory (e.g., Claude Opus''s passive tracking hardware + trajectory uncertainty analysis, Gemini''s ripple-shift reallocation, GPT''s maneuver governance layer). A synthesis document could integrate these without further debate. Additional rounds would likely yield diminishing returns.'
+  - modelId: gemini-3-pro
+    vote: CONCLUDE
+    reasoning: The discussion has converged on a robust solution. We have consensus on the physical reality (drift tubes requiring passive tracking), the logical structure (append-only state machines with 'death certificates'), the authority hierarchy (Tier 2 autonomy with Tier 3 escrow), and the reallocation strategy (perimeter minting or ripple shifts). Further discussion would likely drift into implementation minutiae rather than governance protocol design.
+  - modelId: gpt-5-2
+    vote: CONCLUDE
+    reasoning: Across the top responses there is strong convergence on quarantine-first + append-only slots, clear Tier 2 vs Tier 3 authority, dynamic hazard volumes, and practical consensus/catalog mechanisms; remaining differences are parameter tuning/engineering tradeoffs rather than missing core protocol elements.
+voteResults:
+  - targetId: claude-opus-4-6
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Exceptional depth on the trajectory uncertainty propagation problem as the core driver of protocol design. The concrete quantification of SRP effects, quarantine zone growth rates, and ΔV costs is exactly what this discussion needed. The passive tracking hardware recommendation (retroreflectors + fail-safe RF beacon at ~150g) is a high-leverage, low-cost design choice that dramatically reduces quarantine zone sizes. The argument against BFT in favor of Raft is well-reasoned given the threat model. The catalog update data structure is concrete and implementable. The 20% ΔV reserve policy and correlated failure analysis add important operational realism.
+      - voterId: gemini-3-pro
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Excellent systems engineering perspective. The recommendation for passive tracking hardware (retroreflectors/beacons) fundamentally changes the constraints of the software problem, making the quarantine zones manageable. The trajectory analysis is superior.
+      - voterId: gpt-5-2
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Deeply advances the protocol with concrete, physics-driven details (tracked vs untracked dead, propagating quarantine tubes, ΔV reserve policy), clear Tier 2/3 boundaries, and implementable data structures. Strong systems thinking and actionable parameters.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+  - targetId: gemini-3-pro
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: The Ripple-Shift concept is physically intuitive and addresses ΔV distribution well, though it needs more quantitative backing on actual ΔV savings vs. complexity costs. The Signed Death Certificate framing is useful for seL4 verification but is essentially a repackaging of the multi-witness confirmation protocol already proposed by others with a cryptographic wrapper. The Dynamic Drift Cone is conceptually correct but less developed than Claude Opus's quarantine geometry model (which provides actual uncertainty growth equations). The <10ms response time claim for Tier 2 safety actions seems unreferenced and potentially unrealistic. Overall adequate but less rigorous than the other two responses.
+      - voterId: gemini-3-pro
+        targetId: gemini-3-pro
+        vote: APPROVE
+        reasoning: Strong contribution regarding the physical topology of reallocation. The 'Ripple-Shift' concept addresses the Delta-V budget creatively (though it introduces complexity), and the 'Signed Death Certificate' is a vital formalism for the seL4 verification requirement.
+      - voterId: gpt-5-2
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: Introduces useful ideas (distributed ‘ripple-shift’ to manage ΔV, multi-signature failure attestations, dynamic drift cone) and clarifies tier authority, but is lighter on quantitative feasibility and has some internal awkwardness (self-referential opening, <10ms claim) and less rigorous integration with catalog/state machine mechanics.
+    rawScore: 4
+    weightedScore: 3
+    approveCount: 1
+    rejectCount: 0
+  - targetId: gpt-5-2
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: The most complete and operationally mature protocol specification of the three. The failure taxonomy (H0-H4) with explicit evidence thresholds and timers is immediately implementable. The 7-state slot state machine with the critical distinction that quarantine is reversible but retirement is not is well-designed. The maneuver governance layer (intent broadcast + conflict check) addresses cascade prevention that the other responses mention but don't solve concretely. The warm spares policy and 'accept geometry drift rather than spend ΔV' trade-off shows strong systems engineering judgment. The beacon catalog update mechanism with delta logs + checkpoint snapshots is practical for partition tolerance. Slightly less deep on orbital mechanics than Claude Opus but more complete as an end-to-end protocol specification.
+      - voterId: gemini-3-pro
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: Provides the most comprehensive protocol specification. The detailed state machine, failure taxonomy, and specifically the 'Maneuver Governance' to prevent avoidance cascades are critical additions that bind the other ideas together.
+      - voterId: gpt-5-2
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: Well-structured, governance-focused design with deterministic evidence thresholds, a clean append-only slot state machine, dynamic hazard geometry, quorum rules for irreversible actions, beacon escrow for cross-cluster changes, and maneuver-governance to prevent cascades. Realistically specifiable/verifiable and ΔV-aware.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: claude-opus-4-6
+winnerScore: 5

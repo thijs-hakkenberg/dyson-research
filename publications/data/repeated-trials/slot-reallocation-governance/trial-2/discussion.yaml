@@ -1,0 +1,564 @@
+questionId: rq-1-40
+questionSlug: slot-reallocation-governance
+questionTitle: Slot reallocation governance protocol
+phaseId: phase-1
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+status: concluded
+startedAt: '2026-02-24T00:41:08.723Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-4-6
+        content: |-
+          # Slot Reallocation Governance Protocol: A Concrete Architecture
+
+          ## Executive Summary
+
+          I recommend a **tiered-authority model with deterministic fallback rules** that eliminates the need for distributed consensus algorithms for time-critical reassignments. The core insight is that slot reallocation is not a consensus problem—it's a state machine problem. Failed slots don't need to be "voted on"; they need to be deterministically reclassified according to pre-computed rules that every node can independently derive from the same ephemeris data.
+
+          ---
+
+          ## Failure Classification Taxonomy
+
+          The protocol begins with four failure classes, each with distinct detection signatures and response timelines:
+
+          **Class A – Graceful Shutdown**: Node transmits a decommission beacon including its final state vector and predicted drift trajectory. This is the easy case. The cluster coordinator immediately marks the slot as VACANT in the local catalog and propagates to the beacon tier. Reassignment can begin within one broadcast cycle (~minutes).
+
+          **Class B – Sudden Silent Failure**: Node misses heartbeats with no prior warning. This is the most common case given automotive-grade components. Detection requires **3 consecutive missed heartbeats at the cluster level plus 1 missed beacon-tier check-in**. With heartbeat intervals of 60 seconds intra-cluster and 300 seconds to beacons, confirmation takes ~5–6 minutes. The slot transitions to SUSPECT → QUARANTINED after confirmation.
+
+          **Class C – Partial Degradation**: Node reports anomalous telemetry (attitude drift, power loss, thruster malfunction) but remains communicative. The node itself requests a DEGRADED status, and the cluster coordinator may narrow its permitted orbital element window or reassign it to a less critical slot position. This is the most operationally complex case and the one most likely to produce false reassignment triggers.
+
+          **Class D – Communication Loss Only**: Node stops communicating but may still be maneuvering. This is the dangerous case—a node executing stale commands in a slot it no longer "owns." Detection mirrors Class B, but the response must assume the node is still actively station-keeping in its last known window. The slot is marked CONTESTED rather than QUARANTINED, and adjacent nodes widen their keep-out margins.
+
+          **Critical design decision**: Class D must not be conflated with Class B. A truly dead node is predictable (ballistic trajectory). A deaf node executing autonomous station-keeping is unpredictable within its maneuvering envelope. The quarantine geometry differs substantially.
+
+          ---
+
+          ## Authority Architecture: Deterministic, Not Democratic
+
+          I am strongly opposed to using Byzantine fault-tolerant consensus (PBFT, Raft, etc.) for slot reassignment decisions. Here's why:
+
+          1. **BFT algorithms require stable membership.** A cluster experiencing multiple simultaneous failures—exactly when reassignment is most critical—may lack quorum.
+          2. **Communication latency is variable.** Nodes at opposite ends of a cluster may have light-travel times of seconds, making round-trip consensus expensive.
+          3. **The problem is deterministic.** Given the same ephemeris catalog and the same failure detection data, every node should independently arrive at the same reassignment conclusion.
+
+          Instead, I propose **Deterministic Slot State Machines (DSSM)** embedded in every node's seL4-verified flight software:
+
+          ```
+          ACTIVE → SUSPECT (3 missed heartbeats)
+          SUSPECT → QUARANTINED (beacon-tier confirmation, +300s)
+          SUSPECT → ACTIVE (heartbeat resumes)
+          QUARANTINED → VACANT (drift trajectory characterized, 24-72 hours)
+          QUARANTINED → CONTESTED (ambiguous maneuvering detected)
+          VACANT → RESERVED (replacement node assigned)
+          RESERVED → ACTIVE (replacement achieves station-keeping)
+          CONTESTED → QUARANTINED (no maneuvers detected for 6 hours)
+          ```
+
+          Every node runs this state machine for every slot in its adjacency set (typically 6–15 neighboring slots). The cluster coordinator runs it for all ~100 slots. The beacon tier runs it for all slots in its coverage zone. **No voting occurs.** State transitions are triggered by observable events with deterministic thresholds.
+
+          The authority hierarchy then becomes:
+
+          - **Tier 1 (Individual nodes)**: Autonomously widen keep-out margins when adjacent slots enter SUSPECT or higher. No authorization needed—this is self-preservation.
+          - **Tier 2 (Cluster coordinators)**: Authorize QUARANTINED → VACANT transitions and issue RESERVED assignments to replacement nodes within the cluster. This is the primary operational authority for slot reallocation.
+          - **Tier 3 (Beacon spacecraft)**: Ratify catalog updates, resolve cross-cluster boundary reassignments, and handle CONTESTED slots that span cluster boundaries. Beacons also serve as the authoritative tiebreaker if two cluster coordinators disagree on a boundary slot's state.
+
+          **Key constraint**: Tier 2 coordinators can act without Tier 3 approval for intra-cluster reassignments, but must propagate updates within 2 beacon broadcast cycles. If a beacon detects an inconsistency, it issues a CORRECTION broadcast that overrides cluster-level decisions. This gives us autonomy with eventual consistency.
+
+          ---
+
+          ## Quarantine Geometry and the ΔV Problem
+
+          When a node fails (Class B), its slot enters QUARANTINE. The quarantine zone is not the original keep-out tube—it's an **expanding uncertainty ellipsoid** based on the failed node's last known state vector, propagated forward with increasing covariance.
+
+          For a node with last-known position accuracy of ±1 m and velocity accuracy of ±0.1 mm/s (consistent with the spec's navigation accuracy range), the 3σ position uncertainty grows at roughly:
+
+          - **+1 hour**: ±0.36 m additional uncertainty
+          - **+24 hours**: ±8.6 m
+          - **+30 days**: ±260 m
+          - **+1 year**: ±3.15 km
+
+          This growth rate is the fundamental driver of reassignment urgency. Adjacent nodes must either:
+
+          1. Absorb the expanding quarantine zone by widening their own keep-out margins (costs no ΔV but reduces packing efficiency), or
+          2. Actively maneuver to maintain separation (costs ΔV but preserves density).
+
+          For Phase 1 densities (1,000–3,000 nodes), I recommend **option 1 as the default**. The swarm is sparse enough that absorbing quarantine zones for 10–90 failures/year is geometrically feasible without significant capacity loss. Active maneuvering for quarantine avoidance should be reserved for high-density clusters or cases where multiple adjacent failures create overlapping quarantine zones.
+
+          **ΔV budget allocation**: I recommend reserving **15% of annual ΔV budget for failure-response maneuvers**. At the low end (0.5 m/s/year), that's 0.075 m/s/year—enough for roughly 2–3 minor slot adjustments. At the high end (5 m/s/year), that's 0.75 m/s/year—sufficient for a full slot migration within the cluster. This reservation must be tracked by the cluster coordinator and factored into replacement node assignment decisions.
+
+          ---
+
+          ## Slot Migration: Replacement Assignment Algorithm
+
+          When a slot reaches VACANT status, the cluster coordinator runs a **greedy nearest-neighbor assignment** from a priority queue of available replacement nodes:
+
+          1. **Spare nodes in the same cluster** (pre-positioned reserves, if any): lowest ΔV cost, fastest occupation.
+          2. **Degraded nodes in adjacent slots** that could be "promoted" to the vacant slot if it's more favorable for their remaining capability.
+          3. **Newly launched replacement nodes** from the next deployment batch: highest ΔV cost but restores full capability.
+
+          The assignment algorithm minimizes total ΔV expenditure across the cluster, not just for the replacement node. Sometimes it's cheaper to shift 3 nodes by small amounts than to move 1 node a large distance.
+
+          **Slot priority scoring**: Not all slots are equal. Slots at cluster boundaries, slots adjacent to beacon spacecraft, and slots in high-energy-collection positions should have higher reassignment priority. I recommend a simple scoring function:
+
+          ```
+          Priority = (Energy_value × Connectivity_value) / Reassignment_ΔV_cost
+          ```
+
+          Slots below a threshold priority score are simply abandoned and their keep-out tubes released back to the cluster's available volume.
+
+          ---
+
+          ## Beacon Catalog Update Protocol
+
+          The ephemeris catalog amendment structure should be:
+
+          - **Slot ID** (16-bit within cluster, 32-bit global)
+          - **New state** (3-bit enum: ACTIVE/SUSPECT/QUARANTINED/VACANT/RESERVED/CONTESTED/ABANDONED)
+          - **Epoch** (synchronized to swarm time reference)
+          - **State vector** (if RESERVED/ACTIVE: new occupant's elements; if QUARANTINED: last known + covariance)
+          - **Authority signature** (cluster coordinator ID + sequence number)
+          - **Beacon ratification flag** (set by Tier 3 upon confirmation)
+
+          Amendments are broadcast in the beacon's regular catalog update cycle. I recommend **differential updates every 60 seconds** with full catalog rebroadcast every **3600 seconds**. Each amendment is ~48 bytes; even 90 failures/year produces negligible bandwidth overhead.
+
+          For the 30-day autonomous operation requirement: every node must cache the full catalog locally and be capable of running the DSSM independently using only direct inter-node observations (heartbeats, ranging data) if beacon contact is lost. This is the strongest argument for deterministic state machines over consensus protocols—they degrade gracefully to local-only operation.
+
+          ---
+
+          ## Key Recommendations
+
+          1. **Implement DSSM, not BFT consensus.** Formally verify the state machine in seL4. It's small enough to be tractable.
+          2. **Reserve 15% of ΔV budget for failure response.** Track at cluster level.
+          3. **Default to quarantine absorption, not active avoidance**, at Phase 1 densities.
+          4. **Distinguish Class B from Class D failures**—the response geometry is fundamentally different.
+          5. **Simulate overlapping failure scenarios** in the 10,000-node Monte Carlo environment, specifically targeting 3+ simultaneous failures within a single cluster (probability ~0.1%/year at 3% failure rate with 100-node clusters, but consequential).
+          6. **Pre-compute slot adjacency graphs and migration plans** during ground-based mission planning. Upload as lookup tables rather than computing in-flight.
+
+          This architecture keeps the critical path—collision avoidance—entirely deterministic and locally executable, while using the hierarchical tier structure for optimization and consistency rather than safety-critical decision-making.
+        wordCount: 1451
+        generatedAt: '2026-02-24T00:42:08.295Z'
+      - modelId: gemini-3-pro
+        content: |-
+          Here is my response regarding the Slot Reallocation Governance Protocol for Project Dyson.
+
+          ***
+
+          # Response: The "Dead-Man's Drift" Protocol and Tiered Reallocation
+
+          As a systems engineer looking at the intersection of orbital mechanics and distributed computing, the slot reallocation problem is the single greatest threat to the long-term stability of the Dyson swarm. We are not just managing a database of slots; we are managing a kinetic environment where "garbage collection" involves physical objects moving at kilometers per second.
+
+          If we treat slot reallocation purely as a software problem, we will lose the swarm to a Kessler syndrome event within the first five years. The governance protocol must be physics-aware first, and logic-aware second.
+
+          I propose a specific governance architecture I call the **"Dead-Man’s Drift" Protocol**, structured around a **Tiered Authority Model** that explicitly decouples *safety maneuvers* from *slot ownership*.
+
+          ## 1. The Core Philosophy: Safety Decoupled from Ownership
+
+          The background correctly identifies the tension between "Quarantine" and "Reassignment." My strong opinion is that we must stop treating these as equal options.
+
+          **The Protocol Rule:** A slot containing a failed node is *permanently burned* until the failed node exits the operational volume.
+
+          We cannot afford the ΔV budget to maneuver a replacement node into a slot that still contains a piece of drifting debris, nor can we trust our tracking accuracy enough to "share" a keep-out tube with a non-cooperative object. Therefore, the governance protocol must prioritize **neighbor evacuation** over **slot backfilling**.
+
+          ## 2. Failure Classification & Immediate Response (Tier 1 & 2)
+
+          We need a rigorous taxonomy for failure that dictates the immediate response. I propose the following three-state classification system to be implemented in the seL4 kernel of the Cluster Coordinators:
+
+          ### State A: The "Silent Node" (Communication Loss)
+          *   **Signature:** Missed heartbeats (>3 cycles) but no deviation in relative position/velocity vectors as observed by neighbors.
+          *   **Governance Action:** **Probation.** The slot is flagged "Yellow." Neighbors maintain standard station-keeping but increase radar/lidar polling frequency of the silent node. No reassignment occurs.
+          *   **Timeout:** If silence persists >48 hours, escalate to State B.
+
+          ### State B: The "Drifter" (Propulsion/ADCS Failure)
+          *   **Signature:** Vector deviation exceeds the defined "Control Box" (e.g., drift > 10cm/s relative to cluster mean).
+          *   **Governance Action:** **Evacuation.** This is the critical innovation. We do not try to fix the drifter. Instead, the *downstream* neighbor (in terms of the drifter’s velocity vector) is issued an automatic "Dodge" command.
+          *   **Slot Status:** The Drifter’s slot is marked "Red/Contaminated." The slot is effectively expanded to include the uncertainty cone of the drifting object.
+
+          ### State C: The "Rogue" (Erroneous Maneuver)
+          *   **Signature:** High-thrust event detected by neighbors or sudden, high-velocity vector change.
+          *   **Governance Action:** **Cluster Scatter.** This is a Tier 2 emergency. The Cluster Coordinator commands a localized dispersal of the immediate 6-10 neighbors to widen separation distances immediately, sacrificing formation efficiency for survival.
+
+          ## 3. The Reallocation Authority Hierarchy
+
+          The prompt asks whether Cluster Coordinators (Tier 2) or Beacons (Tier 3) should hold authority. The answer must be a hybrid approach to balance latency against global optimization.
+
+          **Tier 2 (Cluster Coordinator) Authority: Tactical Safety**
+          The Cluster Coordinator must have **absolute, autonomous authority** to declare a slot "Contaminated" and order defensive maneuvers for adjacent nodes. Waiting for a Beacon (Tier 3) to approve a collision avoidance maneuver is unacceptable given the light-speed lag and processing queues. The Coordinator updates the local Ephemeris immediately and broadcasts a "Hazard Notice" to the Beacon.
+
+          **Tier 3 (Beacon) Authority: Strategic Reallocation**
+          The Beacon holds the **exclusive authority** to assign a *new* node to a *vacated* slot. Why? Because only the Beacon has the global view of the "Spare Pool" (replacement nodes drifting in parking orbits) and the fuel status of the entire swarm.
+          *   *Scenario:* Node A fails. Cluster Coordinator marks Slot A as Contaminated.
+          *   *Resolution:* Beacon calculates the drift trajectory of Node A. Once Node A has drifted sufficiently clear of the operational volume (perhaps months later), the Beacon declares Slot A "Rehabilitated" and assigns a Spare Node to capture it.
+
+          ## 4. Addressing the ΔV Budget Crisis
+
+          The concern regarding the 0.5–5 m/s/year ΔV budget is valid and alarming. Standard "shifting" algorithms (where Node B moves to Slot A, Node C moves to Slot B, etc.) are mathematically elegant but energetically ruinous.
+
+          **Recommendation: The "Leapfrog" Prohibition**
+          We must strictly prohibit "cascading" slot reassignments. If Slot 45 fails, we do not move Node 46 into Slot 45. That triggers a chain reaction of fuel consumption.
+
+          Instead, we must utilize a **"Sparse Lattice" strategy**.
+          *   We deploy the swarm with 10-15% intentional vacancy (interstitial parking slots).
+          *   When a node fails, it is abandoned.
+          *   Replacement nodes are injected from the dedicated "Spare Pool" (a separate orbital shell) only when a cluster's power output drops below a critical threshold (e.g., <85% capacity).
+          *   This changes the governance model from "Maintain Perfect Geometry" to "Maintain Minimum Viable Density."
+
+          ## 5. Technical Implementation in seL4 and Beacons
+
+          To realize this, the research directions should pivot slightly:
+
+          1.  **The "Tombstone" Packet:** We need a standardized, cryptographically signed message format (the "Tombstone") that a Cluster Coordinator generates when it declares a node dead. This packet contains the last known state vector and the failure classification. This must be verifiable by the Beacon to prevent a compromised Coordinator from "murdering" healthy nodes.
+          2.  **Distributed Consensus via Raft (Modified):** For the Cluster Coordinator to declare a node dead, we should use a lightweight Raft consensus algorithm among the *immediate physical neighbors* of the suspect node, not the whole cluster. If 5 out of 6 neighbors agree "Node X is drifting," the Coordinator is authorized to issue the Tombstone. This localizes traffic and speeds up decisions.
+
+          ## Summary Recommendation
+
+          We must abandon the idea of rapid, fluid slot reassignment. The physics of low-thrust, high-latency swarms demands a governance protocol based on **containment and attrition**, not immediate repair.
+
+          **My specific advice for the next design sprint:**
+          Focus the simulation team on **"Drift Cone Mapping."** We need to know exactly how large the "Keep-Out Tube" grows for a tumbling, unpowered node over 6 months. If that cone grows too large, too fast, our entire density model is invalid, and no amount of software governance will save the swarm.
+        wordCount: 1040
+        generatedAt: '2026-02-24T00:42:29.528Z'
+      - modelId: gpt-5-2
+        content: |-
+          ### Recommended governance protocol for slot reallocation (Ephemeris Governance model)
+
+          A workable protocol has to do three things simultaneously: (1) prevent a drifting/unknown object from driving conjunction risk above 10⁻⁶ node‑year, (2) keep the ephemeris catalog “fresh enough” that distributed screening remains valid, and (3) avoid burning the limited ΔV budget (0.5–5 m/s/yr) on churn. The core design choice I recommend is:
+
+          **Tier‑2 (cluster) can autonomously quarantine and perform *temporary* intra‑cluster reallocations; Tier‑3 (beacons) ratify and publish *authoritative* slot ownership changes to the master catalog on a slower cadence.**  
+          This split keeps time‑critical safety actions local while preserving a single source of truth for long-lived assignments.
+
+          ---
+
+          ## 1) Failure classification taxonomy (what triggers what)
+
+          Use a small taxonomy with explicit thresholds and “actions allowed” per tier. Keep it simple enough to formally verify on seL4 and to implement consistently across thousands of nodes.
+
+          ### A. Graceful exit (cooperative)
+          **Signature:** Node broadcasts signed “decommission/retire” intent + last state vector + predicted drift envelope.  
+          **Confidence:** High immediately.  
+          **Actions:**
+          - Tier‑2: immediate slot release + controlled handover window.
+          - Tier‑3: publish authoritative reassignment after a short hold (e.g., 1–3 beacon cycles).
+
+          ### B. Comms loss (potential false positive)
+          **Signature:** missed heartbeats but neighbors still see optical/radar track or passive ranging returns; or link metrics indicate channel outage.  
+          **Confidence:** Medium; can be false positive.  
+          **Actions:**
+          - Tier‑2: **do not reassign**. Mark slot “degraded”; widen keep‑out tube margins locally; increase screening frequency.
+          - Tier‑3: annotate catalog with “uncertain control status” + covariance inflation.
+
+          ### C. Sudden failure / dead bus (non-cooperative)
+          **Signature:** missed heartbeats + no maneuver acknowledgments + track indicates ballistic motion inconsistent with stationkeeping.  
+          **Confidence:** High after confirmation window.  
+          **Actions:**
+          - Tier‑2: immediate **quarantine** of the slot and adjacent risk region; initiate local avoidance rules.
+          - Tier‑3: publish “hazard object” entry (failed node as tracked debris-like object) with inflated covariance; freeze reassignment until drift is bounded.
+
+          ### D. Partial degradation (navigation or propulsion degraded)
+          **Signature:** node still communicates but reports degraded GN&C, low thrust, poor attitude control, or increasing ephemeris residuals.  
+          **Confidence:** High.  
+          **Actions:**
+          - Tier‑2: reclassify node to a “wide window” mode; reduce its local priority; optionally migrate it to a low-density buffer region if ΔV allows.
+          - Tier‑3: catalog update; may trigger planned replacement.
+
+          **Key point:** Only category A triggers “fast reassignment.” Category C triggers “fast quarantine,” not reassignment.
+
+          ---
+
+          ## 2) Detection and confirmation logic (latency vs false positives)
+
+          You need deterministic thresholds that balance false positives against collision risk. I recommend a two-stage confirmation:
+
+          ### Stage 1: Local suspicion (Tier‑2, seconds–minutes)
+          - Heartbeat expected at fixed cadence (e.g., 1–10 s within cluster; whatever your comms allow).
+          - **Suspect** after N₁ missed heartbeats (e.g., 3–10), but take only *non-destructive* actions: increase screening, widen keep-outs, request neighbor observations.
+
+          ### Stage 2: Confirmed status (Tier‑2 + corroboration, minutes–hours)
+          Confirm failure state if **any two** of the following are true:
+          1) N₂ missed heartbeats (e.g., 30–300, depending on cadence),  
+          2) no response to directed challenge/nonce (prevents spoofing),  
+          3) independent track indicates noncompliance (ballistic drift or no stationkeeping),  
+          4) neighbor-to-neighbor ranging/angles-only solution diverges from reported ephemeris beyond threshold.
+
+          Then Tier‑2 can assert “confirmed failed” and trigger quarantine. **Reassignment still waits for Tier‑3 ratification unless it is a temporary local swap** (see below).
+
+          This aligns with your autonomy constraint (7–30+ days without ground) and uses the existing beacon-broadcast catalog concept as the distributed truth mechanism.
+
+          ---
+
+          ## 3) Slot adjacency graphs and “blast radius” modeling
+
+          Treat slots as a graph where edges represent conjunction coupling under your keep-out tube geometry and navigation error model. The governance protocol should be parameterized by graph metrics:
+
+          - **k-hop risk neighborhood:** nodes whose keep-out tubes can be violated within T hours given worst-case differential drift of a failed object.
+          - **Criticality score:** expected ΔV cost + expected collision probability increase if the slot becomes uncertain.
+
+          Use this graph in two ways:
+          1) **Quarantine sizing:** quarantine region = 1–k hops depending on failure class and covariance growth rate.  
+          2) **Replacement selection:** choose replacement candidates that minimize migration ΔV and do not traverse high-degree regions.
+
+          This is exactly where your 10,000+ node Monte Carlo environment pays off: you can empirically tune k, quarantine duration, and catalog update cadence to keep collision probability <10⁻⁶ without excessive maneuvering.
+
+          ---
+
+          ## 4) Governance: who can do what (and when)
+
+          ### Tier‑2 Cluster Coordinator (fast safety authority)
+          Allowed actions (autonomous, no beacon approval required):
+          - Declare **temporary quarantine zones** in cluster coordinates (time-bounded).
+          - Issue **local avoidance advisories** and “do not enter” constraints.
+          - Execute **temporary slot borrowing**: a node may occupy a neighbor’s window *only if* both windows are flagged “temporary” and the coordinator publishes a signed local amendment with an expiry time.
+
+          Not allowed:
+          - Permanent slot ownership change in the master catalog.
+          - Cross-cluster reassignment without beacon mediation.
+
+          ### Tier‑3 Beacon/Relay (slow authority / global consistency)
+          Responsibilities:
+          - Maintain the **authoritative ephemeris catalog** and slot ownership ledger.
+          - Ratify permanent reassignment after:
+            - quorum evidence from Tier‑2 (see consensus below),
+            - drift bounded enough to define stable keep-outs,
+            - and conflict checks across cluster boundaries.
+
+          This is the cleanest way to resolve the ambiguity you flagged: Tier‑2 handles immediate safety; Tier‑3 handles long-term consistency.
+
+          ---
+
+          ## 5) Consensus protocol recommendation (pragmatic, not maximal)
+
+          You mentioned PBFT/Raft. Given the environment (radiation, comms dropouts, 1–3% annual failures, and long autonomy), I recommend:
+
+          - **Within a cluster (~100 nodes): use a Raft-like leader election for coordinator + signed append-only “cluster event log.”**  
+            Raft is simpler to verify and operate than PBFT, and your threat model is more “crash fault + intermittent comms” than “Byzantine,” assuming strong per-node identity keys and hardware-rooted signing.
+
+          - **For malicious/spoof resistance:** rely on cryptographic authentication and challenge-response, plus beacon cross-checking. If you truly expect Byzantine behavior, do PBFT only at Tier‑3 among 3–5 beacons (small N), not at Tier‑2.
+
+          **Quorum rule for a confirmed failure report:** coordinator + M independent witnesses (e.g., 3–7) providing signed evidence (missed heartbeat logs, ranging residuals, optical tracks). This reduces false positives and makes spoofing harder.
+
+          ---
+
+          ## 6) Quarantine vs reassignment: default to quarantine, reassignment is staged
+
+          ### Immediate response (minutes–hours)
+          - **Quarantine the failed node’s slot** plus a risk corridor based on predicted drift and covariance growth.
+          - Inflate covariance in the catalog entry for the failed object.
+          - Increase screening cadence locally; avoid “chain reaction” maneuvers by using a **priority rule** (e.g., only nodes within the predicted conjunction set maneuver; others hold).
+
+          ### Stabilization (hours–days)
+          - Track the failed object until its motion is predictable enough (ballistic with bounded uncertainty).
+          - Shrink quarantine as uncertainty collapses.
+
+          ### Reassignment (days–weeks)
+          - Only after quarantine shrinks to a stable boundary do you allow a replacement node to migrate into the orphaned slot.
+          - If power output demands faster recovery, allow **temporary occupancy** of the energy-collection role by a nearby node with minimal ΔV, but keep it logically distinct from permanent slot ownership.
+
+          This staging is what prevents cascading conflicts: you don’t rush a new node into a region with an uncontrolled object.
+
+          ---
+
+          ## 7) ΔV-aware reassignment policy (hard constraint)
+
+          With only 0.5–5 m/s/year, you must treat reassignment as a scarce resource. A good policy:
+
+          1) **Local-first replacement:** pick the nearest node (in orbital element space) that can reach the slot with ΔV below a cap (e.g., ≤0.1–0.2 m/s for the maneuver).  
+          2) **Annual ΔV envelope:** each cluster maintains a “ΔV bank” for governance maneuvers; if depleted, you accept reduced packing efficiency rather than risking depletion.  
+          3) **Batch migrations:** do not constantly reshuffle. Accumulate orphaned slots and perform periodic optimization (monthly/quarterly) unless safety requires immediate action.
+
+          This matches the reality that most failures should not force immediate migration; they force quarantine and catalog updates.
+
+          ---
+
+          ## 8) Beacon catalog update mechanism (data + cadence)
+
+          ### Data structure (minimum viable)
+          For each node/slot:
+          - Slot ID + owner node ID (or “unassigned/quarantined”)
+          - Orbital element window definition + keep-out tube parameters
+          - State vector + covariance (or bounded set)
+          - Control status enum (nominal/degraded/comms-loss/failed)
+          - Validity interval + sequence number
+          - Signatures: cluster coordinator + beacon
+
+          ### Cadence
+          - **Routine broadcast:** e.g., every 1–10 minutes (tunable).  
+          - **Event-driven delta updates:** immediate on quarantine declarations and confirmed failures (small deltas, not full catalog).  
+          - Nodes cache last K versions; reject stale updates via monotonic sequence numbers.
+
+          Security: per-node identity keys, coordinator signing, beacon countersigning for authoritative changes. This is compatible with formal verification constraints if you keep parsing and validation small and deterministic.
+
+          ---
+
+          ## 9) Cost/risk notes (opinionated)
+
+          - **Biggest operational risk:** false-positive failure declarations causing unnecessary quarantines and ΔV burn. Mitigation: two-stage confirmation + multi-witness evidence.
+          - **Biggest safety risk:** treating a dead node as “just an empty slot.” It is not empty; it’s an uncontrolled object. Default quarantine.
+          - **Biggest architecture risk:** trying to run heavy BFT at Tier‑2. It will increase complexity and verification burden without proportional safety benefit if your primary faults are crash/comm loss.
+
+          ---
+
+          ## What I would prototype first (to retire key uncertainties)
+
+          1) **Cluster event log + quarantine workflow** on seL4: implement suspicion→confirmed→quarantine→shrink→reassign state machine.  
+          2) **Adjacency-graph Monte Carlo**: tune quarantine size and catalog cadence to stay <10⁻⁶ node‑year with realistic covariance growth.  
+          3) **ΔV accounting simulator**: show how many reassignments/year are feasible under 0.5 vs 5 m/s/year and what batching policy minimizes churn.  
+          4) **Beacon delta-catalog propagation test**: measure time-to-consistency across clusters with seconds–minutes latency and intermittent links.
+
+          This protocol keeps safety actions autonomous and fast, preserves a coherent master ephemeris catalog, and explicitly respects ΔV scarcity—while remaining implementable and verifiable in the Project Dyson software constraints.
+        wordCount: 1592
+        generatedAt: '2026-02-24T00:43:27.849Z'
+    votes:
+      - targetId: claude-opus-4-6
+        votes:
+          - voterId: claude-opus-4-6
+            targetId: claude-opus-4-6
+            vote: APPROVE
+            reasoning: 'Exceptionally strong response. The DSSM (Deterministic Slot State Machines) argument against BFT consensus is the most important architectural insight in this discussion—slot reallocation IS a state machine problem, not a consensus problem. The Class B vs Class D distinction (dead node on ballistic trajectory vs deaf node still maneuvering) is operationally critical and often overlooked. The expanding uncertainty ellipsoid analysis with concrete numbers (±260m at 30 days) directly informs quarantine geometry. The 15% ΔV reservation and greedy nearest-neighbor assignment algorithm are practical and well-justified. The recommendation to pre-compute adjacency graphs and migration plans as lookup tables is exactly right for seL4-verified flight software. Minor quibble: the ''no voting occurs'' claim is slightly overstated—you still need agreement on the observable events that trigger transitions, which is where neighbor corroboration matters.'
+          - voterId: gemini-3-pro
+            targetId: claude-opus-4-6
+            vote: APPROVE
+            reasoning: This response is outstanding. It provides a highly specific, technically grounded architecture (DSSM) that fits the seL4 verification constraint perfectly. It correctly identifies that this is a state machine problem, not a consensus problem, and offers concrete math on uncertainty growth. The distinction between Class B and Class D failures is a critical insight.
+          - voterId: gpt-5-2
+            targetId: claude-opus-4-6
+            vote: APPROVE
+            reasoning: 'Provides a concrete, implementable architecture: clear failure classes (notably distinguishing comms-loss vs dead), deterministic per-slot state machine, explicit tiered authority with eventual consistency, and practical details (quarantine geometry, catalog fields, update cadence, ΔV budgeting, migration heuristics). Strongly advances the discussion while aligning with autonomy/verification constraints.'
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+      - targetId: gemini-3-pro
+        votes:
+          - voterId: claude-opus-4-6
+            targetId: gemini-3-pro
+            vote: NEUTRAL
+            reasoning: 'Contains some valuable insights—particularly the ''permanently burned slot'' philosophy and the emphasis on drift cone mapping as a simulation priority. The three-state failure classification (Silent/Drifter/Rogue) is reasonable but less nuanced than the four-class taxonomies in the other responses. However, several positions are problematic: the ''Leapfrog Prohibition'' against cascading reassignments is too absolute (sometimes a small chain of shifts is cheaper than a long-distance spare injection); the 10-15% intentional vacancy recommendation needs ΔV and coverage analysis to justify; and the ''Cluster Scatter'' response to a rogue node is underspecified—scattering 6-10 nodes simultaneously could itself create conjunction risks. The Raft consensus among immediate neighbors for death declaration is a good idea but somewhat contradicts the deterministic approach. The ''Tombstone'' packet concept is useful but the cryptographic verification concern about compromised coordinators ''murdering'' healthy nodes introduces a threat model not well-developed elsewhere in the response.'
+          - voterId: gemini-3-pro
+            targetId: gemini-3-pro
+            vote: APPROVE
+            reasoning: This response offers a very strong alternative perspective, focusing on the physics of 'garbage collection' rather than just software. The 'Dead-Man's Drift' concept and the prohibition on 'leapfrog' maneuvers are vital for preserving the Delta-V budget. It complements the first response by emphasizing the physical reality of debris over the logical state of slots.
+          - voterId: gpt-5-2
+            targetId: gemini-3-pro
+            vote: NEUTRAL
+            reasoning: Good emphasis on decoupling safety maneuvers from ownership and on quarantine/contamination concepts, plus a reasonable tier split. However, the proposal to permanently burn slots and broadly prohibit cascaded reallocations is too rigid and likely inefficient; some claims are overstated (e.g., inevitability of Kessler) and the mix of Raft among neighbors + coordinator authority is not clearly specified or justified against the earlier “no reassignment” stance.
+        rawScore: 4
+        weightedScore: 3
+        approveCount: 1
+        rejectCount: 0
+      - targetId: gpt-5-2
+        votes:
+          - voterId: claude-opus-4-6
+            targetId: gpt-5-2
+            vote: APPROVE
+            reasoning: The most operationally complete and balanced response. The two-stage confirmation logic (local suspicion → confirmed status with multi-witness evidence) is well-specified and practical. The explicit 'who can do what' authority matrix with time-bounded temporary slot borrowing is the clearest governance specification of the three responses. The staged quarantine→stabilization→reassignment timeline with the critical insight that 'it is not empty; it's an uncontrolled object' is exactly right. The ΔV-aware reassignment policy with annual ΔV banking and batch migrations is pragmatic. The catalog data structure specification is concrete and implementable. The recommendation to use Raft at Tier-2 and PBFT only among 3-5 beacons at Tier-3 is a sensible compromise. The 'what I would prototype first' section demonstrates strong engineering judgment about risk retirement. Slightly less novel than Claude's DSSM insight but more comprehensive and implementation-ready overall.
+          - voterId: gemini-3-pro
+            targetId: gpt-5-2
+            vote: NEUTRAL
+            reasoning: This response is solid but feels a bit more generic compared to the specific architectural proposals of the other two. It covers the bases well (Tier 2 vs Tier 3 authority), but the reliance on Raft/consensus for local clusters contradicts the strong argument made by Claude about deterministic state machines being better for this specific constraint set. It is a good response, just less innovative than the others.
+          - voterId: gpt-5-2
+            targetId: gpt-5-2
+            vote: APPROVE
+            reasoning: 'Well-structured, pragmatic governance split: Tier-2 fast quarantine/temporary actions, Tier-3 authoritative catalog/ownership. Includes actionable detection/confirmation thresholds, adjacency-graph framing, staged quarantine→reassign flow, ΔV-aware policies, and realistic consensus guidance (Raft/event log + signed evidence; BFT only at small beacon tier if needed). Strong alignment with safety, catalog freshness, and limited ΔV.'
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+    winnerId: claude-opus-4-6
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-4-6
+        vote: CONCLUDE
+        reasoning: 'All three responses collectively cover the problem space thoroughly. The key architectural decisions are now well-articulated: deterministic state machines over BFT consensus (Claude), quarantine-first with staged reassignment (all three agree), tiered authority with Tier-2 safety autonomy and Tier-3 catalog authority (all three converge), and ΔV-constrained reassignment policies. The remaining disagreements (e.g., whether to use any consensus at all vs lightweight Raft, permanent slot burning vs eventual rehabilitation) are implementation-level tradeoffs best resolved through the simulation and prototyping work all responses recommend. Further discussion rounds would likely produce diminishing returns.'
+      - modelId: gemini-3-pro
+        vote: CONCLUDE
+        reasoning: The discussion has yielded two distinct, high-quality architectural approaches (Deterministic State Machines vs. Dead-Man's Drift/Sparse Lattice). Both address the core constraints of Delta-V and safety. Further discussion would likely just rehash these points; the user now has enough material to synthesize a final protocol.
+      - modelId: gpt-5-2
+        vote: CONCLUDE
+        reasoning: 'Across the top responses there is a coherent, convergent solution: deterministic/quarantine-first safety actions at Tier-2 with Tier-3 ratification for durable catalog ownership, plus explicit failure taxonomy and evidence-based confirmation. Further rounds would likely be incremental tuning rather than core architectural resolution.'
+    shouldTerminate: true
+    completedAt: '2026-02-24T00:44:06.996Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-4-6: 1
+    gemini-3-pro: 0
+    gpt-5-2: 0
+  totalVotes: 9
+  approvalRate: 66.66666666666666
+  averageResponseWords: 1361
+terminationReason: unanimous-conclude
+concludedAt: '2026-02-24T00:44:07.003Z'
+conclusion:
+  summary: |-
+    # Conclusion: Slot Reallocation Governance Protocol
+
+    ## Summary
+
+    The discussion converged on a **tiered-authority model with deterministic fallback rules**, rejecting distributed consensus algorithms (PBFT, Raft) in favor of **Deterministic Slot State Machines (DSSM)** for time-critical slot reassignment decisions. The core architectural insight is that slot reallocation, when properly formulated, is a state machine problem rather than a consensus problem: given identical ephemeris data and failure detection inputs, every node in the swarm should independently arrive at the same slot state classification without requiring voting or quorum. This approach aligns naturally with the seL4 formally verified kernel (the state machine is small enough to be tractable for formal verification), degrades gracefully during the 7–30+ day autonomous operation windows, and eliminates the fragility of BFT algorithms under exactly the conditions—multiple simultaneous failures—when they would be most needed.
+
+    The protocol introduces a four-class failure taxonomy (Graceful Shutdown, Sudden Silent Failure, Partial Degradation, Communication Loss Only) with a critical distinction between Class B (truly dead, ballistically predictable) and Class D (deaf but potentially maneuvering, unpredictable within its control envelope). Slot states progress through a deterministic lifecycle—ACTIVE → SUSPECT → QUARANTINED → VACANT → RESERVED → ACTIVE—with each tier of the three-tier architecture assigned clear, non-overlapping authority: individual nodes autonomously widen keep-out margins for self-preservation, cluster coordinators manage intra-cluster reassignment and VACANT transitions, and beacon spacecraft ratify catalog updates, resolve cross-cluster boundary conflicts, and serve as authoritative tiebreakers. This achieves autonomy with eventual consistency rather than requiring synchronous agreement.
+
+    At Phase 1 densities (1,000–3,000 nodes), the recommended default response to node failure is **quarantine absorption**—neighboring nodes passively widen their keep-out margins to accommodate the expanding uncertainty ellipsoid of the failed node—rather than active avoidance maneuvering. This preserves the limited ΔV budget (0.5–5 m/s/year), with 15% reserved annually for failure-response maneuvers. Replacement node assignment follows a greedy nearest-neighbor algorithm prioritized by a composite score of energy value, connectivity value, and migration ΔV cost, with low-priority slots simply abandoned rather than expensively repopulated.
+
+    ## Key Points
+
+    - **Deterministic over democratic**: DSSM embedded in every node's flight software eliminates the need for distributed consensus, ensuring that collision avoidance decisions remain locally executable and formally verifiable. Every node runs the state machine for its adjacency set (~6–15 neighbors); coordinators run it for the full cluster.
+
+    - **Class B ≠ Class D**: The protocol enforces a strict distinction between dead nodes (ballistic, predictable drift) and deaf nodes (potentially maneuvering, unpredictable). Quarantine geometry, keep-out margin expansion, and adjacent-node response differ fundamentally between these cases. Conflating them is identified as a primary safety risk.
+
+    - **Tiered authority with eventual consistency**: Cluster coordinators (Tier 2) can authorize intra-cluster reassignments without beacon (Tier 3) approval, but must propagate updates within 2 broadcast cycles. Beacons issue CORRECTION broadcasts to resolve inconsistencies, providing a clean separation between time-critical safety actions and system-wide catalog coherence.
+
+    - **Quarantine absorption as Phase 1 default**: At planned deployment densities, passively absorbing expanding uncertainty ellipsoids is geometrically feasible and ΔV-free. Active avoidance maneuvering is reserved for high-density clusters or overlapping multi-failure scenarios.
+
+    - **15% ΔV reservation for failure response**: This budget allocation (0.075–0.75 m/s/year depending on propulsion capability) must be tracked at the cluster level and factored into all replacement assignment decisions, constraining reassignment frequency over the 50-year operational lifetime.
+
+    - **Pre-computed migration plans**: Slot adjacency graphs and migration lookup tables should be computed on the ground and uploaded, avoiding computationally expensive in-flight optimization on resource-constrained automotive-grade processors.
+
+    ## Unresolved Questions
+
+    1. **Cluster coordinator failover during active reassignment**: If the rotating cluster coordinator itself fails mid-reassignment (while slots are in RESERVED state), how does the successor coordinator recover the in-progress state machine without introducing inconsistency? The DSSM is deterministic for failure *detection*, but the replacement *assignment* step (choosing which node fills a VACANT slot) involves optimization that may not be identically reproducible.
+
+    2. **Class D resolution timeline and escalation**: The protocol marks deaf-but-maneuvering nodes as CONTESTED, transitioning to QUARANTINED after 6 hours of no detected maneuvers. But what if a Class D node *is* maneuvering—potentially into neighboring keep-out tubes? At what point does the protocol authorize active intervention (e.g., neighboring nodes performing evasive maneuvers), and how is this coordinated without communication with the rogue node?
+
+    3. **Scaling behavior at Phase 2+ densities**: The quarantine absorption default assumes Phase 1 sparsity. At 10,000+ nodes, overlapping quarantine ellipsoids from even modest failure rates (1–3%) could consume significant swarm volume. What density threshold triggers a transition from passive absorption to active avoidance as the default policy, and how is this threshold communicated across the swarm?
+
+    4. **Cross-cluster cascade scenarios**: The protocol handles intra-cluster reassignment cleanly, but failures near cluster boundaries—especially simultaneous failures in adjacent clusters—may require coordinated response across cluster coordinators with potentially different local state views. The beacon tiebreaker mechanism needs further specification for multi-cluster cascade events.
+
+    ## Recommended Actions
+
+    1. **Formally verify the DSSM in seL4**: Implement the 8-state slot lifecycle state machine and prove key safety properties—particularly that no two nodes can simultaneously hold ACTIVE status for the same slot, and that QUARANTINED → VACANT transitions cannot occur without either beacon ratification or a deterministic timeout. Target this as an early deliverable for the flight software architecture.
+
+    2. **Run Monte Carlo failure cascade simulations**: Using the planned 10,000+ node simulation environment, model 3+ simultaneous failures within a single 100-node cluster (estimated ~0.1%/year probability at 3% failure rate) and cross-cluster boundary failures. Quantify quarantine ellipsoid overlap frequency, ΔV consumption under both passive absorption and active avoidance policies, and catalog staleness as a function of beacon broadcast cadence.
+
+    3. **Prototype the beacon catalog differential update mechanism**: Implement the ~48-byte amendment structure (Slot ID, state, epoch, state vector/covariance, authority signature, ratification flag) with 60-second differential and 3600-second full rebroadcast cycles. Validate update propagation latency and catalog convergence under simulated 30-day beacon-loss scenarios where nodes rely solely on local DSSM execution.
+
+    4. **Develop Class D detection and response doctrine**: Commission a focused study on distinguishing deaf-but-maneuvering nodes from dead nodes using only passive observation (optical tracking, radar ranging from neighbors). Define the decision boundary for escalating from CONTESTED to active evasion, including ΔV cost models and authority thresholds for cluster coordinators to authorize emergency maneuvers.
+
+    5. **Design the coordinator failover protocol for in-progress reassignments**: Specify how RESERVED slot states are persisted and recovered during coordinator handoff. Evaluate whether the replacement assignment algorithm can be made fully deterministic (eliminating the optimization ambiguity) or whether a lightweight two-phase commit between the outgoing and incoming coordinator is necessary—and whether that introduces unacceptable latency for safety-critical scenarios.
+  keyPoints:
+    - 'Deterministic over democratic**: DSSM embedded in every node''s flight software eliminates the need for distributed consensus, ensuring that collision avoidance decisions remain locally executable and formally verifiable. Every node runs the state machine for its adjacency set (~6–15 neighbors); coordinators run it for the full cluster.'
+    - 'Class B ≠ Class D**: The protocol enforces a strict distinction between dead nodes (ballistic, predictable drift) and deaf nodes (potentially maneuvering, unpredictable). Quarantine geometry, keep-out margin expansion, and adjacent-node response differ fundamentally between these cases. Conflating them is identified as a primary safety risk.'
+    - 'Tiered authority with eventual consistency**: Cluster coordinators (Tier 2) can authorize intra-cluster reassignments without beacon (Tier 3) approval, but must propagate updates within 2 broadcast cycles. Beacons issue CORRECTION broadcasts to resolve inconsistencies, providing a clean separation between time-critical safety actions and system-wide catalog coherence.'
+    - 'Quarantine absorption as Phase 1 default**: At planned deployment densities, passively absorbing expanding uncertainty ellipsoids is geometrically feasible and ΔV-free. Active avoidance maneuvering is reserved for high-density clusters or overlapping multi-failure scenarios.'
+    - '15% ΔV reservation for failure response**: This budget allocation (0.075–0.75 m/s/year depending on propulsion capability) must be tracked at the cluster level and factored into all replacement assignment decisions, constraining reassignment frequency over the 50-year operational lifetime.'
+    - 'Pre-computed migration plans**: Slot adjacency graphs and migration lookup tables should be computed on the ground and uploaded, avoiding computationally expensive in-flight optimization on resource-constrained automotive-grade processors.'
+  unresolvedQuestions:
+    - 'Cluster coordinator failover during active reassignment**: If the rotating cluster coordinator itself fails mid-reassignment (while slots are in RESERVED state), how does the successor coordinator recover the in-progress state machine without introducing inconsistency? The DSSM is deterministic for failure *detection*, but the replacement *assignment* step (choosing which node fills a VACANT slot) involves optimization that may not be identically reproducible.'
+    - 'Class D resolution timeline and escalation**: The protocol marks deaf-but-maneuvering nodes as CONTESTED, transitioning to QUARANTINED after 6 hours of no detected maneuvers. But what if a Class D node *is* maneuvering—potentially into neighboring keep-out tubes? At what point does the protocol authorize active intervention (e.g., neighboring nodes performing evasive maneuvers), and how is this coordinated without communication with the rogue node?'
+    - 'Scaling behavior at Phase 2+ densities**: The quarantine absorption default assumes Phase 1 sparsity. At 10,000+ nodes, overlapping quarantine ellipsoids from even modest failure rates (1–3%) could consume significant swarm volume. What density threshold triggers a transition from passive absorption to active avoidance as the default policy, and how is this threshold communicated across the swarm?'
+    - 'Cross-cluster cascade scenarios**: The protocol handles intra-cluster reassignment cleanly, but failures near cluster boundaries—especially simultaneous failures in adjacent clusters—may require coordinated response across cluster coordinators with potentially different local state views. The beacon tiebreaker mechanism needs further specification for multi-cluster cascade events.'
+  recommendedActions:
+    - 'Formally verify the DSSM in seL4**: Implement the 8-state slot lifecycle state machine and prove key safety properties—particularly that no two nodes can simultaneously hold ACTIVE status for the same slot, and that QUARANTINED → VACANT transitions cannot occur without either beacon ratification or a deterministic timeout. Target this as an early deliverable for the flight software architecture.'
+    - 'Run Monte Carlo failure cascade simulations**: Using the planned 10,000+ node simulation environment, model 3+ simultaneous failures within a single 100-node cluster (estimated ~0.1%/year probability at 3% failure rate) and cross-cluster boundary failures. Quantify quarantine ellipsoid overlap frequency, ΔV consumption under both passive absorption and active avoidance policies, and catalog staleness as a function of beacon broadcast cadence.'
+    - 'Prototype the beacon catalog differential update mechanism**: Implement the ~48-byte amendment structure (Slot ID, state, epoch, state vector/covariance, authority signature, ratification flag) with 60-second differential and 3600-second full rebroadcast cycles. Validate update propagation latency and catalog convergence under simulated 30-day beacon-loss scenarios where nodes rely solely on local DSSM execution.'
+    - 'Develop Class D detection and response doctrine**: Commission a focused study on distinguishing deaf-but-maneuvering nodes from dead nodes using only passive observation (optical tracking, radar ranging from neighbors). Define the decision boundary for escalating from CONTESTED to active evasion, including ΔV cost models and authority thresholds for cluster coordinators to authorize emergency maneuvers.'
+    - 'Design the coordinator failover protocol for in-progress reassignments**: Specify how RESERVED slot states are persisted and recovered during coordinator handoff. Evaluate whether the replacement assignment algorithm can be made fully deterministic (eliminating the optimization ambiguity) or whether a lightweight two-phase commit between the outgoing and incoming coordinator is necessary—and whether that introduces unacceptable latency for safety-critical scenarios.'
+  generatedBy: claude-opus-4-6
+  generatedAt: '2026-02-24T00:44:50.518Z'

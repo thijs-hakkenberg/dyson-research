@@ -1,0 +1,112 @@
+{
+  "experiment": "winner-hidden-ablation",
+  "timestamp": "2026-03-19T07:40:40.588Z",
+  "condition": "Winner identity removed from subsequent round prompts",
+  "control": "Standard deliberation with winner visible",
+  "questions": [
+    {
+      "questionId": "rq-0-14",
+      "slug": "propellant-production-phase-0-scope",
+      "title": "Propellant production in Phase 0 scope",
+      "hiddenWinner": {
+        "totalRounds": 3,
+        "terminationRound": 3,
+        "roundWinners": [
+          "claude-opus-4-6",
+          "claude-opus-4-6",
+          "claude-opus-4-6"
+        ],
+        "winnerStability": 1,
+        "concludeVotesPerRound": [
+          1,
+          2,
+          2
+        ]
+      },
+      "standardDeliberation": {
+        "totalRounds": 1
+      },
+      "comparison": {
+        "roundDelta": 2,
+        "sameFirstRoundWinner": null
+      }
+    },
+    {
+      "questionId": "rq-0-28",
+      "slug": "isru-cost-methodology-validation",
+      "title": "In-situ resource utilization cost methodology validation",
+      "hiddenWinner": {
+        "totalRounds": 2,
+        "terminationRound": 2,
+        "roundWinners": [
+          "gpt-5-2",
+          "gpt-5-2"
+        ],
+        "winnerStability": 1,
+        "concludeVotesPerRound": [
+          2,
+          2
+        ]
+      },
+      "standardDeliberation": {
+        "totalRounds": 3
+      },
+      "comparison": {
+        "roundDelta": -1,
+        "sameFirstRoundWinner": null
+      }
+    },
+    {
+      "questionId": "rq-1-24",
+      "slug": "swarm-coordination-architecture-scale",
+      "title": "Swarm coordination architecture at scale (millions of units)",
+      "hiddenWinner": {
+        "totalRounds": 3,
+        "terminationRound": 3,
+        "roundWinners": [
+          "claude-opus-4-6",
+          "gpt-5-2",
+          "gpt-5-2"
+        ],
+        "winnerStability": 0,
+        "concludeVotesPerRound": [
+          1,
+          2,
+          2
+        ]
+      },
+      "standardDeliberation": {
+        "totalRounds": 2
+      },
+      "comparison": {
+        "roundDelta": 1,
+        "sameFirstRoundWinner": null
+      }
+    },
+    {
+      "questionId": "rq-1-40",
+      "slug": "slot-reallocation-governance",
+      "title": "Slot reallocation governance protocol",
+      "hiddenWinner": {
+        "totalRounds": 2,
+        "terminationRound": 2,
+        "roundWinners": [
+          "claude-opus-4-6",
+          "claude-opus-4-6"
+        ],
+        "winnerStability": 1,
+        "concludeVotesPerRound": [
+          2,
+          2
+        ]
+      },
+      "standardDeliberation": {
+        "totalRounds": 2
+      },
+      "comparison": {
+        "roundDelta": 0,
+        "sameFirstRoundWinner": null
+      }
+    }
+  ]
+}

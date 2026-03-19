@@ -1,0 +1,108 @@
+votes:
+  - voterId: claude-opus-4-6
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Exceptional contribution. The propellant demand model sketch (Gap 1) is exactly the kind of quantitative reasoning that was missing from Round 1 — the SEP vs. chemical distinction fundamentally changes the scale of propellant needed. Gap 2 correctly identifies volatile extraction as a separate unit operation rather than a free byproduct, which is a critical engineering reality. Gap 3's argument for water storage + on-demand electrolysis over cryogenic LH2 storage is compelling and well-supported by boiloff calculations. The phased roadmap with specific mass/power/cost figures is actionable. The call to complete the propellant demand model before finalizing electrolysis scale is the most important recommendation in this entire discussion.
+  - voterId: claude-opus-4-6
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: 'The ''water-first'' framing is directionally correct and aligns with the other responses. The waste heat synergy point is valuable. However, the power budget analysis contains a significant error: calculating 5.7 MW for 1,000 tonnes of electrolysis is correct but misleading — no one proposed producing 1,000 tonnes in Phase 0. The pilot systems discussed by others are 1-5 tonnes/year, which is well within budget. The steam/water plasma propulsion suggestion is interesting but underdeveloped — ISP penalties are severe and the tug architecture implications aren''t worked through. The hypergolic/Sabatier suggestion is speculative given asteroid nitrogen availability. Overall adequate but less rigorous than the other two responses.'
+  - voterId: claude-opus-4-6
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: Well-structured and pragmatic. The 'propellant-ready interfaces' checklist (power bus, thermal, structural, fluids, avionics) is the most operationally specific of all three responses and would translate directly into engineering requirements. The power reality check with parametric scaling (500 kW / 1 MW / 2 MW) is useful for trade studies. The three bounding cases for demand modeling are well-chosen. The go/no-go gate criteria for Phase 0.5 are concrete and appropriate. Slightly less novel than Opus's contribution but highly competent and actionable.
+  - voterId: gemini-3-pro
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Exceptional technical insight regarding the temperature mismatch between volatile extraction and smelting. The analysis of boiloff rates and the recommendation for 'water storage + on-demand electrolysis' provides a concrete solution to the storage problem.
+  - voterId: gemini-3-pro
+    targetId: gemini-3-pro
+    vote: APPROVE
+    reasoning: Strong systems engineering perspective. The proposal to utilize waste heat for volatile extraction is clever, and the argument to pivot tug propulsion to water/steam/plasma to avoid the energy cost of electrolysis in Phase 0 is a high-value architectural trade.
+  - voterId: gemini-3-pro
+    targetId: gpt-5-2
+    vote: NEUTRAL
+    reasoning: A solid, safe response that reinforces the 'pilot' approach, but it lacks the specific engineering depth of the other two (e.g., the specific thermal conflicts or the boiloff calculations). It summarizes well but advances the discussion less than the others.
+  - voterId: gemini-3-pro
+    targetId: gpt-4-turbo
+    vote: REJECT
+    reasoning: N/A - Model not present in input.
+  - voterId: gpt-5-2
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Strongly advances the discussion with concrete gaps (demand model, water extraction as a distinct unit op, cryo storage pitfalls) and actionable architecture changes (volatile extraction in Phase 0, water storage + on-demand electrolysis). Reasoning is systems-aware (power/thermal/ops) and proposes a phased roadmap tied to measurable constraints.
+  - voterId: gpt-5-2
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: Good emphasis on water-first and correctly highlights Phase 0 power-budget tension for large-scale electrolysis, plus useful ideas (water as shielding, interfaces, thermal integration). However it overstates some points (e.g., “water extraction is easy/free,” “technically impossible” at Phase 0 without nuance), introduces speculative propulsion/propellant pathways (water Hall thrusters at scale, hypergolic synthesis) without sufficient feasibility grounding, and has some muddled chemistry/ISRU assumptions.
+  - voterId: gpt-5-2
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: 'Well-structured and directly answers scope: propellant-ready architecture + Phase 0 pilot demonstrator, defer full depot. Provides a sensible power reality check, clear interface/thermal/power requirements, and ties scale decisions to demand modeling and tug architecture choices. Pragmatic and aligned to Phase 0 constraints without overcommitting.'
+terminationVotes:
+  - modelId: claude-opus-4-6
+    vote: CONCLUDE
+    reasoning: 'Round 2 has achieved strong convergence on all key points: (1) water storage + on-demand electrolysis over cryogenic LH2 storage, (2) volatile extraction as a Day 1 ore processing step, (3) pilot electrolysis deferred to Phase 0.5 with full capability in Phase 1, (4) propellant-ready interfaces as non-negotiable Phase 0 requirements, and (5) the critical dependency on completing a propellant demand model tied to the tug propulsion architecture (SEP vs chemical). The remaining open question — tug architecture selection — is properly identified as an input to this decision rather than something this discussion can resolve. Further rounds would likely produce diminishing returns.'
+  - modelId: gemini-3-pro
+    vote: CONCLUDE
+    reasoning: 'The discussion has reached a strong consensus: Phase 0 should focus on volatile/water extraction (integrated into the ore processing chain) and pilot-scale electrolysis, while deferring full-scale cryogenic production. The group has successfully identified the power and thermal constraints that make full-scale LH2/LOX unviable in Phase 0.'
+  - modelId: gpt-5-2
+    vote: CONCLUDE
+    reasoning: 'Across responses there is convergent, actionable consensus: make Phase 0 propellant-ready, include volatile/water extraction and a pilot ISRU/electrolysis demo, and defer full-scale (especially cryogenic LH2) depot operations to Phase 0.5/Phase 1 pending demand modeling and transport architecture decisions.'
+voteResults:
+  - targetId: claude-opus-4-6
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Exceptional contribution. The propellant demand model sketch (Gap 1) is exactly the kind of quantitative reasoning that was missing from Round 1 — the SEP vs. chemical distinction fundamentally changes the scale of propellant needed. Gap 2 correctly identifies volatile extraction as a separate unit operation rather than a free byproduct, which is a critical engineering reality. Gap 3's argument for water storage + on-demand electrolysis over cryogenic LH2 storage is compelling and well-supported by boiloff calculations. The phased roadmap with specific mass/power/cost figures is actionable. The call to complete the propellant demand model before finalizing electrolysis scale is the most important recommendation in this entire discussion.
+      - voterId: gemini-3-pro
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Exceptional technical insight regarding the temperature mismatch between volatile extraction and smelting. The analysis of boiloff rates and the recommendation for 'water storage + on-demand electrolysis' provides a concrete solution to the storage problem.
+      - voterId: gpt-5-2
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Strongly advances the discussion with concrete gaps (demand model, water extraction as a distinct unit op, cryo storage pitfalls) and actionable architecture changes (volatile extraction in Phase 0, water storage + on-demand electrolysis). Reasoning is systems-aware (power/thermal/ops) and proposes a phased roadmap tied to measurable constraints.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+  - targetId: gemini-3-pro
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: 'The ''water-first'' framing is directionally correct and aligns with the other responses. The waste heat synergy point is valuable. However, the power budget analysis contains a significant error: calculating 5.7 MW for 1,000 tonnes of electrolysis is correct but misleading — no one proposed producing 1,000 tonnes in Phase 0. The pilot systems discussed by others are 1-5 tonnes/year, which is well within budget. The steam/water plasma propulsion suggestion is interesting but underdeveloped — ISP penalties are severe and the tug architecture implications aren''t worked through. The hypergolic/Sabatier suggestion is speculative given asteroid nitrogen availability. Overall adequate but less rigorous than the other two responses.'
+      - voterId: gemini-3-pro
+        targetId: gemini-3-pro
+        vote: APPROVE
+        reasoning: Strong systems engineering perspective. The proposal to utilize waste heat for volatile extraction is clever, and the argument to pivot tug propulsion to water/steam/plasma to avoid the energy cost of electrolysis in Phase 0 is a high-value architectural trade.
+      - voterId: gpt-5-2
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: Good emphasis on water-first and correctly highlights Phase 0 power-budget tension for large-scale electrolysis, plus useful ideas (water as shielding, interfaces, thermal integration). However it overstates some points (e.g., “water extraction is easy/free,” “technically impossible” at Phase 0 without nuance), introduces speculative propulsion/propellant pathways (water Hall thrusters at scale, hypergolic synthesis) without sufficient feasibility grounding, and has some muddled chemistry/ISRU assumptions.
+    rawScore: 4
+    weightedScore: 3
+    approveCount: 1
+    rejectCount: 0
+  - targetId: gpt-5-2
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: Well-structured and pragmatic. The 'propellant-ready interfaces' checklist (power bus, thermal, structural, fluids, avionics) is the most operationally specific of all three responses and would translate directly into engineering requirements. The power reality check with parametric scaling (500 kW / 1 MW / 2 MW) is useful for trade studies. The three bounding cases for demand modeling are well-chosen. The go/no-go gate criteria for Phase 0.5 are concrete and appropriate. Slightly less novel than Opus's contribution but highly competent and actionable.
+      - voterId: gemini-3-pro
+        targetId: gpt-5-2
+        vote: NEUTRAL
+        reasoning: A solid, safe response that reinforces the 'pilot' approach, but it lacks the specific engineering depth of the other two (e.g., the specific thermal conflicts or the boiloff calculations). It summarizes well but advances the discussion less than the others.
+      - voterId: gpt-5-2
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: 'Well-structured and directly answers scope: propellant-ready architecture + Phase 0 pilot demonstrator, defer full depot. Provides a sensible power reality check, clear interface/thermal/power requirements, and ties scale decisions to demand modeling and tug architecture choices. Pragmatic and aligned to Phase 0 constraints without overcommitting.'
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+winnerId: claude-opus-4-6
+winnerScore: 5

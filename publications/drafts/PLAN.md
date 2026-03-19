@@ -349,56 +349,53 @@ Track F:                                              │ 07,08,09  │───
   - [x] Strengthen confounded baselines discussion (explicit about prompt/format differences)
   - [x] Run Version J review: **Gemini Minor (4.50), Claude Major (3.50), GPT Major (3.50)**
   - [ ] Create CHANGELOG
-- [ ] **Version K+ — Address Version J Reviews** (consensus demands from Claude + GPT)
-  - [ ] Run controlled baseline experiment: prompt-matched aggregation-only (Exp 1) + self-refinement (Exp 2) — All 3 demand
-  - [ ] Obtain inter-rater reliability: recruit 2 independent coders OR LLM-as-judge proxy, report Cohen's κ — All 3 demand
-  - [ ] Run winner-hidden ablation (even on 4 questions) to isolate anchoring — GPT strongest
-  - [ ] Add voting robustness analysis: margin distributions, Condorcet cycles, tie-break sensitivity — GPT
-  - [ ] Reframe similarity analysis as "descriptive characterization" not "evidence against sycophancy" — Claude + GPT
-  - [ ] Separate "sycophancy" vs "anchoring" vs "convergence" definitions paragraph — GPT
-  - [ ] Include 2-3 deliberations on verifiable engineering problems (not Dyson swarm) — Claude
-  - [ ] Tighten manuscript 20-30%: consolidate repeated limitations, condense case study — Claude
-  - [ ] Fix citation hygiene: Perez [10] uncited, Zheng year mismatch, date/venue checks — Claude + GPT
-  - [ ] Run review cycle → target 3/3 Accept or Minor
+- [x] **Versions K-M — Address Version J Reviews** (2026-03-19)
+  - [x] Run controlled baseline Exp 1 (aggregation-only): 15/16 questions complete
+  - [x] Run controlled baseline Exp 2 (self-refinement): 16/16 questions complete
+  - [x] Reframe similarity analysis as "descriptive characterization" — Version K
+  - [x] Separate sycophancy/anchoring/convergence/herding definitions — Version L
+  - [x] DV baseline test (aggregation produces 10.8 topics/q vs deliberation 2.9) — Version L
+  - [x] Inter-rater reliability caveat (honest acknowledgment of single-annotator limitation) — Version L
+  - [x] Run winner-hidden ablation (4 questions): +0.5 rounds, 75% stability — Version M
+  - [x] Fix citation hygiene (Perez cited, Zheng year fixed) — Version K
+  - [x] Tighten manuscript (~4% reduction) — Version K
+  - [x] Run review cycles: V-K 4.06, V-L 4.06, V-M 4.00 (Gemini Minor, Claude+GPT Major)
+  - [ ] **PLATEAU**: Remaining Major demands require human evaluators + full-scale ablation (n=16)
+  - [ ] Add voting robustness analysis — GPT demand, not yet addressed
+  - [ ] Include 2-3 verifiable engineering problems — Claude demand, not yet addressed
 - [ ] **Publication Package**
+  - [ ] Full-scale winner-hidden replication (n=16, fix Gemini)
+  - [ ] Recruit human evaluators for blinded quality comparison
   - [ ] Assemble papers/03-multi-model-ai-consensus/
   - [ ] Include deliberation transcripts as supplementary data
   - [ ] Write blog article
 
-### Paper 04: Microgravity Metallurgy
-- [ ] **Literature Review**
-  - [ ] Catalog all ISS metallurgy experiments (ESA/JAXA/NASA)
-  - [ ] Summarize Marangoni convection effects on grain structure
-  - [ ] Analyze buoyancy-free solidification studies
-  - [ ] Review terrestrial zone refining scaling laws
-  - [ ] Assess artificial gravity fallback cost/mass implications
-- [ ] **Parametric Analysis**
-  - [ ] Scaling law model: lab-scale → industrial production
-  - [ ] Thermal management sizing for microgravity processing
-  - [ ] Define quantitative go/no-go criteria for Gate 1
-- [ ] **Paper**
-  - [ ] Write Version A (full LaTeX)
-  - [ ] Run iterative AI peer review → 3/3 Accept
-  - [ ] Create CHANGELOG
+### Paper 04: Microgravity Metallurgy — Version B (score 3.67, plateau)
+- [x] **Literature Review**
+  - [x] State of art: ISS EML, gravity-independent AM, ultrasound grain refinement, electrolysis
+  - [x] Gravity sensitivity analysis with dimensional analysis + caveats
+  - [x] Hybrid multi-gravity-zone architecture (3 candidates compared)
+  - [x] 21 references (up from 11 in V-A)
+- [x] **Architecture & Gate 1**
+  - [x] Mass breakdown table (13 subsystems, 340-430 tonnes)
+  - [x] Gate 1 go/no-go criteria (4 mandatory + 3 desirable)
+  - [x] $550-810M research roadmap
+- [x] **Paper** — V-A (13pp) + V-B (15pp), both compile clean
+  - [x] Review cycles: V-A 3.28 → V-B 3.67 (all Major)
+  - [ ] **PLATEAU**: methodology needs CFD/FEA or actual partial-gravity data
 - [ ] **Publication Package**
 
-### Paper 05: ISRU Water Extraction
-- [ ] **Simulation Code**
-  - [ ] Extend Paper 01 NPV framework for source comparison
-  - [ ] Water extraction yield model (thermal, energy, purity)
-  - [ ] Transport cost model: NEA → L4/L5 vs. Moon → L4/L5
-  - [ ] Monte Carlo over extraction yield, purity, delta-v, energy cost
-  - [ ] pytest suite
-- [ ] **Figures**
-  - [ ] Create `generate_water_figures.py`
-  - [ ] Source comparison cost curves
-  - [ ] Optimal source as function of program scale
-  - [ ] Extraction rate sensitivity analysis
-  - [ ] Transport delta-v comparison
-- [ ] **Paper**
-  - [ ] Write Version A (full LaTeX)
-  - [ ] Run iterative AI peer review → 3/3 Accept
-  - [ ] Create CHANGELOG
+### Paper 05: ISRU Water Extraction — Version B (score 3.22, plateau)
+- [x] **Simulation Code**
+  - [x] `water_extraction_model.py` v2.0: physics-derived transport (Tsiolkovsky + fleet economics)
+  - [x] `water_extraction_mc.py` v2.0: Spearman sensitivity analysis, parameter storage
+  - [x] `tests/test_water_extraction.py`: 25 tests all pass
+  - [x] Key results: NEA $3,333/kg vs Lunar $4,845/kg, P(NEA cheaper)=90.4%
+  - [x] Trip time modeled: 5.35 years one-way for NEA EP transfers
+- [x] **Paper** — V-A (10pp) + V-B (12pp), both compile clean
+  - [x] Review cycles: V-A 3.17 → V-B 3.22 (all Major)
+  - [ ] **PLATEAU**: needs model calibration against real extraction data
+- [ ] **Figures**: `generate_water_figures.py` not yet written
 - [ ] **Publication Package**
 
 ### Paper 06: Cryogenic Propellant Architecture

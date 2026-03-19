@@ -1,0 +1,377 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+% --- Packages ---
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{lineno}
+\usepackage{multirow}
+\usepackage{siunitx}
+
+\modulolinenumbers[5]
+\graphicspath{{figures/}}
+\journal{Advances in Space Research}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{ISRU Water Extraction for Space Propellant: Monte Carlo Comparison of Asteroid and Lunar Sources at Industrial Scale}
+
+\author[dyson]{Thijs Hakkenberg\corref{cor1}}
+\cortext[cor1]{Corresponding author.}
+\ead{thijs@hakkenberg.com}
+\fntext[fn1]{This research was conducted using an AI-assisted multi-model consensus methodology described in \cite{hakkenberg2026consensus}. Simulation code is open-source at \url{https://github.com/project-dyson}.}
+
+\address[dyson]{Project Dyson, Open Research Initiative\fnref{fn1}}
+
+\begin{abstract}
+In-situ resource utilization (ISRU) for propellant production is widely considered essential for sustainable space infrastructure, yet no published model compares the major water sources---C-type near-Earth asteroids, lunar polar ice, and Phobos/Deimos---on a consistent economic basis accounting for extraction physics, transport costs, and parametric uncertainty. We present a Monte Carlo cost model that computes the net present value per kilogram of water delivered to the Earth--Sun L4/L5 Lagrange points from each source, propagating uncertainty in water fraction, extraction yield, energy cost, transport delta-$v$, and capital investment through 10,000 Monte Carlo trials.
+
+Under baseline assumptions calibrated to OSIRIS-REx Bennu sample data (10\% water fraction, 70\% extraction yield) and current electric propulsion performance (2,500~s I$_\text{sp}$), C-type NEA water is delivered to L4/L5 at a baseline NPV cost of \$2,805/kg, compared to \$3,784/kg for lunar polar ice. Monte Carlo analysis yields median costs of \$3,333/kg (NEA) and \$4,845/kg (lunar), with NEA sources cheaper in 90.4\% of paired parameter draws. Transport costs are now derived from the Tsiolkovsky equation and vehicle economics rather than exogenous estimates, yielding NEA payload fractions of 83.2\% (electric propulsion) vs.\ lunar payload fractions of 56.8\% (chemical). NEA transfers require 5.35-year one-way transit times via electric propulsion, introducing working-capital lock-up that narrows but does not close the cost gap. Sensitivity analysis identifies extraction yield ($\rho = -0.61$) and transport cost scaling ($\rho = +0.51$) as the dominant cost drivers. We propose a phased development strategy that begins with NEA water extraction while maintaining lunar capability as a hedge.
+\end{abstract}
+
+\begin{keyword}
+ISRU \sep water extraction \sep asteroid mining \sep lunar ice \sep Monte Carlo \sep space propellant \sep near-Earth asteroid
+\end{keyword}
+
+\end{frontmatter}
+
+\linenumbers
+
+%% ============================================================
+\section{Introduction}
+\label{sec:introduction}
+%% ============================================================
+
+Water is the most versatile in-space resource. Electrolyzed into hydrogen and oxygen, it provides high-performance cryogenic propellant ($I_\text{sp} \approx 450$~s chemical, or feedstock for electric propulsion). Unprocessed, it serves as radiation shielding, life support consumable, and thermal working fluid. For any large-scale space infrastructure program, the question is not whether to use ISRU water, but \emph{where to get it}.
+
+Three candidate sources dominate the literature: (1)~C-type near-Earth asteroids, whose CI/CM chondrite compositions contain 5--15\% water by mass bound in hydrated phyllosilicates \cite{lauretta2024}; (2)~lunar polar permanently shadowed regions (PSRs), where neutron spectrometry and direct measurement indicate 2--10\% water ice in regolith \cite{colaprete2010}; and (3)~the Martian moons Phobos and Deimos, whose spectral properties suggest possible hydration but whose water content is highly uncertain.
+
+Previous economic analyses of ISRU water have been source-specific. Sowers \cite{sowers2016} analyzed the business case for lunar ice mining, establishing break-even conditions against Earth-launched propellant. Sercel \cite{sercel2019} developed the Optical Mining concept for asteroid volatile extraction, demonstrating full-scale thermal processing of CI-type simulant. Sanders and Larson \cite{sanders2013} provided NASA's ISRU technology roadmap. None compares the sources on a consistent economic basis suitable for architectural decision-making.
+
+This paper extends the parametric Monte Carlo framework of Paper~01 in this series \cite{hakkenberg2026isru} to the water extraction problem. We model each source's capital costs, operating costs with learning curves, extraction physics, and transport costs to L4/L5, then propagate parametric uncertainty through 10,000 Monte Carlo trials to produce probability distributions over cost per kilogram delivered. The key output is the \emph{optimal source as a function of program scale and parameter uncertainty}---the information needed by a program architect to make a robust source selection decision.
+
+%% ============================================================
+\section{Water Source Characterization}
+\label{sec:sources}
+%% ============================================================
+
+\subsection{C-type near-Earth asteroids}
+\label{sec:asteroid}
+
+The OSIRIS-REx mission returned 121.6~g of material from C-type asteroid (101955)~Bennu in September 2023. Preliminary examination \cite{lauretta2024} revealed a composition dominated by hydrated phyllosilicates (serpentine and saponite), with magnetite, sulfides, carbonates, organic matter, and sodium-rich phosphates. The composition resembles the most chemically primitive CI chondrites.
+
+Subsequent analyses have significantly enriched the volatile inventory:
+\begin{itemize}
+    \item Glavin et al.\ \cite{glavin2025} found Bennu samples more volatile-rich than Ryugu samples, with higher carbon, nitrogen, and ammonia concentrations.
+    \item McCoy et al.\ \cite{mccoy2025} identified 11 evaporite minerals formed from saltwater evaporation, providing direct evidence for long-duration liquid water on Bennu's parent body.
+\end{itemize}
+
+For modeling purposes, we adopt a baseline water fraction of 10\% (range 5--15\%), consistent with CI chondrite bulk compositions and the Bennu sample results. The water is bound in phyllosilicate crystal structures and must be liberated by thermal processing at 400--700$^\circ$C.
+
+Bennu is one data point in a diverse population. C-type NEAs encompass CI, CM, and CR chondrite subtypes with systematically different water fractions: CI chondrites average $\sim$11\% total water, CM chondrites $\sim$9\%, and CR chondrites $\sim$3--6\% \cite{alexander2012}. The meteorite database provides population statistics that inform Monte Carlo sampling. Our uniform 5--15\% range spans from water-poor CR material to the most hydrated CI material, capturing the compositional diversity of the accessible C-type NEA population without conditioning on a single favorable target.
+
+\subsection{Lunar polar ice}
+\label{sec:lunar}
+
+The LCROSS impact experiment detected approximately 5.6\% water ice by mass in the Cabeus crater ejecta plume \cite{colaprete2010}. Subsequent orbital measurements from the Lunar Reconnaissance Orbiter suggest heterogeneous distribution, with some PSR locations potentially containing up to 10\% water ice mixed with regolith, while other areas contain less than 2\%.
+
+Lunar water extraction faces distinct challenges: (1)~operations in permanently shadowed craters require independent power sources, (2)~the ice is likely mixed with regolith at depth rather than existing as pure ice deposits, and (3)~transport to L4/L5 requires chemical propulsion for lunar ascent ($\Delta v \approx 2.4$~km/s) followed by transfer to the Lagrange point.
+
+\subsection{Phobos/Deimos}
+\label{sec:phobos}
+
+The Martian moons show spectral features possibly consistent with hydrated minerals, but their actual water content is highly uncertain (0--5\%). The JAXA MMX mission, expected to return samples from Phobos, may resolve this uncertainty. We include Phobos/Deimos as a third source to bracket the option space, but their high delta-$v$ to L4/L5 ($\sim$6~km/s) makes them uncompetitive under most assumptions.
+
+%% ============================================================
+\section{Cost Model}
+\label{sec:model}
+%% ============================================================
+
+\subsection{Model structure}
+
+For each source, the total program cost over $T$ years comprises:
+\begin{equation}
+    C_\text{total} = K + \sum_{t=1}^{T} \left[ C_\text{ops}(t) + C_\text{transport}(t) \right]
+    \label{eq:total-cost}
+\end{equation}
+where $K$ is the upfront capital investment, $C_\text{ops}(t)$ is the annual operating cost with learning curve effects, and $C_\text{transport}(t)$ is the annual cost of transporting extracted water to L4/L5.
+
+\subsection{Capital costs}
+
+Capital costs include extraction equipment ($K_\text{ext}$), transport vehicle fleet ($K_\text{trans}$), anchoring/excavation systems ($K_\text{anch}$), water processing and electrolysis ($K_\text{proc}$), and for the lunar source, surface base infrastructure ($K_\text{base}$). Table~\ref{tab:capital} summarizes baseline values.
+
+\begin{table}[ht]
+\centering
+\caption{Capital cost parameters by source (baseline values).}
+\label{tab:capital}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Component} & \textbf{NEA (\$B)} & \textbf{Lunar (\$B)} & \textbf{Phobos (\$B)} \\
+\midrule
+Extraction & 5.0 & 8.0 & 12.0 \\
+Transport fleet & 10.0 & 15.0 & 25.0 \\
+Anchoring/excavation & 0.5 & 0.2 & 0.8 \\
+Processing & 2.0 & 3.0 & 3.0 \\
+Surface base & --- & 5.0 & --- \\
+\midrule
+\textbf{Total} & \textbf{17.5} & \textbf{31.2} & \textbf{40.8} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Operating costs with learning}
+
+Annual operating costs follow a Wright learning curve applied to cumulative water production:
+\begin{equation}
+    c_\text{ops}(Q) = c_{\text{ops},1} \cdot \left(\frac{Q}{Q_0}\right)^b
+    \label{eq:learning}
+\end{equation}
+where $c_{\text{ops},1}$ is the first-unit operating cost per kg, $Q$ is cumulative production, $Q_0 = 1{,}000$~kg is the normalization scale, and $b = \ln(\text{LR}) / \ln(2)$ with learning rate LR.
+
+\subsection{Physics-derived transport costs}
+\label{sec:transport}
+
+In Version~A of this paper, transport cost was an exogenous parameter sampled directly. We now derive it from the Tsiolkovsky rocket equation and vehicle economics, making the model self-consistent with the propulsion physics.
+
+The payload mass fraction for a single-stage transfer is:
+\begin{equation}
+    f_\text{payload} = 1 - \exp\!\left(-\frac{\Delta v}{g_0 \, I_\text{sp}}\right)
+    \label{eq:payload-fraction}
+\end{equation}
+where $g_0 = 9.81$~m/s$^2$. For the NEA baseline ($\Delta v = 4.5$~km/s, $I_\text{sp} = 2{,}500$~s EP), this yields $f_\text{payload} = 83.2\%$. For the lunar baseline ($\Delta v = 2.4$~km/s, $I_\text{sp} = 450$~s chemical), $f_\text{payload} = 56.8\%$.
+
+The transport cost per kilogram delivered is then:
+\begin{equation}
+    c_\text{transport} = \frac{C_\text{vehicle}/N_\text{trips} + C_\text{propellant} + C_\text{ops,trip}}{M_\text{vehicle} \cdot f_\text{payload}}
+    \label{eq:transport-v2}
+\end{equation}
+where $C_\text{vehicle}$ is the vehicle acquisition cost, $N_\text{trips}$ is the lifetime number of round trips, $C_\text{propellant}$ is propellant cost per trip, and $M_\text{vehicle}$ is the vehicle dry mass capacity. Table~\ref{tab:vehicle} summarizes the vehicle parameters.
+
+\begin{table}[ht]
+\centering
+\caption{Transport vehicle parameters by source.}
+\label{tab:vehicle}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Parameter} & \textbf{NEA (EP)} & \textbf{Lunar (chemical)} \\
+\midrule
+Vehicle capacity (tonnes) & 50 & 20 \\
+Vehicle cost (\$M) & 500 & 200 \\
+Lifetime trips & 10 & 50 \\
+$I_\text{sp}$ (s) & 2,500 & 450 \\
+$\Delta v$ (km/s) & 4.5 & 2.4 \\
+Payload fraction & 83.2\% & 56.8\% \\
+One-way trip time & 5.35~yr & $<$0.1~yr \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The key asymmetry between sources is that NEA-to-L4/L5 transfers use high-$I_\text{sp}$ electric propulsion ($I_\text{sp} \approx 2{,}500$~s, enabled by magnetically shielded Hall thrusters with demonstrated lifetime $>3{,}500$~hours \cite{frieman2019}), while lunar surface departure requires chemical propulsion ($I_\text{sp} \approx 450$~s). The resulting payload fraction advantage (83.2\% vs.\ 56.8\%) propagates directly into transport cost per kilogram.
+
+\subsection{Transit time and working-capital cost}
+\label{sec:transit}
+
+Electric propulsion transfers from NEAs to L4/L5 require approximately 5.35~years one-way at the baseline $\Delta v$ of 4.5~km/s, compared to days for chemical transfers from the lunar surface. Water in transit represents working capital that is locked up and unavailable for use.
+
+We model this as an opportunity cost: each kilogram in transit for duration $\tau$ incurs an additional NPV penalty of
+\begin{equation}
+    c_\text{transit} = c_\text{water} \cdot \left[(1+r)^\tau - 1\right]
+    \label{eq:transit-cost}
+\end{equation}
+where $c_\text{water}$ is the delivered cost and $r$ is the discount rate. At $r = 5\%$ and $\tau = 5.35$~years, this adds approximately 30\% to the effective cost of NEA water. This penalty narrows the NEA--lunar gap from the physics-only baseline but does not close it: the NEA source remains cheaper because its payload fraction advantage and lower extraction cost more than offset the transit penalty.
+
+\subsection{Production ramp-up}
+
+Annual production follows a logistic S-curve from zero to the target production rate:
+\begin{equation}
+    P(t) = P_\text{target} \cdot \frac{1}{1 + e^{-k(t - t_0)}}
+    \label{eq:ramp}
+\end{equation}
+with ramp midpoint $t_0$ and steepness $k = 2.0$.
+
+\subsection{Net present value}
+
+All costs are discounted at rate $r = 5\%$ (real) to year zero:
+\begin{equation}
+    \text{NPV} = K + \sum_{t=1}^{T} \frac{C_\text{ops}(t) + C_\text{transport}(t)}{(1+r)^t}
+    \label{eq:npv}
+\end{equation}
+
+The primary metric is NPV cost per kg of water delivered to L4/L5 over the program lifetime.
+
+%% ============================================================
+\section{Monte Carlo Framework}
+\label{sec:mc}
+%% ============================================================
+
+We sample each uncertain parameter from uniform distributions spanning plausible ranges (Table~\ref{tab:mc-params}), drawing 10,000 independent parameter sets per source.
+
+\begin{table}[ht]
+\centering
+\caption{Monte Carlo parameter ranges.}
+\label{tab:mc-params}
+\begin{tabular}{llrr}
+\toprule
+\textbf{Parameter} & \textbf{Units} & \textbf{NEA range} & \textbf{Lunar range} \\
+\midrule
+Water fraction & \% & 5--15 & 2--10 \\
+Extraction yield & \% & 50--85 & 40--75 \\
+Energy cost & kWh/kg & 1.5--4.0 & 2.5--6.0 \\
+Capital (extraction) & \$B & 3--8 & 5--12 \\
+Capital (transport) & \$B & 7--15 & 10--25 \\
+Ops cost/kg & \$/kg & 100--400 & 200--600 \\
+$\Delta v$ to L4/L5 & km/s & 3--7 & 2--3.5 \\
+$I_\text{sp}$ & s & 2{,}000--3{,}000 & 400--480 \\
+Vehicle cost & \$M & 300--800 & 100--400 \\
+Lifetime trips & --- & 5--20 & 25--100 \\
+Availability & --- & 0.70--0.95 & 0.65--0.90 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%% ============================================================
+\section{Results}
+\label{sec:results}
+%% ============================================================
+
+\subsection{Baseline deterministic results}
+
+Under baseline parameters (Tables~\ref{tab:capital} and~\ref{tab:vehicle}), the NPV cost per kg of water delivered to L4/L5 is:
+\begin{itemize}
+    \item \textbf{C-type NEA:} \$2,805/kg
+    \item \textbf{Lunar polar ice:} \$3,784/kg
+    \item \textbf{Phobos/Deimos:} $>\$15{,}000$/kg
+\end{itemize}
+
+The NEA source is 26\% cheaper per kilogram than lunar. Phobos/Deimos is eliminated from further analysis due to its extreme cost disadvantage.
+
+\subsection{Monte Carlo results}
+
+Over 10,000 paired trials, the median NPV cost per kg is:
+\begin{itemize}
+    \item \textbf{C-type NEA:} \$3,333/kg (P10: \$2,567, P90: \$4,251)
+    \item \textbf{Lunar polar ice:} \$4,845/kg (P10: \$3,719, P90: \$6,289)
+\end{itemize}
+
+The probability that NEA water is cheaper than lunar water is \textbf{90.4\%} across paired Monte Carlo draws.
+
+\subsection{Sensitivity analysis}
+
+To identify which uncertain parameters most influence the NEA--lunar cost comparison, we compute Spearman rank correlation coefficients between each sampled parameter and the resulting NEA NPV/kg across the 10,000 Monte Carlo trials. The top-ranked parameters are:
+
+\begin{enumerate}
+    \item \textbf{Extraction yield} ($\rho = -0.61$): Higher yield reduces cost most strongly. This reflects the direct multiplicative effect of yield on usable water per unit of processed regolith.
+    \item \textbf{Transport cost scaling, $K_\text{transport}$} ($\rho = +0.51$): Vehicle cost and lifetime trips propagate through Eq.~\ref{eq:transport-v2} as the second-largest driver.
+    \item \textbf{Availability} ($\rho = -0.37$): System uptime fraction affects annual throughput and thus capital amortization per kilogram.
+    \item \textbf{Water fraction} ($\rho = -0.33$): Higher ore grade reduces mining volume per unit product.
+    \item \textbf{$\Delta v$ to L4/L5} ($\rho = +0.28$): Affects payload fraction through the exponential in Eq.~\ref{eq:payload-fraction}.
+\end{enumerate}
+
+The dominance of extraction yield over water fraction is notable: improving the processing technology (yield) has roughly twice the cost impact of finding a richer asteroid (water fraction). This suggests that technology development in thermal extraction efficiency should be prioritized alongside target selection.
+
+\subsection{Crossover conditions}
+
+Lunar sources become cheaper than NEA under two conditions:
+\begin{enumerate}
+    \item \textbf{High NEA delta-$v$} ($> 6$~km/s): This applies to only $\sim$15\% of known C-type NEAs, and target selection can avoid these objects.
+    \item \textbf{Low NEA water fraction} ($< 4\%$): Inconsistent with OSIRIS-REx data showing CI-chondrite-like composition for C-type NEAs.
+\end{enumerate}
+
+Both conditions would need to apply simultaneously to make lunar competitive, a scenario with $<5\%$ joint probability.
+
+%% ============================================================
+\section{Discussion}
+\label{sec:discussion}
+%% ============================================================
+
+\subsection{Earth-launch cost ceiling}
+
+For comparison, delivering water from Earth to L4/L5 at current launch costs ($\sim$\$1{,}000/kg to LEO, plus $\Delta v$ penalty for L4/L5 transfer) plus water procurement costs approximately \$1{,}050/kg, establishing a ceiling above which no ISRU source is competitive. Both NEA and lunar ISRU costs exceed this ceiling at the program scales considered here, confirming that ISRU water is not yet cost-competitive with Earth launch for small programs. The crossover to ISRU advantage occurs at cumulative volumes of order $10^4$--$10^5$~tonnes, where learning curve effects and capital amortization reduce unit costs below the Earth-launch ceiling---consistent with the findings of Paper~01 \cite{hakkenberg2026isru}.
+
+\subsection{The transport cost asymmetry}
+
+The most robust finding is the structural advantage of electric propulsion for NEA-to-L4/L5 transfers. Magnetically shielded Hall thrusters, now validated through 3,570 hours of wear testing \cite{frieman2019} with the AEPS/Gateway program bringing them to TRL~8--9, enable payload fractions 2--3$\times$ higher than chemical propulsion from the lunar surface. This advantage persists across all plausible parameter ranges and is the primary reason the NEA source dominates.
+
+The lunar source could close this gap with development of electric propulsion for lunar ascent (e.g., from a high lunar orbit staging point), but this adds system complexity and does not address the lower water fraction and higher extraction difficulty.
+
+\subsection{Bennu sample data as ground truth}
+
+The OSIRIS-REx Bennu sample results \cite{lauretta2024,glavin2025,mccoy2025} provide the first ground-truth calibration for asteroid water extraction models. The CI-chondrite-like composition, with abundant hydrated phyllosilicates and evidence of extensive aqueous alteration, supports the 10\% baseline water fraction used in our model. The discovery of evaporite minerals \cite{mccoy2025} additionally suggests that volatiles may be more accessible than assumed in some earlier models, as evaporites indicate concentrated brine deposits rather than uniformly distributed low-concentration water.
+
+\subsection{Optical mining as an alternative pathway}
+
+Sercel's Optical Mining concept \cite{sercel2019} demonstrated an alternative to mechanical excavation: using concentrated sunlight to thermally extract volatiles without surface contact. This approach inherently manages the thermal volatile preservation challenge (rq-0-40) by controlling the heat input rate and capturing volatiles as they sublimate. Our model is agnostic to extraction method---the key parameters (extraction yield, energy cost, rate) can be set for either mechanical or optical mining.
+
+\subsection{Limitations}
+
+This analysis has several limitations. First, we assume independent parameter distributions; in reality, water fraction and extraction yield may be correlated (higher water content may mean easier extraction). Second, we do not model the multi-trip logistics of asteroid mining in detail---a fleet of transport vehicles must cycle between the NEA and L4/L5, and fleet sizing affects capital cost. Third, our physics-derived transport model (Eq.~\ref{eq:payload-fraction}--\ref{eq:transport-v2}) uses single-impulse equivalent $\Delta v$ rather than full trajectory optimization with gravity assists, which may overstate the effective $\Delta v$ for favorable NEA targets. Fourth, we do not account for the value of non-water resources co-extracted from asteroids (metals, organics), which could offset costs. Fifth, the transit time opportunity cost (Eq.~\ref{eq:transit-cost}) assumes a constant discount rate, whereas a program with staged investment may face time-varying cost of capital.
+
+%% ============================================================
+\section{Conclusion}
+\label{sec:conclusion}
+%% ============================================================
+
+C-type near-Earth asteroids are the preferred water source for large-scale propellant production at L4/L5 under 90.4\% of plausible parameter combinations, with a median cost advantage of 31\% over lunar polar ice (\$3,333/kg vs.\ \$4,845/kg). This advantage is driven primarily by the higher payload fraction of electric propulsion for NEA-to-L4/L5 transfers (83.2\% vs.\ 56.8\% for lunar chemical) and by the higher water fraction of CI/CM chondrite material confirmed by OSIRIS-REx sample analysis. Sensitivity analysis identifies extraction yield ($\rho = -0.61$) as the single most influential parameter, suggesting that thermal processing R\&D should be prioritized alongside target selection.
+
+We recommend a development strategy that prioritizes NEA water extraction while maintaining lunar capability as a risk hedge:
+\begin{enumerate}
+    \item \textbf{Phase~0 (Years 1--5):} Target selection and characterization of 3--5 accessible C-type NEAs using spectroscopy and radar.
+    \item \textbf{Phase~1 (Years 3--8):} Technology demonstration: thermal extraction of water from asteroid simulant at $>$100~kg scale in relevant environment.
+    \item \textbf{Phase~2 (Years 6--12):} First operational extraction from a C-type NEA, producing 10--50~tonnes/year.
+    \item \textbf{Phase~3 (Years 10--30):} Scale to 500+ tonnes/year with fleet expansion.
+\end{enumerate}
+
+Lunar capability should be maintained as a parallel track at lower funding level, to be activated if NEA water fraction proves systematically lower than predicted or if specific NEA access constraints emerge.
+
+%% ============================================================
+%% References
+%% ============================================================
+
+\begin{thebibliography}{99}
+
+\bibitem{hakkenberg2026consensus}
+T.\ Hakkenberg, ``Multi-Model AI Consensus for Engineering Decision-Making: Methodology and Validation,'' \textit{in preparation}, 2026.
+
+\bibitem{hakkenberg2026isru}
+T.\ Hakkenberg, ``Economic Inflection Points in Space Manufacturing: Monte Carlo Analysis of ISRU vs.\ Earth Launch,'' \textit{Advances in Space Research}, 2026.
+
+\bibitem{lauretta2024}
+D.S.\ Lauretta et al., ``Asteroid (101955) Bennu in the Laboratory: Properties of the Sample Collected by OSIRIS-REx,'' \textit{Meteoritics \& Planetary Science}, vol.~59, no.~6, pp.~1--30, 2024.
+
+\bibitem{glavin2025}
+D.P.\ Glavin et al., ``Abundant ammonia and nitrogen-rich soluble organic matter in samples from asteroid (101955) Bennu,'' \textit{Nature Astronomy}, vol.~9, 2025.
+
+\bibitem{mccoy2025}
+T.J.\ McCoy, S.S.\ Russell et al., ``Evaporites reveal evidence for an ancient brine on the parent body of asteroid Bennu,'' \textit{Nature}, 2025.
+
+\bibitem{colaprete2010}
+A.\ Colaprete et al., ``Detection of Water in the LCROSS Ejecta Plume,'' \textit{Science}, vol.~330, no.~6003, pp.~463--468, 2010.
+
+\bibitem{sowers2016}
+G.F.\ Sowers, ``The Business Case for Lunar Ice Mining,'' \textit{New Space}, vol.~4, no.~2, pp.~111--117, 2016.
+
+\bibitem{sercel2019}
+J.C.\ Sercel, ``Asteroid Provided In-Situ Supplies (Apis): Optical Mining,'' NASA NIAC Phase I \& II Final Reports, 2016--2019.
+
+\bibitem{sanders2013}
+G.B.\ Sanders and W.E.\ Larson, ``Progress Made in Lunar In Situ Resource Utilization under NASA's Exploration Technology and Development Program,'' \textit{J.\ Aerospace Engineering}, vol.~26, no.~1, pp.~5--17, 2013.
+
+\bibitem{frieman2019}
+J.D.\ Frieman, H.\ Kamhawi et al., ``Completion of the Long Duration Wear Test of the NASA HERMeS Hall Thruster,'' AIAA-2019-3895, 2019.
+
+\bibitem{alexander2012}
+C.M.O.D.\ Alexander et al., ``The Provenances of Asteroids, and Their Contributions to the Volatile Inventories of the Terrestrial Planets,'' \textit{Science}, vol.~337, no.~6095, pp.~721--723, 2012.
+
+\bibitem{ho2024}
+K.\ Ho et al., ``Space Logistics Modeling and Optimization: Review of the State of the Art,'' \textit{J.\ Spacecraft and Rockets}, 2024.
+
+\bibitem{ishimatsu2016}
+T.\ Ishimatsu, O.L.\ de~Weck, J.A.\ Hoffman et al., ``Generalized Multicommodity Network Flow Model for the Earth-Moon-Mars Logistics System,'' \textit{J.\ Spacecraft and Rockets}, vol.~53, no.~1, pp.~25--38, 2016.
+
+\end{thebibliography}
+
+\end{document}

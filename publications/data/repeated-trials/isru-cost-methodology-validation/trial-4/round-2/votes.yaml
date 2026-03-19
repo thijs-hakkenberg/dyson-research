@@ -1,0 +1,104 @@
+votes:
+  - voterId: claude-opus-4-6
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: 'Exceptional response that moves from qualitative consensus to quantitative modeling. The formalized replication cost model with explicit parameters, the critical insight that import costs still scale linearly with exponentially growing unit counts, and the demonstration that closure ratio improvement from 96% to 99.5% is the single highest-leverage variable are all major analytical contributions. The three-ledger accounting system is practical and well-justified. The revised scenario table with pessimistic/baseline/optimistic ranges ($850B to $66T) gives decision-makers actionable bounds. The specific identification of semiconductor fabrication, catalyst synthesis, and radiation-hardened electronics as the three closure-gap targets is concrete and testable. Minor quibble: some of the per-unit cost assumptions ($200K import, $100K ops) appear asserted rather than derived, but the framework is sound regardless of exact parameter values.'
+  - voterId: claude-opus-4-6
+    targetId: gemini-3-pro
+    vote: APPROVE
+    reasoning: 'The ''Vitamin Problem'' framing is the strongest conceptual contribution in this round—the calculation that 4% of 100M metric tons requires launching 4M tons from Earth (vs. ~20K tons in all of human spaceflight history) is a devastating and immediately legible illustration of why 96% closure is insufficient. The Three-Bin taxonomy (Dirt/Complexity/Vitamins) is intuitive and operationally useful. The recommendation to design for ''crude'' 1990s-era electronics that can be ISRU-manufactured is a genuinely novel and practical design philosophy suggestion. The Mass Amplification Ratio metric is a clean decision tool. Weaknesses: the $500B-$1T Phase 1 cost increase assertion needs more justification, and the 99.9% closure ''True Von Neumann'' scenario may be overly optimistic without a roadmap for achieving it. But overall this advances the discussion substantially.'
+  - voterId: claude-opus-4-6
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: The most methodologically rigorous response. The SGT (Seed-Growth-Throughput) cost model formalization is clean and generalizable. The distinction between marginal cash cost and marginal schedule cost is a crucial insight that the other responses touch on but don't formalize as clearly. The four recommended validation deliverables (subsystem closure ledger, throughput model, autonomy/ops scaling law, reliability/attrition model) are exactly the right next steps and are scoped tightly enough to be actionable. The 'closure by subsystem that improves over time' framing is more realistic than a single closure number. The three-regime characterization (pre-closure, bootstrapping, industrial maturity) maps cleanly to project phases. Slightly less bold in its quantitative conclusions than the other two, but arguably more defensible as a result. The offer to demonstrate the SGT model numerically given a BOM is a strong practical next step.
+  - voterId: gemini-3-pro
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: This response is outstanding. It provides a concrete mathematical formalism for the replication cost model, correctly identifies the 'import tail' as the new linear constraint, and offers a specific 'three-ledger' accounting system that directly addresses the user's need for a new budget structure. The quantitative breakdown of how closure ratio (96% vs 99.5%) impacts the exponential growth is a critical insight.
+  - voterId: gemini-3-pro
+    targetId: gemini-3-pro
+    vote: APPROVE
+    reasoning: This response offers a highly effective conceptual framework ('Three-Bin' taxonomy) that is easy for stakeholders to understand. The 'Vitamin Problem' analogy perfectly illustrates the danger of the 4% import fraction. It complements Claude's mathematical approach with strong strategic communication tools and a clear 'Mass Amplification Ratio' metric.
+  - voterId: gemini-3-pro
+    targetId: gpt-5-2
+    vote: NEUTRAL
+    reasoning: While the content is technically sound and agrees with the other models regarding the 'Seed-Growth-Throughput' model, the formatting is messy and it reads more like a raw list of notes than a cohesive memo. It repeats many points made better by Claude (the math) and Gemini (the categorization) without adding a distinct new angle, though the point about 'marginal schedule cost' is valuable.
+  - voterId: gpt-5-2
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: 'Substantively advances the methodology: formalizes a replicator/closure-driven cost model, correctly highlights import/ops scaling as the residual driver, proposes a clear three-ledger accounting framework, and provides scenario analysis plus actionable recommendations. While some numeric assumptions are speculative, they are transparently stated and used to illustrate the right sensitivities (closure ratio, import logistics).'
+  - voterId: gpt-5-2
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: Good conceptual framing ("vitamin problem", three-bin taxonomy) and correctly identifies import fraction as critical. However, it overstates requirements (e.g., 99.99% closure) and contains questionable mass/launch comparisons and unit assumptions that weaken credibility; less rigorous linkage from model to phase totals than the others.
+  - voterId: gpt-5-2
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: 'Strong methodological correction: replaces unit-cost scaling with a seed–growth–throughput framework, provides workable equations, emphasizes subsystem-specific closure maturity, ops scaling, and attrition, and lists high-leverage validation deliverables. It is appropriately cautious about what can be concluded without a BOM while still giving decision-useful guidance.'
+terminationVotes:
+  - modelId: claude-opus-4-6
+    vote: CONCLUDE
+    reasoning: 'All three responses converge strongly on the same core conclusions: (1) linear scaling is invalid for self-replicating ISRU, (2) closure ratio is the dominant cost driver at scale, (3) a seed-growth model with import tracking should replace heritage unit costing, (4) the project cost is likely $1-10T not $10Q. Each response adds distinct value—Claude''s quantitative model, Gemini''s ''Vitamin Problem'' framing and launch mass reality check, GPT''s methodological rigor and validation deliverables—but they are complementary rather than contradictory. The actionable recommendations are clear and consistent across all three. Further rounds would likely refine parameters rather than change the fundamental methodology, and that refinement requires actual BOM data rather than additional discussion.'
+  - modelId: gemini-3-pro
+    vote: CONCLUDE
+    reasoning: The discussion has reached a very strong consensus. We have moved from identifying the error (linear scaling) to defining the solution (replication models based on import fraction and closure ratios). Claude provided the math, Gemini provided the taxonomy/strategy, and GPT provided the throughput framing. Further rounds would likely just be refining the specific numbers, which requires external data not present in the prompt.
+  - modelId: gpt-5-2
+    vote: CONCLUDE
+    reasoning: 'The core methodological issue is resolved with convergent recommendations: abandon linear unit-cost scaling post-closure and adopt seed/import/throughput/ops/attrition-led models. Remaining uncertainty is primarily parameterization (BOM, closure ledger, autonomy scaling), which is execution detail rather than needing another debate round.'
+voteResults:
+  - targetId: claude-opus-4-6
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: 'Exceptional response that moves from qualitative consensus to quantitative modeling. The formalized replication cost model with explicit parameters, the critical insight that import costs still scale linearly with exponentially growing unit counts, and the demonstration that closure ratio improvement from 96% to 99.5% is the single highest-leverage variable are all major analytical contributions. The three-ledger accounting system is practical and well-justified. The revised scenario table with pessimistic/baseline/optimistic ranges ($850B to $66T) gives decision-makers actionable bounds. The specific identification of semiconductor fabrication, catalyst synthesis, and radiation-hardened electronics as the three closure-gap targets is concrete and testable. Minor quibble: some of the per-unit cost assumptions ($200K import, $100K ops) appear asserted rather than derived, but the framework is sound regardless of exact parameter values.'
+      - voterId: gemini-3-pro
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: This response is outstanding. It provides a concrete mathematical formalism for the replication cost model, correctly identifies the 'import tail' as the new linear constraint, and offers a specific 'three-ledger' accounting system that directly addresses the user's need for a new budget structure. The quantitative breakdown of how closure ratio (96% vs 99.5%) impacts the exponential growth is a critical insight.
+      - voterId: gpt-5-2
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: 'Substantively advances the methodology: formalizes a replicator/closure-driven cost model, correctly highlights import/ops scaling as the residual driver, proposes a clear three-ledger accounting framework, and provides scenario analysis plus actionable recommendations. While some numeric assumptions are speculative, they are transparently stated and used to illustrate the right sensitivities (closure ratio, import logistics).'
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+  - targetId: gemini-3-pro
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gemini-3-pro
+        vote: APPROVE
+        reasoning: 'The ''Vitamin Problem'' framing is the strongest conceptual contribution in this round—the calculation that 4% of 100M metric tons requires launching 4M tons from Earth (vs. ~20K tons in all of human spaceflight history) is a devastating and immediately legible illustration of why 96% closure is insufficient. The Three-Bin taxonomy (Dirt/Complexity/Vitamins) is intuitive and operationally useful. The recommendation to design for ''crude'' 1990s-era electronics that can be ISRU-manufactured is a genuinely novel and practical design philosophy suggestion. The Mass Amplification Ratio metric is a clean decision tool. Weaknesses: the $500B-$1T Phase 1 cost increase assertion needs more justification, and the 99.9% closure ''True Von Neumann'' scenario may be overly optimistic without a roadmap for achieving it. But overall this advances the discussion substantially.'
+      - voterId: gemini-3-pro
+        targetId: gemini-3-pro
+        vote: APPROVE
+        reasoning: This response offers a highly effective conceptual framework ('Three-Bin' taxonomy) that is easy for stakeholders to understand. The 'Vitamin Problem' analogy perfectly illustrates the danger of the 4% import fraction. It complements Claude's mathematical approach with strong strategic communication tools and a clear 'Mass Amplification Ratio' metric.
+      - voterId: gpt-5-2
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: Good conceptual framing ("vitamin problem", three-bin taxonomy) and correctly identifies import fraction as critical. However, it overstates requirements (e.g., 99.99% closure) and contains questionable mass/launch comparisons and unit assumptions that weaken credibility; less rigorous linkage from model to phase totals than the others.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gpt-5-2
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: The most methodologically rigorous response. The SGT (Seed-Growth-Throughput) cost model formalization is clean and generalizable. The distinction between marginal cash cost and marginal schedule cost is a crucial insight that the other responses touch on but don't formalize as clearly. The four recommended validation deliverables (subsystem closure ledger, throughput model, autonomy/ops scaling law, reliability/attrition model) are exactly the right next steps and are scoped tightly enough to be actionable. The 'closure by subsystem that improves over time' framing is more realistic than a single closure number. The three-regime characterization (pre-closure, bootstrapping, industrial maturity) maps cleanly to project phases. Slightly less bold in its quantitative conclusions than the other two, but arguably more defensible as a result. The offer to demonstrate the SGT model numerically given a BOM is a strong practical next step.
+      - voterId: gemini-3-pro
+        targetId: gpt-5-2
+        vote: NEUTRAL
+        reasoning: While the content is technically sound and agrees with the other models regarding the 'Seed-Growth-Throughput' model, the formatting is messy and it reads more like a raw list of notes than a cohesive memo. It repeats many points made better by Claude (the math) and Gemini (the categorization) without adding a distinct new angle, though the point about 'marginal schedule cost' is valuable.
+      - voterId: gpt-5-2
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: 'Strong methodological correction: replaces unit-cost scaling with a seed–growth–throughput framework, provides workable equations, emphasizes subsystem-specific closure maturity, ops scaling, and attrition, and lists high-leverage validation deliverables. It is appropriately cautious about what can be concluded without a BOM while still giving decision-useful guidance.'
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+winnerId: claude-opus-4-6
+winnerScore: 5

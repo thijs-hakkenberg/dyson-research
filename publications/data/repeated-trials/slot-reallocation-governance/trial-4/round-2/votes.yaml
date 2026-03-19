@@ -1,0 +1,104 @@
+votes:
+  - voterId: claude-opus-4-6
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Exceptional Round 2 contribution. Correctly identifies the three critical unresolved problems from Round 1 (correlated failures, ΔV accounting, cross-cluster boundaries) and proposes concrete mechanisms for each. The ΔV escrow model with four partitioned accounts is a genuinely novel and practical contribution. The hybrid deterministic+auction approach for boundary slots is well-motivated. The quarantine zone growth equation with expanding uncertainty is physically grounded. The append-only cryptographic catalog log is a strong engineering choice. The simulation requirements are specific and actionable. This response advances the discussion significantly beyond Round 1 consensus.
+  - voterId: claude-opus-4-6
+    targetId: gemini-3-pro
+    vote: APPROVE
+    reasoning: Strong contribution with the 'Virtual Decommissioning' lifecycle concept and the pragmatic insight that most failed slots should remain empty rather than be filled. The Neighbor-Watch heuristic for distributed detection is well-reasoned. The covariance explosion framing (Day 0/7/30 uncertainty growth) effectively communicates the core physical constraint. The 'slide maneuver' concept for gap propagation to cluster edges is clever. The recommendation to bias toward abandonment over replacement is a mature engineering judgment that other responses dance around. Slightly less technically detailed than Claude Opus on the math but compensates with strong operational intuition. The ΔV reality check section is valuable.
+  - voterId: claude-opus-4-6
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: Well-structured and comprehensive protocol specification. The four-state machine (S0-S4) is clean and implementable. The critical distinction between logical ownership and physical occupancy (three-step reallocation) is the right architectural insight and is clearly articulated. The evidence bundle approach with k-of-n attestation is practical and avoids Byzantine consensus overhead. The catalog delta block format is well-specified. The maneuver governor for cascading avoidance prevention is important. Slightly more incremental than the other two responses—it refines Round 1 rather than identifying new problems—but the refinement is thorough and production-quality.
+  - voterId: gemini-3-pro
+    targetId: claude-opus-4-6
+    vote: NEUTRAL
+    reasoning: Parse error - defaulting to neutral
+  - voterId: gemini-3-pro
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: Parse error - defaulting to neutral
+  - voterId: gemini-3-pro
+    targetId: gpt-5-2
+    vote: NEUTRAL
+    reasoning: Parse error - defaulting to neutral
+  - voterId: gpt-5-2
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: 'Strong Round-2 refinement that identifies real unresolved issues (correlated failures, cross-cluster boundary coordination, ΔV economics) and proposes concrete mechanisms: graduated confirmation, expanding quarantine geometry with uncertainty propagation, ΔV escrow budgeting, deterministic selection with a lightweight beacon-mediated boundary mechanism, and an append-only signed catalog. It advances engineering specificity and test requirements.'
+  - voterId: gpt-5-2
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: Good emphasis on covariance growth, hazard volumes, and distributed neighbor-based detection; virtual decommissioning is a useful framing. However, several claims are under-justified (specific uncertainty numbers, drift-clear timelines, hard ΔV cutoff like 2 m/s) and it leans toward abandonment without fully addressing structural/coverage constraints or cross-cluster governance mechanics.
+  - voterId: gpt-5-2
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: 'Clear, implementable architecture: deterministic quarantine-first state machine, tiered authority with provisional cluster actions and beacon ratification, evidence bundles instead of full consensus, and a key insight to decouple logical ownership from physical occupancy to save ΔV. Also includes pragmatic catalog delta formats/cadence and simulation items; well-aligned with autonomy and safety constraints.'
+terminationVotes:
+  - modelId: claude-opus-4-6
+    vote: CONCLUDE
+    reasoning: 'All three responses are high quality and have converged on the same fundamental architecture: quarantine-first with expanding uncertainty zones, deterministic state machines for local decisions, beacon-ratified catalog updates, and ΔV-aware migration policies. The key remaining disagreements are implementation details (auction vs. deterministic for boundary cases, specific threshold values) that are properly resolved through simulation rather than further discussion. The collective output across Rounds 1 and 2 provides a comprehensive protocol specification with clear simulation requirements to close remaining gaps.'
+  - modelId: gemini-3-pro
+    vote: CONTINUE
+    reasoning: Parse error - defaulting to continue
+  - modelId: gpt-5-2
+    vote: CONCLUDE
+    reasoning: Across the top responses, the core governance design has converged on a consistent, actionable approach (deterministic quarantine-first state machine, cluster tactical control, beacon-signed canonical catalog, ΔV-aware delayed physical migration) with identified open parameters to tune via simulation rather than requiring further conceptual rounds.
+voteResults:
+  - targetId: claude-opus-4-6
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Exceptional Round 2 contribution. Correctly identifies the three critical unresolved problems from Round 1 (correlated failures, ΔV accounting, cross-cluster boundaries) and proposes concrete mechanisms for each. The ΔV escrow model with four partitioned accounts is a genuinely novel and practical contribution. The hybrid deterministic+auction approach for boundary slots is well-motivated. The quarantine zone growth equation with expanding uncertainty is physically grounded. The append-only cryptographic catalog log is a strong engineering choice. The simulation requirements are specific and actionable. This response advances the discussion significantly beyond Round 1 consensus.
+      - voterId: gemini-3-pro
+        targetId: claude-opus-4-6
+        vote: NEUTRAL
+        reasoning: Parse error - defaulting to neutral
+      - voterId: gpt-5-2
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: 'Strong Round-2 refinement that identifies real unresolved issues (correlated failures, cross-cluster boundary coordination, ΔV economics) and proposes concrete mechanisms: graduated confirmation, expanding quarantine geometry with uncertainty propagation, ΔV escrow budgeting, deterministic selection with a lightweight beacon-mediated boundary mechanism, and an append-only signed catalog. It advances engineering specificity and test requirements.'
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gemini-3-pro
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gemini-3-pro
+        vote: APPROVE
+        reasoning: Strong contribution with the 'Virtual Decommissioning' lifecycle concept and the pragmatic insight that most failed slots should remain empty rather than be filled. The Neighbor-Watch heuristic for distributed detection is well-reasoned. The covariance explosion framing (Day 0/7/30 uncertainty growth) effectively communicates the core physical constraint. The 'slide maneuver' concept for gap propagation to cluster edges is clever. The recommendation to bias toward abandonment over replacement is a mature engineering judgment that other responses dance around. Slightly less technically detailed than Claude Opus on the math but compensates with strong operational intuition. The ΔV reality check section is valuable.
+      - voterId: gemini-3-pro
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: Parse error - defaulting to neutral
+      - voterId: gpt-5-2
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: Good emphasis on covariance growth, hazard volumes, and distributed neighbor-based detection; virtual decommissioning is a useful framing. However, several claims are under-justified (specific uncertainty numbers, drift-clear timelines, hard ΔV cutoff like 2 m/s) and it leans toward abandonment without fully addressing structural/coverage constraints or cross-cluster governance mechanics.
+    rawScore: 4
+    weightedScore: 3.5
+    approveCount: 1
+    rejectCount: 0
+  - targetId: gpt-5-2
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: Well-structured and comprehensive protocol specification. The four-state machine (S0-S4) is clean and implementable. The critical distinction between logical ownership and physical occupancy (three-step reallocation) is the right architectural insight and is clearly articulated. The evidence bundle approach with k-of-n attestation is practical and avoids Byzantine consensus overhead. The catalog delta block format is well-specified. The maneuver governor for cascading avoidance prevention is important. Slightly more incremental than the other two responses—it refines Round 1 rather than identifying new problems—but the refinement is thorough and production-quality.
+      - voterId: gemini-3-pro
+        targetId: gpt-5-2
+        vote: NEUTRAL
+        reasoning: Parse error - defaulting to neutral
+      - voterId: gpt-5-2
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: 'Clear, implementable architecture: deterministic quarantine-first state machine, tiered authority with provisional cluster actions and beacon ratification, evidence bundles instead of full consensus, and a key insight to decouple logical ownership from physical occupancy to save ΔV. Also includes pragmatic catalog delta formats/cadence and simulation items; well-aligned with autonomy and safety constraints.'
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+winnerId: claude-opus-4-6
+winnerScore: 4

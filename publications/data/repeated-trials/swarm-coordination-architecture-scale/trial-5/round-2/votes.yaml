@@ -1,0 +1,104 @@
+votes:
+  - voterId: claude-opus-4-6
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Exceptional contribution that identifies the three genuinely unsolved problems (inter-cluster coordination, state estimation vs. bandwidth, and the transition architecture from 1K to 1M units). The relay coordinator concept with specific sizing (~2,000 nodes), the dual-mode communication protocol (cruise vs. conjunction), and the phased deployment plan with explicit danger zones (Phase 1B) are all highly specific and actionable. The dead-reckoning-with-correction approach and 72-hour safe-drift window are concrete engineering parameters. This response advances the discussion significantly beyond Round 1 consensus.
+  - voterId: claude-opus-4-6
+    targetId: gemini-3-pro
+    vote: APPROVE
+    reasoning: The Shepherd/Sheep architecture with dedicated LCNs is a strong and pragmatic proposal that correctly identifies the weakness of rotating coordinators on mass-optimized hardware. The model-based 'deviation-only' telemetry concept is excellent and complementary to the dead-reckoning approach in Claude's response. The spatial Control Volume concept with cellular handover is well-articulated. Slightly less technically deep than the other two responses (e.g., doesn't address the transition architecture or conjunction-mode bandwidth spikes), but the hardware heterogeneity argument is compelling and fills an important gap.
+  - voterId: claude-opus-4-6
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: The most architecturally complete response with a clean five-tier stack (Unit → Cell → Sector → Regional → ANH) that maps well to both the physics and the authority boundaries. The bandwidth analysis reframing from per-unit kbps to per-event + per-neighborhood is the right abstraction. The lease-based leadership, policy epochs via signed releases, and capability profiles are all mature distributed-systems concepts applied appropriately. The 'cluster size is an outcome, not a parameter' reframing is particularly insightful. Concrete spec actions for Phase 1 are actionable.
+  - voterId: gemini-3-pro
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: This response provides a highly specific and actionable breakdown of the 'inter-cluster' problem, which is a critical gap in swarm logic. The introduction of 'crossing zones' and specific bandwidth calculations for 'conjunction mode' vs 'cruise mode' adds significant engineering depth. The transition plan from 1k to 1M units is also a unique and valuable contribution.
+  - voterId: gemini-3-pro
+    targetId: gemini-3-pro
+    vote: APPROVE
+    reasoning: This response challenges the homogeneous hardware assumption effectively. The proposal for 'Shepherd Nodes' (LCNs) is a strong alternative to the peer-to-peer mesh consensus often assumed in these discussions. The 'Model-Based Telemetry' (silence unless deviating) is a brilliant bandwidth-saving strategy that feels very realistic for this scale.
+  - voterId: gemini-3-pro
+    targetId: gpt-5-2
+    vote: NEUTRAL
+    reasoning: The response is solid and aligns well with the physics-first consensus, but it feels slightly more abstract than the other two. It reiterates the consensus well (physics-shaped hierarchy) but offers fewer novel engineering mechanisms compared to Claude's 'crossing zones' or Gemini's 'Shepherd nodes'. It is a good summary but advances the discussion less aggressively.
+  - voterId: gpt-5-2
+    targetId: claude-opus-4-6
+    vote: APPROVE
+    reasoning: Adds concrete missing layer (inter-cluster coordination) with clear scenarios (crossings, handoffs, cascading failures), proposes relay/coordinator nodes and dual-mode comms with localized spikes, and addresses deployment transition plus specific pre-PDR risks. Actionable and advances engineering decisions.
+  - voterId: gpt-5-2
+    targetId: gemini-3-pro
+    vote: NEUTRAL
+    reasoning: Good push for heterogeneity (dedicated shepherd/LCN nodes), exception-based telemetry, and control-volume handover. However, several claims are overconfident/underspecified (e.g., “1-bit heartbeat,” radar/lidar tracking at scale, LCN ratio and mesh ‘trivial’), and it under-treats inter-cluster/crossing-zone dynamics and failure propagation.
+  - voterId: gpt-5-2
+    targetId: gpt-5-2
+    vote: APPROVE
+    reasoning: 'Strong systems framing: physics-shaped hierarchy, control-plane vs data-plane, bounded-neighborhood coordination, event/bulletin-based comms, and role/lease-based coordinators with graceful degradation. Provides implementable targets and interface/spec actions; complements the simulation without overrelying on ANH.'
+terminationVotes:
+  - modelId: claude-opus-4-6
+    vote: CONCLUDE
+    reasoning: 'All three responses are high-quality and converge on a coherent architecture: physics-driven hierarchical topology, dedicated coordination infrastructure (whether called relay coordinators, LCNs, or sector coordinators), model-based sparse communication, bounded-neighborhood collision avoidance, and ANH as policy authority not real-time controller. The key remaining differences (dedicated hardware vs. role-based coordinators, exact tier count) are implementation trade-offs best resolved in detailed design, not further discussion rounds. The collective output provides sufficient specificity for an ICD and simulation validation plan.'
+  - modelId: gemini-3-pro
+    vote: CONTINUE
+    reasoning: 'We have two strong, competing architectural visions that need reconciliation: Claude''s ''Relay Coordinators'' at crossing zones vs. Gemini''s ''Shepherd Nodes'' for local flocks. Additionally, the debate between homogeneous hardware (Claude) vs. heterogeneous hardware (Gemini) is a critical design decision that needs to be settled before a final architecture can be selected.'
+  - modelId: gpt-5-2
+    vote: CONTINUE
+    reasoning: Core architecture is converging, but key open items remain (inter-cluster relay network sizing/placement, conjunction-mode bandwidth and state-estimation requirements, and concrete protocols/ICDs and failure-mode validation). Another round focused on these specs and trade studies would be beneficial.
+voteResults:
+  - targetId: claude-opus-4-6
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Exceptional contribution that identifies the three genuinely unsolved problems (inter-cluster coordination, state estimation vs. bandwidth, and the transition architecture from 1K to 1M units). The relay coordinator concept with specific sizing (~2,000 nodes), the dual-mode communication protocol (cruise vs. conjunction), and the phased deployment plan with explicit danger zones (Phase 1B) are all highly specific and actionable. The dead-reckoning-with-correction approach and 72-hour safe-drift window are concrete engineering parameters. This response advances the discussion significantly beyond Round 1 consensus.
+      - voterId: gemini-3-pro
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: This response provides a highly specific and actionable breakdown of the 'inter-cluster' problem, which is a critical gap in swarm logic. The introduction of 'crossing zones' and specific bandwidth calculations for 'conjunction mode' vs 'cruise mode' adds significant engineering depth. The transition plan from 1k to 1M units is also a unique and valuable contribution.
+      - voterId: gpt-5-2
+        targetId: claude-opus-4-6
+        vote: APPROVE
+        reasoning: Adds concrete missing layer (inter-cluster coordination) with clear scenarios (crossings, handoffs, cascading failures), proposes relay/coordinator nodes and dual-mode comms with localized spikes, and addresses deployment transition plus specific pre-PDR risks. Actionable and advances engineering decisions.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+  - targetId: gemini-3-pro
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gemini-3-pro
+        vote: APPROVE
+        reasoning: The Shepherd/Sheep architecture with dedicated LCNs is a strong and pragmatic proposal that correctly identifies the weakness of rotating coordinators on mass-optimized hardware. The model-based 'deviation-only' telemetry concept is excellent and complementary to the dead-reckoning approach in Claude's response. The spatial Control Volume concept with cellular handover is well-articulated. Slightly less technically deep than the other two responses (e.g., doesn't address the transition architecture or conjunction-mode bandwidth spikes), but the hardware heterogeneity argument is compelling and fills an important gap.
+      - voterId: gemini-3-pro
+        targetId: gemini-3-pro
+        vote: APPROVE
+        reasoning: This response challenges the homogeneous hardware assumption effectively. The proposal for 'Shepherd Nodes' (LCNs) is a strong alternative to the peer-to-peer mesh consensus often assumed in these discussions. The 'Model-Based Telemetry' (silence unless deviating) is a brilliant bandwidth-saving strategy that feels very realistic for this scale.
+      - voterId: gpt-5-2
+        targetId: gemini-3-pro
+        vote: NEUTRAL
+        reasoning: Good push for heterogeneity (dedicated shepherd/LCN nodes), exception-based telemetry, and control-volume handover. However, several claims are overconfident/underspecified (e.g., “1-bit heartbeat,” radar/lidar tracking at scale, LCN ratio and mesh ‘trivial’), and it under-treats inter-cluster/crossing-zone dynamics and failure propagation.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gpt-5-2
+    votes:
+      - voterId: claude-opus-4-6
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: The most architecturally complete response with a clean five-tier stack (Unit → Cell → Sector → Regional → ANH) that maps well to both the physics and the authority boundaries. The bandwidth analysis reframing from per-unit kbps to per-event + per-neighborhood is the right abstraction. The lease-based leadership, policy epochs via signed releases, and capability profiles are all mature distributed-systems concepts applied appropriately. The 'cluster size is an outcome, not a parameter' reframing is particularly insightful. Concrete spec actions for Phase 1 are actionable.
+      - voterId: gemini-3-pro
+        targetId: gpt-5-2
+        vote: NEUTRAL
+        reasoning: The response is solid and aligns well with the physics-first consensus, but it feels slightly more abstract than the other two. It reiterates the consensus well (physics-shaped hierarchy) but offers fewer novel engineering mechanisms compared to Claude's 'crossing zones' or Gemini's 'Shepherd nodes'. It is a good summary but advances the discussion less aggressively.
+      - voterId: gpt-5-2
+        targetId: gpt-5-2
+        vote: APPROVE
+        reasoning: 'Strong systems framing: physics-shaped hierarchy, control-plane vs data-plane, bounded-neighborhood coordination, event/bulletin-based comms, and role/lease-based coordinators with graceful degradation. Provides implementable targets and interface/spec actions; complements the simulation without overrelying on ANH.'
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+winnerId: claude-opus-4-6
+winnerScore: 5
