@@ -5,6 +5,18 @@
 **Working version:** `an` (modular structure, see `01-isru-economic-crossover-an.tex` + `sections/` + `tables/`)
 **Target venue:** *Advances in Space Research*
 
+## Resolved design decisions
+
+These were open at draft time of this plan and have since been decided. They constrain the scope of versions `as` (M7, M8) and `at` (M9) and shape `ap`/`ar` (M21).
+
+| Decision | Resolution | Implication |
+|---|---|---|
+| **Vitamin BOM (M8)** | **Dynamic 15% → 5% floor model** | Adds a decay parameter to `Params` in `publications/scripts/isru_model.py`; vitamin fraction becomes time- (or production-volume-) dependent rather than constant. Reconciles the table-vs-model gap properly rather than papering it over with a label change. |
+| **Technology obsolescence (M9)** | **Full stochastic Poisson disruption model** | New sampling block in `publications/scripts/isru_mc.py`: Poisson arrival of disruption events with magnitude distribution and pathway selection. Re-run canonical MC under disruption; report convergence rate degradation. Multi-day code work — the substantive scientific addition of the revision cycle. |
+| **K-anchor reference class (M7)** | **All four: lithium DLE, offshore platform, SMR, refinery/mining** | More work than the reviewers asked for ("at least one"), but each anchor stresses different aspects of $K$ — process specialty (DLE), hostile-environment overhead (offshore), regulated capital uncertainty (SMR), generic industrial baseline (refinery). Synthesis table (`tables/k_anchor.tex`) has 4 rows + a "consensus range" summary. Adds 2–3 days of lit search and bibliography work. |
+| **Manuscript length (M21)** | **Aggressive cuts** | Push yield_sensitivity, k_clip, copula_6d, archetype_fv, scenarios, dual_baseline, sigma_ln, mc_summary (and likely 1–2 others) entirely to the appendix; replace each with a single-sentence summary in main text. Target reduction: 5–10 pages. The permanent/transient/savings-window framework consolidates into one §4.4. |
+| **Submission target** | ***Advances in Space Research*** (unchanged) | No reformatting required; the `\journal{Advances in Space Research}` directive in the preamble stays. Tone and reference set already match. |
+
 ## Verdict to address
 
 The three new-model peer reviews on version `am` returned:
@@ -148,16 +160,6 @@ After each version landing:
 4. Run `node scripts/run-paper-review.js --version=<version>` once per version and read the new-model verdicts. The signal we're targeting: at least two of three new-model reviewers move from "Major Revision" to "Accept with Minor Revisions" or "Accept" by version `at`.
 5. After `at`, run a final pass with the older trio (`scripts/run-peer-review.js --paper=01 --version=at`) to confirm the peer-review-tracking history shows the trajectory.
 
-## Open questions for the user
-
-These should be resolved before starting `ao`:
-
-1. **Vitamin BOM resolution path (M8)**: prefer dynamic 15%→floor model, or relabel to distinguish? The dynamic model is more honest but adds a parameter; the relabel is cheaper. The reviewers asked for one or the other, not both.
-2. **Technology obsolescence (M9)**: full Poisson disruption model, or 6-scenario matrix with explicit downgrade of robustness claims? The Poisson model is "right"; the matrix is cheaper and still defensible.
-3. **K-anchor reference class (M7)**: which terrestrial benchmark should ground the $K$ median — offshore platform, lithium DLE plant, modular nuclear, or something else? Pick one or two; reviewers asked for "at least one."
-4. **Manuscript length (M21)**: Claude flagged ~50 pages / >20 tables as too dense. Are we comfortable being aggressive about pushing secondary tables to appendix even at the cost of some main-text continuity?
-5. **Submission target**: still *Advances in Space Research*, or has the analysis matured to consider *Acta Astronautica* or *Journal of Spacecraft and Rockets*? Affects formatting and tone of revisions.
-
 ## Estimated total effort
 
 | Phase | Effort |
@@ -166,9 +168,9 @@ These should be resolved before starting `ao`:
 | `ap` numerical audit | 2–3 days |
 | `aq` service-equivalence + uncensored $N^{**}$ | 1 week |
 | `ar` model-form + $p_s$ decomposition | 1–2 weeks |
-| `as` vitamin/$n_0$/$K$/maintenance | 1–2 weeks |
+| `as` vitamin/$n_0$/$K$/maintenance | 1.5–2.5 wk (4 K-anchors instead of 1; dynamic vitamin model) |
 | `at` obsolescence + decision tree | 1 week |
 | `au` polish + response letter | 3–5 days |
-| **Total** | **5–7 weeks** |
+| **Total** | **5.5–7.5 weeks** |
 
 The first three versions (`ao`, `ap`, `aq`) deliver ~70% of the credibility lift for ~25% of the effort. The remaining versions are where the substantive scientific revisions live.
