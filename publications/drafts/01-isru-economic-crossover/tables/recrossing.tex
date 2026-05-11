@@ -8,11 +8,14 @@
 Metric & Value \\
 \midrule
 Transient runs (count)         & 6{,}622 (66.2\% of total; 77.8\% of converging) \\
-Median $N^{**}$ (units)        & 200{,}000$^\dag$ \\
-$N^{**}$ IQR                   & [200{,}000, 200{,}000]$^\dag$ \\
-Savings window width median    & ${\sim}$196{,}000 \\
+Median $N^{**}$ (units)        & $>200{,}000$$^\dag$ \\
+$N^{**}$ IQR                   & [$>200{,}000$, $>200{,}000$]$^\dag$ \\
+Savings window width (lower bound, median) & $>196{,}000$$^\dag$ \\
 Peak savings (\$B)             & 74.0 \\
 \bottomrule
-\multicolumn{2}{@{}l}{\footnotesize $^\dag$Censored at $N = 200{,}000$; NPV discounting suppresses late re-crossing.}
+\multicolumn{2}{@{}l}{\footnotesize $^\dag$Search horizon truncated at $N = 200{,}000$; reported $N^{**}$ values are lower bounds.} \\
+\multicolumn{2}{@{}l}{\footnotesize \phantom{$^\dag$}Under positive discounting, late re-crossings are exponentially suppressed in the} \\
+\multicolumn{2}{@{}l}{\footnotesize \phantom{$^\dag$}discounted-cumulative metric. An extended-bound subset run to characterize the true} \\
+\multicolumn{2}{@{}l}{\footnotesize \phantom{$^\dag$}tail of $N^{**}$ is planned for the next revision.}
 \end{tabular}
 \end{table}

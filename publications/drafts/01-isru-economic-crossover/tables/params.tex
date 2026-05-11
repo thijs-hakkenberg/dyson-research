@@ -1,13 +1,13 @@
 \begin{table}[htbp]
 \centering
-\caption{Monte Carlo parameter distributions. Launch cost, ISRU capital, and production rate are correlated via a 3D Gaussian copula ($\rho_{p,K} = 0.3$, $\rho_{K,\dot{n}} = 0.5$); all other parameters are sampled independently. ISRU capital follows a log-normal distribution; results are presented at dual baselines $\sigma_{\ln} = 0.70$ (Flyvbjerg terrestrial, P90/P50 $\approx 2.5\times$) and $\sigma_{\ln} = 1.0$ (space-specific, P90/P50 $\approx 4.1\times$). The Monte Carlo is run at fixed discount rates $r \in \{3\%, 5\%, 8\%\}$. Achieving crossover is defined as $N^* \leq H$ where $H = 40{,}000$. Baseline values are rounded for exposition; the simulation uses exact values as specified in the code repository.}
+\caption{Monte Carlo parameter distributions. Launch cost, ISRU capital, and production rate are correlated via a 3D Gaussian copula ($\rho_{p,K} = 0.3$, $\rho_{K,\dot{n}} = 0.5$); all other parameters are sampled independently. ISRU capital follows a log-normal distribution; results are presented at dual baselines $\sigma_{\ln} = 0.70$ (Flyvbjerg terrestrial, P90/P50 $\approx 2.5\times$ unclipped) and $\sigma_{\ln} = 1.0$ (space-specific, P90/P50 $\approx 3.6\times$ unclipped, $\approx 3.0\times$ after the [\$20B, \$200B] clip; see Table~\ref{tab:sigma_ln}). The Monte Carlo is run at fixed discount rates $r \in \{3\%, 5\%, 8\%\}$. Achieving crossover is defined as $N^* \leq H$ where $H = 40{,}000$. Baseline values are rounded for exposition; the simulation uses exact values as specified in the code repository.}
 \label{tab:params}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}llll@{}}
 \toprule
 Parameter & Baseline & Distribution & Range \\
 \midrule
-\multicolumn{4}{@{}l}{\emph{Stochastic parameters (18 independent + 2 derived = 20 total)$^{\P}$}} \\
+\multicolumn{4}{@{}l}{\emph{Stochastic parameters (19 independent + 2 derived = 21 total)$^{\P}$}} \\
 Launch cost $p_{\mathrm{launch}}$ (\$/kg) & 1{,}000 & Uniform$^\dagger$ & [500, 2{,}000] \\
 ISRU capital $K$ (\$B) & 50$^{\#}$ & Log-normal$^\dagger$ & med.\ 65, $\sigma_{\ln}$=0.70, clip [20, 200] \\
 Earth learning rate $\mathrm{LR}_E$ & 0.85 & $\mathcal{N}(0.85, 0.03)$ & [0.75, 0.95] \\
@@ -44,7 +44,7 @@ Capital--production rate corr.\ $\rho_{K,\dot{n}}$ & 0.5 & Fixed & --- \\
 \multicolumn{4}{@{}l}{\footnotesize $^\ddagger$Deterministic baseline value; the MC samples $A \sim U[0.70, 0.95]$.} \\
 \multicolumn{4}{@{}l}{\footnotesize $^\S$$C_{\mathrm{labor}}^{(1)}$ follows the Wright learning curve; $C_{\mathrm{mat}}$ is non-learnable (Eq.~\ref{eq:earth_mfg}).} \\
 \multicolumn{4}{@{}l}{\footnotesize $^{\|}$$p_{\mathrm{ops}}$ is derived from $p_{\mathrm{launch}}$ and $p_{\mathrm{fuel}}$; it is not independently sampled.} \\
-\multicolumn{4}{@{}l}{\footnotesize $^{\P}$18 independent + 2 derived stochastic parameters: $C_{\mathrm{labor}}^{(1)}$ is derived ($C_{\mathrm{mfg}}^{(1)} - C_{\mathrm{mat}}$) and $p_{\mathrm{ops}}$ is} \\
+\multicolumn{4}{@{}l}{\footnotesize $^{\P}$19 independent + 2 derived stochastic parameters: $C_{\mathrm{labor}}^{(1)}$ is derived ($C_{\mathrm{mfg}}^{(1)} - C_{\mathrm{mat}}$) and $p_{\mathrm{ops}}$ is} \\
 \multicolumn{4}{@{}l}{\footnotesize \phantom{$^{\P}$}derived ($\max(p_{\mathrm{launch}} - p_{\mathrm{fuel}}, 0)$); both are sampled stochastically via their parent distributions.} \\
 \multicolumn{4}{@{}l}{\footnotesize Enforces $C_{\mathrm{mfg}}^{(1)} \geq C_{\mathrm{mat}}$ and $C_{\mathrm{ops}}^{(1)} \geq C_{\mathrm{floor}}$; clamping rate $<$1\%.} \\
 \multicolumn{4}{@{}l}{\footnotesize $^{\#}$Deterministic baseline uses \$50B; MC samples from log-normal with median \$65B (Appendix~\ref{sec:appendix_params}).}
