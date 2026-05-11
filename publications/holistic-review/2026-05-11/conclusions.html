@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Project Dyson — Holistic Review · 2026-05-11</title>
+<style>
+  :root {
+    --bg: #0a0d14;
+    --bg-elev: #131825;
+    --ink: #e9eef7;
+    --ink-dim: #9aa3b6;
+    --ink-faint: #5e667a;
+    --sun: #ffb86b;
+    --sun-deep: #ff7b3d;
+    --accent: #6ea8ff;
+    --good: #6ee7a4;
+    --warn: #ffc857;
+    --bad: #ff7d7d;
+    --rule: #1f2638;
+    --claude: #d49a6e;
+    --gemini: #6ea8ff;
+    --gpt: #6ee7a4;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  .deck {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 6vh 8vw 9vh;
+    display: none;
+    overflow-y: auto;
+    background:
+      radial-gradient(circle at 92% 8%, rgba(255,184,107,0.10), transparent 38%),
+      radial-gradient(circle at 6% 96%, rgba(110,168,255,0.06), transparent 40%),
+      var(--bg);
+  }
+  .slide.active { display: block; animation: fadein 0.35s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  h1, h2, h3 { font-weight: 600; letter-spacing: -0.01em; }
+  h1 { font-size: clamp(2.2rem, 4.4vw, 3.6rem); margin: 0 0 0.4em; line-height: 1.1; }
+  h2 { font-size: clamp(1.4rem, 2.4vw, 2rem); margin: 0 0 0.6em; color: var(--sun); }
+  h3 { font-size: 1.05rem; margin: 0 0 0.3em; color: var(--ink); }
+  p { margin: 0 0 0.8em; color: var(--ink); }
+  .lede { color: var(--ink-dim); font-size: 1.05rem; max-width: 56ch; }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.78rem;
+    color: var(--sun);
+    margin-bottom: 0.6em;
+  }
+  ul { padding-left: 1.1em; margin: 0 0 0.6em; }
+  li { margin-bottom: 0.4em; color: var(--ink); }
+  li::marker { color: var(--ink-faint); }
+  small { color: var(--ink-dim); }
+  code, .mono {
+    font-family: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+    font-size: 0.92em;
+    color: var(--ink-dim);
+  }
+
+  .sun {
+    position: absolute;
+    top: 8%;
+    right: 10%;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, #fff1d6 0%, var(--sun) 28%, var(--sun-deep) 62%, rgba(255,123,61,0) 78%);
+    filter: blur(0.4px);
+    box-shadow: 0 0 80px 20px rgba(255,123,61,0.22);
+  }
+
+  .grid {
+    display: grid;
+    gap: 1rem 1.4rem;
+  }
+  .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.1rem 1.2rem;
+  }
+  .card .label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+    margin-bottom: 0.4em;
+  }
+  .card .title { font-weight: 600; margin-bottom: 0.3em; }
+  .card .body { color: var(--ink-dim); font-size: 0.95rem; line-height: 1.5; }
+
+  .verdict {
+    display: inline-block;
+    padding: 0.45em 1em;
+    border-radius: 999px;
+    background: rgba(255,184,107,0.12);
+    color: var(--sun);
+    border: 1px solid rgba(255,184,107,0.35);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.4rem;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 0.18em 0.6em;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-right: 0.4em;
+  }
+  .pill.claude { background: rgba(212,154,110,0.14); color: var(--claude); }
+  .pill.gemini { background: rgba(110,168,255,0.14); color: var(--gemini); }
+  .pill.gpt    { background: rgba(110,231,164,0.14); color: var(--gpt); }
+  .pill.all    { background: rgba(255,184,107,0.14); color: var(--sun); }
+
+  .rec {
+    display: grid;
+    grid-template-columns: 2.4rem 1fr;
+    gap: 0.8rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .rec:last-child { border-bottom: 0; }
+  .rec .num {
+    font-variant-numeric: tabular-nums;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--sun);
+    line-height: 1;
+  }
+  .rec .body { color: var(--ink); }
+  .rec .body small { display: block; margin-top: 0.25em; color: var(--ink-faint); }
+
+  .bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 56px;
+    border-top: 1px solid var(--rule);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8vw;
+    color: var(--ink-faint);
+    font-size: 0.82rem;
+  }
+  .bar .nav { display: flex; gap: 0.4rem; }
+  .bar button {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-dim);
+    padding: 0.35em 0.8em;
+    border-radius: 6px;
+    cursor: pointer;
+    font: inherit;
+  }
+  .bar button:hover { border-color: var(--sun); color: var(--sun); }
+  .counter { font-variant-numeric: tabular-nums; }
+
+  .legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .legend span { font-size: 0.85rem; color: var(--ink-dim); }
+
+  .risk-row {
+    display: grid;
+    grid-template-columns: 2.4rem 1fr 7rem;
+    gap: 0.8rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+  .risk-row:last-child { border-bottom: 0; }
+  .risk-row .lvl {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--bad);
+    text-align: right;
+    padding-top: 0.2em;
+  }
+  .risk-row .num { color: var(--bad); font-weight: 600; font-size: 1.4rem; line-height: 1; }
+
+  .footnote {
+    position: absolute;
+    bottom: 70px; left: 8vw; right: 8vw;
+    color: var(--ink-faint);
+    font-size: 0.78rem;
+  }
+
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+  a:hover { color: var(--sun); border-bottom-color: var(--sun); }
+
+  @media print {
+    body { overflow: visible; }
+    .deck { height: auto; }
+    .slide { display: block !important; page-break-after: always; height: 100vh; padding: 6vh 6vw; }
+    .bar { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- Slide 1: Title -->
+  <section class="slide active">
+    <div class="sun"></div>
+    <div class="eyebrow">Holistic peer review · 2026-05-11</div>
+    <h1>Project Dyson</h1>
+    <p class="lede">Three frontier models reviewed the project's high-level documents — README, research roadmap, publication assessment, and consolidated literature handover — and returned independent project-level critiques.</p>
+    <div style="margin-top: 2rem;">
+      <span class="pill claude">Claude Opus 4.7</span>
+      <span class="pill gemini">Gemini 3.1 Pro</span>
+      <span class="pill gpt">GPT-5.5 Pro</span>
+    </div>
+    <p style="margin-top: 3rem;"><small>Use ← / → or space to navigate · press <code>F</code> for fullscreen · <code>P</code> for print</small></p>
+  </section>
+
+  <!-- Slide 2: Verdict -->
+  <section class="slide">
+    <div class="eyebrow">Unanimous verdict</div>
+    <h1 style="color: var(--sun);">Continue with material changes</h1>
+    <p class="lede" style="max-width: 64ch; font-size: 1.15rem;">All three models reached the same conclusion independently: the program has a real intellectual core and is worth continuing, but it cannot ship its strongest claims without addressing reproducibility, validation discipline, and architectural integration.</p>
+    <div class="grid cols-3" style="margin-top: 2.4rem;">
+      <div class="card">
+        <div class="label">Claude Opus 4.7</div>
+        <div class="title">Continue with material changes</div>
+        <div class="body">"Make the AI methodology defensible, make cost claims uncertainty-honest, rebalance the portfolio toward the actual risks."</div>
+      </div>
+      <div class="card">
+        <div class="label">Gemini 3.1 Pro</div>
+        <div class="title">Continue with material changes</div>
+        <div class="body">"Strictly firewall AI-generated BOM specifications from the physical simulations used to validate them."</div>
+      </div>
+      <div class="card">
+        <div class="label">GPT-5.5 Pro</div>
+        <div class="title">Continue with material changes</div>
+        <div class="body">"Reposition explicitly as a pre-Phase-A feasibility, validation, and systems-architecture program — not a construction plan."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 3: Strongest contributions -->
+  <section class="slide">
+    <div class="eyebrow">What's working</div>
+    <h2>Strongest contributions</h2>
+    <p class="lede">Where all three reviewers converge on what the project is doing well.</p>
+    <div class="grid cols-2" style="margin-top: 1.6rem;">
+      <div class="card">
+        <span class="pill all">All three</span>
+        <h3>Multi-model AI consensus methodology</h3>
+        <p class="body" style="color: var(--ink-dim);">Structured voting, 0.5× self-vote down-weighting, divergent views preserved as first-class artifacts. Genuinely novel; the most likely-to-be-cited single contribution. "Better than ad-hoc prompting" (GPT-5.5).</p>
+      </div>
+      <div class="card">
+        <span class="pill all">All three</span>
+        <h3>Risk-decomposition + decision-gate framework</h3>
+        <p class="body" style="color: var(--ink-dim);">TRL dashboard, project-ending vs. architecture-change vs. schedule-delay risk taxonomy, RQ → paper → gate traceability. "Exactly the epistemic sorting a speculative megaproject needs" (GPT-5.5).</p>
+      </div>
+      <div class="card">
+        <span class="pill claude">Claude</span><span class="pill gpt">GPT-5.5</span>
+        <h3>ISRU economic crossover analysis (Paper 01)</h3>
+        <p class="body" style="color: var(--ink-dim);">"Launch costs do not learn while ISRU does, so crossover is structural rather than parameter-dependent." Closest to actual readiness; survives outside the Dyson framing.</p>
+      </div>
+      <div class="card">
+        <span class="pill all">All three</span>
+        <h3>The literature-integration handover</h3>
+        <p class="body" style="color: var(--ink-dim);">Pivot from arXiv to NASA TRS, AIAA, IEPC, JBIS, Acta Astronautica. "One of the best artifacts in the corpus" (GPT-5.5). "Brilliant course correction" (Gemini).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 4: Most significant weaknesses -->
+  <section class="slide">
+    <div class="eyebrow">What's not working</div>
+    <h2>Most significant gaps</h2>
+    <ul style="font-size: 1.02rem; max-width: 80ch;">
+      <li><strong>AI consensus is not validation.</strong> Three LLMs trained on overlapping corpora agreeing is weak evidence; their disagreements are arguably more informative. <span class="pill all">all</span></li>
+      <li><strong>No integrated reference architecture.</strong> Component studies don't yet close into a coupled system showing Phase 0 → 1 → 2 under consistent assumptions. <span class="pill gpt">GPT-5.5</span></li>
+      <li><strong>Cost figures lack uncertainty discipline.</strong> Three-LLM votes don't yield uncertainty intervals; downstream BOM treats consensus as point estimates. <span class="pill claude">Claude</span><span class="pill gpt">GPT-5.5</span></li>
+      <li><strong>Microgravity metallurgy is treated as a research question, not a possible show-stopper.</strong> 8 orders of magnitude (100 g lab → 50,000 t/yr) is a paradigm gap, not a maturation gap. <span class="pill claude">Claude</span></li>
+      <li><strong>Circular validation risk.</strong> If LLMs generated both the BOM specs and the simulations validating them, the Tier-1 papers will not survive serious peer review. <span class="pill gemini">Gemini</span></li>
+      <li><strong>Reproducibility decays with model deprecation.</strong> <code>claude-opus-4-5</code>, <code>gemini-3-pro</code>, <code>gpt-5-2</code> won't be queryable in 18 months; raw API exchanges aren't archived immutably. <span class="pill claude">Claude</span><span class="pill gpt">GPT-5.5</span></li>
+      <li><strong>"3/3 Accept" terminology and naming inconsistencies.</strong> Reads as peer review when it means LLM agreement; paper numbering and model names disagree across documents. <span class="pill gpt">GPT-5.5</span></li>
+      <li><strong>Governance and certification under-prioritized</strong> for a multi-century, multi-actor infrastructure project. <span class="pill claude">Claude</span><span class="pill gpt">GPT-5.5</span></li>
+    </ul>
+  </section>
+
+  <!-- Slide 5: Top risks -->
+  <section class="slide">
+    <div class="eyebrow">Top risks · 1–3 years</div>
+    <h2>What is most likely to invalidate the program</h2>
+    <div style="max-width: 85ch; margin-top: 1.4rem;">
+      <div class="risk-row">
+        <div class="num">1</div>
+        <div>
+          <h3>Coupled architecture fails to close when integrated</h3>
+          <p class="body" style="color: var(--ink-dim);">ISRU, cryogenics, propulsion, manufacturing, PV degradation, and logistics may each look plausible in isolation but fail as a coupled architecture. There is no integrated reference model yet. <span class="pill gpt">GPT-5.5</span></p>
+        </div>
+        <div class="lvl">High × Very High</div>
+      </div>
+      <div class="risk-row">
+        <div class="num">2</div>
+        <div>
+          <h3>Microgravity-metallurgy gap proves architectural, not maturational</h3>
+          <p class="body" style="color: var(--ink-dim);">If the literature surfaces no credible scaling path, the entire ISRU-self-replication thesis underlying Phases 0–2 collapses. The project's own framework calls this its #1 project-ending risk; no fallback architecture is publicly worked out. <span class="pill claude">Claude</span><span class="pill gpt">GPT-5.5</span></p>
+        </div>
+        <div class="lvl">Med-High × Very High</div>
+      </div>
+      <div class="risk-row">
+        <div class="num">3</div>
+        <div>
+          <h3>AI-content disclosure rejection at target venues</h3>
+          <p class="body" style="color: var(--ink-dim);">Several major aerospace journals now require human-author attestation of substantive contributions. A wave of desk rejects would invalidate the publication-pipeline thesis on which external validation depends. <span class="pill claude">Claude</span><span class="pill gemini">Gemini</span></p>
+        </div>
+        <div class="lvl">High × High</div>
+      </div>
+      <div class="risk-row">
+        <div class="num">4</div>
+        <div>
+          <h3>Model deprecation breaks reproducibility</h3>
+          <p class="body" style="color: var(--ink-dim);">Without archived raw exchanges, prompts, and API metadata, Paper 03's empirical core becomes unreplicable in 18 months — a near-term, fixable risk that becomes unfixable if not addressed in the next 6 months. <span class="pill claude">Claude</span><span class="pill gpt">GPT-5.5</span></p>
+        </div>
+        <div class="lvl">High × Medium</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 6: Top recommendations -->
+  <section class="slide">
+    <div class="eyebrow">Next 6–12 months</div>
+    <h2>Prioritized recommendations</h2>
+    <p class="lede">Synthesized from all three reviews; ordered by impact-per-effort.</p>
+    <div style="max-width: 90ch; margin-top: 1.4rem;">
+      <div class="rec">
+        <div class="num">1</div>
+        <div class="body">
+          <strong>Build a versioned reference architecture (v0.1).</strong> One baseline tying mass, power, cost, ISRU flows, manufacturing throughput, and orbit assumptions together. Every paper cites it. Without this, local conclusions may not survive integration.
+          <small>First step: publish "Project Dyson Reference Architecture v0.1" with assumption IDs.</small>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="num">2</div>
+        <div class="body">
+          <strong>Archive raw model exchanges immutably — now.</strong> Every consensus document gets an accompanying <code>.raw.json</code> with full prompt, response, model version, timestamp, API metadata. Content-addressed (Zenodo / git-LFS / IPFS).
+          <small>First step: modify <code>scripts/query-bom-specs.js</code> to write raw API responses alongside markdown, retroactively where possible.</small>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="num">3</div>
+        <div class="body">
+          <strong>Run a calibration study for the consensus method before submitting Paper 03.</strong> 10–20 engineering questions with known answers (textbook trade studies, declassified NASA decisions). Report agreement-vs-correctness curves.
+          <small>First step: draft a 20-question calibration set this month.</small>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="num">4</div>
+        <div class="body">
+          <strong>Build a claim-evidence register.</strong> For every major claim, label the source: empirical, literature-derived, simulated, expert-estimated, AI-generated, speculative. Prevents LLM consensus from being conflated with physical validation.
+          <small>First step: classify the top 50 claims from Papers 01–06.</small>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="num">5</div>
+        <div class="body">
+          <strong>Convert decision gates into quantitative test cards.</strong> Pass/fail metrics, test plans, cost, schedule, fallback options for Gates 1 (metallurgy), 2 (cryogenics), 3 (water extraction).
+          <small>First step: write a one-page Gate 2 cryogenic architecture card — it's the nearest gate.</small>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="num">6</div>
+        <div class="body">
+          <strong>Decouple cost figures from "consensus" rhetoric.</strong> Replace point estimates in <code>bom-data.ts</code> with explicit ranges; flag items with high inter-model divergence. Add <code>costLow</code>, <code>costHigh</code>, <code>divergenceFlag</code> fields.
+          <small>First step: schema migration in <code>src/lib/types/index.ts</code>.</small>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="num">7</div>
+        <div class="body">
+          <strong>Commission a fallback-architecture paper for the metallurgy show-stopper.</strong> Currently a sub-bullet in Paper 04; should be its own analysis (rotational stations, lunar surface, hybrid Earth-launched high-purity components).
+          <small>First step: add as Paper 04b with a 4–6 week effort estimate, before Paper 04's literature review begins.</small>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="num">8</div>
+        <div class="body">
+          <strong>Recruit external expert red-team reviews</strong> for the strongest papers before submission. One reviewer each: ISRU economics, swarm/distributed systems, cryogenics, materials processing, AI methodology.
+          <small>First step: draft a 1-page expert-review request and send it in the next 30 days.</small>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="num">9</div>
+        <div class="body">
+          <strong>Reframe the AI consensus method as hypothesis generation, not validation.</strong> Rewrite Paper 03's framing; structured ideation, critique, and uncertainty mapping — not engineering proof.
+          <small>First step: revise the abstract and introduction; demote consensus-as-evidence claims.</small>
+        </div>
+      </div>
+      <div class="rec">
+        <div class="num">10</div>
+        <div class="body">
+          <strong>Promote governance (Paper 09) up the priority order.</strong> For a multi-century non-profit aiming to build infrastructure outliving any signatory, governance is a technical requirement, not an afterthought. Find a co-author in space policy.
+          <small>First step: outreach to one or two named space-policy academics.</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 7: Where reviewers diverged -->
+  <section class="slide">
+    <div class="eyebrow">Divergent views — preserved, not eliminated</div>
+    <h2>Where the reviewers disagreed</h2>
+    <p class="lede">Each model's distinctive emphasis. The project's own methodology says these matter as much as the consensus.</p>
+    <div class="grid cols-3" style="margin-top: 1.8rem;">
+      <div class="card">
+        <span class="pill claude">Claude Opus 4.7</span>
+        <h3 style="margin-top: 0.6rem;">Methodological self-defense</h3>
+        <p class="body" style="color: var(--ink-dim);">Most concerned with making the AI methodology survive its own first public outing — calibration studies, immutable archival, governance moved up the priority list, Phase 3 inconsistencies in the registry.</p>
+      </div>
+      <div class="card">
+        <span class="pill gemini">Gemini 3.1 Pro</span>
+        <h3 style="margin-top: 0.6rem;">Circular validation + thermal physics</h3>
+        <p class="body" style="color: var(--ink-dim);">Most concerned with the firewall between LLM-generated specs and the simulations validating them. Also the only reviewer to flag thermal management at 0.3 AU as the binding physical constraint of the entire architecture.</p>
+      </div>
+      <div class="card">
+        <span class="pill gpt">GPT-5.5 Pro</span>
+        <h3 style="margin-top: 0.6rem;">Systems integration + repositioning</h3>
+        <p class="body" style="color: var(--ink-dim);">Most concerned with the absence of an integrated reference architecture and with naming/status inconsistencies that look unrigorous to reviewers. Argued the program should explicitly reposition as pre-Phase-A feasibility.</p>
+      </div>
+    </div>
+    <p style="margin-top: 2rem; color: var(--ink-faint); font-size: 0.92rem;">Note: divergence here is informative, not noise — it surfaces three independent pressure tests on the same corpus. The project's stated principle is to preserve these views as first-class signal, which the reviewers themselves flagged is currently honored only partially.</p>
+  </section>
+
+  <!-- Slide 8: Bottom line -->
+  <section class="slide">
+    <div class="eyebrow">Bottom line</div>
+    <h1 style="font-size: clamp(1.8rem, 3.4vw, 2.8rem); max-width: 22ch;">A real intellectual core inside a frame that's still maturing.</h1>
+    <p class="lede" style="font-size: 1.1rem; max-width: 70ch; margin-top: 1.2rem;">
+      The methodology paper, the ISRU crossover paper, and the risk-gated framework all stand on their own. The Dyson-swarm framing is doing useful work as a forcing function for these contributions, but the corpus currently overstates how close any of this is to a construction plan.
+    </p>
+    <p class="lede" style="font-size: 1.1rem; max-width: 70ch;">
+      The next six months should produce <strong style="color: var(--sun);">one integrated architecture, one calibrated methodology, one immutable archive,</strong> and explicit repositioning as a feasibility-and-validation program. With that, Paper 03 has a real shot at being cited well outside this project's gravity well.
+    </p>
+    <div style="margin-top: 2.4rem; display: flex; gap: 0.8rem; flex-wrap: wrap;">
+      <span class="verdict">Continue with material changes</span>
+    </div>
+  </section>
+
+  <!-- Slide 9: Sources -->
+  <section class="slide">
+    <div class="eyebrow">Sources</div>
+    <h2>Full reviews</h2>
+    <p class="lede">Generated 2026-05-11 by <code>scripts/run-holistic-review.js</code>. Inputs: README.md, RESEARCH-ROADMAP.md, publication-assessment.md, CONSOLIDATED-HANDOVER.md.</p>
+    <ul style="margin-top: 1.4rem; font-size: 1.02rem;">
+      <li><span class="pill claude">Claude Opus 4.7</span> <a href="claude-opus-4-7.md">claude-opus-4-7.md</a> · 17 KB · 81 s · finish: stop</li>
+      <li><span class="pill gemini">Gemini 3.1 Pro</span> <a href="gemini-3-1-pro.md">gemini-3-1-pro.md</a> · 7 KB · 31 s · finish: stop</li>
+      <li><span class="pill gpt">GPT-5.5 Pro</span> <a href="gpt-5-5-pro.md">gpt-5-5-pro.md</a> · 20 KB · 278 s · finish: completed</li>
+    </ul>
+    <p style="margin-top: 2.4rem; color: var(--ink-faint); font-size: 0.88rem;">
+      Workspace: <code>adb-7405606309889705.5.azuredatabricks.net</code> · auth via <code>databricks auth token --profile claude-code</code> · no <code>max_tokens</code> cap (server defaults).
+    </p>
+  </section>
+
+</div>
+
+<div class="bar">
+  <div class="counter"><span id="cur">1</span> / <span id="total">9</span></div>
+  <div class="title-mini" style="color: var(--ink-faint);">Project Dyson · Holistic Review · 2026-05-11</div>
+  <div class="nav">
+    <button onclick="go(-1)">←</button>
+    <button onclick="go(1)">→</button>
+  </div>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let idx = 0;
+  const total = slides.length;
+  document.getElementById('total').textContent = total;
+
+  function show(i) {
+    idx = Math.max(0, Math.min(total - 1, i));
+    slides.forEach((s, k) => s.classList.toggle('active', k === idx));
+    document.getElementById('cur').textContent = idx + 1;
+    if (history.replaceState) history.replaceState(null, '', '#' + (idx + 1));
+  }
+  function go(d) { show(idx + d); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { go(1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { go(-1); e.preventDefault(); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End') { show(total - 1); }
+    else if (e.key.toLowerCase() === 'f') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+    else if (e.key.toLowerCase() === 'p') { window.print(); }
+  });
+
+  const hash = parseInt(location.hash.replace('#', ''), 10);
+  if (!isNaN(hash) && hash >= 1 && hash <= total) show(hash - 1);
+</script>
+</body>
+</html>
