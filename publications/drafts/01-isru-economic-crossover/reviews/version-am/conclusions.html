@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Paper 01 v. AM — Peer Review Conclusions · 2026-05-11</title>
+<style>
+  :root {
+    --bg: #0a0d14;
+    --bg-elev: #131825;
+    --ink: #e9eef7;
+    --ink-dim: #9aa3b6;
+    --ink-faint: #5e667a;
+    --sun: #ffb86b;
+    --sun-deep: #ff7b3d;
+    --accent: #6ea8ff;
+    --good: #6ee7a4;
+    --warn: #ffc857;
+    --bad: #ff7d7d;
+    --rule: #1f2638;
+    --claude: #d49a6e;
+    --gemini: #6ea8ff;
+    --gpt: #6ee7a4;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  .deck { position: relative; height: 100vh; width: 100vw; overflow: hidden; }
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 5vh 7vw 8vh;
+    display: none;
+    overflow-y: auto;
+    background:
+      radial-gradient(circle at 92% 8%, rgba(255,184,107,0.10), transparent 38%),
+      radial-gradient(circle at 6% 96%, rgba(110,168,255,0.06), transparent 40%),
+      var(--bg);
+  }
+  .slide.active { display: block; animation: fadein 0.35s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  h1, h2, h3 { font-weight: 600; letter-spacing: -0.01em; }
+  h1 { font-size: clamp(2rem, 4vw, 3.2rem); margin: 0 0 0.4em; line-height: 1.1; }
+  h2 { font-size: clamp(1.3rem, 2.2vw, 1.85rem); margin: 0 0 0.6em; color: var(--sun); }
+  h3 { font-size: 1rem; margin: 0 0 0.3em; color: var(--ink); }
+  p { margin: 0 0 0.8em; color: var(--ink); }
+  .lede { color: var(--ink-dim); font-size: 1.02rem; max-width: 60ch; }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.74rem;
+    color: var(--sun);
+    margin-bottom: 0.5em;
+  }
+  ul { padding-left: 1.1em; margin: 0 0 0.6em; }
+  li { margin-bottom: 0.4em; color: var(--ink); }
+  li::marker { color: var(--ink-faint); }
+  small { color: var(--ink-dim); }
+  code, .mono {
+    font-family: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+    font-size: 0.9em;
+    color: var(--ink-dim);
+  }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+  a:hover { color: var(--sun); border-bottom-color: var(--sun); }
+
+  .sun {
+    position: absolute;
+    top: 7%;
+    right: 10%;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, #fff1d6 0%, var(--sun) 28%, var(--sun-deep) 62%, rgba(255,123,61,0) 78%);
+    filter: blur(0.4px);
+    box-shadow: 0 0 80px 20px rgba(255,123,61,0.22);
+  }
+
+  .grid { display: grid; gap: 1rem 1.4rem; }
+  .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+  }
+  .card .label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+    margin-bottom: 0.4em;
+  }
+  .card .title { font-weight: 600; margin-bottom: 0.3em; }
+  .card .body { color: var(--ink-dim); font-size: 0.92rem; line-height: 1.5; }
+
+  .verdict-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.2rem 1.3rem;
+    border-left: 3px solid var(--rule);
+  }
+  .verdict-card.major { border-left-color: var(--bad); }
+  .verdict-card.minor { border-left-color: var(--warn); }
+  .verdict-card.accept { border-left-color: var(--good); }
+  .verdict-card .verdict-line {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0.5em 0 0.6em;
+  }
+  .verdict-card.major .verdict-line { color: var(--bad); }
+  .verdict-card.minor .verdict-line { color: var(--warn); }
+
+  .pill {
+    display: inline-block;
+    padding: 0.18em 0.6em;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-right: 0.4em;
+  }
+  .pill.claude { background: rgba(212,154,110,0.14); color: var(--claude); }
+  .pill.gemini { background: rgba(110,168,255,0.14); color: var(--gemini); }
+  .pill.gpt    { background: rgba(110,231,164,0.14); color: var(--gpt); }
+  .pill.all    { background: rgba(255,184,107,0.14); color: var(--sun); }
+  .pill.two    { background: rgba(255,200,87,0.14); color: var(--warn); }
+
+  /* Ratings table */
+  table.ratings {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 720px;
+    font-size: 0.95rem;
+    margin-top: 1rem;
+  }
+  table.ratings th, table.ratings td {
+    padding: 0.6em 0.9em;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+  }
+  table.ratings th {
+    color: var(--ink-faint);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+  }
+  table.ratings td.score { font-variant-numeric: tabular-nums; text-align: center; font-weight: 600; }
+  td.score.s5 { color: #6ee7a4; }
+  td.score.s4 { color: #b6e07a; }
+  td.score.s3 { color: var(--warn); }
+  td.score.s2 { color: var(--bad); }
+  td.score.s1 { color: var(--bad); }
+
+  .issue {
+    display: grid;
+    grid-template-columns: 2.4rem 1fr;
+    gap: 0.8rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .issue:last-child { border-bottom: 0; }
+  .issue .num {
+    font-variant-numeric: tabular-nums;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--sun);
+    line-height: 1.1;
+  }
+  .issue .body { color: var(--ink); font-size: 0.95rem; }
+  .issue .body small { display: block; margin-top: 0.25em; color: var(--ink-faint); }
+
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.94rem;
+  }
+  .compare-table th, .compare-table td {
+    padding: 0.6em 0.9em;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+  }
+  .compare-table th {
+    color: var(--ink-faint);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+  }
+  .verdict-cell {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .v-accept { color: var(--good); }
+  .v-minor { color: var(--warn); }
+  .v-major { color: var(--bad); }
+
+  .bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 52px;
+    border-top: 1px solid var(--rule);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 7vw;
+    color: var(--ink-faint);
+    font-size: 0.78rem;
+  }
+  .bar .nav { display: flex; gap: 0.4rem; }
+  .bar button {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-dim);
+    padding: 0.3em 0.75em;
+    border-radius: 6px;
+    cursor: pointer;
+    font: inherit;
+  }
+  .bar button:hover { border-color: var(--sun); color: var(--sun); }
+  .counter { font-variant-numeric: tabular-nums; }
+
+  @media print {
+    body { overflow: visible; }
+    .deck { height: auto; }
+    .slide { display: block !important; page-break-after: always; height: 100vh; padding: 5vh 5vw; }
+    .bar { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- Slide 1: Title -->
+  <section class="slide active">
+    <div class="sun"></div>
+    <div class="eyebrow">Peer review · Paper 01 · Version AM · 2026-05-11</div>
+    <h1>Economic Inflection Points<br/><span style="color: var(--ink-dim); font-weight: 400; font-size: 0.6em;">in Space Manufacturing</span></h1>
+    <p class="lede">Three frontier models reviewed the most-revised paper in the project (40 versions; latest <code>am</code>) at journal-submission depth — same trio that gave the project-level holistic review.</p>
+    <div style="margin-top: 1.6rem;">
+      <span class="pill claude">Claude Opus 4.7</span>
+      <span class="pill gemini">Gemini 3.1 Pro</span>
+      <span class="pill gpt">GPT-5.5 Pro</span>
+    </div>
+    <p style="margin-top: 2.4rem;"><small>← / → / space to navigate · <code>F</code> fullscreen · <code>P</code> print</small></p>
+  </section>
+
+  <!-- Slide 2: Split verdict -->
+  <section class="slide">
+    <div class="eyebrow">Verdict — split, not unanimous</div>
+    <h2>Two Major Revisions, one Accept with Minor</h2>
+    <p class="lede">Unlike the project-level holistic review, the three reviewers disagree on whether this paper is close to publishable. The two stricter reviewers independently identified the same headline statistical issue — that's the load-bearing finding of this round.</p>
+    <div class="grid cols-3" style="margin-top: 2rem;">
+      <div class="verdict-card major">
+        <div class="label" style="color: var(--ink-faint); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em;">Claude Opus 4.7</div>
+        <div class="verdict-line">Major Revision</div>
+        <div class="body" style="color: var(--ink-dim); font-size: 0.9rem;">"Three issues prevent acceptance: asymmetric model-form treatment, censored re-crossing, and overlapping <code>p<sub>s</sub></code> / MC risk modes."</div>
+      </div>
+      <div class="verdict-card minor">
+        <div class="label" style="color: var(--ink-faint); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em;">Gemini 3.1 Pro</div>
+        <div class="verdict-line">Accept with Minor Revisions</div>
+        <div class="body" style="color: var(--ink-dim); font-size: 0.9rem;">"Highly rigorous, parameter-driven evaluation. Requires only very minor tweaks before it is ready for publication."</div>
+      </div>
+      <div class="verdict-card major">
+        <div class="label" style="color: var(--ink-faint); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em;">GPT-5.5 Pro</div>
+        <div class="verdict-line">Major Revision</div>
+        <div class="body" style="color: var(--ink-dim); font-size: 0.9rem;">"Several headline quantitative claims are not yet reliable as written. Core framework is useful and authors have made serious improvements."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 3: Section ratings -->
+  <section class="slide">
+    <div class="eyebrow">Section ratings · 1–5 scale</div>
+    <h2>Where reviewers agree and disagree</h2>
+    <p class="lede">Six standard review sections. Gemini grades highest, GPT-5.5 lowest, Claude in the middle. The biggest gap is on <strong>Validity & Logic</strong> — Gemini scores 4, GPT-5.5 scores 2.</p>
+    <table class="ratings">
+      <thead>
+        <tr>
+          <th>Section</th>
+          <th style="text-align: center;">Claude 4.7</th>
+          <th style="text-align: center;">Gemini 3.1</th>
+          <th style="text-align: center;">GPT-5.5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Significance &amp; Novelty</td>     <td class="score s4">4</td><td class="score s5">5</td><td class="score s4">4</td></tr>
+        <tr><td>Methodological Soundness</td>      <td class="score s4">4</td><td class="score s5">5</td><td class="score s3">3</td></tr>
+        <tr><td>Validity &amp; Logic</td>          <td class="score s4">4</td><td class="score s4">4</td><td class="score s2">2</td></tr>
+        <tr><td>Clarity &amp; Structure</td>       <td class="score s3">3</td><td class="score s5">5</td><td class="score s3">3</td></tr>
+        <tr><td>Ethical Compliance</td>            <td class="score s4">4</td><td class="score s5">5</td><td class="score s4">4</td></tr>
+        <tr><td>Scope &amp; Referencing</td>       <td class="score s4">4</td><td class="score s4">4</td><td class="score s3">3</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 1.4rem; color: var(--ink-faint); font-size: 0.88rem;">GPT-5.5 also added four extra section ratings (Economic/NPV framing, Monte Carlo robustness, ISRU realism, Practical decision value) — all rated 3–4.</p>
+  </section>
+
+  <!-- Slide 4: What everyone agrees works -->
+  <section class="slide">
+    <div class="eyebrow">What's working</div>
+    <h2>Strengths all three reviewers acknowledge</h2>
+    <ul style="font-size: 1rem; max-width: 80ch;">
+      <li><strong>Kaplan–Meier addition</strong> for handling censoring is appropriate and addresses a real bias from prior versions. <span class="pill all">all</span></li>
+      <li><strong>Phased capital coupled to <code>t<sub>0</sub></code></strong> tracks construction reality where earlier lump-sum did not. <span class="pill all">all</span></li>
+      <li><strong>The <code>N**</code> re-crossing analysis</strong> turns single-point crossover into a more decision-relevant savings-window framing. <span class="pill all">all</span></li>
+      <li><strong>The decision-tree figure</strong> adds practical value for program planners (with caveats — see slide 7). <span class="pill all">all</span></li>
+      <li><strong>Stochastic plateau, dynamic vitamin fraction, and 10K-run MC with copula correlations</strong> — novel in combination, even if individual methods are not new. <span class="pill all">all</span></li>
+      <li><strong>AI-disclosure footnote</strong> is detailed, deterministic-seed reproducibility is committed, code archive promised. <span class="pill all">all</span></li>
+      <li><strong>"Validated" → "cross-checked"</strong> softening is largely successful (with a few residual phrases all three flagged). <span class="pill all">all</span></li>
+      <li><strong>Empirical-grounding asymmetry</strong> between Earth and ISRU pathways is now explicitly acknowledged. <span class="pill all">all</span></li>
+    </ul>
+  </section>
+
+  <!-- Slide 5: THE big issue -->
+  <section class="slide">
+    <div class="eyebrow">The headline finding · raised independently by Claude and GPT-5.5</div>
+    <h2>The 95% savings-window claim is conditional, not unconditional</h2>
+    <p class="lede" style="font-size: 1.05rem;">Both critical reviewers identified the same load-bearing problem in the abstract and conclusion — independently and without prompting.</p>
+    <div class="grid cols-2" style="margin-top: 1.6rem;">
+      <div class="card" style="border-left: 3px solid var(--bad);">
+        <div class="label">The claim</div>
+        <p class="body" style="color: var(--ink-dim);">Abstract: <em>"95% of draws place a 20,000-unit program within the ISRU savings window."</em> The conclusion repeats this. Reads as a probability over <strong>all</strong> Monte Carlo draws.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid var(--bad);">
+        <div class="label">What the table actually shows</div>
+        <p class="body" style="color: var(--ink-dim);">Table 14 reports <strong>94.7%</strong> [94.2%, 95.1%] — and that's <em>conditional on converging runs only</em>. Only 85.1% of all runs converge at <code>r=5%</code>. The unconditional probability is <strong>≈ 80.6%</strong>, not 95%.</p>
+      </div>
+    </div>
+    <h3 style="margin-top: 1.8rem; color: var(--sun);">Why it matters</h3>
+    <p class="body" style="color: var(--ink-dim); max-width: 80ch;">This is a headline result. Reporting a conditional probability as if it applies to all parameter draws materially overstates the robustness of the ISRU case. Both critical reviewers explicitly require this be corrected before publication.</p>
+    <h3 style="margin-top: 1.4rem; color: var(--sun);">Companion issue</h3>
+    <p class="body" style="color: var(--ink-dim); max-width: 80ch;">The <code>N**</code> re-crossing analysis is censored at the search bound (200,000 units): the median <code>N**</code> equals the bound itself, with IQR [200000, 200000]. The "78% functionally permanent" claim therefore states only that re-crossing doesn't occur within 200,000 units — not where it actually occurs. <span class="pill claude">Claude</span></p>
+  </section>
+
+  <!-- Slide 6: Other major issues consensus -->
+  <section class="slide">
+    <div class="eyebrow">Other major issues · raised by 2+ reviewers</div>
+    <h2>Consensus concerns beyond the headline number</h2>
+    <div style="max-width: 88ch;">
+      <div class="issue">
+        <div class="num">1</div>
+        <div class="body">
+          <strong>Earth learning offset <code>n<sub>0</sub></code> is buried in the appendix.</strong>
+          Sensitivity table shows crossovers ranging from 1,111 to >40,000 units depending on heritage assumptions. This is a key conditioning parameter that should be promoted to the main text and ideally integrated stochastically. <span class="pill all">all</span>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">2</div>
+        <div class="body">
+          <strong>Technology obsolescence treatment is too thin for 30–40 year horizons.</strong>
+          Only two deterministic disruption scenarios. A stochastic Poisson model or a structured matrix varying disruption timing/magnitude/affected pathway is needed — or claims about disruption-robustness must be downgraded. <span class="pill all">all</span>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">3</div>
+        <div class="body">
+          <strong>Capital cost <code>K</code> needs an empirical anchor.</strong>
+          <code>K</code> explains 63% of variance and is at "weak" grounding. No anchor against terrestrial heavy industry (offshore platforms, refineries, mining facilities). Recurring maintenance/spares excluded from canonical MC despite appendix showing it shifts crossover by 1,400–5,500 units. <span class="pill claude">Claude</span><span class="pill gpt">GPT-5.5</span>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">4</div>
+        <div class="body">
+          <strong>Vitamin BOM ambiguity: 15% vs 5%.</strong>
+          Table lists 15% Earth-sourced mass; cost model uses 5% as <code>f<sub>v</sub></code>. Sensors/wiring footnote unclear. Either model the initial 15% decaying to a floor, or relabel to distinguish "Earth-sourced at early maturity" from "irreducible modeled vitamin fraction." <span class="pill claude">Claude</span><span class="pill gpt">GPT-5.5</span>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">5</div>
+        <div class="body">
+          <strong>Decision tree should show uncertainty.</strong>
+          Current thresholds appear deterministic / point-estimate based. Add ranges or annotations (<code>N*</code> conditional vs KM median, <code>K</code>-dependent crossover probability, horizon-dependent <code>p<sub>s</sub><sup>min</sup></code>). <span class="pill gemini">Gemini</span><span class="pill gpt">GPT-5.5</span>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">6</div>
+        <div class="body">
+          <strong>Code archival "PENDING" must be resolved.</strong>
+          Frozen release tag, DOI archive, requirements file, seed, test suite, exact reproduction command. Reproducibility is asserted but not yet demonstrated. <span class="pill claude">Claude</span><span class="pill gpt">GPT-5.5</span>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">7</div>
+        <div class="body">
+          <strong>Residual "validate" phrasing.</strong>
+          E.g. "validate the PRCC rankings." Replace with "support" / "corroborate" / "are consistent with." <span class="pill all">all</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 7: What each reviewer uniquely caught -->
+  <section class="slide">
+    <div class="eyebrow">Distinctive findings</div>
+    <h2>What each reviewer uniquely caught</h2>
+    <div class="grid cols-3" style="margin-top: 1.4rem;">
+      <div class="card" style="border-top: 3px solid var(--claude);">
+        <span class="pill claude">Claude Opus 4.7</span>
+        <h3 style="margin-top: 0.6rem;">Asymmetric treatment + structural critique</h3>
+        <p class="body" style="color: var(--ink-dim); font-size: 0.92rem;">
+          <strong>Logistic vs piecewise plateau asymmetry:</strong> piecewise plateau is stochastically integrated; logistic saturation is only deterministic at three points. The headline 85% convergence rate is therefore not model-form-robust.<br/><br/>
+          <strong><code>p<sub>s</sub></code> failure model double-counts</strong> low-A / high-<code>C<sub>ops</sub></code> scenarios already in the MC.<br/><br/>
+          <strong>Length / table proliferation:</strong> ~50 pages, &gt;20 tables. Permanent/transient framework scattered across §3.2.3, §4.4, §4.6 — should be consolidated.
+        </p>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--gemini);">
+        <span class="pill gemini">Gemini 3.1 Pro</span>
+        <h3 style="margin-top: 0.6rem;">Most positive — minor remaining asks</h3>
+        <p class="body" style="color: var(--ink-dim); font-size: 0.92rem;">
+          <strong>Block-deployment revenue dynamics:</strong> for SSP-style architectures where revenue starts only when a full array is complete, the continuous breakeven equation overstates delay penalty. Author defers to future work — Gemini asks for a 2–3 sentence heuristic at minimum.<br/><br/>
+          <strong>Logistic vs piecewise:</strong> briefly state <em>why</em> the piecewise was chosen (computational? parameter elicitation?).<br/><br/>
+          Otherwise: praises the decision tree, vitamin BOM table transparency, and AI disclosure as exemplary.
+        </p>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--gpt);">
+        <span class="pill gpt">GPT-5.5 Pro</span>
+        <h3 style="margin-top: 0.6rem;">Found math errors and framing problems</h3>
+        <p class="body" style="color: var(--ink-dim); font-size: 0.92rem;">
+          <strong>Numerical inconsistencies in launch-learning examples:</strong> at <code>n=10,000</code> with LR<sub>L</sub>=0.90, the learnable component should be ≈ $200/kg, not the stated ≈ $334/kg. Asks for a unit-test audit.<br/><br/>
+          <strong>NPV not service-equivalent:</strong> ISRU delivers later, so its costs are discounted more — biases cost-only NPV toward the slower pathway. Need a common-deadline or shadow-service-value sensitivity.<br/><br/>
+          <strong>Asymptotic floor thresholds inconsistent</strong> with stated equations under launch-learning. <strong>PRCC for <code>t<sub>0</sub></code></strong> is interpreted backwards in the text.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 8: New vs old models comparison -->
+  <section class="slide">
+    <div class="eyebrow">Bonus comparison</div>
+    <h2>Newer models are noticeably more critical</h2>
+    <p class="lede">The same Version AM was reviewed by the older trio earlier this year. The contrast in verdicts on the same draft is striking.</p>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Generation</th>
+          <th>Model</th>
+          <th>Verdict</th>
+          <th>Review size</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="3" style="color: var(--ink-faint);">Older trio<br/><small>workspace adb-6239…</small></td>
+            <td>Claude Opus 4.6</td><td class="verdict-cell v-minor">Minor Revision</td><td>16 KB</td></tr>
+        <tr><td>Gemini 3 Pro</td><td class="verdict-cell v-accept">Accept</td><td>15 KB</td></tr>
+        <tr><td>GPT-5.2</td><td class="verdict-cell v-accept">Accept</td><td>17 KB</td></tr>
+        <tr><td rowspan="3" style="color: var(--ink-faint); padding-top: 1.2em;">Newer trio<br/><small>workspace adb-7405…</small></td>
+            <td>Claude Opus 4.7</td><td class="verdict-cell v-major">Major Revision</td><td>18 KB</td></tr>
+        <tr><td>Gemini 3.1 Pro</td><td class="verdict-cell v-minor">Accept with Minor Revisions</td><td>6 KB</td></tr>
+        <tr><td>GPT-5.5 Pro</td><td class="verdict-cell v-major">Major Revision</td><td>21 KB</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 1.6rem; color: var(--ink-dim); font-size: 0.95rem; max-width: 78ch;">
+      Older trio: 2× Accept, 1× Minor Revision. Newer trio: 2× Major Revision, 1× Accept with Minor.
+      The newer GPT and Claude both surface specific load-bearing issues (the conditional/unconditional probability error; numerical inconsistencies in learning-curve examples) that the older models missed.
+      This itself is a signal: the AM draft has real issues that the older models were not catching.
+    </p>
+  </section>
+
+  <!-- Slide 9: Recommended next steps -->
+  <section class="slide">
+    <div class="eyebrow">Pre-resubmission punch list</div>
+    <h2>What to fix before resubmitting</h2>
+    <p class="lede">Synthesized priority order. Most can be done without re-running the full MC ensemble; only #1, #4, and #6 require additional simulation or model changes.</p>
+    <div style="max-width: 90ch; margin-top: 1.2rem;">
+      <div class="issue">
+        <div class="num">1</div>
+        <div class="body">
+          <strong>Recompute and relabel all savings-window probabilities</strong> as conditional vs. unconditional. Make the unconditional (~80.6%) the primary abstract/conclusion claim. Soften "functionally permanent" → "no re-crossing within the search horizon <code>N=200,000</code>"; run a 500-sample subset at <code>N=10⁶</code> to estimate the true tail.
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">2</div>
+        <div class="body">
+          <strong>Add a service-equivalent NPV sensitivity</strong> — common-deadline, optimally-delayed Earth, or a shadow-service-value term — so the cost-only NPV isn't biased toward the slower pathway.
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">3</div>
+        <div class="body">
+          <strong>Audit the learning-curve numerical examples</strong> against the equations and code. Add unit tests for analytical values of <code>n^b</code> at the stated learning rates. Re-derive all asymptotic floor thresholds under each active configuration.
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">4</div>
+        <div class="body">
+          <strong>Stochastically integrate the logistic saturation</strong> (or one alternative model form) and report a joint convergence rate. Without this, the headline 85% can't be defended as model-form-robust.
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">5</div>
+        <div class="body">
+          <strong>Promote <code>n<sub>0</sub></code> × LR<sub>E</sub> to the main text.</strong> Justify plausible values for the modeled program class. Consider stochastic integration of <code>n<sub>0</sub> ~ Uniform[0, 300]</code>.
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">6</div>
+        <div class="body">
+          <strong>Either include recurring maintenance/spares in the canonical MC, or anchor <code>K</code></strong> against at least one terrestrial heavy-industry reference (offshore platform, refinery, modular nuclear) and report whether the $65B median is consistent.
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">7</div>
+        <div class="body">
+          <strong>Decompose <code>p<sub>s</sub></code> into catastrophic vs. degraded-operations components</strong> so the binary <code>p<sub>s</sub><sup>min</sup></code> threshold doesn't double-count low-A scenarios already in the MC.
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">8</div>
+        <div class="body">
+          <strong>Reconcile vitamin BOM</strong>: distinguish 15% Earth-sourced at early maturity from 5% modeled irreducible fraction. State explicitly where coatings, seals, sensors, and wiring costs enter the model.
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">9</div>
+        <div class="body">
+          <strong>Add uncertainty annotations to the decision tree</strong> (or move it to the appendix and provide a simplified probabilistic chart in the main text).
+        </div>
+      </div>
+      <div class="issue">
+        <div class="num">10</div>
+        <div class="body">
+          <strong>Resolve the code commit hash, freeze a release with DOI</strong>, archive requirements + seed + reproduction command. Tighten the few residual "validate" phrasings.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 10: Bottom line -->
+  <section class="slide">
+    <div class="eyebrow">Bottom line</div>
+    <h1 style="font-size: clamp(1.7rem, 3.2vw, 2.6rem); max-width: 24ch;">Real progress, but the headline number doesn't yet survive scrutiny.</h1>
+    <p class="lede" style="font-size: 1.05rem; max-width: 70ch; margin-top: 1.2rem;">
+      Version AM is a substantively improved manuscript — Kaplan–Meier, phased capital, dynamic vitamin, stochastic plateau, savings-window framing, decision tree are all genuine forward motion. Two of three reviewers nonetheless flag <strong>Major Revision</strong>, primarily because the abstract's 95% savings-window claim is a conditional probability reported as if unconditional, and several supporting analyses (re-crossing, <code>p<sub>s</sub></code>, model-form alternatives, learning-curve numerical examples) have asymmetries or inconsistencies that the same critical reviewers can identify independently.
+    </p>
+    <p class="lede" style="font-size: 1.05rem; max-width: 70ch;">
+      None of these are existential. The fixes cluster around <strong style="color: var(--sun);">honest probability labeling, model-form symmetry, numerical audit, and code archival</strong>. Most can ship in the next revision without re-running the full MC.
+    </p>
+  </section>
+
+  <!-- Slide 11: Sources -->
+  <section class="slide">
+    <div class="eyebrow">Sources</div>
+    <h2>Full reviews</h2>
+    <p class="lede">Generated 2026-05-11 by <code>scripts/run-paper-review.js</code> on Paper 01 Version AM (1,576 lines, 150 KB tex).</p>
+    <ul style="margin-top: 1.2rem; font-size: 1rem;">
+      <li><span class="pill claude">Claude Opus 4.7</span> <a href="claude-opus-4-7.md">claude-opus-4-7.md</a> · 18 KB · 105 s · Major Revision</li>
+      <li><span class="pill gemini">Gemini 3.1 Pro</span> <a href="gemini-3-1-pro.md">gemini-3-1-pro.md</a> · 6 KB · 30 s · Accept with Minor Revisions</li>
+      <li><span class="pill gpt">GPT-5.5 Pro</span> <a href="gpt-5-5-pro.md">gpt-5-5-pro.md</a> · 21 KB · 264 s · Major Revision</li>
+    </ul>
+    <h3 style="margin-top: 1.8rem;">Same draft, older models (for comparison)</h3>
+    <ul style="font-size: 1rem;">
+      <li><a href="claude-opus-4-6.md">claude-opus-4-6.md</a> · Minor Revision</li>
+      <li><a href="gemini-3-pro.md">gemini-3-pro.md</a> · Accept</li>
+      <li><a href="gpt-5-2.md">gpt-5-2.md</a> · Accept</li>
+      <li><a href="summary.md">summary.md</a> — older-trio summary</li>
+    </ul>
+    <p style="margin-top: 1.8rem; color: var(--ink-faint); font-size: 0.86rem;">
+      Workspace: <code>adb-7405606309889705.5.azuredatabricks.net</code> · auth via <code>databricks auth token --profile claude-code</code> · GPT-5.5 Pro used <code>reasoning.effort: medium</code> + streaming SSE to fit within the gateway's 300 s synchronous deadline.
+    </p>
+  </section>
+
+</div>
+
+<div class="bar">
+  <div class="counter"><span id="cur">1</span> / <span id="total">11</span></div>
+  <div class="title-mini" style="color: var(--ink-faint);">Paper 01 v. AM · Peer Review Conclusions · 2026-05-11</div>
+  <div class="nav">
+    <button onclick="go(-1)">←</button>
+    <button onclick="go(1)">→</button>
+  </div>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let idx = 0;
+  const total = slides.length;
+  document.getElementById('total').textContent = total;
+
+  function show(i) {
+    idx = Math.max(0, Math.min(total - 1, i));
+    slides.forEach((s, k) => s.classList.toggle('active', k === idx));
+    document.getElementById('cur').textContent = idx + 1;
+    if (history.replaceState) history.replaceState(null, '', '#' + (idx + 1));
+  }
+  function go(d) { show(idx + d); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { go(1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { go(-1); e.preventDefault(); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End') { show(total - 1); }
+    else if (e.key.toLowerCase() === 'f') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+    else if (e.key.toLowerCase() === 'p') { window.print(); }
+  });
+
+  const hash = parseInt(location.hash.replace('#', ''), 10);
+  if (!isNaN(hash) && hash >= 1 && hash <= total) show(hash - 1);
+</script>
+</body>
+</html>
