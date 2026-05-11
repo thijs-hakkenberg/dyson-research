@@ -1,0 +1,24 @@
+\begin{table}[htbp]
+\centering
+\caption{Summary of robustness tests (NPV, $r = 5\%$, phased-$K$ baseline $N^* = 3{,}749$; lump-sum $N^* = 4{,}374$). Shifts reported relative to lump-sum baseline for comparison with previous versions.}
+\label{tab:robustness_summary}
+\small
+\begin{tabular}{@{}lrl@{}}
+\toprule
+Test & Max shift & Direction \\
+\midrule
+S-curve steepness ($k = 0.5$--$4.0$) & $\pm$5 & Negligible \\
+Launch learning re-indexing ($\lambda = 0.5$--$2.0$) & $\pm$15 & Negligible \\
+Rate-dependent learning (20--30\% threshold) & 0 & None \\
+Piecewise construction schedule ($t_c = t_0 - 1$) & 0 & None \\
+ISRU pre-purchase timing ($\tau = 0.5$--$1.0$~yr) & $+$18 & Delays \\
+Earth mfg floor ($C_{\mathrm{mfg}}^{\mathrm{floor}} \leq \$3$M) & 0 & None \\
+Fuel floor decomposition (fixed total) & $\pm$44 & Negligible \\
+$K$--$\dot{n}$ correlation ($\rho = 0$ vs.\ $0.5$) & $-$185 & Earlier \\
+Earth-side fixed costs ($K_E = \$1$--$10$B) & $-$1{,}187 & Earlier (favors ISRU) \\
+Earth scaling penalty ($\gamma_E = 1.1$--$1.3$) & $-$301 to $-$720 & Earlier (favors ISRU) \\
+Extended 6D copula ($K$--$t_0$, $K$--$A$, $K$--$C_{\mathrm{ops}}^{(1)}$) & $-$0.5~pp & Negligible \\
+Asymmetric plateau (Earth continues, ISRU stalls) & $+$167 & Minor \\
+\bottomrule
+\end{tabular}
+\end{table}

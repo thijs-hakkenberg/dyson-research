@@ -1,0 +1,26 @@
+\begin{table}[htbp]
+\centering
+\caption{Sensitivity rankings at $r = 5\%$: Spearman rank correlations ($\rho_S$) and partial rank correlation coefficients (PRCC). PRCC is the primary metric as it controls for inter-parameter correlations, resolving confounding from the copula. ``Cond.'' includes only converging scenarios. All $|\rho_S| > 0.03$ and $|\text{PRCC}| > 0.03$ are significant at $p < 0.001$.}
+\label{tab:spearman}
+\begin{tabular}{@{}lrrrp{3.2cm}@{}}
+\toprule
+Parameter & $\rho_S$ (cond.) & PRCC (cond.) & PRCC (unc.) & Interpretation \\
+\midrule
+$K$               & $+$0.52 & $+$0.95 & $+$0.95 & Higher capital delays \\
+LR$_E$     & $-$0.54 & $-$0.92 & $-$0.91 & Slower Earth learning $\rightarrow$ earlier \\
+$t_0$             & $-$0.02 & $-$0.50 & $-$0.47 & Later ramp-up delays \\
+$C_{\mathrm{ops}}^{(1)}$ & $+$0.07 & $+$0.35 & $+$0.33 & Higher ISRU ops delays \\
+$\dot{n}_{\max}$ & $+$0.31 & $-$0.32 & $-$0.38 & Higher rate $\rightarrow$ earlier$^\dag$ \\
+$n_{\mathrm{break}}$ & $+$0.05 & $+$0.28 & $+$0.26 & Later plateau $\rightarrow$ delays \\
+$\alpha$          & $+$0.04 & $+$0.28 & $+$0.26 & Mass penalty delays \\
+LR$_I$      & $+$0.03 & $+$0.27 & $+$0.24 & Slower ISRU learning delays \\
+$p_{\mathrm{launch}}$   & $+$0.21 & $-$0.24 & $-$0.23 & Higher launch $\rightarrow$ earlier \\
+$\eta$            & $+$0.05 & $+$0.20 & $+$0.21 & Stronger damping delays \\
+$C_{\mathrm{floor}}$ & $+$0.03 & $+$0.14 & $+$0.14 & Higher floor delays \\
+$p_{\mathrm{transport}}$ & $+$0.01 & $+$0.07 & $+$0.06 & Minor \\
+$A$ & $+$0.00 & $+$0.04 & $+$0.07 & Minor \\
+\bottomrule
+\multicolumn{5}{@{}l}{\footnotesize $^\dag$Sign reversal ($\rho_S > 0$ vs.\ PRCC $< 0$) reflects confounding with $K$ via the copula ($\rho_{K,\dot{n}} = 0.5$);} \\
+\multicolumn{5}{@{}l}{\footnotesize \phantom{$^\dag$}partialing out $K$ reveals the direct effect: higher production rate $\rightarrow$ earlier crossover.}
+\end{tabular}
+\end{table}

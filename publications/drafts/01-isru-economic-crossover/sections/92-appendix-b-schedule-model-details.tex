@@ -1,0 +1,9 @@
+\section{Schedule and Model Details}
+\label{sec:appendix_schedule}
+
+\paragraph{Schedule model verification.} Substituting $n = 1$ into Eq.~\ref{eq:production_schedule} yields $t_{1,I} = t_0 + (1/k)\ln(2e^{k/\dot{n}_{\max}} - 1) \approx t_0$, confirming that the first unit is produced near the ramp-up midpoint, with $S(t_0) = 0.50$. The piecewise enforcement ($\dot{n} = 0$ for $t < t_c$) affects only the exponentially small tail before $t_c$; $N(t_c)$ is negligible (${\sim}10^{-3}$ units). The counting convention starts from $N(t_0) = 0$, not from facility groundbreaking.
+
+\input{tables/production_schedule}
+
+\paragraph{Deterministic vs.\ MC capital estimates.} The deterministic baseline uses $K = \$50$B (the modal estimate for a first-of-kind vertically integrated ISRU facility), while the MC median is $K = \$65$B. This difference arises because the log-normal distribution is right-skewed: the mode of $\mathrm{LN}(\mu_{\ln}, \sigma_{\ln})$ is $e^{\mu_{\ln} - \sigma_{\ln}^2} = \$46$B, while the median is $e^{\mu_{\ln}} = \$65$B. The deterministic \$50B lies between these values; the MC correctly propagates the full distribution.
+

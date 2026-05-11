@@ -1,0 +1,16 @@
+\begin{table}[htbp]
+\centering
+\caption{Launch cost learning sweep (NPV, $r = 5\%$, lump-sum $K$). The fuel component (\$200/kg) is held constant; the operational component (\$800/kg) follows a Wright learning curve.}
+\label{tab:launch_learning}
+\small
+\begin{tabular}{@{}rrrrl@{}}
+\toprule
+$\mathrm{LR}_L$ & $b_L$ & $N^*$ & Shift & Note \\
+\midrule
+1.00 & 0.000  & 4{,}374 & $\pm$0 & No learning \\
+0.97 & $-$0.044 & 4{,}374 & ---    & Baseline \\
+0.93 & $-$0.105 & 4{,}576 & $+$202 & \\
+0.90 & $-$0.152 & 4{,}689 & $+$315 & Aggressive \\
+\bottomrule
+\end{tabular}
+\end{table}

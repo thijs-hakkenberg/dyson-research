@@ -1,0 +1,229 @@
+\section{Results}
+\label{sec:results}
+%% ============================================================
+
+\subsection{Baseline crossover}
+
+Under baseline parameter values (Table~\ref{tab:params}, including $f_v = 0.05$), the undiscounted cumulative cost curves ($r = 0$) intersect at approximately $N^* = 3{,}733$ units. Figure~\ref{fig:cumcost} shows these trajectories. The ISRU pathway begins with a steep initial outlay (the \$50B capital investment plus operational and transport costs during ramp-up), while the Earth pathway accumulates cost at a rate dominated by the constant launch cost per unit. The Earth curve is approximately linear at large $N$ because the learning-curve reduction in manufacturing cost is small relative to the constant launch cost per unit (\$1.85M/unit at \$1{,}000/kg for a 1{,}850~kg unit). The ISRU curve, by contrast, flattens as operational learning drives per-unit costs toward the cost floor plus the transport cost.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-cumulative-cost.pdf}
+  \caption{Undiscounted cumulative cost (\$B) vs.\ production volume for the Earth-launch and ISRU pathways under baseline assumptions ($r = 0$, $f_v = 0.05$). The crossover occurs at approximately 3{,}733~units. The shaded region indicates cumulative ISRU savings.}
+  \label{fig:cumcost}
+\end{figure}
+
+Applying NPV discounting at 5\% with phased capital deployment (5-year baseline, Eq.~\ref{eq:phased_capital}) and pathway-specific delivery schedules (Eq.~\ref{eq:crossover_npv}) yields a crossover of approximately $N^* = 3{,}749$ units (compared to $N^* = 4{,}374$ under lump-sum $K$). Because Earth costs are incurred earlier and thus discounted less, they carry higher present value (see \S\ref{sec:model}), partially offsetting the ISRU capital burden. Figure~\ref{fig:npv_comparison} shows cumulative cost curves at four discount rates. At $r = 10\%$, the crossover reaches $\sim$5{,}802~units.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{fig-npv-comparison.pdf}
+  \caption{Left: Discounted cumulative cost curves at four discount rates with pathway-specific delivery schedules, with crossover points marked. Right: NPV crossover point as a continuous function of discount rate. The pathway-specific formulation yields lower crossover points than earlier analyses because Earth costs carry greater present-value weight.}
+  \label{fig:npv_comparison}
+\end{figure}
+
+Table~\ref{tab:scenarios} summarizes the crossover point under representative scenarios at both $r = 0$ and $r = 5\%$.
+
+\input{tables/scenarios}
+
+\paragraph{Product archetype sensitivity.} The baseline models a spacecraft-class structural module (\$75M first-unit, 1{,}850~kg). An industrial structural product (Archetype~B: \$15M first-unit, 3{,}000~kg, $\mathrm{LR}_E = 0.90$, $\alpha = 1.3$) has a higher deterministic crossover but similar MC conditional median (${\sim}5{,}100$--$5{,}300$), confirming that the crossover is not an artifact of the specific product class. Full comparison in Appendix~\ref{sec:appendix_sensitivity}.
+
+Figure~\ref{fig:unitcost} illustrates the per-unit cost dynamics. The Earth per-unit cost is bounded below by $m \cdot p_{\mathrm{launch}}$, while ISRU declines toward $C_{\mathrm{floor}} = \$0.5$M---this asymptotic divergence is the structural driver of the crossover. However, as the Monte Carlo analysis shows (\S\ref{sec:mc_robustness}), crossover is achieved in 75--92\% of stochastic scenarios, not in all cases; see \S\ref{sec:mc_robustness} for the permanent/transient crossover breakdown. An Earth pathway sanity check against satellite production economics is provided in Appendix~\ref{sec:appendix_params}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-unit-cost.pdf}
+  \caption{Per-unit cost (\$M) vs.\ cumulative production for the Earth-launch and ISRU pathways. The Earth pathway is bounded below by the launch cost floor ($m \cdot p_{\mathrm{launch}} = \$1.85$M), while the ISRU pathway declines toward the operational cost floor ($C_{\mathrm{floor}} = \$0.5$M).}
+  \label{fig:unitcost}
+\end{figure}
+
+\subsection{Sensitivity analysis}
+\label{sec:sensitivity}
+
+Figure~\ref{fig:tornado} summarizes one-at-a-time sensitivity of the NPV crossover ($r = 5\%$) to nine parameters.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-tornado.pdf}
+  \caption{Tornado diagram showing the ranked sensitivity of the NPV crossover point ($r = 5\%$ baseline, pathway-specific timing) to each input parameter.}
+  \label{fig:tornado}
+\end{figure}
+
+The Earth manufacturing learning rate remains the most influential parameter in absolute range, with a strongly asymmetric effect: a \emph{higher} learning rate (LR$_E = 0.90$, i.e., slower learning---each doubling reduces cost by only 10\%) shifts the crossover earlier because the Earth pathway retains higher costs for longer, while a \emph{lower} rate (LR$_E = 0.80$, faster learning) delays crossover because Earth manufacturing costs decline rapidly. ISRU capital investment is the second most influential parameter. The discount rate $r$ remains important but its effect is moderated under pathway-specific timing because the timing gap between pathways partially offsets the discounting penalty.
+
+The mass penalty factor $\alpha$ (varied from 1.0 to 2.0) shifts the crossover by approximately $+$440~units at $\alpha = 1.5$. Transport cost $p_{\mathrm{transport}}$ has a smaller effect, consistent with transport being a modest fraction of total ISRU cost at baseline parameters. First-unit costs ($C_{\mathrm{ops}}^{(1)}$, $C_{\mathrm{mfg}}^{(1)}$) exert moderate influence. ISRU learning rate and launch cost remain relatively weak individual drivers, though their effects compound with other parameters in the Monte Carlo analysis.
+
+The two-dimensional parameter space of launch cost versus ISRU capital is shown in the heat map of Figure~\ref{fig:heatmap}, now computed using the NPV crossover at $r = 5\%$ with pathway-specific timing.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-heatmap.pdf}
+  \caption{NPV crossover point $N^*$ ($r = 5\%$, pathway-specific timing) as a function of launch cost (\$/kg) and ISRU capital investment (\$B). The star marks the baseline scenario.}
+  \label{fig:heatmap}
+\end{figure}
+
+\paragraph{Launch cost learning sweep.} The baseline deterministic case uses constant launch cost (Eq.~\ref{eq:earth_launch_baseline}); the baseline MC uses the two-component model (Eq.~\ref{eq:earth_launch_learn}, Table~\ref{tab:config}). As a sensitivity variant, we test the two-component learning model (Eq.~\ref{eq:earth_launch_learn}) with $\mathrm{LR}_L$ ranging from 0.90 (aggressive: 10\% cost reduction per doubling) to 0.97 (moderate). Table~\ref{tab:launch_learning} reports the results. Even at the aggressive $\mathrm{LR}_L = 0.90$---where the ops component falls to $\sim$\$334/kg by $n = 10{,}000$---the crossover shifts by only $+$315 units from baseline (+7\%). The no-learning case ($\mathrm{LR}_L = 1.00$) gives $N^*$ identical to the respective baseline because launch learning has negligible effect at baseline scale. The reason launch learning cannot eliminate the ISRU advantage is structural: even at $\mathrm{LR}_L = 0.90$, the fuel component (\$200/kg) constitutes an assumed operational asymptote under Earth-supplied propellant logistics. At $n = 10{,}000$, the ops component has fallen to $\sim$\$334/kg, but the combined launch cost (\$534/kg $\times$ 1{,}850~kg $=$ \$0.99M per unit) remains above the ISRU operational cost floor. This floor asymmetry---the assumed operational asymptote under high-cadence reusable launch versus experience-driven ISRU operational costs---is the fundamental reason that launch learning, regardless of its rate, cannot fully close the gap at high production volumes. The $p_{\mathrm{fuel}}$ floor is architecture-dependent, not physics-fundamental: tug learning could reduce the GEO delivery component, and next-generation propellant technologies could lower the propellant cost itself. The $U[\$100, \$400]$/kg range brackets this uncertainty; a tug-learning scenario (\S\ref{sec:sensitivity}) tests the effect of aggressive operations learning ($\mathrm{LR}_L = 0.90$) and reduced propellant floors (\$50--100/kg). The ISRU propellant scenario below extends this analysis to the case where ISRU-produced propellant reduces the fuel floor itself.
+
+Launch learning sweep results (Table~\ref{tab:launch_learning} in Appendix~\ref{sec:appendix_sensitivity}) confirm that even at $\mathrm{LR}_L = 0.90$, the crossover shifts by only $+$315~units ($+$7\%).
+
+\paragraph{ISRU learning rate boundary scenarios.} To bound the sensitivity of the crossover to the ISRU learning rate---an assumption with limited empirical grounding (see \S\ref{sec:param_justification})---we test two extreme scenarios. With \emph{no ISRU learning} ($\mathrm{LR}_I = 1.0$, operational costs remain constant at $C_{\mathrm{ops}}^{(1)}$), the NPV crossover shifts to $\sim$5{,}962 units ($+$1{,}588 from baseline). With \emph{very slow learning} ($\mathrm{LR}_I = 0.98$), the crossover shifts to $\sim$5{,}370 units ($+$996). In both cases the crossover still occurs, demonstrating that the ISRU economic advantage does not depend on optimistic learning assumptions---it is driven primarily by the amortization of fixed capital against a declining per-unit cost, even in the absence of experience-curve effects.
+
+\paragraph{Learning curve plateau model.} Empirical evidence suggests that Wright curve learning rates moderate at high cumulative volumes \cite{argote1990,thompson2012,benkard2000}, with regime transitions typically at $n \sim 100$--$500$ in aerospace. Since the crossover occurs at $n \sim 3{,}700$---well beyond this empirical base---we integrate a piecewise plateau model \emph{stochastically} in the canonical MC: $n_{\mathrm{break}} \sim U[200, 1{,}000]$ and $\eta \sim U[0.3, 0.7]$ are sampled independently for each run. The plateau replaces the standard unit labor cost $C_{\mathrm{labor}}(n) = C_{\mathrm{labor}}^{(1)} \cdot n^{b_E}$ with a continuous piecewise function:
+\begin{equation}
+  C_{\mathrm{labor}}(n) = \begin{cases}
+    C_{\mathrm{labor}}^{(1)} \cdot n^{b_E} & n \leq n_{\mathrm{break}} \\[4pt]
+    C_{\mathrm{labor}}^{(1)} \cdot n_{\mathrm{break}}^{\,b_E(1-\eta)} \cdot n^{b_E \eta} & n > n_{\mathrm{break}}
+  \end{cases}
+\end{equation}
+where $\eta \in (0,1]$ is the damping factor (reduced learning exponent) and $n_{\mathrm{break}}$ is the transition volume. Both branches evaluate to $C_{\mathrm{labor}}^{(1)} \cdot n_{\mathrm{break}}^{b_E}$ at $n = n_{\mathrm{break}}$, ensuring cost continuity. The pure Wright curve ($\eta = 1$) serves as an optimistic bound; the distinction between intra-program learning (one production line, $n \leq 500$ empirical base) and inter-industry learning (PV modules to $>$100~GW \cite{kavlak2018}, wind turbines \cite{rubin2015}) is critical.
+
+The stochastic plateau \emph{strengthens} the ISRU case: by moderating Earth's learning beyond the empirical regime, it raises Earth costs relative to the pure Wright extrapolation, increasing the crossover achievement rate from 74\% (pure Wright) to 85\%. The plateau parameters contribute modestly to overall variance ($R^2 < 0.5\%$ each; Table~\ref{tab:spearman}) but are significant conditional drivers of crossover location ($n_{\mathrm{break}}$: PRCC $= +0.28$; $\eta$: PRCC $= +0.20$). Deterministic sweep results ($n_{\mathrm{break}} \in \{200,500,1000,2000\}$, $\eta \in \{0.3,0.5,0.7\}$) are in Appendix~\ref{sec:appendix_sensitivity}.
+
+\paragraph{$K$ tail sensitivity ($\sigma_{\ln}$ variation).} The baseline uses $\sigma_{\ln} = 0.70$ for the log-normal $K$ distribution (P90/P50 $\approx 2.5\times$), at the conservative end of Flyvbjerg's 2--4$\times$ range \cite{flyvbjerg2014}. To test whether heavier tails materially affect conclusions, we vary $\sigma_{\ln} \in \{0.70, 1.0, 1.3\}$ (Table~\ref{tab:sigma_ln}).
+
+\input{tables/sigma_ln}
+
+Table~\ref{tab:dual_baseline} presents the dual-baseline headline results at both $\sigma_{\ln}$ values across discount rates.
+
+\input{tables/dual_baseline}
+
+Heavier tails reduce the convergence rate modestly (85\% $\to$ 78\% from $\sigma_{\ln} = 0.70$ to $1.3$) as more extreme $K$ draws exceed the planning horizon. The conditional median \emph{decreases} because the wider left tail also includes more low-$K$ scenarios that converge at smaller $N^*$. At $\sigma_{\ln} \geq 1.0$, the [\$20B, \$200B] clip bounds become binding (Table~\ref{tab:sigma_ln}), truncating the theoretical tails. Crucially, the savings window probability is nearly invariant to $\sigma_{\ln}$: 94.7\% vs.\ 93.7\% at $N_h = 20{,}000$ (Table~\ref{tab:dual_baseline}), confirming that the planning-relevant metric is robust to distributional assumptions.
+
+\paragraph{Earth-sourced component fraction.} At $c_{\mathrm{vit}} = \$10{,}000$/kg, the crossover is preserved up to $f_v = 20\%$ ($+$1{,}492 units); at $c_{\mathrm{vit}} = \$50{,}000$/kg, it is eliminated. The crossover requires only that ISRU produce the structural bulk mass; full component substitution is not necessary.
+
+\paragraph{Propellant floor and launch evolution.} The baseline propellant floor ($p_{\mathrm{fuel}} = \$200$/kg) is an assumed operational asymptote, not a physics-fundamental limit. Under aggressive tug learning ($\mathrm{LR}_L = 0.90$) with reduced propellant floor (\$50/kg), the crossover shifts by only $+$332 units, because the ISRU advantage arises from capital amortization, not from the launch cost floor level.
+
+\paragraph{Secondary sensitivity tests.} Over 30 additional robustness tests---including pioneering phase costs ($\gamma = 2$--$5\times$), QA costs, $K$-clip bounds, Earth scaling penalties, manufacturing cost floors, production heritage ($n_0$), and Iridium NEXT cross-check---are reported in Appendix~\ref{sec:appendix_sensitivity}. Among these secondary tests, no single one shifts the crossover by more than 7\%; the top-driver tests (LR scenarios, plateau, vitamins) produce larger shifts up to $\pm$38\% but are reported individually above. Table~\ref{tab:sensitivity_index} indexes all tests.
+
+\input{tables/sensitivity_index}
+
+\subsection{Monte Carlo robustness}
+\label{sec:mc_robustness}
+
+Table~\ref{tab:canonical} defines the canonical baseline configuration that produces all headline statistics reported in the abstract and conclusion. All tables and figures in this paper use this configuration unless explicitly noted otherwise.
+
+\input{tables/canonical}
+
+Table~\ref{tab:config_crossover} maps the principal configurations used in this paper to their respective crossover values, resolving any ambiguity between deterministic and Monte Carlo baselines.
+
+\input{tables/config_crossover}
+
+The full Monte Carlo simulation (10{,}000~runs per rate) samples all eighteen independent stochastic parameters (plus two derived)---including four new plateau and dynamic vitamin parameters---simultaneously from the distributions in Table~\ref{tab:params}, with the copula correlations specified in Table~\ref{tab:canonical}, and computes the NPV crossover at each of three fixed discount rates. Table~\ref{tab:mc_summary} summarizes the results across rates.
+
+\input{tables/mc_summary}
+
+First, the probability of achieving crossover within $H$ decreases monotonically with $r$: 92\% at $r = 3\%$ versus 75\% at $r = 8\%$, reflecting the increasing NPV penalty on the ISRU pathway's upfront capital. The stochastic plateau contributes roughly 11 percentage points to the crossover achievement rate (85\% vs.\ 74\% at $r = 5\%$ under pure Wright), because moderating Earth's learning makes the ISRU pathway relatively cheaper. The wider log-normal $K$ distribution reduces convergence rates by $\sim$8 percentage points relative to the uniform distribution (Appendix~\ref{sec:appendix_sensitivity}). Second, the conditional median is stable across rates ($\sim$3{,}600--4{,}800), indicating that among scenarios that do achieve crossover, the crossover point is relatively insensitive to the discount rate. The discount rate primarily affects \emph{whether} crossover is achieved rather than \emph{where} it occurs---high rates push marginal scenarios past the planning horizon.
+
+Table~\ref{tab:convergence} presents the empirical cumulative distribution function $P(N^* \leq H)$ at selected production horizons, providing a survival-analysis-style characterization of the crossover distribution.
+
+\input{tables/convergence}
+
+Bootstrap confidence intervals (5{,}000~resamples) on the conditional median at $r = 5\%$ yield a 95\% CI of [4{,}198, 4{,}423]. The distribution (Figure~\ref{fig:histogram}) is heavily right-skewed at all rates.
+
+\paragraph{Epistemic vs.\ parametric uncertainty.} The Monte Carlo propagates \emph{parametric} uncertainty---variation within the assumed model structure and prior distributions---and includes two model-form extensions: stochastic learning saturation ($n_{\mathrm{break}}$, $\eta$) and dynamic vitamin maturation ($f_v^{\mathrm{floor}}$, $n_v$). Further model-form uncertainty remains: alternative cost structures (quality-adjusted costs, design evolution) could shift the probability surface. The crossover occurs at $n \sim 3{,}700$--$4{,}400$, an order of magnitude beyond the empirical aerospace base ($n \leq 500$); while the stochastic plateau directly addresses this, the functional form is a maintained assumption. To assess model-form sensitivity, Table~\ref{tab:logistic_comparison} compares the piecewise plateau against a logistic saturation alternative:
+\begin{equation}
+  C_{\mathrm{labor}}(n) = C_{\mathrm{mat}} + \frac{C_{\mathrm{Wright}}(n) - C_{\mathrm{mat}}}{1 + (n/n_{\mathrm{half}})^2},
+  \label{eq:logistic_saturation}
+\end{equation}
+where $C_{\mathrm{mat}} = m \cdot p_{\mathrm{fuel}}$ is the irreducible material cost (the natural labor-cost floor for Earth manufacturing), $n_{\mathrm{half}}$ is the half-saturation volume, and the quadratic exponent produces a sharper saturation transition than a linear Hill function. The logistic form has been tested at three deterministic parameter values; full stochastic integration would require specifying prior distributions for $n_{\mathrm{half}}$ and is deferred to future work. Headline probabilities should be interpreted as ``given these priors and this model structure, $X$\% of parameter space achieves crossover,'' not as frequentist confidence in crossover per~se.
+
+\input{tables/logistic_comparison}
+
+The logistic form produces crossover points within $\pm$13\% of the pure Wright baseline, while the piecewise plateau shifts crossover earlier by 22--39\%. The qualitative conclusion is robust: both forms yield crossover in the $\sim$2{,}300--4{,}300 range. However, the forms differ in direction: the plateau strengthens the ISRU case while the logistic form slightly weakens it. This model-form uncertainty ($\sim$$\pm$1{,}500 units) is comparable to the $K$ uncertainty and should be considered alongside the parametric results.
+
+\paragraph{Variance decomposition.}
+\label{sec:sobol}
+First-order rank-regression $R^2$ values confirm that the model is effectively low-dimensional: $K$ alone explains 62.6\% of output variance (unconditional) and LR$_E$ an additional 20.0\%, yielding a cumulative $R^2 = 0.82$ from just two parameters. Adding production rate and $C_{\mathrm{mfg}}^{(1)}$ brings the cumulative to 91\%; the full 18-parameter regression (excluding 2 derived parameters) achieves $R^2 = 0.94$. Conditional on convergence, $K$ ($R^2 = 0.59$) and production rate ($R^2 = 0.14$) dominate, with LR$_E$ at $R^2 = 0.11$ and total model $R^2 = 0.94$. The four new plateau and vitamin parameters collectively explain $<$0.5\% of variance individually, confirming that their primary effect is on the \emph{probability} of crossover achievement ($+$11~pp) rather than on its \emph{location}; the stochastic $p_{\mathrm{fuel}}$ explains $<$0.1\%. These results validate the PRCC rankings (Table~\ref{tab:spearman}) and confirm that reducing uncertainty in $K$ and LR$_E$ would have the highest value-of-information payoff.
+
+\paragraph{$K$-conditional crossover surface.} Because $K$ explains 63\% of variance yet rests on order-of-magnitude estimates, the headline probabilities are best understood as conditional on the assumed $K$ prior. Table~\ref{tab:k_median_sweep} presents crossover economics as a continuous function of $K$ median, enabling readers to apply their own capital assumptions.
+
+\input{tables/k_median_sweep}
+
+\paragraph{MC convergence diagnostic.} The conditional median stabilizes within $\pm$2\% of its final value by 5{,}000 runs, confirming that 10{,}000 runs provide adequate statistical power.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{fig-histogram.pdf}
+  \caption{Distribution of NPV crossover points ($N^*$) across 10{,}000~Monte Carlo runs at three fixed discount rates. Each panel shows scenarios achieving crossover within $H = 40{,}000$; the title reports the fraction achieving crossover and the conditional median. The vertical line marks the conditional median; the shaded band shows the conditional IQR.}
+  \label{fig:histogram}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{fig-production-schedule.pdf}
+  \caption{Production schedule verification. (a)~Instantaneous production rate for both pathways: Earth produces at full rate from $t = 0$, while ISRU follows a logistic ramp-up with $t_0 = 5$~yr. (b)~Cumulative production, showing the timing gap between pathways (5.3~yr at $n = 1{,}000$). The ISRU facility reaches half-maximal rate at $t_0$ and 90\% capacity by $t_0 + 1.1$~yr.}
+  \label{fig:production_schedule}
+\end{figure}
+
+Table~\ref{tab:spearman} presents Spearman rank correlations between each input parameter and $N^*$ at $r = 5\%$, computed both unconditionally and conditional on achieving crossover.
+\input{tables/spearman}
+
+The PRCC column (controlling for inter-parameter correlations) provides the preferred sensitivity ranking. $K$ and LR$_E$ are the dominant drivers, consistent with the variance decomposition (\S\ref{sec:sobol}). The 14.9\% of non-achieving scenarios at $r = 5\%$ are strongly associated with high ISRU capital; the wider log-normal tail produces more extreme $K$ draws that prevent convergence. The stochastic plateau parameters ($n_{\mathrm{break}}$, $\eta$) rank 6th and 10th by conditional PRCC, confirming their role as secondary but significant drivers of crossover location.
+
+\paragraph{Two-part sensitivity decomposition.} Since 15\% of runs at $r = 5\%$ never achieve crossover, the PRCC conflates two questions: what drives \emph{whether} crossover is achieved (binary), and \emph{where} it occurs (continuous). We separate these via point-biserial correlations (Part~A) and conditional PRCCs (Part~B); $K$ and LR$_E$ remain dominant in both parts, confirming that the conditional ranking is not a selection artifact.
+
+\paragraph{Permanent versus transient crossovers.} When the asymptotic ISRU per-unit cost exceeds the asymptotic Earth per-unit cost, any crossover is a finite-horizon amortization artifact that would reverse at very large production volumes (see the re-crossing analysis in \S\ref{sec:cfloor_prodrate}). With the dynamic vitamin fraction model, the asymptotic vitamin contribution uses the floor $f_v^{\mathrm{floor}} \sim U[0.01, 0.03]$ rather than the initial $f_v = 0.05$, substantially increasing the permanent fraction. At $r = 5\%$: of the 8{,}511 converging runs, 1{,}889 (22.2\% of converging) achieve permanent crossover, while 6{,}622 (77.8\%) achieve transient crossover. At $r = 3\%$: 2{,}019 permanent (22.0\%), 7{,}170 transient (78.0\%). At $r = 8\%$: 1{,}658 permanent (22.1\%), 5{,}846 transient (77.9\%). For committed programs with finite production horizons, both permanent and transient crossovers represent real economic benefits; the distinction matters primarily for programs contemplating indefinite production scales.
+
+Under positive discount rates, late costs are heavily attenuated; the stochastic plateau and dynamic vitamin fraction together make virtually all transient scenarios functionally permanent. At $r = 5\%$, the median savings window width is ${\sim}196{,}000$ units and 100\% of transient runs have $N^{**} > 100{,}000$ (Table~\ref{tab:recrossing}). For decision purposes, ``transient'' denotes only the asymptotic classification (Eq.~\ref{eq:permanent}); within any realistic planning horizon, the transient/permanent distinction is moot.
+
+\paragraph{Distribution sensitivity.} The baseline uses a log-normal $K$ distribution (median \$65B, $\sigma_{\ln} = 0.70$), calibrated to Flyvbjerg's megaproject reference class \cite{flyvbjerg2014}. As a sensitivity variant, replacing the log-normal with a uniform distribution $K \sim U[\$30\text{B}, \$100\text{B}]$ changes the convergence rate and conditional median modestly, confirming robustness to the distributional form. Replacing all other uniform distributions with triangular (mode at baseline) shifts the conditional median by $<$300~units. Both shifts are small relative to the IQR.
+
+Copula sensitivity ($\rho_{p,K} \in \{0, 0.3, 0.6\}$) produces $<$200~units variation in conditional median. An extended 6D copula correlating $K$ with $t_0$, $A$, and $C_{\mathrm{ops}}^{(1)}$ shifts convergence by $-$0.5~pp (Appendix~\ref{sec:appendix_sensitivity}, Table~\ref{tab:copula_6d}).
+
+\paragraph{Kaplan-Meier survival analysis.} Since 15--25\% of runs do not achieve crossover within $H$, conditioning on convergence changes the estimand and can bias comparisons across discount rates (where censoring varies). The Kaplan-Meier (KM) estimator \cite{kaplan1958} accounts for right-censored non-converging runs, yielding an unbiased median estimate (Table~\ref{tab:kaplan_meier}).
+
+\input{tables/kaplan_meier}
+
+At $r = 5\%$, the KM median ($\sim$5{,}350) exceeds the conditional median ($\sim$4{,}300) by 24\%, reflecting the upward bias from ignoring censored (non-converging) runs. Divergence increases with censoring: 12\% at $r = 3\%$ versus 51\% at $r = 8\%$. For \emph{committed programs} (decision already made to pursue a fixed production target), the conditional median is the appropriate planning statistic. For \emph{portfolio-level decisions} (choosing whether to invest in ISRU vs.\ alternatives), the KM median is more appropriate because it accounts for the possibility that crossover may not occur.
+
+\subsection{Cumulative economics and phased capital}
+\label{sec:phased_capital}
+
+Table~\ref{tab:cumulative} contextualizes the crossover in absolute terms. The ISRU pathway requires greater expenditure through approximately year~12--13 (the ``investment valley''); by year~20, ISRU saves $\sim$\$41B undiscounted (\$20B NPV at $r = 5\%$). The NPV investment valley extends to year~15, reinforcing that the ISRU decision requires patient capital.
+
+\input{tables/cumulative}
+
+In practice, ISRU capital would be deployed incrementally; the baseline MC uses phased capital as the primary formulation. $K$ is spread over five annual tranches coupled to the construction schedule (Eq.~\ref{eq:crossover_npv}). At the deterministic baseline ($t_0 = 5$), the coupled form reduces to:
+\begin{equation}
+  K_{\mathrm{eff}} = \sum_{y=0}^{4} \frac{K/5}{(1+r)^y}.
+  \label{eq:phased_capital}
+\end{equation}
+At $r = 5\%$, $K_{\mathrm{eff}} = \$45.3$B ($-$9.4\%). More generally, tranches are paid during years $[t_0 - 5, t_0)$, ending at commissioning; this coupling ensures that when $t_0$ is large, spending is also deferred, avoiding the NPV bias of paying at $t = 0$ for a facility that commissions at $t = t_0$. At $t_0 = 5$, coupled and uncoupled spending are identical; the coupling matters in the MC, where $t_0 \sim U[3,8]$. The phased-coupled formulation yields a deterministic crossover of $\sim$3{,}749~units (compared to $\sim$4{,}374~units under lump-sum $K$).
+
+\paragraph{Ongoing capital maintenance.} Periodic maintenance at $\phi_K \cdot K$ every $\Delta t_K$ years shifts the crossover by $+$1{,}435 ($\phi_K = 5\%$) to $+$5{,}515 ($\phi_K = 15\%$); full results in Appendix~\ref{sec:appendix_sensitivity}. At $\phi_K = 15\%$, recurring capex deepens the ISRU investment valley by up to 11\% of $K$, elevating the financial commitment required before savings accumulate.
+
+\subsection{Cost floor and production rate sensitivity}
+\label{sec:cfloor_prodrate}
+
+\paragraph{ISRU cost floor threshold.} A deterministic sweep of $C_{\mathrm{floor}}$ confirms crossover for all values up to \$3.0M (the stochastic upper bound). Analytically, permanent crossover requires $C_{\mathrm{floor}} < m \cdot p_{\mathrm{launch}} - m \cdot p_{\mathrm{transport}} \cdot \alpha = \$1.67$M at baseline; above this, crossovers are finite-horizon amortization effects (see re-crossing analysis below). Full analytical derivation and $C_{\mathrm{floor}}$ sweep results are in Appendix~\ref{sec:appendix_sensitivity}.
+
+\paragraph{Re-crossing analysis.} For programs of finite scale, the relevant statistic is the savings window $[N^*, N^{**}]$, where $N^{**}$ is the production volume at which the ISRU cumulative cost again exceeds the Earth pathway. When $C_{\mathrm{floor}}$ exceeds the analytical threshold (\$1.67M at baseline) or the vitamin fraction raises the ISRU asymptotic floor above the Earth per-unit cost, any crossover is a finite-horizon amortization effect---not a long-run equilibrium---and applies only within the production horizon over which ISRU's lower early-unit costs (relative to Earth's high first-unit manufacturing costs) outweigh ISRU's higher asymptotic per-unit costs. Table~\ref{tab:recrossing} characterizes the re-crossing behavior across the Monte Carlo ensemble for transient crossover runs.
+
+\input{tables/recrossing}
+
+Table~\ref{tab:savings_survival} converts the transient classification into a decision-relevant metric: for a program committing to $N_h$ units, what is the probability that $N_h$ falls within the ISRU savings window? Under the stochastic plateau and dynamic vitamin model, all transient crossovers are \emph{functionally permanent}: the median $N^{**}$ is right-censored at 200{,}000 with a savings window width of ${\sim}$196{,}000 units (Table~\ref{tab:recrossing}). NPV discounting combined with the reduced asymptotic vitamin fraction suppresses re-crossing so effectively that no transient run re-crosses within 100{,}000 units. The savings window probability (Table~\ref{tab:savings_survival}) is therefore the appropriate primary planning metric.
+
+\input{tables/savings_survival}
+
+\paragraph{Production rate sensitivity.} At 250~units/yr, the crossover shifts by $+$2{,}165 units (extended ISRU ramp-up delay); at 1{,}000~units/yr, by $-$523 (faster amortization). The sensitivity is asymmetric: low rates penalize ISRU heavily, while high rates show diminishing returns as the timing gap saturates.
+
+\subsection{Technical success probability}
+\label{sec:success_probability}
+
+The preceding Monte Carlo distributions represent performance \emph{conditional on the ISRU system reaching operational status}; the $p_s$ framework below captures the binary probability of achieving that status, covering risks outside the MC parameter space (e.g., launch failure during facility delivery, fundamental process infeasibility). These two risk layers are complementary: MC stochastic parameters (cost, schedule, learning rates) characterize uncertainty \emph{given} an operational system, while $p_s$ captures the binary question of whether the system reaches operations at all. Partial technical failure---where the facility operates but at reduced throughput or degraded quality---manifests within the MC layer as low availability ($A$) or high first-unit cost ($C_{\mathrm{ops}}^{(1)}$), which in turn lowers the savings $S$ and raises $p_s^{\min}$. The preceding analysis conditions on the ISRU system working as designed. In practice, ISRU for structural manufacturing at the scale assumed here is TRL~3--5; the probability of successful deployment is substantially less than unity. We model this via a simple expected-value framework: ISRU succeeds with probability $p_s$, yielding savings $S$ relative to the Earth pathway; with probability $(1 - p_s)$, it fails entirely and the sunk capital $K$ is lost (the program reverts to Earth-only). The ISRU pathway is preferred when $p_s \cdot S > (1 - p_s) \cdot K$, which gives a minimum success probability:
+\begin{equation}
+  p_s^{\min} = \frac{K}{S + K}.
+  \label{eq:p_success}
+\end{equation}
+At the baseline ($K = \$50$B, $S = \$22.7$B NPV savings at $2N^*$ units), $p_s^{\min} = 68.8\%$. Critically, this threshold depends on the evaluation horizon. Table~\ref{tab:ps_horizon} shows how $p_s^{\min}$ varies with the production volume used to evaluate savings.
+
+\input{tables/ps_horizon}
+
+The threshold ranges from 93\% (near the crossover, where savings are small) to 52\% (at large horizons, where savings are large). The 69\% value at $2N^*$ represents a moderate evaluation horizon; programs planning for longer-term production benefit from a lower success probability threshold. This variation reflects the all-or-nothing failure model: with partial success, salvage value, or parallel Earth production, $p_s^{\min}$ would be lower at all horizons. Below this threshold, the expected cost of ISRU failure exceeds the expected savings. For comparison: the probability of a comparable-scale engineering program succeeding on its first attempt---analogous to TRL~6 to~9 transition for a novel manufacturing system in an extreme environment---is historically in the 30--70\% range for first-of-kind space systems \cite{wertz2011}. At $p_s = 50\%$, the expected net cost is $+$\$13.6B (Earth preferred); at $p_s = 80\%$, it is $-$\$8.2B (ISRU preferred). This analysis underscores that ISRU is not a free option: the capital at risk is substantial, and a realistic assessment of technical risk is essential to any investment decision.
+
+\subsection{Commercial discount rate}
+\label{sec:commercial_rate}
+
+Government space programs typically evaluate investments at social discount rates ($r = 3$--$5\%$). Private or commercial ventures may require substantially higher hurdle rates to attract capital. At $r = 10\%$, the deterministic crossover extends to $N^* \approx 5{,}802$; at $r = 12\%$, to $N^* \approx 6{,}976$; at $r = 15\%$, to $N^* \approx 15{,}903$. At $r = 20\%$, \emph{no crossover is achieved within the 40{,}000-unit horizon}. This finding has important implications: the ISRU economic case is viable under government, quasi-government, and even moderately commercial financing structures, but does not close under aggressive commercial terms. A 20\% hurdle rate imposes such severe time-value penalties on the deferred ISRU operational savings that the upfront capital investment cannot be recovered within a plausible production horizon. Notably, the crossover is achievable at $r = 15\%$ (a typical commercial hurdle rate for infrastructure projects), though only at $\sim$15{,}900 units---roughly $3.6\times$ the baseline crossover. This means that commercial ISRU is feasible in principle for large-scale programs but may require either (a)~a reduction in capital costs through technology maturation, (b)~risk mitigation through phased deployment and technology demonstration, or (c)~blended public-private financing structures that reduce the effective discount rate to improve the crossover economics.
+
+%% ============================================================

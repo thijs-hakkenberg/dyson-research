@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+\centering
+\caption{Canonical baseline Monte Carlo configuration. All headline statistics (abstract, conclusion, Tables~\ref{tab:mc_summary}--\ref{tab:convergence}, \ref{tab:savings_survival}) correspond to this configuration. Tables using variant configurations are labeled explicitly.}
+\label{tab:canonical}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Setting & Value \\
+\midrule
+$K$ distribution          & Log-normal, median \$65B, $\sigma_{\ln} = 0.70$ \\
+$K$ clip bounds           & [\$20B, \$200B] \\
+Capex phasing             & 5 annual tranches, coupled to $t_0$ \\
+Learning model            & Wright with stochastic plateau ($n_{\mathrm{break}}$, $\eta$) \\
+Vitamin fraction          & Dynamic: $f_v(n) = f_v^{\mathrm{floor}} + (0.05 - f_v^{\mathrm{floor}})e^{-n/n_v}$; $c_{\mathrm{vit}} = \$10{,}000$/kg \\
+Discount rate             & Fixed real $r$ (not stochastic); headline at $r = 5\%$ \\
+Planning horizon          & $H = 40{,}000$ units \\
+Copula                    & 3D Gaussian ($\rho_{p,K} = 0.3$, $\rho_{K,\dot{n}} = 0.5$) \\
+Conditioning              & Conditional statistics report converging runs only \\
+Other parameters          & Table~\ref{tab:params} \\
+\bottomrule
+\end{tabular}
+\end{table}

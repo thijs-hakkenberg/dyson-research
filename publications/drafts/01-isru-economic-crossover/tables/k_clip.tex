@@ -1,0 +1,15 @@
+\begin{table}[htbp]
+\centering
+\caption{$K$ clip upper bound sensitivity (10{,}000~runs, $r = 5\%$, $H = 40{,}000$). Raising the clip from \$200B to \$500B has negligible effect on convergence or conditional median.}
+\label{tab:k_clip}
+\small
+\begin{tabular}{@{}rrrrr@{}}
+\toprule
+$K_{\max}$ clip & Conv.\ \% & Cond.\ median & $K$ P90 & $K$ P99 \\
+\midrule
+\$200B & 85.1\% & 4{,}311 & \$163B & \$200B \\
+\$300B & 84.0\% & 4{,}230 & \$163B & \$300B \\
+\$500B & 83.9\% & 4{,}224 & \$163B & \$344B \\
+\bottomrule
+\end{tabular}
+\end{table}

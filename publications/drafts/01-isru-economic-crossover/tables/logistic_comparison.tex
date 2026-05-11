@@ -1,0 +1,18 @@
+\begin{table}[htbp]
+\centering
+\caption{Learning curve model-form sensitivity (deterministic, $r = 5\%$, phased $K$). ``Plateau'' = piecewise damped exponent; ``Logistic'' = smooth saturation at $n_{\mathrm{half}}$. Pure Wright (no saturation) yields $N^* = 3{,}749$.}
+\label{tab:logistic_comparison}
+\small
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Model & $n_{\mathrm{break}}/n_{\mathrm{half}}$ & Damping & $N^*$ & Shift \\
+\midrule
+Plateau  & 200   & 0.3 & 2{,}286 & $-$1{,}463 \\
+Plateau  & 500   & 0.5 & 2{,}716 & $-$1{,}033 \\
+Plateau  & 1{,}000 & 0.7 & 2{,}939 & $-$810 \\
+Logistic & 200   & --- & 3{,}843 & $+$94 \\
+Logistic & 500   & --- & 4{,}240 & $+$491 \\
+Logistic & 1{,}000 & --- & 4{,}218 & $+$469 \\
+\bottomrule
+\end{tabular}
+\end{table}

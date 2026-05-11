@@ -1,0 +1,91 @@
+\section{Discussion}
+\label{sec:discussion}
+%% ============================================================
+
+Under the canonical baseline (Table~\ref{tab:canonical}), the decision-relevant metric for finite-horizon programs is the savings window probability: for a program committing to 20{,}000 units, 95\% of parameter draws fall within the ISRU savings window at $r = 5\%$ (Table~\ref{tab:savings_survival}). While 85\% achieve crossover, the stochastic plateau and dynamic vitamin fraction make virtually all transient crossovers functionally permanent (savings window width ${\sim}$196{,}000 units), so the savings window probability closely tracks the crossover rate. Results are also presented at $\sigma_{\ln} = 1.0$ (space-specific reference class) in Table~\ref{tab:dual_baseline}. A minimum technical success probability of $\sim$69\% is required for ISRU to be preferred in expectation (\S\ref{sec:success_probability}), and the crossover does not close under commercial discount rates above $\sim$20\% (\S\ref{sec:commercial_rate}).
+
+\subsection{Throughput and demand context}
+\label{sec:throughput}
+
+At megastructure scales, a constraint beyond economics emerges: Earth-to-orbit throughput. At 500~Starship launches per year (${\sim}50{,}000$~t/yr to orbit), a $10^5$-unit program would require ${\sim}3.7$~years of dedicated capacity---two orders of magnitude above current global launch mass \cite{jones2022}. ISRU relaxes this constraint because feedstock bypasses the gravity well. Quantitative throughput cap tests (Appendix~\ref{sec:appendix_sensitivity}) confirm the crossover is insensitive to Earth delivery caps at baseline scales, but throughput limitations would reinforce the ISRU case at $>$10{,}000~units.
+
+\paragraph{Demand context.} The crossover volume ($\sim$3{,}750 units under phased capital, or $\sim$6{,}900~tonnes) corresponds to a 1--2~GW space solar power installation. Programs at the 10~GW scale ($\sim$27,000~units) are well past crossover; programs below $\sim$2,000~units (1~GW demo) would not reach it.
+
+\subsection{Optimal transition strategy}
+
+The hybrid model (\S\ref{sec:hybrid}) quantitatively confirms the advantage of a phased strategy: Earth manufacturing produces units until $N^*$, then ISRU takes over. At $N = 10{,}000$, the option value is negative (ISRU capital not recovered); it becomes positive at $N \geq 20{,}000$ (Table~\ref{tab:hybrid}). The critical implication is that ISRU investment should begin well before the crossover to ensure capacity is available when the economics favor it.
+
+\subsubsection{Hybrid transition strategy}
+\label{sec:hybrid}
+
+The preceding analysis compares single-pathway strategies (pure Earth vs.\ pure ISRU). A rational planner would instead pursue a \emph{hybrid} strategy: manufacture the first $N^*$ units via the Earth pathway (available immediately), then switch to ISRU for subsequent units. The ``option value'' of ISRU investment is the NPV cost difference between the Earth-only pathway and the hybrid strategy:
+
+\begin{equation}
+  V_{\mathrm{option}} = \Sigma_{\mathrm{Earth}}^{\mathrm{NPV}}(N) - \left[\Sigma_{\mathrm{Earth}}^{\mathrm{NPV}}(N^*) + K_{\mathrm{eff}} + \sum_{n=N^*+1}^{N} \frac{C_{\mathrm{ops}}(n)}{(1+r)^{t_{n,I}^{\mathrm{del}}}}\right].
+  \label{eq:hybrid}
+\end{equation}
+
+Table~\ref{tab:hybrid} reports the hybrid strategy economics at baseline parameters. At $N = 10{,}000$, the option value is \emph{negative} ($-$\$13.6B): the ISRU capital invested for only ${\sim}6{,}250$ post-switch units cannot be recovered. The hybrid becomes value-positive at $N \geq 20{,}000$, where accumulated ISRU savings exceed $K_{\mathrm{eff}}$. This scale dependence is a key practical finding: ISRU investment is economically justified only for programs committing to production well beyond $N^*$.
+
+\input{tables/hybrid}
+
+Under the hybrid strategy, the ISRU deployment delay penalty applies only to post-switch units ($n > N^*$). The hybrid $R^*_{\mathrm{hybrid}}$ is lower than the pure-ISRU $R^*$ because the hybrid strategy saves less (Earth costs for early units are higher than ISRU ops but lower than ISRU capital + ops per unit at small $N$). However, the option value remains positive at $N \geq 20{,}000$, confirming that ISRU investment adds value for programs beyond the crossover horizon.
+
+\subsubsection{Revenue breakeven: deployment delay vs.\ cost savings}
+
+This finding fundamentally qualifies the headline crossover result and is particularly consequential for revenue-generating infrastructure such as space solar power. ISRU's multi-year ramp-up delay means Earth-manufactured units are available years earlier; the opportunity cost of the delay can outweigh cost savings.
+
+If each unit generates revenue $R$ (\$/year) beginning at delivery for a finite asset lifetime $L$ years, the NPV of revenue from the Earth pathway exceeds that from the ISRU pathway by the opportunity cost of the delay. The delay for unit $n$ is $\delta_n = t_{n,I}^{\mathrm{del}} - t_{n,E}$, where $t_{n,I}^{\mathrm{del}}$ includes the transport duration (Eq.~\ref{eq:delivery_time}). The exact lost-revenue NPV for unit $n$ is
+\begin{equation}
+  \Delta R_n = R \cdot \frac{(1+r)^{-t_{n,E}} - (1+r)^{-(t_{n,E}+\min(\delta_n,L))}}{\ln(1+r)},
+  \label{eq:exact_lost_revenue}
+\end{equation}
+which integrates the continuous revenue stream over the delay interval, properly discounting each infinitesimal revenue increment (the continuous-discounting formulation is exact for revenue accruing continuously; it converges to the discrete sum for annual payments). Summing over all units and solving for $R^*$:
+\begin{equation}
+  R^*(L) = \frac{\Sigma_{\mathrm{Earth}}^{\mathrm{NPV}}(N) - \Sigma_{\mathrm{ISRU}}^{\mathrm{NPV}}(N)}{\sum_{n=1}^{N} \left[(1+r)^{-t_{n,E}} - (1+r)^{-(t_{n,E}+\min(\delta_n,L))}\right] / \ln(1+r)},
+  \label{eq:revenue_breakeven}
+\end{equation}
+i.e., the exact breakeven revenue rate is the ratio of NPV cost savings to the total discounted lost-revenue annuity factor. Here $R$ denotes the net revenue per unit per year (revenue minus operating costs); Eq.~\ref{eq:revenue_breakeven} is exact for continuous revenue streams and neglects only revenue-dependent learning or scale effects. Figure~\ref{fig:crossover_vs_revenue} shows $N^*$ as a function of $R$ for several asset lifetimes.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-crossover-vs-revenue.pdf}
+  \caption{Crossover point $N^*$ as a function of per-unit revenue rate $R$ (\$M/unit/yr) for asset lifetimes $L \in \{10, 20, 30\}$~yr ($r = 5\%$). Above the breakeven revenue $R^*$, the Earth pathway is preferred on a utility-maximizing basis despite higher cost.}
+  \label{fig:crossover_vs_revenue}
+\end{figure}
+
+The breakeven revenue $R^* \approx \$0.94$M/unit/yr is insensitive to asset lifetime for $L \geq 10$~yr (because the ISRU delay $\bar{\delta} \approx 5.3$~yr is well below these lifetimes); it rises to \$1.84M/yr only at $L = 3$~yr, irrelevant for structural modules with expected lifetimes $>$20~yr. For block-deployed infrastructure (where revenue begins only after a minimum constellation size $N_{\mathrm{block}}$ is reached), Eq.~\ref{eq:revenue_breakeven} overstates the delay penalty because only the last units to complete a block incur opportunity cost; the effective $R^*$ for block deployment exceeds the per-unit value reported here. A quantitative treatment requires specifying the block commissioning schedule and is deferred to future work.
+
+At \$2M/yr revenue per unit (plausible for space solar power components), the opportunity cost exceeds the ISRU savings (\$22.7B), and the Earth pathway is preferred on a utility-maximizing basis despite being more expensive on a cost-minimizing basis. This finding underscores that the ISRU decision depends critically on whether the infrastructure is cost-driven (patient capital, no time pressure) or revenue-driven (commercial, time-to-market matters). Under the hybrid strategy (\S\ref{sec:hybrid}), the delay penalty applies only to post-transition units; the hybrid option value becomes positive at $N \geq 20{,}000$ (Table~\ref{tab:hybrid}). The opportunity cost penalty is maximized in a single-program scenario; if the ISRU infrastructure serves as a shared utility across multiple programs, the delay penalty is amortized and $R^*$ shifts upward, expanding the domain in which ISRU is preferred even for revenue-generating infrastructure.
+
+\subsection{Implications for near-term space policy}
+
+Three policy implications follow. First, \emph{ISRU technology demonstrations are high-value investments}: ISRU investment hedges against stalled Earth manufacturing learning, which would bring the crossover earlier by thousands of units. Second, \emph{launch cost reduction and ISRU investment are complementary}: even at aggressive launch learning ($\mathrm{LR}_L = 0.90$), the crossover shifts by only $+$7\%, and cheap launch is essential for deploying ISRU infrastructure. Third, \emph{the discount rate primarily affects crossover achievement probability, not location}: the conditional median is stable across $r \in [3\%, 8\%]$ while achievement probability ranges from 92\% to 75\%, suggesting public-private partnership as the natural financing structure.
+
+\subsection{Decision framework}
+
+Figure~\ref{fig:decision_tree} summarizes the practical decision logic for selecting between the Earth and ISRU pathways, integrating the key branching criteria identified in this analysis: production volume relative to $N^*$, discount rate regime, technical success probability, revenue generation rate, and vitamin fraction.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-decision-tree.pdf}
+  \caption{Decision framework for ISRU vs.\ Earth pathway selection, summarizing the key branching criteria identified in this analysis. Branch thresholds are model-derived: $R^*$ from Eq.~\ref{eq:revenue_breakeven}; discount rate regimes from MC crossover achievement rates (Table~\ref{tab:mc_summary}); $N^*$ from deterministic baseline (Table~\ref{tab:config}). Thresholds are illustrative; real decisions require updated data.}
+  \label{fig:decision_tree}
+\end{figure}
+
+\subsection{Technology disruption scenarios}
+\label{sec:tech_disruption}
+
+Two deterministic disruption scenarios test robustness to technology step-changes at $n = 2{,}000$: (1)~Earth manufacturing cost halved ($N^* = 7{,}986$, shift $+$81\%); (2)~launch cost drops to \$500/kg ($N^* = 4{,}600$, shift $+$4.5\%). The manufacturing disruption significantly delays crossover but does not prevent it; the launch cost disruption has negligible effect because the structural manufacturing asymmetry, not launch cost, drives the result. When disruptions occur \emph{after} the crossover ($n = 5{,}000$), both produce zero shift. Full details in Appendix~\ref{sec:appendix_sensitivity}.
+
+\subsection{Limitations and future work}
+
+The dominant model parameters---$K$ (PRCC $= +0.95$) and LR$_E$ (PRCC $= -0.92$)---have been partially grounded: LR$_E$ is cross-checked against Iridium NEXT production data (implied $\mathrm{LR}_E \approx 0.85$, \S\ref{sec:sensitivity}), and the $K$ distribution is calibrated to Flyvbjerg's megaproject reference class \cite{flyvbjerg2014}. However, both lack bottom-up engineering calibration for the specific product class modeled; anchoring $K$ to a reference ISRU architecture with subsystem-level cost estimates would further strengthen the analysis.
+
+\paragraph{ISRU pathway empirical grounding gap.} The ISRU pathway lacks an empirical anchor comparable to the Earth pathway's Iridium NEXT cross-check. The ISRU learning rate ($\mathrm{LR}_I = 0.90$) relies on terrestrial analogy; three conservative tests mitigate this: no-learning ($\mathrm{LR}_I = 1.0$, crossover preserved), pioneering phase ($\gamma = 2$--$5\times$), and symmetric learning plateau. A direct cross-check against sub-process ISRU cost models remains an important priority.
+
+The model assumes a fixed unit design over the production horizon (``frozen design''), standard for commodity structural products. For ISRU, this is conservative (design improvements would reduce $\alpha$ and $f_v$); for Earth, mildly optimistic (disruptive manufacturing advances could reduce $C_{\mathrm{mfg}}^{(1)}$ by a step change). Technology disruption scenarios (\S\ref{sec:tech_disruption}) partially address this; the dynamic vitamin fraction model (\S\ref{sec:vitamin}) captures supply-chain maturation, but stochastic disruptions with uncertain timing are deferred to future work.
+
+Planned extensions include: real options analysis with stochastic $K$ and $t_0$ with abandonment optionality; multi-product modeling with shared ISRU infrastructure (shifting crossover earlier); calibration against sub-process ISRU models; and a two-stage decision tree with partial success and salvage value (lowering $p_s^{\min}$).
+
+%% ============================================================

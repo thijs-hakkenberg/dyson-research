@@ -1,0 +1,82 @@
+\section{Supplementary Sensitivity Tests}
+\label{sec:appendix_sensitivity}
+
+Table~\ref{tab:robustness_summary} summarizes sensitivity tests with individually small or moderate impact on the crossover. Detailed descriptions follow.
+
+\input{tables/robustness_summary}
+
+\paragraph{Earth ramp-up robustness.}
+\label{sec:earth_ramp}
+Replacing the instant-start Earth schedule with a logistic ramp-up shifts the crossover by $+$12.3\% ($t_{0,E} = 1$~yr) to $+$23.2\% ($t_{0,E} = 2$~yr)---well within the MC range, confirming that the instant-start assumption does not materially bias results.
+
+\paragraph{Risk-adjusted discounting.}
+\label{sec:risk_premium}
+Applying an ISRU-specific risk premium ($\Delta r = 2$--$5\%$) counterintuitively \emph{reduces} the crossover ($-$111 to $-$232 units) because heavier discounting of deferred ISRU operational costs outweighs the capital burden. However, this captures only cash-flow timing risk. The dominant ISRU risks---capital cost overruns, schedule delays, and outright technical failure---operate through mechanisms (higher $K$, extended $t_0$, stranded capital) that would \emph{reverse} this effect.
+
+\paragraph{S-curve steepness.} Sweeping $k \in \{0.5, 1.0, 2.0, 3.0, 4.0\}$ shifts the crossover by $\pm$5~units; the crossover occurs well past the ramp-up phase.
+
+\paragraph{Launch learning re-indexing.} Testing $\lambda \in \{0.5, 1.0, 2.0\}$ (co-manifest vs.\ dedicated launches) shifts the crossover by $\pm$15~units.
+
+\paragraph{Launch cost learning sweep (detail).}
+
+\input{tables/launch_learning}
+
+\paragraph{Fuel floor sensitivity.} Sweeping $p_{\mathrm{fuel}}$ from \$50 to \$400/kg with fixed total launch cost shifts the crossover by $\pm$44~units; the model is insensitive to the fuel-vs-operations split.
+
+\paragraph{Rate-dependent learning.} A rate-dependent modifier freezing the learning curve below 20--30\% capacity has zero effect under baseline ramp-up ($k = 2.0$).
+
+\paragraph{Piecewise construction schedule.} Enforcing $\dot{n}(t) = 0$ for $t < t_c = t_0 - 1$ produces no crossover shift; the exponentially small early production is negligible.
+
+\paragraph{Cash-flow timing sensitivity.} Earth manufacturing lead times of 0.5--1.0~yr shift the crossover by $-$3.6\% to $-$6.6\% (earlier), confirming the pay-at-delivery simplification is slightly conservative.
+
+\paragraph{ISRU operational pre-purchase timing.} Shifting ISRU operational costs earlier by 0.5--1.0~yr shifts the crossover by $+$0.3\% to $+$0.4\%, negligible compared to the Earth timing effect.
+
+\paragraph{Earth-side fixed costs.} Adding Earth-side capital $K_E = \$1$--$10$B shifts the crossover by $-$129 to $-$1{,}187~units, uniformly favoring ISRU.
+
+\paragraph{ISRU cost floor threshold (detail).} Crossover is achieved for all $C_{\mathrm{floor}}$ up to \$3.0M (the stochastic upper bound) and persists to \$10M ($N^* = 10{,}847$) via finite-horizon amortization (the permanent crossover threshold $C_{\mathrm{floor}} < \$1.67$M is derived in \S\ref{sec:cfloor_prodrate}).
+
+\paragraph{Ongoing capital maintenance (detail).} Periodic maintenance at $\phi_K \cdot K$ every $\Delta t_K$ years adds a recurring cost stream:
+\begin{equation}
+  C_{\mathrm{maint}} = \sum_{j=1}^{\lfloor T/\Delta t_K \rfloor} \frac{\phi_K \cdot K}{(1+r)^{j \cdot \Delta t_K}},
+\end{equation}
+where $T = N/\dot{n}_{\max}$ is the program duration. With $\Delta t_K = 5$~yr: $\phi_K = 5\%$ shifts the crossover by $+$1{,}435; $\phi_K = 10\%$ by $+$3{,}215; $\phi_K = 15\%$ by $+$5{,}515. The crossover remains within the MC range for $\phi_K \leq 10\%$.
+
+\paragraph{Earth manufacturing cost floor (detail).} To test whether the Wright learning curve overestimates cost reduction at high volumes (where Earth manufacturing may transition to commodity-like production with material-dominated costs), we sweep $C_{\mathrm{mfg}}^{\mathrm{floor}} \in \{0, \$2\text{M}, \$5\text{M}, \$10\text{M}\}$. The crossover is unaffected at all tested floor values up to \$3M ($N^* = 4{,}077$ throughout). This is because at the crossover volume ($\sim$4{,}400 units), the unfloored Earth mfg cost ($C_{\mathrm{mfg}}^{(1)} \cdot n^{b_E} \approx \$8$M) is already above even the highest floor tested. At $n = 10{,}000$: with no floor, Earth unit cost is \$10.0M; with $C_{\mathrm{mfg}}^{\mathrm{floor}} = \$10$M, it rises to \$11.4M. The floor would matter only for production volumes well beyond 10{,}000 units, where the learning curve would have driven mfg cost below the floor.
+
+\paragraph{Capital--production rate correlation.} The baseline Monte Carlo correlates ISRU capital $K$ and production rate $\dot{n}_{\max}$ ($\rho_{K,\dot{n}} = 0.5$) via the extended Gaussian copula (\S\ref{sec:model}), reflecting that higher-capacity facilities require larger capital investment. This eliminates implausible corner cases (e.g., $K = \$100$B with $\dot{n}_{\max} = 250$ units/yr). As a sensitivity test, we run with $\rho_{K,\dot{n}} = 0$ (full independence): the convergence rate decreases from 79.4\% to 76.6\% and the conditional median moves from 5{,}800 to 5{,}615 ($-$185~units, $-$3\%). These results confirm that the correlation assumption is not a material driver of the conclusions.
+
+\paragraph{Extended 6D copula.} The baseline 3D copula correlates only $(p_{\mathrm{launch}}, K, \dot{n}_{\max})$. To test whether plausible correlations among the remaining parameters materially affect results, we extend the copula to 6D, adding $\rho(K, t_0) = +0.4$ (larger facility $\to$ longer ramp-up), $\rho(K, A) = -0.3$ (larger facility $\to$ more downtime), and $\rho(K, C_{\mathrm{ops}}^{(1)}) = +0.3$ (larger facility $\to$ higher initial ops). All other new off-diagonals are zero; existing correlations are preserved. Table~\ref{tab:copula_6d} compares the results at $r = 5\%$.
+
+\input{tables/copula_6d}
+
+The extended copula shifts convergence by $-$0.5~pp and the conditional median by $-$220~units (${\sim}-$5\%), confirming that correlations among the three additional parameters do not materially alter the headline results. The negative median shift arises because $\rho(K, A) < 0$ penalizes high-$K$ scenarios with lower availability, slightly reducing the number of marginally non-converging runs.
+
+\paragraph{Asymmetric learning plateau.} The symmetric plateau test (\S\ref{sec:sensitivity}) assumes both pathways plateau simultaneously. A more adverse scenario for ISRU is one in which Earth learning continues unabated while ISRU learning stalls. With Earth damping $= 1.0$ (no plateau) and ISRU damping $= 0.3$ at $n_{\mathrm{break}} = 200$: $N^* = 4{,}541$ (shift: $+$167). With ISRU damping $= 0.5$ at $n_{\mathrm{break}} = 500$: $N^* = 4{,}455$ (shift: $+$81). Both worst-case asymmetric shifts are well below the $\mathrm{LR}_I = 1.0$ boundary test ($+$1{,}588), confirming that asymmetric plateau is not a decisive risk factor.
+
+\paragraph{Pioneering phase (negative learning).} The baseline Wright curve assumes monotonically decreasing costs from unit~1. In practice, the first ISRU units may experience cost increases due to debugging, equipment failures, and process redesign. We test a two-phase model with cost multiplied by $\gamma \geq 1$ for the first $n_p$ units. At $\gamma = 2$, $n_p = 100$: $+$34 units ($+$0.8\%); $n_p = 500$: $+$136 ($+$3.1\%); $n_p = 1{,}000$: $+$246 ($+$5.6\%). At $\gamma = 5$, $n_p = 500$: $+$559 ($+$12.7\%); $n_p = 1{,}000$: $+$1{,}037 ($+$23.6\%). The $\mathrm{LR}_I = 1.0$ boundary test ($+$1{,}679 units) remains more conservative than any pioneering phase at $n_p \leq 500$.
+
+\paragraph{Quality assurance and certification costs.} We add a QA cost $C_{\mathrm{QA}}^{(1)}$ declining with learning rate $\mathrm{LR}_{\mathrm{QA}}$. At $C_{\mathrm{QA}}^{(1)} = \$1$M, $\mathrm{LR}_{\mathrm{QA}} = 0.85$: $+$73 units ($+$1.7\%). At $C_{\mathrm{QA}}^{(1)} = \$3$M, $\mathrm{LR}_{\mathrm{QA}} = 0.90$: $+$421 units ($+$9.6\%). Even conservative QA assumptions shift the crossover by $<$10\%.
+
+\paragraph{$K$ clip bound sensitivity (detail).}
+
+\input{tables/k_clip}
+
+\paragraph{Earth pathway cross-check (detail).} To cross-check the Earth cost model against real production data, we map it to the Iridium NEXT constellation. Thales Alenia Space manufactured 81~satellites (bus mass $\sim$860~kg each) under a contract valued at approximately \$2.1B. Setting $C_{\mathrm{mfg}}^{(1)} = \$80$M, the Wright curve at $\mathrm{LR}_E = 0.80$ predicts cumulative manufacturing cost of \$2.26B at $n = 81$, closely matching the contract value ($2.26/2.1 = 1.07\times$). Reverse-fitting to the \$2.1B total yields an implied $\mathrm{LR}_E \approx 0.79$, consistent with Wertz 2011 \cite{wertz2011} (0.83--0.88 for satellite buses, $n = 50$--$200$).
+
+\paragraph{$n_0 \times \mathrm{LR}_E$ interaction (detail).}
+
+\input{tables/n0_lr_interaction}
+
+\paragraph{Kaplan-Meier survival analysis.} Promoted to main text (Table~\ref{tab:kaplan_meier} in \S\ref{sec:mc_robustness}).
+
+\paragraph{Convergence as a function of planning horizon.} The choice of planning horizon $H = 40{,}000$ units is somewhat arbitrary. Figure~\ref{fig:convergence_curve} presents the empirical CDF $P(N^* \leq H)$ as a continuous function of $H$ for three discount rates, removing the dependence on any single horizon choice. At $H = 10{,}000$, convergence is 60\% ($r = 5\%$); at $H = 20{,}000$, 74\%; results plateau beyond $H \approx 30{,}000$ as marginal scenarios are exhausted. The figure provides a decision tool: a program planner can read off the probability of achieving crossover given their specific production horizon.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{fig-convergence-curve.pdf}
+  \caption{Probability of achieving crossover $P(N^* \leq H)$ as a continuous function of planning horizon $H$, for three discount rates ($r = 3\%, 5\%, 8\%$). Based on 10{,}000 MC runs per rate. Vertical dashed lines mark $H = 10{,}000$ and $H = 20{,}000$.}
+  \label{fig:convergence_curve}
+\end{figure}
+
+\paragraph{Bootstrap confidence intervals for savings window.} The savings window probabilities in Table~\ref{tab:savings_survival} are computed from 10{,}000 MC runs. To quantify sampling uncertainty, we construct 95\% bootstrap confidence intervals by resampling the converging runs 5{,}000 times with replacement, computing the savings window probability at each horizon for each resample, and reporting the 2.5th and 97.5th percentiles. The resulting CI widths ($\pm$1.0--1.2~pp) confirm that the 10{,}000-run ensemble provides adequate precision for the headline savings window probabilities (e.g., 95\% at 20k units: 95\% CI [94\%, 95\%]).
+

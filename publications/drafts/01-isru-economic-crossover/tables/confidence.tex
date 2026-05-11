@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+\centering
+\caption{Parameter confidence assessment. Grounding: S=strong (direct empirical), M=moderate (cross-domain analogy), W=weak (order-of-magnitude estimate), N=none (pure assumption). Sensitivity from PRCC (Table~\ref{tab:spearman}).}
+\label{tab:confidence}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+Parameter & Pathway & Grounding & Sensitivity \\
+\midrule
+$\mathrm{LR}_E$ & Earth & M (sat.\ production, $n\leq500$) & Very high \\
+$K$ & ISRU & W (megaproject analogy) & Very high \\
+$C_{\mathrm{mfg}}^{(1)}$ & Earth & M (Iridium NEXT, SMAD) & Moderate \\
+$\dot{n}_{\max}$ & Shared & W (facility scaling) & Moderate \\
+$\alpha$ & ISRU & N (no empirical basis) & Moderate \\
+$\mathrm{LR}_I$ & ISRU & N (no extraterrestrial data) & Moderate \\
+$p_{\mathrm{launch}}$ & Earth & S (Falcon~9/Starship data) & Moderate \\
+$C_{\mathrm{ops}}^{(1)}$ & ISRU & W (energy + ops estimate) & Moderate \\
+$C_{\mathrm{floor}}$ & ISRU & W (energy cost estimate) & Low \\
+$p_{\mathrm{fuel}}$ & Earth & M (bottom-up decomposition) & Low \\
+\bottomrule
+\end{tabular}
+\end{table}

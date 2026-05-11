@@ -1,0 +1,22 @@
+\begin{frontmatter}
+
+\title{Economic Inflection Points in Space Manufacturing:\\ Monte Carlo Analysis of In-Situ Resource Utilization vs.\ Earth Launch for Large-Scale Space Infrastructure}
+
+\author[dyson]{Thijs Hakkenberg\corref{cor1}}
+\cortext[cor1]{Corresponding author.}
+\ead{thijs@hakkenberg.com}
+\fntext[fn1]{This research was conducted using an AI-assisted methodology. Claude (Anthropic), GPT (OpenAI), and Gemini (Google) were used for literature synthesis; editorial review and peer review simulation were conducted using all three models. The Monte Carlo simulation code was written and verified by the human author in Python using NumPy and SciPy. All quantitative results were produced by deterministic and stochastic simulation code; parameter ranges were informed by published literature and engineering analogy. No AI-generated numerical outputs were used without independent verification against the simulation code.}
+
+\address[dyson]{Project Dyson, Open Research Initiative\fnref{fn1}}
+
+\begin{abstract}
+We compare Earth-launch and ISRU pathways for serial production of unpressurized structural modules via a parametric NPV cost model with phased capital, pathway-specific schedules, Wright learning curves with stochastic saturation, and a dynamic vitamin fraction. A 10{,}000-run Monte Carlo at $r = 5\%$ (canonical configuration: Table~\ref{tab:canonical}) finds crossover in 85\% of draws (conditional median ${\sim}$4{,}300; Kaplan-Meier median ${\sim}$5{,}350; 95\% CI: [4{,}200, 4{,}420]). Of converging runs, 22\% are analytically permanent; the remaining 78\% are functionally permanent (savings window width ${\sim}$196{,}000 units). Conditional on the assumed priors and model structure, 95\% of draws (95\% CI: [94\%, 95\%]) place a 20{,}000-unit program within the ISRU savings window. Results are reported at $\sigma_{\ln} = 0.70$ (megaproject reference class); a space-specific variant ($\sigma_{\ln} = 1.0$) appears in Table~\ref{tab:dual_baseline}.
+
+ISRU capital $K$ and Earth learning rate explain ${\sim}$83\% of variance. $K$ alone explains 63\% and dominates the crossover surface: at $K$ median \$65B, crossover probability is 85\%; at \$150B, 46\% (Table~\ref{tab:k_median_sweep}). Model-form sensitivity (piecewise plateau vs.\ logistic saturation, Eq.~\ref{eq:logistic_saturation}) shifts the crossover by $\pm$1{,}500 units without eliminating it; the comparison is deterministic, and only the piecewise plateau is integrated into the stochastic MC. Three factors prevent crossover: vitamin costs $> {\sim}\$50{,}000$/kg, discount rates $> {\sim}20\%$, or $p_s \lesssim 70\%$. For revenue-generating infrastructure, deployment delay offsets cost savings above ${\sim}\$0.94$M/unit/yr (Eq.~\ref{eq:revenue_breakeven}), suggesting the ISRU advantage is strongest for non-revenue infrastructure.
+\end{abstract}
+
+\begin{keyword}
+in-situ resource utilization \sep space manufacturing \sep launch cost \sep Monte Carlo simulation \sep learning curves \sep net present value \sep space economics
+\end{keyword}
+
+\end{frontmatter}

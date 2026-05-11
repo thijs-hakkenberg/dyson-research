@@ -1,0 +1,48 @@
+\begin{table}[htbp]
+\centering
+\caption{Index of sensitivity tests. ``Main'' tests retained in \S\ref{sec:sensitivity}--\S\ref{sec:discussion}; ``App.'' tests in Appendix~\ref{sec:appendix_sensitivity}. The five top drivers and three failure modes are in the main text.}
+\label{tab:sensitivity_index}
+\small
+\begin{tabular}{@{}llrl@{}}
+\toprule
+Test & Location & Max shift & Category \\
+\midrule
+\multicolumn{4}{@{}l}{\emph{Main text (top drivers + failure modes)}} \\
+Learning rate scenarios (LR$_E$, LR$_I$) & \S\ref{sec:sensitivity} & $+$1{,}588 & Top driver \\
+Learning plateau (Earth, stochastic) & \S\ref{sec:sensitivity} & $-$1{,}424 & Top driver \\
+Vitamin sensitivity ($f_v$, $c_{\mathrm{vit}}$) & \S\ref{sec:sensitivity} & $+$1{,}492 & Top driver \\
+Revenue breakeven ($R^*$) & \S\ref{sec:discussion} & --- & Decision metric \\
+Technology disruption & \S\ref{sec:tech_disruption} & $+$3{,}583 & Disruption \\
+Product archetype & \S\ref{sec:sensitivity} & --- & Robustness \\
+Earth scaling penalty ($\gamma_E$) & \S\ref{sec:sensitivity} & $-$720 ($-$16.5\%) & New (AD) \\
+Failure: $c_{\mathrm{vit}} > \$50$k/kg & \S\ref{sec:sensitivity} & $>$40k & Failure mode \\
+Failure: $r > 20\%$ & \S\ref{sec:commercial_rate} & $>$40k & Failure mode \\
+Failure: $p_s < $ threshold & \S\ref{sec:success_probability} & --- & Failure mode \\
+Asymmetric learning plateau & \S\ref{sec:sensitivity} & $+$167 & Robustness \\
+Hybrid transition strategy & \S\ref{sec:hybrid} & --- & Decision metric \\
+Physical archetype ($f_v$, $c_{\mathrm{vit}}$) & \S\ref{sec:archetype} & varies & New (AG) \\
+Tug learning scenario & \S\ref{sec:sensitivity} & $+$332 & New (AG) \\
+Triangular prior sensitivity & App.~\ref{sec:appendix_sensitivity} & $-$446 med. & New (AG) \\
+$K$-median sweep & \S\ref{sec:mc_robustness} & --- & Primary (AL) \\
+Logistic learning saturation & \S\ref{sec:mc_robustness} & $+$491 & Model-form (AL) \\
+ISRU production yield ($Y$) & \S\ref{sec:model} & $+$469 ($Y{=}0.70$) & New (AL) \\
+Savings window bootstrap CI & \S\ref{sec:cfloor_prodrate} & $\pm$1.2~pp & Precision \\
+\midrule
+\multicolumn{4}{@{}l}{\emph{Appendix (secondary tests)}} \\
+Copula $\rho$ sensitivity & App.~\ref{sec:appendix_sensitivity} & $<$200 & Minor \\
+$K$--$\dot{n}$ correlation & App.~\ref{sec:appendix_sensitivity} & $-$185 & Minor \\
+Piecewise schedule & App.~\ref{sec:appendix_sensitivity} & 0 & Negligible \\
+Cash-flow timing & App.~\ref{sec:appendix_sensitivity} & $-$6.6\% & Minor \\
+Earth capex ($K_E$) & App.~\ref{sec:appendix_sensitivity} & $-$1{,}187 & Favors ISRU \\
+$C_{\mathrm{floor}}$ failure threshold & App.~\ref{sec:appendix_sensitivity} & --- & Analytic \\
+Additional correlations & App.~\ref{sec:appendix_sensitivity} & $<$200 & Minor \\
+No-launch-learning & App.~\ref{sec:appendix_sensitivity} & $\pm$0 & Negligible \\
+Fuel floor decomposition & App.~\ref{sec:appendix_sensitivity} & $\pm$44 & Negligible \\
+Launches-per-unit & App.~\ref{sec:appendix_sensitivity} & $\pm$15 & Negligible \\
+Maintenance ($\phi_K$) & App.~\ref{sec:appendix_sensitivity} & $+$5{,}515 & Moderate \\
+Capex coupling & App.~\ref{sec:appendix_sensitivity} & $<$100 & Minor \\
+$K$-ramp (phased capital) & App.~\ref{sec:appendix_sensitivity} & $-$630 & Minor \\
+Earth mfg floor ($C_{\mathrm{mfg}}^{\mathrm{floor}}$) & App.~\ref{sec:appendix_sensitivity} & 0 & Negligible \\
+\bottomrule
+\end{tabular}
+\end{table}

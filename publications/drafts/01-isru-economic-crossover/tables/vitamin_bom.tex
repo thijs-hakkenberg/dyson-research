@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+\centering
+\caption{Representative vitamin BOM for a 1{,}850~kg structural module. Components marked $^\dag$ are Earth-sourced in the baseline but potentially ISRU-sourced at maturity; only the irreducible mechanical 5\% ($f_v = 0.05$) enters the cost model. Sensors/wiring (3\%) are not included in $f_v$ because they are separately accounted for in integration overhead; if included, $f_v$ would rise to $\sim$0.08 and the crossover would shift by $\sim$$+$200~units (\S\ref{sec:sensitivity}).}
+\label{tab:vitamin_bom}
+\small
+\begin{tabular}{@{}llrrl@{}}
+\toprule
+Component & Source & Mass \% & Mass (kg) & Note \\
+\midrule
+Al structure      & ISRU   & 85\% & 1{,}573 & Regolith-derived alloy \\
+Ti fasteners      & Earth  &  5\% &    93   & Irreducible vitamin ($f_v$) \\
+Thermal coatings  & Earth$^\dag$ &  4\% &    74   & Potentially ISRU at maturity \\
+Sensors/wiring    & Earth  &  3\% &    56   & Rad-hard electronics$^\ddag$ \\
+Seals/gaskets     & Earth$^\dag$ &  3\% &    56   & Polymer, potentially ISRU \\
+\midrule
+\textbf{Total}    &        & 100\% & 1{,}850 & \\
+\quad Irreducible vitamin ($f_v = 0.05$) & & 5\% & 93 & Modeled fraction \\
+\bottomrule
+\multicolumn{5}{@{}l}{\footnotesize $^\dag$Potentially ISRU-sourced at high technology maturity; modeled as Earth-sourced in baseline.} \\
+\multicolumn{5}{@{}l}{\footnotesize $^\ddag$Not included in $f_v = 0.05$; accounted for separately in integration overhead.}
+\end{tabular}
+\end{table}

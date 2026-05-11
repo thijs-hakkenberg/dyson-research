@@ -1,0 +1,38 @@
+\section{Parameter Justification Details}
+\label{sec:appendix_params}
+
+\emph{First-unit ISRU operational cost $C_{\mathrm{ops}}^{(1)} = \$5$M.} Sintering or melting regolith requires approximately 1{,}000~kWh per tonne of processed material \cite{cilliers2023}; a 1{,}850~kg unit requiring $\sim$5~tonnes of raw feedstock (at $\sim$37\% structural yield) consumes $\sim$5{,}000~kWh. At lunar surface power costs of $\sim$\$100--200/kWh \cite{sanders2015,lsic2021}, the energy component is \$0.5--1.0M. Adding equipment wear, consumable replacement, and remote operations overhead yields $\sim$\$5M under immature conditions.
+
+\emph{ISRU capital $K = \$50$B.} This covers the complete chain: prospecting, extraction, processing, fabrication, and quality control, deployed without an existing supply chain. For context, ISS lifecycle cost is $\sim$\$150B; Artemis is budgeted at $\sim$\$93B. The capital cost per unit of annual throughput ($K/\dot{n}_{\max} = \$100$M per unit/year) is comparable to offshore oil platforms (\$5--15B, single-commodity) and nuclear plants (\$10--25B), adjusted for the uniquely challenging operational environment.
+
+\paragraph{$K$ subsystem decomposition.} A rough breakdown of the \$50B baseline:
+\begin{itemize}
+  \item \emph{Power system} (${\sim}$\$8B): 50~MW nuclear/solar at ${\sim}$\$160M/MW.
+  \item \emph{Mining \& processing} (${\sim}$\$12B): excavation, beneficiation, smelting.
+  \item \emph{Fabrication facility} (${\sim}$\$10B): additive manufacturing + assembly.
+  \item \emph{Transport \& logistics} (${\sim}$\$5B): landing pads, propellant depot, tugs.
+  \item \emph{Habitat \& ops support} (${\sim}$\$5B): crew/teleops infrastructure.
+  \item \emph{Integration, margin, delivery} (${\sim}$\$10B): 20\% margin + launch to surface at ${\sim}$\$5{,}000/kg for ${\sim}$500~t.
+\end{itemize}
+These figures are order-of-magnitude estimates for context; the Monte Carlo samples $K$ from the full log-normal distribution rather than decomposing it into subsystems. The $K$ distribution should be interpreted as a scenario range rather than a calibrated estimate. Table~\ref{tab:k_median_sweep} shows crossover economics as a function of $K$ median, enabling readers to apply their own capital assumptions.
+
+\paragraph{$K$-median sensitivity.} Promoted to main text (Table~\ref{tab:k_median_sweep} in \S\ref{sec:mc_robustness}).
+
+\emph{Earth-sourced component fraction (vitamin model).} The vitamin fraction model (Eq.~\ref{eq:vitamin} in \S\ref{sec:vitamin}) modifies the ISRU operational cost to account for components that cannot be ISRU-sourced. Sensitivity tests span $f_v \in \{0, 0.05, 0.10, 0.15, 0.20\}$ and $c_{\mathrm{vit}} \in \{\$5{,}000, \$10{,}000, \$50{,}000\}$/kg.
+
+\paragraph{Cost basis normalization detail.} The $U[\$100, \$400]$ propellant floor range is grounded in a bottom-up decomposition:
+\begin{enumerate}
+  \item \emph{Propellant to LEO}: LOX at $\sim$\$0.20/kg and CH$_4$ at $\sim$\$0.40/kg, with a propellant-to-payload mass ratio of $\sim$25--37:1 for Starship-class vehicles, yields $\sim$\$5--8/kg of payload.
+  \item \emph{LEO-to-GEO transfer}: $\Delta v \approx 3.9$--$4.2$~km/s; a chemical tug costs $\sim$\$80--120/kg transferred, or $\sim$\$30--60/kg via solar electric propulsion.
+  \item \emph{Ground operations}: Pad turnaround, range fees, and GSE amortization at high cadence ($>$50~flights/yr) yield $\sim$\$20--50/kg.
+\end{enumerate}
+Summing yields $\sim$\$105--178/kg to GEO.
+
+\input{tables/vitamin_bom}
+
+\input{tables/config}
+
+\input{tables/empirical_lr}
+
+\emph{Additional parameter notes.} Mass penalty $\alpha \sim U[1.0, 2.0]$ captures additional feedstock required for structural equivalence. Availability $A \sim U[0.70, 0.95]$ accounts for equipment failures and limited maintenance access. Transport cost $p_{\mathrm{transport}} \sim U[\$50, \$300]$/kg covers lunar surface-to-GEO delivery \cite{ishimatsu2016}. Production rate $\dot{n}_{\max} = 500$~units/year, sampled $U[250, 750]$, requires $\sim$5{,}000--10{,}000~tonnes/year of raw regolith, within proposed ISRU facility scales \cite{sanders2015}. Ricardian rent is not a concern: lunar regolith is abundant (${\sim}10^{15}$~tonnes in the top 5~m) and compositionally homogeneous at the scales modeled.
+

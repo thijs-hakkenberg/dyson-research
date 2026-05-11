@@ -1,0 +1,15 @@
+\begin{table}[htbp]
+\centering
+\caption{$K$ tail sensitivity: effect of log-normal spread on crossover achievement (10{,}000 runs, $r = 5\%$, $H = 40{,}000$). \emph{Variant configuration}: $\sigma_{\ln}$ varied from canonical baseline (0.70). The [\$20B, \$200B] clip bounds truncate the heaviest tails at $\sigma_{\ln} \geq 1.0$.}
+\label{tab:sigma_ln}
+\small
+\begin{tabular}{@{}rrrrrr@{}}
+\toprule
+$\sigma_{\ln}$ & Conv.\ \% & Cond.\ median & P90/P50($K$) & $K$ P10 & $K$ P90 \\
+\midrule
+0.70 & 85.1\% & 4{,}311 & 2.50$\times$ & \$26.9B & \$163.4B \\
+1.00 & 80.8\% & 3{,}754 & 3.05$\times$ & \$20.0B & \$200.0B \\
+1.30 & 77.8\% & 3{,}258 & 3.05$\times$ & \$20.0B & \$200.0B \\
+\bottomrule
+\end{tabular}
+\end{table}
