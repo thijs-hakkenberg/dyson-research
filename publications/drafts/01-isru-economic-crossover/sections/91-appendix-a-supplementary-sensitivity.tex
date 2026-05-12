@@ -78,5 +78,35 @@ The extended copula shifts convergence by $-$0.5~pp and the conditional median b
   \label{fig:convergence_curve}
 \end{figure}
 
-\paragraph{Bootstrap confidence intervals for savings window.} The savings window probabilities in Table~\ref{tab:savings_survival} are computed from 10{,}000 MC runs. To quantify sampling uncertainty, we construct 95\% bootstrap confidence intervals by resampling the converging runs 5{,}000 times with replacement, computing the savings window probability at each horizon for each resample, and reporting the 2.5th and 97.5th percentiles. The resulting CI widths ($\pm$1.0--1.2~pp) confirm that the 10{,}000-run ensemble provides adequate precision for the headline savings window probabilities (e.g., 95\% at 20k units: 95\% CI [94\%, 95\%]).
+\paragraph{Bootstrap confidence intervals for savings window.} The savings window probabilities in Table~\ref{tab:savings_survival} are computed from 10{,}000 MC runs. To quantify sampling uncertainty, we construct 95\% bootstrap confidence intervals by resampling the converging runs 5{,}000 times with replacement, computing the savings window probability at each horizon for each resample, and reporting the 2.5th and 97.5th percentiles. The resulting CI widths ($\pm$1.0--1.2~pp) confirm that the 10{,}000-run ensemble provides adequate precision for the headline savings window probabilities (80.6\% unconditional at $N_h = 20{,}000$; 94.7\% conditional, [94.2\%, 95.1\%]).
+
+\paragraph{Secondary sensitivity tables (relocated from main text in v.AP).} The following tables were moved from \S\ref{sec:model} (model description) and \S\ref{sec:results} (results) to reduce main-text length and concentrate the narrative on headline metrics. Each table is referenced once in the corresponding main-text paragraph; results are summarized inline both in main and below.
+
+\paragraph{Yield sensitivity.} Production yield $Y \in [0.85, 1.0]$ shifts the deterministic crossover by at most $+$259 units (at $Y = 0.80$, $+6.9\%$); below $Y = 0.80$ the effect grows but the prior puts negligible mass there.
+
+\input{tables/yield_sensitivity}
+
+\paragraph{Vitamin-fraction archetypes.} Three representative structural product classes span $f_v \in [0.02, 0.10]$; the canonical baseline ($f_v = 0.05$) sits in the middle.
+
+\input{tables/archetype_fv}
+
+\paragraph{Deterministic scenario sweep.} Eight representative parameter combinations bracket the Monte Carlo central tendency at both $r = 0$ and $r = 5\%$; the conditional median from the full MC falls within the IQR of the scenario range, confirming the deterministic baseline is not an outlier.
+
+\input{tables/scenarios}
+
+\paragraph{$K$ tail sensitivity ($\sigma_{\ln}$).} Heavier $K$ tails ($\sigma_{\ln} \in \{1.0, 1.3\}$) reduce convergence modestly (85\% $\to$ 78\%) and shift the conditional median; the [\$20B, \$200B] clip bounds become binding for $\sigma_{\ln} \geq 1.0$.
+
+\input{tables/sigma_ln}
+
+\paragraph{Dual-baseline summary.} Headline metrics at both $\sigma_{\ln} = 0.70$ (Flyvbjerg terrestrial) and $\sigma_{\ln} = 1.0$ (space-specific) across discount rates; the savings window probability is invariant to $\sigma_{\ln}$ within $\pm$1~pp.
+
+\input{tables/dual_baseline}
+
+\paragraph{Model-form sensitivity (logistic vs piecewise plateau).} Replacing the piecewise plateau with a logistic saturation form at three deterministic $n_{\mathrm{half}}$ values shifts the crossover by $\pm$1{,}500 units without eliminating it. The piecewise plateau is the form integrated stochastically into the canonical MC; full stochastic integration of the logistic alternative is committed for the next revision.
+
+\input{tables/logistic_comparison}
+
+\paragraph{Cumulative-cost trajectories.} Per-year cumulative cost for both pathways at the deterministic baseline; the ISRU pathway requires greater expenditure through approximately year~12--13 (the ``investment valley''); by year~20, ISRU saves $\sim$\$41B undiscounted (\$20B NPV at $r = 5\%$).
+
+\input{tables/cumulative}
 

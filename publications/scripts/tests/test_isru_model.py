@@ -1472,3 +1472,83 @@ class TestExactRevenueDCF:
         # The key invariant: both should be finite and positive
         assert r1["r_star_exact"] > 0
         assert r2["r_star_exact"] > 0
+
+
+# ===== TestLaunchLearning (M12 — added in v.AP to lock in numerical examples) =====
+
+class TestLaunchLearning:
+    """Anchor the numerical examples cited in §4 (Launch cost learning sweep).
+
+    Reviewer GPT-5.5 flagged that the manuscript's launch-learning numerical
+    examples were inconsistent with the stated Wright curve. These tests
+    pin the canonical formula (m * (p_fuel + p_ops * n^b_L)) so that any
+    future drift between text and code is caught early.
+    """
+
+    def test_lr090_at_n10k_ops_component(self):
+        """At LR_L = 0.90, n = 10,000: ops should be ~$197.6/kg (NOT $334)."""
+        from isru_model import BASELINE, earth_unit_cost_launch_learning
+        params = {**BASELINE, "LR_launch": 0.90}
+        per_kg = earth_unit_cost_launch_learning(np.array([10000.0]), params)[0] / params["m"]
+        ops_only = per_kg - params.get("p_fuel", 200)
+        assert abs(ops_only - 197.6) < 2.0, f"expected ~$197.6/kg, got ${ops_only:.1f}"
+
+    def test_lr097_at_n4400_ops_component(self):
+        """At LR_L = 0.97, n = 4,400 (baseline scale): ops should be ~$553/kg."""
+        from isru_model import BASELINE, earth_unit_cost_launch_learning
+        params = {**BASELINE, "LR_launch": 0.97}
+        per_kg = earth_unit_cost_launch_learning(np.array([4400.0]), params)[0] / params["m"]
+        ops_only = per_kg - params.get("p_fuel", 200)
+        assert abs(ops_only - 553.3) < 5.0, f"expected ~$553.3/kg, got ${ops_only:.1f}"
+
+    def test_lr100_no_learning(self):
+        """At LR_L = 1.00 (no learning): ops stays at $800/kg regardless of n."""
+        from isru_model import BASELINE, earth_unit_cost_launch_learning
+        params = {**BASELINE, "LR_launch": 1.00}
+        for n in [1.0, 100.0, 10000.0, 1e6]:
+            per_kg = earth_unit_cost_launch_learning(np.array([n]), params)[0] / params["m"]
+            ops_only = per_kg - params.get("p_fuel", 200)
+            assert abs(ops_only - 800.0) < 1.0, f"at n={n}: expected $800/kg, got ${ops_only:.1f}"
+
+
+# ===== TestAsymptoticThresholds (M13 — added in v.AP for permanent-crossover threshold) =====
+
+class TestAsymptoticThresholds:
+    """Anchor the four C_floor permanent-crossover thresholds reported in §4.5.
+
+    Reviewer GPT-5.5 flagged that the manuscript's $1.67M threshold was the
+    constant-launch case; under the canonical launch-learning + C_mat
+    configuration the correct threshold is $1.19M. These tests pin all four.
+    """
+
+    def test_const_launch_pure_wright(self):
+        """Constant launch + pure Wright: C_floor < m(p_launch - p_transport*alpha) = $1.67M."""
+        from isru_model import BASELINE, derive_asymptotic_costs
+        params = {**BASELINE, "b_L": None, "C_mat": 0}
+        a = derive_asymptotic_costs(params)
+        threshold = (a["earth_total_asymp"] - params["m"] * params["p_transport"] * params.get("alpha", 1.0)) / params.get("alpha", 1.0)
+        assert abs(threshold - 1_665_000) < 10_000, f"expected $1.665M, got ${threshold:,.0f}"
+
+    def test_const_launch_with_cmat(self):
+        """Constant launch + C_mat: C_floor < C_mat + m(p_launch - p_transport*alpha) = $2.67M."""
+        from isru_model import BASELINE, derive_asymptotic_costs
+        params = {**BASELINE, "b_L": None}
+        a = derive_asymptotic_costs(params)
+        threshold = (a["earth_total_asymp"] - params["m"] * params["p_transport"] * params.get("alpha", 1.0)) / params.get("alpha", 1.0)
+        assert abs(threshold - 2_665_000) < 10_000, f"expected $2.665M, got ${threshold:,.0f}"
+
+    def test_launch_learning_pure_wright(self):
+        """Launch-learning + pure Wright: C_floor < m(p_fuel - p_transport*alpha) = $0.19M."""
+        from isru_model import BASELINE, derive_asymptotic_costs, learning_exponent
+        params = {**BASELINE, "b_L": learning_exponent(0.97), "C_mat": 0}
+        a = derive_asymptotic_costs(params)
+        threshold = (a["earth_total_asymp"] - params["m"] * params["p_transport"] * params.get("alpha", 1.0)) / params.get("alpha", 1.0)
+        assert abs(threshold - 185_000) < 10_000, f"expected $0.185M, got ${threshold:,.0f}"
+
+    def test_launch_learning_with_cmat_canonical(self):
+        """CANONICAL: launch-learning + C_mat: C_floor < $1.19M (NOT the $1.67M cited in earlier versions)."""
+        from isru_model import BASELINE, derive_asymptotic_costs, learning_exponent
+        params = {**BASELINE, "b_L": learning_exponent(0.97)}
+        a = derive_asymptotic_costs(params)
+        threshold = (a["earth_total_asymp"] - params["m"] * params["p_transport"] * params.get("alpha", 1.0)) / params.get("alpha", 1.0)
+        assert abs(threshold - 1_185_000) < 10_000, f"expected $1.185M, got ${threshold:,.0f}"

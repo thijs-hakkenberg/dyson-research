@@ -1,0 +1,44 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+% --- Packages ---
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{lineno}
+\usepackage{multirow}
+\usepackage{siunitx}
+
+% Enable line numbers for review
+\modulolinenumbers[5]
+
+% Figures are in figures/ subdirectory
+\graphicspath{{figures/}}
+
+\journal{Advances in Space Research}
+
+\begin{document}
+
+% -- Front matter, body sections, back matter --
+\input{sections/00-frontmatter}
+\input{sections/01-introduction}
+\input{sections/02-related-work}
+\input{sections/03-model}
+\input{sections/04-results}
+\input{sections/05-discussion}
+\input{sections/06-conclusion}
+\input{sections/90-back-matter}
+
+\appendix
+\input{sections/91-appendix-a-supplementary-sensitivity}
+\input{sections/92-appendix-b-schedule-model-details}
+\input{sections/93-appendix-c-throughput-details}
+\input{sections/94-appendix-d-parameter-justification}
+\input{sections/95-appendix-e-assumptions}
+
+% -- Bibliography --
+\input{sections/99-bibliography}
+
+\end{document}

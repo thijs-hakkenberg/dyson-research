@@ -116,7 +116,7 @@ where $b_I = \ln(\mathrm{LR}_I)/\ln 2$ with ISRU learning rate $\mathrm{LR}_I$, 
 
 A production yield parameter $Y \in (0, 1]$ captures the fraction of ISRU-manufactured units that pass quality acceptance: delivering one functional unit requires producing $1/Y$ units, so the effective operational cost is $C_{\mathrm{ops}}(n)/Y$. The baseline MC uses $Y = 1.0$ (perfect yield); $Y$ is tested as a deterministic sensitivity parameter (Table~\ref{tab:yield_sensitivity}), not a stochastic MC input, because the effect is small relative to $K$ and LR$_E$ variance ($<$0.5\% of total output variance at $Y \geq 0.80$). Even at $Y = 0.80$, the crossover shifts by only $+$259 units ($+$6.9\%).
 
-\input{tables/yield_sensitivity}
+% Table tab:yield_sensitivity moved to Appendix~\ref{sec:appendix_sensitivity} in v.AP.
 
 The ramp-up effect is captured purely through timing: early units are produced later and therefore discounted more heavily in the NPV calculation (Eq.~\ref{eq:production_schedule}). The cumulative cost of producing $N$ units via the ISRU pathway is
 \begin{equation}
@@ -184,7 +184,7 @@ A representative mass breakdown (Table~\ref{tab:vitamin_bom} in Appendix~\ref{se
 \label{sec:archetype}
 The baseline unit is an unpressurized structural truss segment: an aluminum-alloy frame with thermal coatings and mechanical fasteners, representative of solar collector support structures or orbital habitat framing. The vitamin fraction $f_v = 0.05$ corresponds to irreducible Earth-sourced fasteners and fittings (titanium bolts, seals, simple sensors). To test sensitivity to the physical archetype, Table~\ref{tab:archetype_fv} reports crossover results for three representative structural product classes spanning the range of complexity and vitamin content likely in large-scale space manufacturing programs.
 
-\input{tables/archetype_fv}
+% Table tab:archetype_fv moved to Appendix~\ref{sec:appendix_sensitivity} in v.AP.
 
 The unpressurized truss (lowest complexity) achieves permanent crossover at the lowest $N^*$ because its minimal vitamin fraction keeps the ISRU asymptotic floor below Earth's. The habitat module shell (highest complexity) requires the most units but still achieves crossover, confirming that ISRU is economically viable across the structural product spectrum.
 
