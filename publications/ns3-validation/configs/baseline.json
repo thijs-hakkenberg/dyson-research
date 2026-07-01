@@ -1,0 +1,14 @@
+{
+    "description": "Baseline configuration: single-point validation at default parameters.",
+    "notes": [
+        "Verifies NS-3 gamma agrees with analytical model within 3-8%.",
+        "Tests schedulability at 30 kbps with N=100 cold-start.",
+        "No channel loss, no interference, fixed acquisition."
+    ],
+    "phyRateBps": [30000],
+    "clusterSize": [100],
+    "maxRetx": [0],
+    "slotConfig": [0],
+    "geState": ["no-loss"],
+    "interference": ["none"]
+}

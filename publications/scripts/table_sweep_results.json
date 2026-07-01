@@ -1,0 +1,715 @@
+{
+  "scaling": {
+    "1000": {
+      "mean": {
+        "overhead": 20.668279466666664,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 5000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "std": {
+        "overhead": 0.000747823865180486,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 0.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 0.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 0.0
+      },
+      "ci_lo": {
+        "overhead": 20.6680064,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 5000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "ci_hi": {
+        "overhead": 20.668415999999997,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 5000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      }
+    },
+    "5000": {
+      "mean": {
+        "overhead": 20.664319999999993,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 25000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "std": {
+        "overhead": 7.226896453227138e-15,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 0.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 0.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 0.0
+      },
+      "ci_lo": {
+        "overhead": 20.664319999999993,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 25000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "ci_hi": {
+        "overhead": 20.664319999999993,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 25000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      }
+    },
+    "10000": {
+      "mean": {
+        "overhead": 20.664511146666662,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 50000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "std": {
+        "overhead": 0.0003524059686104164,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 0.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 0.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 0.0
+      },
+      "ci_lo": {
+        "overhead": 20.664401919999996,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 50000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "ci_hi": {
+        "overhead": 20.664647679999995,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 50000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      }
+    },
+    "20000": {
+      "mean": {
+        "overhead": 20.66448384,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 99999.93333333333,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "std": {
+        "overhead": 0.00020409257128910948,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 0.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 0.2537081317024624,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 0.0
+      },
+      "ci_lo": {
+        "overhead": 20.66441557333333,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 99999.83333333333,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "ci_hi": {
+        "overhead": 20.664552106666665,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 100000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      }
+    },
+    "30000": {
+      "mean": {
+        "overhead": 20.66447018666667,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 150000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "std": {
+        "overhead": 0.00012079601932076648,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 0.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 0.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 0.0
+      },
+      "ci_lo": {
+        "overhead": 20.664429226666662,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 150000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "ci_hi": {
+        "overhead": 20.664511146666666,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 150000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      }
+    },
+    "40000": {
+      "mean": {
+        "overhead": 20.66434730666667,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 199999.2,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "std": {
+        "overhead": 0.00010391885074498508,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 0.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 0.5508613944197479,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 0.0
+      },
+      "ci_lo": {
+        "overhead": 20.664309760000002,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 199999.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "ci_hi": {
+        "overhead": 20.664381440000007,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 199999.4,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      }
+    },
+    "50000": {
+      "mean": {
+        "overhead": 20.664527530666664,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 249999.96666666667,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "std": {
+        "overhead": 6.357640415447271e-05,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 0.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 0.18257418583505536,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 0.0
+      },
+      "ci_lo": {
+        "overhead": 20.66450568533333,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 249999.9,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "ci_hi": {
+        "overhead": 20.664549376000004,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 250000.0,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      }
+    },
+    "60000": {
+      "mean": {
+        "overhead": 20.664529351111117,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 299999.43333333335,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "std": {
+        "overhead": 0.00012668347732836641,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 0.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 0.773854362727667,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 0.0
+      },
+      "ci_lo": {
+        "overhead": 20.664486115555555,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 299999.1666666667,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "ci_hi": {
+        "overhead": 20.664572586666665,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 299999.7,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      }
+    },
+    "80000": {
+      "mean": {
+        "overhead": 20.664492373333328,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 399999.13333333336,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "std": {
+        "overhead": 4.1406304144823696e-05,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 0.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 0.5074162634049248,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 0.0
+      },
+      "ci_lo": {
+        "overhead": 20.664478719999995,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 399998.9666666667,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "ci_hi": {
+        "overhead": 20.664507733333327,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 399999.3,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      }
+    },
+    "100000": {
+      "mean": {
+        "overhead": 20.66456712533334,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 499999.73333333334,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "std": {
+        "overhead": 7.333724291364506e-05,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 0.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 0.44977644510880355,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 0.0
+      },
+      "ci_lo": {
+        "overhead": 20.664541184000008,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 499999.56666666665,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      },
+      "ci_hi": {
+        "overhead": 20.66459170133334,
+        "queue_drop_rate": 0.0,
+        "exc_reduction": 1.0,
+        "loss_rate": 0.0,
+        "coord_drops": 0.0,
+        "coord_drop_pct": 0.0,
+        "retransmission_count": 0.0,
+        "total_msgs_sent": 499999.9,
+        "total_msgs_delivered": 0.0,
+        "coordination_success": 1.0
+      }
+    }
+  },
+  "exception": {
+    "N=10000,p=0.1": {
+      "base_overhead": 20.664511146666662,
+      "exc_overhead": 2.399505066666667,
+      "reduction": 0.09979272612079769,
+      "reduction_std": 0.0011073270998269295,
+      "error_vs_analytical": 0.000207273879202316
+    },
+    "N=10000,p=0.3": {
+      "base_overhead": 20.664511146666662,
+      "exc_overhead": 7.235857066666668,
+      "reduction": 0.2996788987858084,
+      "reduction_std": 0.0016908268356481168,
+      "error_vs_analytical": 0.0003211012141915992
+    },
+    "N=10000,p=0.5": {
+      "base_overhead": 20.664511146666662,
+      "exc_overhead": 12.210756266666667,
+      "reduction": 0.49968287542005924,
+      "reduction_std": 0.0018678061993504863,
+      "error_vs_analytical": 0.00031712457994076404
+    },
+    "N=100000,p=0.1": {
+      "base_overhead": 20.66456712533334,
+      "exc_overhead": 2.4021007170370363,
+      "reduction": 0.09991739720305179,
+      "reduction_std": 0.0002933852728386485,
+      "error_vs_analytical": 8.260279694821682e-05
+    },
+    "N=100000,p=0.3": {
+      "base_overhead": 20.66456712533334,
+      "exc_overhead": 7.239854567619048,
+      "reduction": 0.2998656568748028,
+      "reduction_std": 0.00043188567427670664,
+      "error_vs_analytical": 0.00013434312519716718
+    },
+    "N=100000,p=0.5": {
+      "base_overhead": 20.66456712533334,
+      "exc_overhead": 12.213885155555555,
+      "reduction": 0.499886211320763,
+      "reduction_std": 0.0006262672676485115,
+      "error_vs_analytical": 0.00011378867923700353
+    }
+  },
+  "link": {
+    "1.0": {
+      "overhead_M0": 20.664511146666662,
+      "overhead_M2": 20.664511146666662,
+      "loss_M0": 0.0,
+      "loss_M2": 0.0,
+      "success_M0": 100.0,
+      "success_M2": 100.0
+    },
+    "0.9": {
+      "overhead_M0": 20.454304426666667,
+      "overhead_M2": 20.66449749333333,
+      "loss_M0": 10.021858787452146,
+      "loss_M2": 0.0916516822795738,
+      "success_M0": 89.97814121254784,
+      "success_M2": 99.90834831772042
+    },
+    "0.8": {
+      "overhead_M0": 19.72294051664546,
+      "overhead_M2": 20.66265429333333,
+      "loss_M0": 20.02958403559692,
+      "loss_M2": 0.6491962609301246,
+      "success_M0": 79.9704159644031,
+      "success_M2": 99.35080373906987
+    },
+    "0.7": {
+      "overhead_M0": 17.220456742009365,
+      "overhead_M2": 20.647403520000005,
+      "loss_M0": 30.011289066844622,
+      "loss_M2": 1.9519355255911792,
+      "success_M0": 69.98871093315537,
+      "success_M2": 98.04806447440882
+    },
+    "0.6": {
+      "overhead_M0": 13.20914488888889,
+      "overhead_M2": 20.579000319999995,
+      "loss_M0": 40.07840252587496,
+      "loss_M2": 4.112047624268811,
+      "success_M0": 59.92159747412502,
+      "success_M2": 95.88795237573116
+    },
+    "0.5": {
+      "overhead_M0": 11.987232307230991,
+      "overhead_M2": 20.33562965333333,
+      "loss_M0": 50.03391677731659,
+      "loss_M2": 7.148047250944566,
+      "success_M0": 49.966083222683416,
+      "success_M2": 92.85195274905544
+    },
+    "0.4": {
+      "overhead_M0": 8.490705676190476,
+      "overhead_M2": 19.290958739046193,
+      "loss_M0": 60.03968526318612,
+      "loss_M2": 11.016456447694303,
+      "success_M0": 39.96031473681387,
+      "success_M2": 88.9835435523057
+    }
+  },
+  "coordinator": {
+    "1": {
+      "coord_drop_pct": 96.01953877246433,
+      "coord_drop_std": 0.0002737439742781642,
+      "success_pct": 3.9804612275356703,
+      "overhead": 0.8895146666666667,
+      "mac_adjusted_kbps": 1.2
+    },
+    "5": {
+      "coord_drop_pct": 76.177942376613,
+      "coord_drop_std": 0.0026011739373560075,
+      "success_pct": 23.822057623386996,
+      "overhead": 5.030382933333332,
+      "mac_adjusted_kbps": 5.9
+    },
+    "10": {
+      "coord_drop_pct": 52.528242528242544,
+      "coord_drop_std": 1.4453792906454277e-14,
+      "success_pct": 47.471757471757456,
+      "overhead": 11.404195186590709,
+      "mac_adjusted_kbps": 11.8
+    },
+    "25": {
+      "coord_drop_pct": 0.0,
+      "coord_drop_std": 0.0,
+      "success_pct": 100.0,
+      "overhead": 20.664511146666662,
+      "mac_adjusted_kbps": 29.4
+    },
+    "50": {
+      "coord_drop_pct": 0.0,
+      "coord_drop_std": 0.0,
+      "success_pct": 100.0,
+      "overhead": 20.664511146666662,
+      "mac_adjusted_kbps": 58.8
+    },
+    "100": {
+      "coord_drop_pct": 0.0,
+      "coord_drop_std": 0.0,
+      "success_pct": 100.0,
+      "overhead": 20.664511146666662,
+      "mac_adjusted_kbps": 117.6
+    },
+    "inf": {
+      "coord_drop_pct": 0.0,
+      "coord_drop_std": 0.0,
+      "success_pct": 100.0,
+      "overhead": 20.664511146666662,
+      "mac_adjusted_kbps": 0
+    }
+  },
+  "sampling_validation": {
+    "1000": {
+      "full_overhead": 20.668279466666664,
+      "full_std": 0.000747823865180486,
+      "sampled_overhead": 20.668279466666664,
+      "sampled_std": 0.000747823865180486,
+      "discrepancy": 0.0,
+      "sample_rate": 1.0
+    },
+    "2000": {
+      "full_overhead": 20.664319999999993,
+      "full_std": 7.226896453227138e-15,
+      "sampled_overhead": 22.13545207708806,
+      "sampled_std": 1.1440110351306558,
+      "discrepancy": 1.4711320770880683,
+      "sample_rate": 0.5
+    },
+    "5000": {
+      "full_overhead": 20.664319999999993,
+      "full_std": 7.226896453227138e-15,
+      "sampled_overhead": 21.216477901632956,
+      "sampled_std": 0.7902522851809849,
+      "discrepancy": 0.5521579016329632,
+      "sample_rate": 0.2
+    },
+    "10000": {
+      "full_overhead": 20.664511146666662,
+      "full_std": 0.0003524059686104164,
+      "sampled_overhead": 21.034814860352817,
+      "sampled_std": 0.6354991480853323,
+      "discrepancy": 0.37030371368615533,
+      "sample_rate": 0.1
+    },
+    "20000": {
+      "full_overhead": 20.66448384,
+      "full_std": 0.00020409257128910948,
+      "sampled_overhead": 20.758055099894076,
+      "sampled_std": 0.7127060818050588,
+      "discrepancy": 0.09357125989407677,
+      "sample_rate": 0.05
+    },
+    "50000": {
+      "full_overhead": 20.664527530666664,
+      "full_std": 6.357640415447271e-05,
+      "sampled_overhead": 20.562240693355964,
+      "sampled_std": 0.6602999052589523,
+      "discrepancy": 0.10228683731070021,
+      "sample_rate": 0.02
+    },
+    "100000": {
+      "full_overhead": 20.66456712533334,
+      "full_std": 7.333724291364506e-05,
+      "sampled_overhead": 20.679174308342848,
+      "sampled_std": 0.7195234112101296,
+      "discrepancy": 0.014607183009509583,
+      "sample_rate": 0.01
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+    "description": "Interference sweep: validates SINR degradation from co-channel clusters.",
+    "notes": [
+        "Tests impact of 1 interferer at R=3 and R=7 cluster radii.",
+        "Crossed with GE channel states to measure combined degradation.",
+        "Expected: R=3 causes measurable delivery rate drop; R=7 is negligible.",
+        "ARQ partially compensates for interference-induced loss."
+    ],
+    "phyRateBps": [30000, 35000],
+    "clusterSize": [100],
+    "maxRetx": [0, 1, 2],
+    "slotConfig": [0],
+    "geState": ["no-loss", "GE-default", "GE-severe"],
+    "interference": ["none", "1-interferer-R=3", "1-interferer-R=7"]
+}

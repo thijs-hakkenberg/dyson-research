@@ -1,0 +1,16 @@
+{
+    "description": "Slot structure sweep: compares all four TDMA configurations.",
+    "notes": [
+        "Config A (0): Cold-start — full acquisition each slot.",
+        "Config B (1): Multi-packet burst — 3 pkts/slot, single acquisition.",
+        "Config C (2): Tracking mode — T_acq=0 for consecutive slots.",
+        "Config D (3): Bitmap ACK — 13-byte aggregate ACK in egress.",
+        "Expected: Config C has highest gamma, Config A has lowest."
+    ],
+    "phyRateBps": [24000, 30000, 35000],
+    "clusterSize": [100],
+    "maxRetx": [0],
+    "slotConfig": [0, 1, 2, 3],
+    "geState": ["no-loss", "GE-default"],
+    "interference": ["none"]
+}

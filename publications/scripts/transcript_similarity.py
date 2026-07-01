@@ -1679,6 +1679,230 @@ def print_semantic_comparison_table(
 
 
 # ---------------------------------------------------------------------------
+# Commitment-level sycophancy analysis
+# ---------------------------------------------------------------------------
+
+# Commitment-extraction keywords: stronger than decision keywords
+_COMMITMENT_KEYWORDS = re.compile(
+    r"\b(recommend|propose|must|shall|require|adopt|implement|deploy|"
+    r"select|choose|target|allocate|prioritize|mandate|specify|"
+    r"architecture should|we propose|the optimal|primary approach|"
+    r"our recommendation|preferred approach|baseline design)\b",
+    re.IGNORECASE,
+)
+
+
+def _extract_commitments(text: str) -> list[str]:
+    """Extract key commitment sentences from a proposal.
+
+    Commitment sentences are those containing strong recommendation/decision
+    language, normalised to lowercase for comparison.
+
+    Parameters
+    ----------
+    text:
+        Body text (frontmatter stripped).
+
+    Returns
+    -------
+    list[str]
+        List of normalised commitment sentences.
+    """
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    commitments = []
+    for s in sentences:
+        if _COMMITMENT_KEYWORDS.search(s) and len(s.split()) >= 8:
+            # Normalize: lowercase, strip extra whitespace
+            normalized = " ".join(s.lower().split())
+            commitments.append(normalized)
+    return commitments
+
+
+def compute_commitment_adoption(
+    questions: dict[str, QuestionData],
+) -> dict[str, Any]:
+    """Analyse whether Round 2+ proposals adopt the Round 1 winner's commitments.
+
+    For multi-round questions, extracts commitment sentences from the Round 1
+    winner and computes TF-IDF cosine similarity between those commitments and
+    each model's Round 2 commitments.
+
+    Parameters
+    ----------
+    questions:
+        All loaded question data.
+
+    Returns
+    -------
+    dict
+        Per-question adoption analysis.
+    """
+    results: dict[str, Any] = {}
+
+    for slug, qdata in sorted(questions.items()):
+        if not qdata.has_multi_round:
+            continue
+
+        round_1 = qdata.rounds.get(1)
+        round_2 = qdata.rounds.get(2)
+        if round_1 is None or round_2 is None:
+            continue
+
+        # We need to know the Round 1 winner. Load from discussion.yaml.
+        # For now, use the model with the most commitment-overlapping text.
+        # We'll use the discussion.yaml winner if available, otherwise skip.
+        disc_path = Path(script_dir) / ".." / ".." / "src" / "content" / "research-questions" / qdata.phase_id / qdata.question_slug / "discussion.yaml"
+        disc_path = disc_path.resolve()
+        winner_id = None
+
+        if disc_path.exists():
+            try:
+                with open(disc_path, "r", encoding="utf-8") as fh:
+                    disc_data = yaml.safe_load(fh)
+                if disc_data and "rounds" in disc_data:
+                    for rd in disc_data["rounds"]:
+                        if rd.get("roundNumber") == 1:
+                            winner_id = rd.get("winnerId")
+                            break
+            except (yaml.YAMLError, OSError):
+                pass
+
+        if winner_id is None:
+            continue
+
+        # Extract winner's Round 1 commitments
+        winner_t = round_1.transcripts.get(winner_id)
+        if winner_t is None:
+            continue
+
+        winner_commitments = _extract_commitments(winner_t.body_text)
+        if not winner_commitments:
+            continue
+        winner_text = " ".join(winner_commitments)
+
+        # For each model in Round 2, compute commitment similarity to winner
+        adoption_scores: dict[str, float] = {}
+        model_commitments: dict[str, list[str]] = {}
+
+        for model_id in MODELS:
+            t2 = round_2.transcripts.get(model_id)
+            if t2 is None:
+                continue
+
+            m_commitments = _extract_commitments(t2.body_text)
+            model_commitments[model_id] = m_commitments
+
+            if not m_commitments:
+                adoption_scores[model_id] = 0.0
+                continue
+
+            m_text = " ".join(m_commitments)
+
+            # TF-IDF cosine similarity between winner commitments and this model's R2 commitments
+            vectorizer = TfidfVectorizer(stop_words="english", max_features=3000)
+            try:
+                tfidf_matrix = vectorizer.fit_transform([winner_text, m_text])
+                sim = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
+                adoption_scores[model_id] = float(sim[0, 0])
+            except ValueError:
+                adoption_scores[model_id] = 0.0
+
+        # Also compute winner's own commitment consistency (R1 -> R2)
+        winner_t2 = round_2.transcripts.get(winner_id)
+        winner_self_consistency = 0.0
+        if winner_t2:
+            w2_commitments = _extract_commitments(winner_t2.body_text)
+            if w2_commitments:
+                w2_text = " ".join(w2_commitments)
+                vectorizer = TfidfVectorizer(stop_words="english", max_features=3000)
+                try:
+                    tfidf_matrix = vectorizer.fit_transform([winner_text, w2_text])
+                    sim = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
+                    winner_self_consistency = float(sim[0, 0])
+                except ValueError:
+                    pass
+
+        # Compute non-winner mean adoption
+        non_winner_scores = [
+            s for m, s in adoption_scores.items() if m != winner_id
+        ]
+        non_winner_mean = float(np.mean(non_winner_scores)) if non_winner_scores else 0.0
+
+        results[slug] = {
+            "winner_id": winner_id,
+            "winner_r1_commitment_count": len(winner_commitments),
+            "adoption_scores": adoption_scores,
+            "model_commitment_counts": {
+                m: len(c) for m, c in model_commitments.items()
+            },
+            "winner_self_consistency": winner_self_consistency,
+            "non_winner_mean_adoption": non_winner_mean,
+        }
+
+    return results
+
+
+def print_commitment_analysis(
+    commitment_data: dict[str, Any],
+) -> None:
+    """Print commitment-level adoption analysis.
+
+    Parameters
+    ----------
+    commitment_data:
+        Output from compute_commitment_adoption.
+    """
+    sep = "=" * 90
+    print()
+    print(sep)
+    print("  COMMITMENT-LEVEL ADOPTION ANALYSIS")
+    print(sep)
+    print()
+    print("  For multi-round questions: how much do Round 2 proposals adopt the")
+    print("  Round 1 winner's specific commitments (recommendation sentences)?")
+    print()
+
+    if not commitment_data:
+        print("  No multi-round questions with commitment data available.")
+        return
+
+    all_non_winner = []
+    all_winner_self = []
+
+    for slug, data in sorted(commitment_data.items()):
+        winner_label = MODEL_LABELS.get(data["winner_id"], data["winner_id"])
+        print(f"  {slug}:")
+        print(f"    R1 winner: {winner_label} ({data['winner_r1_commitment_count']} commitments)")
+        print(f"    R2 commitment adoption (TF-IDF cosine with winner's R1 commitments):")
+        for model_id in MODELS:
+            label = MODEL_LABELS.get(model_id, model_id)
+            score = data["adoption_scores"].get(model_id, 0.0)
+            is_winner = " (winner)" if model_id == data["winner_id"] else ""
+            n_commits = data["model_commitment_counts"].get(model_id, 0)
+            print(f"      {label}{is_winner}: {score:.3f} ({n_commits} commitments)")
+        print(f"    Winner self-consistency (R1->R2): {data['winner_self_consistency']:.3f}")
+        print(f"    Non-winner mean adoption: {data['non_winner_mean_adoption']:.3f}")
+        print()
+
+        all_non_winner.append(data["non_winner_mean_adoption"])
+        all_winner_self.append(data["winner_self_consistency"])
+
+    if all_non_winner:
+        print(f"  AGGREGATE:")
+        print(f"    Mean non-winner adoption: {np.mean(all_non_winner):.3f}")
+        print(f"    Mean winner self-consistency: {np.mean(all_winner_self):.3f}")
+        print()
+        if np.mean(all_non_winner) > np.mean(all_winner_self):
+            print("    NOTE: Non-winners adopt winner's commitments MORE than the winner")
+            print("    maintains them -- suggestive of sycophantic convergence at commitment level.")
+        else:
+            print("    NOTE: Winner maintains commitments more strongly than non-winners adopt")
+            print("    them -- consistent with genuine refinement rather than sycophancy.")
+    print()
+    print(sep)
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -1731,6 +1955,11 @@ def main() -> None:
 
     # Print semantic vs lexical comparison table
     print_semantic_comparison_table(agg_stats)
+
+    # Commitment-level adoption analysis
+    print("\nComputing commitment-level adoption...")
+    commitment_data = compute_commitment_adoption(questions)
+    print_commitment_analysis(commitment_data)
 
     # Export CSV
     print("\nExporting CSV...")

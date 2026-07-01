@@ -1,0 +1,15 @@
+{
+    "description": "PHY rate sweep: validates gamma and schedulability across rates.",
+    "notes": [
+        "Sweeps PHY rate from 20 kbps (infeasible) to 50 kbps (comfortable margin).",
+        "Crossed with cluster sizes to verify scaling behavior.",
+        "Tests GE channel impact at each rate.",
+        "Expected: gamma increases with rate, deadline misses decrease."
+    ],
+    "phyRateBps": [20000, 24000, 28000, 30000, 32000, 35000, 40000, 50000],
+    "clusterSize": [50, 100, 200, 500],
+    "maxRetx": [0, 1],
+    "slotConfig": [0],
+    "geState": ["no-loss", "GE-default"],
+    "interference": ["none"]
+}
