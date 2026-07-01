@@ -1,9 +1,9 @@
 {
-  "title": "Project Dyson: Engineering Planning for a Dyson Swarm (simulation code and research data)",
-  "description": "<p>Simulation code, analysis scripts, and research data underpinning the Project Dyson publication series &mdash; an open, multi-model AI-consensus engineering-planning program for a Dyson swarm. This archive captures the Monte-Carlo economic models (ISRU crossover), packet-level TDMA / NS-3 swarm coordination simulations, multi-model deliberation analyses, and the controlled-baseline and repeated-trial datasets that support the manuscripts.</p><p>Reproducibility: analysis code lives under <code>publications/scripts/</code> with pinned dependencies in <code>requirements.txt</code>; regenerating a paper's figures runs the corresponding <code>generate_*_figures.py</code> against the archived data.</p>",
+  "title": "Project Dyson Research: simulation code, data, and manuscripts for a Dyson swarm",
+  "description": "<p>Simulation code, analysis scripts, research data, and manuscripts for the Project Dyson publication series &mdash; an open, multi-model AI-consensus engineering-planning program for a Dyson swarm. Includes Monte-Carlo economic models (ISRU crossover), packet-level TDMA / NS-3 swarm-coordination simulations, multi-model deliberation analyses, and the controlled-baseline, repeated-trial, and ablation datasets supporting the manuscripts.</p><p>Reproducibility: analysis code lives under <code>publications/scripts/</code> with pinned dependencies in <code>requirements.txt</code>; regenerating a paper's figures runs the corresponding <code>generate_*_figures.py</code> against the archived data. The Project Dyson interactive web platform is a separate, GPL-3.0 repository.</p>",
   "upload_type": "software",
   "access_right": "open",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "creators": [
     {
       "name": "Hakkenberg, Thijs",
@@ -22,8 +22,14 @@
   ],
   "related_identifiers": [
     {
-      "identifier": "https://github.com/thijs-hakkenberg/dyson",
+      "identifier": "https://github.com/thijs-hakkenberg/dyson-research",
       "relation": "isSupplementTo",
+      "resource_type": "software",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/thijs-hakkenberg/dyson",
+      "relation": "isPartOf",
       "resource_type": "software",
       "scheme": "url"
     },
@@ -34,6 +40,5 @@
       "scheme": "url"
     }
   ],
-  "notes": "License note: the repository root LICENSE is GPL-3.0; the analysis-scripts pyproject.toml currently declares MIT. Reconcile before minting the DOI. Metadata here defaults to the repository-level GPL-3.0-or-later.",
   "version": "<FILL: git release tag, e.g. v0.1.0-wave-a>"
 }
