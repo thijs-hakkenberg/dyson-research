@@ -1,0 +1,8 @@
+id,title,latest,words,cites,bib,status,tier,venue,new_lit_rqs,n_new_refs
+01,ISRU Economic Crossover,am,18567,59,39,COMPLETE — 3/3 AI-reviewer Accept (39 rounds),1,Advances in Space Research / Acta Astronautica / J. Spacecraft & Rockets,[],0
+02,Swarm Coordination Scaling,dq,5630,29,38,"ADVANCED — NS-3 validated, 44 review files, PDF built",1,IEEE T-AES / J. Guidance Control Dynamics / Acta Astronautica,"['rq-1-16', 'rq-1-22']",5
+03,Multi-Model AI Consensus,m,7796,38,33,"ADVANCED — 16 trade studies, reliability trials, 40 review files",1,AI & Society / IEEE Intelligent Systems / Systems Engineering,[],0
+04,Microgravity Metallurgy,b,4139,21,21,"EARLY DRAFT — 2 versions, 6 review files, gravity-zone architecture",2,Progress in Aerospace Sciences / Acta Astronautica,"['rq-2-14', 'rq-2-18']",4
+05,ISRU Water Extraction,b,3254,18,13,"EARLY DRAFT — 2 versions, 6 review files, Monte Carlo cost model",2,Acta Astronautica / J. Spacecraft & Rockets,[],0
+06,Cryogenic Propellant Architecture,INPUTS,367,0,0,STUB — INPUTS.md only,2,Cryogenics / Acta Astronautica,[],0
+10,Thin-Film Deposition,INPUTS,338,0,0,STUB — INPUTS.md only,2,J. Applied Physics / Acta Astronautica,"['rq-1-1', 'rq-1-44']",5
