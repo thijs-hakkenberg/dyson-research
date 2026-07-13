@@ -1,0 +1,10 @@
+\section{Reproducibility Appendix: AI Model Provenance}
+\label{sec:appendix_model_provenance}
+
+This paper's AI-assisted methodology (disclosed in the front matter) used two distinct generations of reviewer models, reflecting the elapsed time between initial drafting and the most recent revision cycle.
+
+\textbf{February 2026 generation.} The manuscript was drafted on 2026-02-22 and reviewed in its early rounds by Claude Opus 4.6 (Anthropic, endpoint \texttt{claude-opus-4-6}), Gemini 3 Pro (Google DeepMind, endpoint \texttt{gemini-3-pro}), and GPT-5.2 (OpenAI, endpoint \texttt{gpt-5-2}).
+
+\textbf{May 2026 generation.} From manuscript version~AM onward (holistic review, 2026-05-11/12), the reviewer panel was upgraded to Claude Opus 4.7 (endpoint \texttt{claude-opus-4-7}), Gemini 3.1 Pro (endpoint \texttt{gemini-3-1-pro}), and GPT-5.5 Pro (endpoint \texttt{gpt-5-5-pro}). Version~AM is the boundary revision: it was reviewed by both the February and May panels; all subsequent versions (AN onward) were reviewed exclusively by the May panel.
+
+In both generations, models were accessed as structured reviewers under a fixed rubric (Section~\ref{sec:related}), not as co-authors; all quantitative results derive from the deterministic and Monte Carlo simulation code described in \S\ref{sec:model}, independently of which reviewer panel was active at the time. Reviewer transcripts for each version are archived under \texttt{publications/drafts/\allowbreak{}01-isru-economic-crossover/\allowbreak{}reviews/\allowbreak{}version-*/} in the project repository for post-hoc verification.
