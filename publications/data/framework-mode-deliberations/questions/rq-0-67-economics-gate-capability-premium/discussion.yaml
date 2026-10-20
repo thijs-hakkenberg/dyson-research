@@ -1,0 +1,703 @@
+questionId: rq-0-67
+questionSlug: economics-gate-capability-premium
+questionTitle: May the economics gate pass 0B at a cost above Earth supply (a capability premium R), or does any premium need a separate owner decision?
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T22:12:29.542Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # Economics gate (g-economics): may 0B pass above Earth-supply cost?
+
+          **Ruling in brief.** The economics gate tests cost parity only, with R = 1 written into the gate. Any capability premium (R > 1) is allowed, but only through a **separate owner decision taken before the cost evidence arrives**. That decision is priced in dollars, capped, and tied to a named benefit. It is then frozen into the gate as a ceiling the gate cannot change. On *where* the premium is decided, GPT's position stands. On *whether* a premium is allowed, Claude's position stands. Neither model addressed *when* the premium is set, and that is what decides whether the gate means anything.
+
+          ---
+
+          ## 1. Frame & decision type
+
+          - **Decision type.** This is a property decision about the KDP-0B economics criterion. It sits inside an executive decision about decision rights: who may set R, and when.
+          - **Reversibility.**
+            - The rule itself is two-way and could be amended later.
+            - The gate it governs (KDP-0B) is one-way.
+            - Under D-02, stringency follows reversibility. So the rule must stop a one-way gate from being passed by a threshold chosen after the result is known.
+          - **Cynefin domain.** The cost question is *complicated*: it can be estimated, but current estimates disperse badly ($15.7B BOM against $22–195B from the panel). The premium question is a *values* question. No analysis will settle how much capability is worth to this owner.
+          - **Real issue.** All three panel positions are about the **value of R**. The failure mode is the **timing of R**.
+            - If R can be set at KDP-0B, after the P70 estimate is on the table, the gate cannot fail on cost.
+            - Any overrun becomes "capability premium". That is exactly GPT's "relabelled economics pass".
+            - Claude's formula is sound. Its governance is open.
+
+          ## 2. Criteria and weights (stated before options)
+
+          Swing weights sum to 100. Each weight reflects how much it matters to move from the worst to the best plausible option on that criterion, not how important the criterion sounds in the abstract.
+
+          | # | Criterion | Weight | Why this weight fits the range |
+          |---|---|---|---|
+          | C1 | **Pre-commitment integrity**: the threshold cannot be moved after the evidence is seen | 30 | The options run from "goalposts movable at the gate" to "fully frozen ex ante". That is the widest and most consequential swing. KDP-0B is one-way, and escalation of commitment is the dominant megaproject failure. |
+          | C2 | **Discriminating power**: the gate can fail on cost alone | 20 | A gate that cannot fail adds nothing over the TRL, demand and licence gates. The swing runs from "never fails" to "fails cleanly". |
+          | C3 | **Robustness** to launch price and estimate dispersion | 20 | Earth-supply $/kg moves with launch price. Our own estimates span roughly 9× ($22–195B). Options differ a lot on whether the verdict flips across scenarios. |
+          | C4 | **Fidelity to D-01** ("capability programme, not a cost saving") | 15 | This matters, but the swing is moderate. Every option except strict undercut can honour D-01 somewhere in the decision set. |
+          | C5 | **Decision-rights clarity** (RAPID: who decides the premium) | 10 | The swing runs from "ambiguous between gate reviewers and owner" to "named owner decision". It matters for accountability but does not change outcomes much. |
+          | C6 | **Simplicity / administrative cost** | 5 | All options are cheap next to Phase 0, so the swing is small. |
+
+          ## 3. Options
+
+          - **O0. Null: leave the panel split as is.** The gate text keeps "R set by owner" with no timing or cap. GPT's objection stays as an unresolved note.
+            - *Rejected.* In practice R gets set at KDP-0B by whoever is in the room, after the estimate is known. This is the worst case on C1 and C5. It also guarantees the dispute returns at the one-way gate, where it is most expensive.
+          - **O1. Gemini: strict undercut (R < 1).**
+            - *Rejected.* The comparison is already 0B **P70** against Earth **P50**, which builds in conservatism. Requiring undercut on top of that double-counts margin.
+            - It also contradicts D-01, which explicitly says Phase 0 is not a cost saving.
+            - With a ±30% estimate band, the difference between R = 0.9 and R = 1.0 is inside the noise. Strict undercut adds false precision, not discrimination.
+          - **O2. GPT as stated: parity in the gate; any subsidy is a new explicit owner decision, timing unspecified.**
+            - Strong on C5. It still allows the subsidy decision to be taken at KDP-0B after the numbers are known. That leaves the escalation path open under a cleaner label.
+          - **O3. Claude as stated: R set by the owner inside the gate, with R > 1 allowed.**
+            - Strong on C4. Weakest on C1 and C2. The gate becomes "whatever R makes it pass".
+          - **O4. Recommended: pre-committed, capped, priced premium.**
+            - The gate computes a parity verdict at R = 1.
+            - A separate owner decision, **D-xx (Capability Premium Authorisation)**, is taken no later than the 0A mid-term review. It sets R_max and an absolute dollar cap ΔC_max, each tied to named benefits.
+            - At KDP-0B the gate passes only if parity holds, or if the premium is within *both* caps. The gate cannot raise either cap.
+            - Default if D-xx is not taken: R_max = 1.0.
+          - **O5. Drop the economics gate; let the demand gate carry economics through signed prices.**
+            - *Rejected as a replacement* and kept as a *component*. Signed demand shows willingness to pay but does not test whether the delivered cost is credible.
+            - However, demand signed at above-Earth prices is the best evidence for a premium. O4 uses it (see §8).
+
+          ## 4. Assessment matrix (QOC; scores 1–5, weighted)
+
+          | Criterion (wt) | O0 Null | O1 Undercut | O2 GPT | O3 Claude | O4 Pre-committed cap | O5 Demand-only |
+          |---|---|---|---|---|---|---|
+          | C1 Pre-commitment (30) | 1 | 5 | 3 | 1 | **5** | 3 |
+          | C2 Discrimination (20) | 1 | 4 | 4 | 2 | **4** | 2 |
+          | C3 Robustness (20) | 2 | 2 | 3 | 3 | **4** | 2 |
+          | C4 D-01 fidelity (15) | 3 | 1 | 3 | 5 | **4** | 4 |
+          | C5 Decision rights (10) | 1 | 4 | 5 | 2 | **5** | 3 |
+          | C6 Simplicity (5) | 5 | 5 | 4 | 4 | 3 | 4 |
+          | **Weighted total (/500)** | **155** | **350** | **345** | **240** | **435** | **270** |
+
+          How to read the matrix:
+
+          - O1 and O2 score close. O1 buys integrity by sacrificing D-01, which is a values cost. O2's weakness is purely timing, and that is fixable. O4 is essentially O2 with the timing fixed plus Claude's parameter.
+          - O4 scores 4, not 5, on C3 for a specific reason: robustness depends on the launch-price scenario rule in §8, which carries its own judgment calls.
+          - Re-weighting check: if C4 is raised to 30 and C1 cut to 15, O4 still leads (O4 ≈ 420, O3 ≈ 300). The ranking is not fragile to the obvious values shift.
+
+          ## 5. Sensitivity vs trade-off points
+
+          **Sensitivity points** (one attribute moves strongly; facts can settle them):
+
+          - **S1. Earth-supply P50 $/kg at SEL1.**
+            - This is the denominator, and it is dominated by launch $/kg plus the in-space transfer stage.
+            - A fall from about $1,500/kg to about $200/kg to LEO (fully reusable heavy lift at cadence) would cut the Earth baseline by several times.
+            - A fixed R therefore implies a moving absolute premium. That is why O4 caps **dollars** as well as the ratio.
+          - **S2. Estimate band.**
+            - At ±30%, R values between about 0.8 and 1.3 cannot be told apart from each other.
+            - Today's dispersion, $15.7B BOM against $22–195B, is nowhere near ±30%.
+            - Until the band is met, the gate is **"not ready"**, which is a different outcome from "fail on cost".
+          - **S3. Utilisation and replacement rate.** Per GPT, delivered $/kg is highly sensitive to plant utilisation and refurbishment. These belong in the P70, not in R.
+
+          **Trade-off points** (values questions; analysis will not settle them):
+
+          - **T1. Capability against cost.** How many dollars above Earth supply is supply independence, learning or Phase 1 option value worth to the owner? This is the content of D-xx. It is a values call and must not be dressed up as an estimate.
+          - **T2. Gate integrity against flexibility.** Freezing R before the evidence gives up the ability to react to a surprising capability benefit discovered during 0A.
+            - I accept this loss.
+            - The escape route is an explicit amendment to D-xx, recorded with its own rationale before the KDP-0B package is assembled. It is not an adjustment made at the gate.
+
+          ## 6. Evidence certainty (GRADE certainty; IPCC/ICD 203 likelihood kept separate)
+
+          | Claim | Certainty of evidence | Likelihood judgment |
+          |---|---|---|
+          | Our cost estimates currently disperse far beyond ±30% (BOM $15.7B against panel $22–195B) | **High.** This comes directly from the panel record. | n/a; it is an observed fact |
+          | The true 0B cost lies above the BOM figure | **Low–moderate.** Inference from panel spread and the base rate of BOM-style bottom-up estimates. | *Likely* (≈66–90%) |
+          | Thresholds that can be set after results are known tend to be relaxed (escalation of commitment, optimism bias) | **Moderate.** Staw (1976) on escalation; Flyvbjerg's megaproject cost-overrun work (e.g., *Project Management Journal*, 2014). Analogous domains, not space ISRU specifically. | *Likely* that an unfrozen R would be raised at KDP-0B if the estimate overran |
+          | Budgeting one-way commitments at about 70% confidence is accepted practice | **Moderate–high.** NASA's joint cost-and-schedule confidence level policy (70% JCL at KDP-C, NPR 7120.5). | n/a; supports using P70 and not adding an undercut margin |
+          | Launch $/kg will fall substantially over the Phase 0–1 horizon | **Low.** Credible vehicle trajectories exist, but cadence and pricing are not demonstrated. | *About as likely as not* that a factor-of-3+ fall arrives before Phase 1 |
+          | Capability value (supply independence, learning) is real but not yet quantified | **Very low** for any dollar figure. | n/a; this is why it is a values decision |
+
+          **Calibration note.** I am *confident* in the governance argument (C1 dominates) and *not confident* in any particular R value. The ruling rests on the first and deliberately avoids depending on the second.
+
+          ## 7. Key assumptions and falsifiers; ACH on what Phase 0 is for
+
+          | Assumption | What would falsify it |
+          |---|---|
+          | A1. The owner can state a capability premium before seeing the 0B estimate | The owner declines D-xx or can only answer "it depends on the number". In that case the default R_max = 1 applies, and that is itself informative. |
+          | A2. Earth supply at SEL1 is a well-defined comparator | The panel cannot agree on a reference Earth-supply architecture and launch scenarios before 0A mid-term. Then the denominator is unowned and the gate cannot be evaluated. |
+          | A3. The ±30% band is achievable by KDP-0B | 0A cost work does not converge, and the spread stays above about 2× in the second iteration. The gate then stays "not ready". That points to the fallback (0A only, Earth supply), not to a premium. |
+          | A4. Premium value is not already counted in demand | Phase 1 customers sign at above-Earth prices. The premium is then *market-backed*, not a subsidy, and should not be capped by D-xx. |
+
+          **ACH: competing hypotheses for the source of Phase 0's value**, scored against the existing record:
+
+          1. **H-capability/option value** (Phase 0 buys a Phase 1 option and supply independence). Consistent with D-01's wording and with 0B being sized by signed Phase 1 demand. *Least disconfirmed.*
+          2. **H-learning** (Phase 0 is mainly a technology demonstrator). Consistent with the TRL work package. It is weakened because a learning goal would not need a 0B production step at all; 0A already serves it.
+          3. **H-cost saving.** Directly disconfirmed by D-01, and by the panel cost range sitting well above the BOM.
+
+          H1 ranking first is why a premium must be *allowed*. The evidence for H1 is qualitative, which is why it must be *priced and decided by the owner*, not inferred at the gate.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Gate criterion text (proposed for `gates-proposal.yaml`, g-economics)
+
+          ```yaml
+          g-economics:
+            readiness_precondition:
+              - 0B delivered-cost estimate band <= ±30% at P70/P50 spread
+              - Earth-supply reference architecture and launch-price scenarios (L-low, L-central, L-high)
+                frozen at 0A mid-term review
+              - if not met: verdict = NOT READY (route to fallback "0A only, Earth supply"), not FAIL
+            parity_test:
+              metric: C0B_P70($/kg delivered SEL1) vs E_P50($/kg Earth supply SEL1)
+              R: 1.0   # fixed in-gate; not adjustable at KDP-0B
+            premium_allowance:
+              source: owner decision D-xx (Capability Premium Authorisation)
+              deadline: no later than 0A mid-term review; amendments only by recorded owner decision
+                        before KDP-0B package is assembled
+              default_if_absent: R_max = 1.0, dC_max = 0
+              contents:
+                - R_max (ratio ceiling)
+                - dC_max (absolute $ ceiling on (C0B_P70 - E_P50) x Phase-1 signed delivered mass)
+                - named benefits bought (supply independence | learning | Phase-1 option value), each with
+                  the evidence that would show it delivered
+              market_backed_exemption: premium covered by signed Phase-1 prices above E_P50 does not
+                count against dC_max
+            pass_rule:
+              PASS if, in L-central AND L-high: C0B_P70 <= R_max x E_P50 AND premium$ <= dC_max
+              AND in L-low: premium$ <= dC_max (ratio may exceed R_max only if the $ cap holds)
+              FAIL otherwise. Gate reviewers may not alter R_max or dC_max.
+            reporting: always report parity verdict (R=1) separately from premium-authorised verdict
+          ```
+
+          **Why the L-low rule takes this form.** In a cheap-launch world the ratio can blow out even when the dollar amount at stake is modest. Holding the absolute cap while relaxing the ratio stops the verdict flipping simply because the denominator collapsed. This is Claude's "must not reverse across the launch-price range", made operational.
+
+          **Guidance to the owner on D-xx** (a values call; my recommendation only):
+
+          - Do not authorise a ratio-only premium.
+          - If authorising, keep R_max ≤ about 1.5 and set dC_max no higher than the owner would pay to buy the named benefit directly. One example is the cost of a hedge against launch-cadence disruption for the Phase 1 supply chain.
+          - A premium inside about 1.3 is mostly estimate noise anyway. Be explicit whether D-xx is buying a real capability or absorbing uncertainty.
+
+          ### Y-statement
+
+          In the context of a one-way KDP-0B gate for a programme the owner has declared a capability programme, not a cost saving (D-01), and facing cost estimates dispersed around 9× with an Earth-supply baseline that moves with launch price, we chose a parity-only economics test (R = 1 in-gate) combined with a separate, pre-committed, dollar-capped capability-premium decision (D-xx) taken by the 0A mid-term review. This is to achieve a gate that can fail on cost, a premium that is honest about what it buys, and decision rights that sit with the owner. We accept that a genuinely valuable capability discovered late in 0A cannot be credited at the gate without a recorded amendment, and that a missing D-xx defaults to strict parity.
+
+          ### Toulmin
+
+          - **Claim:** A premium may pass KDP-0B only within a cap the owner fixed before seeing the 0B estimate.
+          - **Grounds:** Estimate dispersion; launch-price sensitivity; D-01 wording; D-02's "stringency follows reversibility".
+          - **Warrant:** At a one-way gate, any threshold that can be chosen after the evidence is known stops being a test. A test that cannot fail adds no information to the decision.
+          - **Backing:** Escalation-of-commitment and megaproject-overrun literature; NASA's practice of committing at 70% JCL with thresholds set before confirmation.
+          - **Qualifier:** *Likely* the right structure. Confidence is *moderate*, because the behavioural evidence comes from analogous domains.
+          - **Rebuttal conditions:** If the owner can credibly price capability only once the 0B design is known, D-xx moves later. It must still come before the KDP-0B package, never at the review.
+
+          ## 9. Consequences (Kruchten relations)
+
+          **Enables:**
+
+          - **Coupling with g-demand.** The market-backed exemption ties premium tolerance to signed Phase 1 prices. This is the cleanest evidence that H-capability is real.
+          - **A clean fallback trigger.** "Not ready" and "fail" both route to "0A only, Earth supply", but they are recorded differently. That keeps the lesson legible.
+
+          **Requires** (new follow-on decisions and artefacts):
+
+          - **D-xx, Capability Premium Authorisation**, as an owner decision due by the 0A mid-term review.
+          - **An owned Earth-supply reference spec**: architecture, transfer stage, and three launch-price scenarios. It is frozen at the mid-term review and added beside `trl-baseline.yaml`.
+          - **Cost-method rules** for reaching ±30%: independent estimate, reconciliation of the BOM against the panel range, and explicit modelling of utilisation and replacement in the P70.
+
+          **Constrains:**
+
+          - KDP-0B reviewers lose the authority to set R. Claude's "R set by the owner" survives, but only *ex ante*.
+
+          **Conflicts with:**
+
+          - Gemini's undercut threshold. I keep this disagreement rather than averaging it away. If the owner holds that Phase 0 must save money, D-01 itself needs revisiting, not the gate.
+
+          **Evidence that would change this ruling:**
+
+          1. Independent estimates converge within ±30% at or below Earth P50 in all launch scenarios. The premium machinery is then moot, and O2 (plain parity) suffices.
+          2. Signed Phase 1 contracts at above-Earth prices cover the full gap. The premium is market-backed, and D-xx shrinks to a formality.
+          3. Launch prices fall far enough that parity is unattainable in every scenario. The question is then no longer a gate parameter. It becomes whether 0B should exist at all, which is a D-01-level owner decision to be taken immediately, not deferred to KDP-0B.
+          4. Evidence that the owner's pre-stated values would be *better* informed by the 0B design, for example capability benefits that only become visible at integrated test. That would justify moving the D-xx deadline later, but never to the gate itself.
+        wordCount: 3014
+        generatedAt: '2026-10-17T22:14:11.250Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          ### 1. Frame & decision type
+          This is an **executive and property decision** regarding the threshold criteria for the KDP-0B economics gate in Project Dyson. It is a **one-way door (highly irreversible)** decision, as passing KDP-0B commits the programme to Phase 1 execution based on signed demand. The decision operates in the **complicated** Cynefin domain, where expert analysis of cost models and governance structures is required. The core issue is whether a "capability premium" (R > 1) can be embedded as a passing condition within the gate itself, or if any cost exceeding Earth-supply parity requires an explicit, separate owner intervention.
+
+          ### 2. Criteria and weights
+          Criteria are established prior to evaluating options, using swing weights based on the actual range of outcomes at KDP-0B.
+
+          *   **Governance Clarity & Accountability (Weight: 45%)**: The degree to which the decision forces explicit owner accountability for subsidies. *Swing rationale*: The difference between an automated gate pass at a $50B premium versus a forced owner signature is the largest governance delta in the programme.
+          *   **Cost Control & Robustness (Weight: 35%)**: Protection against the massive cost dispersion ($22–195B panel vs $15.7B BOM). *Swing rationale*: High weight due to the extreme variance in current estimates; the gate must prevent runaway capability subsidies.
+          *   **Strategic Capability Delivery (Weight: 20%)**: Alignment with D-01 (Phase 0 is a capability programme). *Swing rationale*: Lower weight because all options technically allow for capability delivery, they only differ on *how* it is authorized.
+
+          ### 3. Options
+          *   **Option 1: Premium inside the gate (Claude's position)**. The gate passes if `0B P70 $/kg ≤ R × Earth-supply P50 $/kg`, where R > 1 is pre-set by the owner.
+          *   **Option 2: Parity at gate, premium requires separate decision (GPT's position)**. The gate threshold is strictly `Expected delivered cost ≤ Earth supply`. Any capability subsidy (R > 1) fails the standard gate and triggers a mandatory, explicit owner decision to proceed.
+          *   **Option 3: Undercut Earth supply (Gemini's position)**. The gate strictly requires `Delivered $/kg < Earth supply`. *Rejected* because it directly contradicts D-01 (capability programme, not cost saving).
+          *   **Option 4: Null option (Leave split as is)**. *Rejected* because an undefined gate criterion at KDP-0B prevents the establishment of a baseline and renders the economics gate un-executable.
+
+          ### 4. Assessment matrix
+
+          | Option | Governance Clarity (45%) | Cost Control (35%) | Strategic Capability (20%) | Weighted Score |
+          | :--- | :--- | :--- | :--- | :--- |
+          | **1 (Premium in gate)** | Low (Subsidies hidden in R) | Medium (Capped by R) | High (Smooth pass) | 4.7 / 10 |
+          | **2 (Separate decision)** | High (Forces explicit sign-off) | High (Stops automatic overrun) | Medium (Adds friction) | **8.5 / 10** |
+          | **3 (Undercut)** | Medium | High | Low (Violates D-01) | *Rejected* |
+          | **4 (Null)** | Low | Low | Low | *Rejected* |
+
+          ### 5. Sensitivity vs trade-off points
+          *   **Sensitivity point**: The decision is highly sensitive to the *launch-price scenario variance*. If Earth-supply costs drop significantly, Option 1's static R multiplier could inadvertently authorize massive absolute dollar subsidies.
+          *   **Trade-off point**: This is a classic trade-off between **governance friction** (Option 2 requires an extra executive loop) and **financial transparency** (Option 1 hides the subsidy in a pre-calculated gate metric).
+
+          ### 6. Evidence certainty
+          *   **Claim**: There is massive cost dispersion in Phase 0 estimates.
+              *   *Evidence*: Panel estimates $22–195B vs BOM $15.7B.
+              *   *Certainty*: **High confidence** (ICD 203) that the uncertainty exists; **Very Likely** (>90% probability) that actual costs will deviate from the BOM.
+          *   **Claim**: Embedding R in the gate obscures the absolute cost of the capability premium.
+              *   *Evidence*: Basic arithmetic of relative multipliers (R) applied to fluctuating baselines (Earth supply).
+              *   *Certainty*: **High confidence**.
+
+          ### 7. Key assumptions
+          *   **Assumption 1**: Earth-supply P50 $/kg can be accurately modeled at KDP-0B.
+              *   *Falsification*: Radical market disruption (e.g., Starship achieving full, rapid reusability earlier than projected) making Earth-supply costs highly volatile and unpredictable.
+          *   **Assumption 2**: The owner is available and willing to make a separate capability subsidy decision at KDP-0B.
+              *   *Falsification*: Owner delegates all KDP-0B authority to a steering committee that lacks the mandate to authorize budget overruns.
+          *   **ACH Ranking of Hypotheses regarding D-01**:
+              1.  *Least disconfirmed*: D-01 means we *can* pay a premium, but we must know exactly what we are paying (supports Option 2).
+              2.  *More disconfirmed*: D-01 means the premium is pre-approved as a structural project metric (Claude's view; disconfirmed by the need for strict KDP-0B financial controls).
+
+          ### 8. Decision, warrant, accepted downside
+          *   **Y-Statement**: *In the context of* the KDP-0B economics gate, *facing* extreme cost estimate dispersion ($15.7B to $195B), *we chose* Option 2 (Cost parity as the gate threshold, with any premium requiring a separate owner decision), *to achieve* explicit executive accountability for capability subsidies, *accepting* the added governance friction of a potential two-step approval process at the gate.
+          *   **Warrant (Toulmin)**: Because Phase 0 is a capability programme (D-01), a premium is permissible; however, because the cost dispersion is dangerously wide, embedding a static multiplier (R) inside an automated gate risks authorizing unaffordable absolute dollar subsidies without executive oversight. Therefore, the gate must test for parity, and the premium must be an explicit executive exception.
+          *   **Qualifier**: This holds true provided Earth-supply costs do not drop so low that parity becomes physically impossible for space-based supply under any physics-based model.
+
+          ### 9. Consequences
+          *   **Constrains**: The systems engineering team cannot "design to R" as a guaranteed passing metric; they must design to Earth-supply parity or prepare a rigorous justification for the subsidy.
+          *   **Enables**: Enables the owner to dynamically assess the value of the capability premium at the exact moment of the KDP-0B decision, using the most up-to-date Phase 1 signed demand.
+          *   **Follow-on decisions**: Requires the creation of a standardized "Capability Premium Justification" template to be used if the economics gate fails but the technical gates pass.
+        wordCount: 989
+        generatedAt: '2026-10-17T22:14:38.615Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **Recommendation: an above-parity capability premium requires a separate, explicit owner decision. D-01 does not itself authorise one.** That decision may occur at the same KDP-0B meeting, but it must not be recorded as an economics-gate pass.
+
+          The question is one of **decision authority and gate semantics**, not merely the value of a multiplier. D-01 establishes the purpose of Phase 0 and preserves the option to undertake 0B; it does not specify how much additional expenditure capability is worth.
+
+          This is an executive policy decision governing a substantially irreversible commitment. Under D-02, its evidence and authorisation requirements should therefore be stronger than those for reversible internal 0A milestones.
+
+          The distinction to preserve is:
+
+          - **Economics finding:** does the proposed supply route satisfy the approved cost criterion?
+          - **Investment decision:** is the capability nevertheless worth purchasing at an explicitly bounded premium?
+
+          The owner may answer “no” to the first and “yes” to the second without contradiction.
+
+          Source basis: the accepted D-01/D-02 decisions and panel positions supplied in the question. I have not independently inspected the repository files.
+
+          ## 2. Criteria and weights
+
+          These are proposed **swing weights**, not empirical measurements. They value the move from the stated worst to best performance of each governance arrangement.
+
+          | Criterion | Performance range being valued | Weight | Why this weight fits that range |
+          |---|---|---:|---|
+          | **C1. Explicit authority and accountability** | An unspecified capability rationale can authorise additional expenditure → a named owner approves a quantified exposure | **30%** | This swing prevents an effectively unbounded delegation at an irreversible gate. |
+          | **C2. Economic discrimination and downside control** | The gate can be made to pass by adjusting its threshold → a stable test exposes failure and bounds exposure | **25%** | A gate that cannot fail is not useful investment control. |
+          | **C3. Preservation of valuable capability options** | Every above-parity proposal is prohibited → worthwhile capability can proceed with explicit funding | **20%** | D-01 deliberately preserves capability and option value, rather than demanding savings alone. |
+          | **C4. Robustness to model and scenario uncertainty** | A point estimate determines approval → scope, scenarios and adverse cases are examined consistently | **15%** | The reported cost dispersion makes false precision consequential. |
+          | **C5. Timeliness and administrative simplicity** | Duplicate, sequential approvals → one coordinated decision package with clear findings | **10%** | Delay matters, but paperwork savings do not justify unclear spending authority. |
+
+          **Non-compensable requirements:** no economic approval may waive D-02’s TRL 6 requirement for project-ending technologies; target, demand and licence gates remain independent. A premium must have an accountable owner and identifiable funding.
+
+          ## 3. Options
+
+          **A. Null: retain the unresolved panel split.**  
+          Argument for: preserves negotiating flexibility while 0A generates evidence.  
+          Reject: analysts cannot design a discriminating economics test against three incompatible thresholds. It invites selection of the favourable interpretation at KDP-0B.
+
+          **B. Permit an owner-set premium inside the economics gate.**  
+          Use Claude’s proposed \(P70_{\text{project}}\le R\,P50_{\text{Earth}}\), with \(R>1\) permitted.  
+          Argument for: integrates capability valuation and cost into one decision.  
+          Reject as the default: D-01 supplies neither a value for \(R\) nor a premium budget. If \(R\) is independently justified, funded and approved beforehand, this becomes substantively close to the separate decision recommended below—but retains a less informative “economics pass” label.
+
+          **C. Require cost parity or better, with no premium route.**  
+          Argument for: simple, fiscally disciplined; a strict undercut variant follows Gemini’s position.  
+          Reject: prevents the owner from purchasing valuable capability even where its benefits exceed its additional cost. Strict undercutting also requires a justified margin, rather than an arbitrary requirement to beat parity by any amount.
+
+          **D. Separate the economics finding from capability-premium authorisation. — Recommended**  
+          Apply a stable parity test. An above-parity project fails that test, but may proceed through a separately recorded, bounded owner authorisation. Coordinate both decisions in one gate package.
+
+          ## 4. Assessment matrix
+
+          Scores are qualitative policy judgments: **1 = poor, 5 = strong**. They are not probabilities or measured benefits.
+
+          | Option | C1 Authority 30% | C2 Discrimination 25% | C3 Capability 20% | C4 Robustness 15% | C5 Simplicity 10% | Weighted /5 |
+          |---|---:|---:|---:|---:|---:|---:|
+          | A. Leave split unresolved | 1 | 1 | 3 | 1 | 2 | **1.50** |
+          | B. Premium inside gate | 3 | 3 | 5 | 3 | 5 | **3.60** |
+          | C. Parity only; no premium route | 5 | 5 | 1 | 3 | 4 | **3.75** |
+          | **D. Separate authorisation** | **5** | **5** | **5** | **4** | **3** | **4.65** |
+
+          The score for B assumes an owner actually fixes \(R\) before assessment. An adjustable, post-result \(R\) would score substantially worse on C1 and C2.
+
+          D wins by keeping both fiscal discrimination and capability choice. Its advantage is not evidence that two documents are inherently better than one: the essential feature is **two distinguishable findings with different warrants**.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points — empirical or modelling questions
+
+          1. **Delivered quantity and utilisation.** Signed Phase 1 demand should size 0B, as D-01 requires. Nameplate production must not be treated as saleable or accepted delivery.
+          2. **Launch-price assumptions.** Earth resupply and the project’s own launch requirements must use coherent scenarios; both respond to launch prices.
+          3. **Grade, recovery, replacement and delay.** These affect both expenditure and accepted kilograms at SEL1. Lost output and replacement launches cannot be evaluated independently if failures correlate them.
+          4. **Comparator definition.** Earth supply must deliver equivalent material quality, availability and schedule—not merely launch an equivalent mass.
+          5. **Cost scope.** Include development still to be incurred, transport, operations, losses, replacement, closure and contingent liabilities on a consistent basis.
+
+          Scenario reversals are information, not automatically modelling errors. Require a **non-contingent economics pass** to survive the predeclared core scenario set. If parity holds only under certain launch prices or demand levels, the finding should be conditional, with enforceable triggers, or require premium authorisation.
+
+          ### Trade-off points — owner values, not facts to discover
+
+          - **Capability versus expenditure:** how much additional public or programme funding is worth autonomy, learning or strategic supply?
+          - **Risk versus early commitment:** how much downside is acceptable to secure an earlier capability?
+          - **Decision speed versus assurance:** how much independent review is justified before an irreversible commitment?
+
+          An owner can resolve these trade-offs; improved cost modelling cannot resolve them on the owner’s behalf.
+
+          ## 6. Evidence certainty
+
+          GRADE labels below are adapted to this engineering-governance setting. **Certainty/confidence concerns support for a claim; likelihood concerns the chance of an outcome.**
+
+          | Key claim | Evidence certainty and confidence | Likelihood statement |
+          |---|---|---|
+          | D-01 funds 0A, gates 0B and describes a capability programme | **High within the supplied record**; high confidence in that stated scope | Documentary claim; probability language is unnecessary |
+          | D-01 does not specify a premium amount or authority mechanism | **Moderate**, because the full decision text has not been inspected; moderate confidence | No numeric likelihood assigned |
+          | The reported $22–195B estimates versus $15.7B BOM show unresolved estimate comparability or uncertainty | **Moderate** for the reported dispersion; **low** for its causes | They do **not** establish the probability that the project exceeds parity |
+          | Capability benefits could justify above-parity expenditure | **Low** project-specific evidence; plausible in principle | Whether benefits exceed the premium is currently unquantified |
+          | Separate findings improve auditability | **Moderate**, based on decision-structure reasoning rather than Project Dyson outcome data | No quantified reduction in cost overruns claimed |
+          | A calibrated P70 can support downside control | **Low** confidence in current calibration until estimate reconciliation and uncertainty validation | “P70” means 70% non-exceedance only under the adopted model and assumptions |
+
+          The reported cost spread is **not** a probability distribution. Nor is “±30%” meaningful assurance without a stated confidence level, cost scope and validation method.
+
+          ## 7. Key assumptions
+
+          | Assumption | Evidence that would falsify or materially change it |
+          |---|---|
+          | **A1. D-01 does not already delegate premium authority.** | Full accepted text explicitly authorising above-parity expenditure, with a ceiling or binding method for setting it |
+          | **A2. A meaningful Earth-supply counterfactual exists.** | Evidence that equivalent material, schedule or assured availability cannot be purchased from Earth; then simple $/kg parity is an inadequate primary comparator |
+          | **A3. Capability benefits can be specified separately from ordinary material demand.** | Demonstration that the proposed benefit is already fully included in the matched service specification or customer payments, making a separate benefit credit double counting |
+          | **A4. Independent findings need not cause a material sequential delay.** | Procurement or governance evidence that separate authorisation necessarily misses a critical commitment window |
+          | **A5. Owner-approved bounds can constrain later commitment.** | Contracts or institutional arrangements showing that the proposed caps cannot actually prevent expenditure or exposure |
+
+          **Competing interpretations, ranked by least disconfirmed (ACH):**
+
+          1. **D-01 establishes purpose but leaves premium authority undecided.** Best fit to the supplied wording and the explicit owner-choice process.
+          2. **D-01 implicitly permits some premium.** Compatible with “capability programme,” but does not explain the permissible amount or budget authority.
+          3. **D-01 prohibits every premium.** Least consistent with preserving a capability option, although an owner could now adopt that restriction.
+
+          The ranking is interpretive, not a statistical posterior.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Proposed rule text
+
+          > **g-economics — KDP-0B**
+          >
+          > 1. Compare risk-adjusted expected delivered cost per accepted kilogram at SEL1 against the equivalent Earth-supply counterfactual, using a common price base, demand profile, service specification and declared evaluation horizon.
+          > 2. For the forward investment decision, compare all remaining avoidable costs consistently; disclose previously incurred programme costs separately. Do not compare a project marginal cost with an Earth full-service cost.
+          > 3. An ordinary economics pass requires expected project cost no greater than expected Earth-supply cost, plus compliance with an owner-approved P70 funding envelope and downside limits fixed before gate adjudication.
+          > 4. Report absolute funding exposure, cost-ratio uncertainty and results across predeclared launch-price, demand, utilisation, replacement and delay scenarios. P70 project cost divided by P50 Earth cost may be reported, but is not itself the probability of beating Earth supply.
+          > 5. Above-parity expenditure is **not an economics pass**. It requires a separate owner decision specifying the capability purchased, beneficiaries, alternatives, maximum incremental premium, total funding envelope, downside acceptance and stop/review triggers.
+          > 6. Without that authorisation, an economics failure invokes the agreed fallback: **0A only, Earth supply**. Premium approval does not waive any other gate, including D-02’s no-waiver TRL requirement.
+
+          For an ordinary pass, the premium allowance is effectively **\(R=1\)**. If a premium is authorised, report its implied \(R\), but do not treat that ratio as a substitute for an absolute funding cap. A falling Earth benchmark can increase \(R\) without increasing the project budget; the two measures answer different questions.
+
+          **Warrant:** capability value can justify investment without demonstrating cost competitiveness. Keeping those propositions separate prevents a strategic rationale from silently changing a cost threshold.
+
+          **Accepted downside:** an above-parity project with genuine strategic merit will carry an explicit adverse economics finding. That may be politically uncomfortable and creates additional approval work. The discomfort is useful disclosure, not a defect to remove by relabelling the gate.
+
+          ## 9. Consequences
+
+          - **Now:** record this interpretation as a new owner decision; assign responsibility for the comparator, independent estimate reconciliation and premium-benefit case.
+          - **During 0A:** reconcile the $15.7B BOM and $22–195B estimates before asserting a calibrated P70 or estimate-accuracy band. Produce a common cost breakdown and explain scope differences.
+          - **Before KDP-0B:** freeze the test, core scenarios, funding bounds and evaluation methods. Use signed demand to size the proposed commitment.
+          - **At KDP-0B:** record separate findings for economics, any premium authorisation, and all other gates. Do not allow an economic subsidy to compensate for failed technical or licence requirements.
+
+          **Y-statement:** In the context of D-01’s capability programme and D-02’s irreversible-gate discipline, facing unresolved authority for above-parity expenditure, we chose a parity-based economics finding with separately authorised capability premiums, to preserve both cost transparency and strategic choice, accepting additional approval work and the possibility of proceeding with a disclosed economics failure.
+
+          **Warrant and qualifier:** programme purpose is not a spending ceiling or subsidy mandate; this ruling stands unless the full accepted decisions establish such authority already, or evidence invalidates Earth supply as a comparable alternative. It enables explicit premium and funding decisions while constraining any claim that D-01 alone makes an above-parity proposal an economics pass.
+        wordCount: 2081
+        generatedAt: '2026-10-17T22:16:03.447Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: information
+            reasoning: Sets criteria before options and includes a null option. Its weighted totals check out, and it reports a re-weighting check. Its key insight is to fix the premium before the evidence arrives (by the 0A mid-term), with a dollar cap and a default of R_max = 1. The L-low pass rule and the ±30% readiness band rest on somewhat assumed calibration, but they would not change the ruling.
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: none
+            reasoning: Excellent decision chain, clear separation of facts and values, strong commitment and operationalisation.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: commitment
+            reasoning: 'Separate owner authorisation and bounded premiums are sound, but the operational rule weakens its own commitments: late amendments undermine pre-evidence freezing, the low-launch scenario waives the ratio ceiling, and market-backed premiums escape the dollar cap without equivalent funding safeguards. These exceptions could change approval.'
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: Reaches a defensible conclusion (parity in the gate, a separate owner decision for any premium). However, the 4.7 and 8.5 scores come from Low/Medium/High labels with no shown arithmetic. It also says Option 1's R is pre-set yet 'hidden'. It deliberately lets the owner set the premium after seeing the KDP-0B numbers, which reopens the escalation path it claims to close. Evidence and assumptions are thin.
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: alternatives
+            reasoning: Sound in part, but the options and assessment matrix are less rigorous than A and C. The null option is rejected too quickly without fully exploring the consequences of the baseline.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: 'The separate-authorisation recommendation is defensible, but its comparison unfairly treats an explicitly owner-preset R as hidden or lacking oversight. It also reverses the arithmetic: with fixed R and quantity, a lower Earth benchmark reduces the permitted absolute premium. Correcting these points could change the ranking of governance options.'
+        rawScore: 3
+        weightedScore: 2.5
+        approveCount: 0
+        rejectCount: 0
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: 'Clearly separates the economics finding from the premium investment decision. It has a non-compensable gate structure, an absolute funding cap that is not reduced to a ratio, and strong certainty caveats. Two weaknesses do not change the conclusion: the premium may still be authorised at the KDP-0B meeting after the evidence is seen, and Option C scores 3.8, not 3.75.'
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: none
+            reasoning: Very strong structural reasoning, excellent distinction between economics finding and investment decision, well-calibrated evidence section.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: information
+            reasoning: Clearly separates cost competitiveness from investment authority, preserves a funded premium route and a fallback, and specifies comparable costs, uncertainty reporting, bounds and independent gates. Its principal evidence limitation—unverified underlying decision text—is explicitly qualified and paired with falsifiers rather than treated as established authority.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+    winnerId: gpt-6-1-sol
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: 'All three responses agree: parity in the gate, with any premium needing a separate, explicit, bounded owner decision. A adds the timing safeguard, which can be adopted directly. Further rounds are unlikely to change the ruling.'
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: Responses A and C provide highly rigorous and complementary solutions that resolve the core tension. Further rounds are unlikely to improve the decision structure.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: 'Response C provides a satisfactory resolution: above-parity investment may proceed through explicit, bounded owner authorisation, while the economics finding remains separately reported and cannot be relabelled by capability value.'
+    shouldTerminate: true
+    completedAt: '2026-10-17T22:16:36.408Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 0
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 1
+  totalVotes: 9
+  approvalRate: 55.55555555555556
+  averageResponseWords: 2028
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T22:16:36.520Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    Claude Opus 5.5, Gemini 3.1 Pro and GPT-6.1 Sol converged on **separate, explicit owner authorisation for any above-Earth-supply capability premium**. All three rejected leaving the original threshold dispute unresolved. All three also retained a route for capability investment above parity rather than making cost savings an absolute prerequisite. GPT stated most explicitly that D-01 establishes programme purpose but does not itself authorise a subsidy.
+
+    The panel did **not** converge on how an authorised premium should affect the gate finding or when it may be approved. Claude would pre-authorise a bounded premium, normally by the 0A mid-term review, and permit a premium-authorised gate pass while reporting parity separately. Gemini and GPT would retain an adverse economics finding and record any decision to proceed separately; both allow that authorisation at KDP-0B. The votes supported the broad separation of cost assessment from owner authority, but preserved objections concerning late threshold changes, Claude’s proposed exceptions, and the calibration of cost criteria.
+
+    ## Decision record
+
+    ### Position 1 — Pre-authorised premium may support a gate pass  
+    **Held by Claude Opus 5.5**
+
+    > In the context of D-01’s capability programme and D-02’s irreversible-gate discipline, facing uncertain costs and the risk of thresholds being adjusted after results are known, we chose a parity assessment combined with a separately authorised, pre-committed capability premium, to achieve a discriminating gate and explicit owner accountability, accepting reduced flexibility to credit late-discovered benefits.
+
+    - **Warrant — Claude:** A threshold selected after the evidence is known ceases to function as a meaningful test.
+    - **Operational commitment — Claude:** Default to \(R=1\); require a separate owner decision setting a ratio ceiling, an absolute incremental-dollar cap and named benefits. Normally approve this by the 0A mid-term review.
+    - **Qualifier — Claude:** Recorded amendments could occur before assembly of the KDP-0B package. Claude also proposed special treatment for low-launch-price scenarios and market-backed premiums.
+    - **Accepted downside — Claude:** Late benefits cannot be credited without an explicit amendment; absent authorisation, parity applies.
+    - **Reservation — GPT:** Those amendment and exemption provisions weaken Claude’s stated pre-commitment.
+
+    ### Position 2 — Premium authorisation does not convert an economics failure into a pass  
+    **Held by Gemini 3.1 Pro and GPT-6.1 Sol**
+
+    > In the context of a capability programme approaching an irreversible commitment, facing unresolved authority for above-parity expenditure, we chose a parity-based economics finding with a separately recorded owner decision for any premium, to achieve transparent cost assessment and accountable strategic investment, accepting additional approval work and the possibility of proceeding despite an adverse economics finding.
+
+    - **Warrant — Gemini and GPT:** Capability value may justify additional expenditure, but that justification should not be presented as cost competitiveness.
+    - **Timing — Gemini and GPT:** The premium decision may be taken at KDP-0B; GPT explicitly allowed the same meeting, provided the findings remain distinct.
+    - **Qualifier — GPT:** The ruling could change if the full accepted decisions already grant bounded premium authority, or if Earth supply is not a valid equivalent-service comparator.
+    - **Accepted downside — Gemini and GPT:** Additional governance friction; GPT also acknowledged the discomfort of approving a strategically worthwhile project with a disclosed economics failure.
+    - **Reservation — Claude:** Approval after the cost evidence is available leaves an escalation-of-commitment route open.
+
+    ## Decision-quality audit
+
+    Only one discussion round was supplied. The audit below reports the voters’ assessments rather than treating their scores as independent validation.
+
+    | Round 1 response | Weakest Decision Quality links named in votes | Composite Scaffold gaps or unsupported elements identified by voters |
+    |---|---|---|
+    | **Claude Opus 5.5** | Claude: **information**; Gemini: **none**; GPT: **commitment** | Claude questioned the calibration supporting the ±30% readiness band and low-launch-price rule. GPT found that late amendments, relaxing the ratio ceiling in one scenario, and exempting market-backed premiums from the dollar cap weakened the operational commitment. Gemini identified no missing or unsupported step. |
+    | **Gemini 3.1 Pro** | Claude: **reasoning**; Gemini: **alternatives**; GPT: **reasoning** | Claude found no demonstrated arithmetic linking qualitative ratings to the numerical scores, and described the evidence and assumptions as thin. Gemini judged the null-option assessment insufficiently developed. GPT challenged the treatment of a pre-set owner-approved \(R\) as hidden and corrected Gemini’s claim about falling Earth prices increasing the absolute allowance under a fixed ratio. |
+    | **GPT-6.1 Sol** | Claude: **commitment**; Gemini: **none**; GPT: **information** | Claude identified same-meeting premium approval as a remaining commitment weakness and noted a minor assessment-matrix arithmetic error. GPT identified the uninspected underlying decision text as its principal evidence limitation and supplied falsifiers. Gemini identified no missing or unsupported step. |
+
+    **Trade-off points, rather than facts to settle:**
+
+    - **Claude versus Gemini/GPT:** Claude prioritised advance limits against post-evidence flexibility; Gemini and GPT retained owner discretion using the gate-time evidence.
+    - **Claude versus Gemini/GPT:** Claude permitted a premium-authorised pass; Gemini and GPT prioritised preserving a separate adverse economics finding.
+    - **All three:** The value of capability relative to additional expenditure remains an owner judgment. Claude and GPT explicitly distinguished that valuation from cost estimation.
+    - **GPT’s review of Claude:** Whether market-backed demand warrants exemption from a premium cap remains a funding-policy choice requiring safeguards, not merely evidence that customers value the output.
+
+    ## Key Points
+
+    - **Separate authority is the common ground.** Claude, Gemini and GPT all required an explicit owner decision for a capability premium; none treated D-01 alone as sufficient approval.
+    - **The original undercut position was withdrawn by Gemini.** Gemini’s round-one recommendation used parity with a separate premium route. GPT rejected mandatory undercutting without a justified margin; Claude also rejected it.
+    - **Absolute exposure matters alongside ratios.** Claude proposed both ratio and dollar ceilings; GPT required an absolute premium limit and total funding envelope. GPT cautioned that a ratio does not replace either.
+    - **The cost statistic remains unsettled.** Claude retained project P70 versus Earth P50. GPT proposed comparable expected costs plus a separate P70 funding envelope and downside limits. Gemini did not resolve that distinction in equivalent detail.
+    - **The reported estimate spread is not a calibrated probability distribution.** GPT explicitly warned against that inference. Claude and GPT both called for estimate reconciliation.
+    - **Other gates remain independent.** GPT explicitly stated that premium approval cannot waive target, demand, licence or D-02 technical requirements.
+    - **Scenario policy remains open.** Claude proposed a low-launch-price exception to the ratio ceiling. GPT instead recommended a non-contingent pass across predeclared core scenarios, or a conditional finding with enforceable triggers.
+
+    ## Unresolved Questions
+
+    1. **Gate semantics:** Should an authorised premium produce Claude’s premium-authorised pass, or Gemini/GPT’s economics failure plus separate investment approval?
+    2. **Authorisation timing:** Should the owner commit by the 0A mid-term review, as Claude proposed, or retain a distinct KDP-0B decision, as Gemini and GPT allowed?
+    3. **Cost criterion:** Should the gate use Claude’s P70/P50 comparison or GPT’s expected-cost comparison with separate downside controls?
+    4. **Caps and exceptions:** Should Claude’s market-backed exemption and low-launch-price ratio exception be retained despite GPT’s objections?
+    5. **Readiness standard:** What confidence definition and validation support an estimate band such as Claude’s ±30% proposal? GPT disputed treating an undefined band as assurance.
+    6. **Existing authority and comparator:** Does the full accepted decision text already authorise premiums, and can equivalent Earth supply be specified? GPT identified both as potential ruling-changing evidence.
+
+    ## Recommended Actions
+
+    - **Record the shared recommendation for owner decision:** require separate, explicit premium authority; Claude, Gemini and GPT all supported this.
+    - **Resolve the remaining governance choices explicitly:** choose the timing and gate-label policy rather than leaving them implicit in \(R\), reflecting the competing Claude and Gemini/GPT proposals.
+    - **Prepare bounded premium terms:** use Claude’s named-benefit requirement and GPT’s premium limit, funding envelope, alternatives and stop/review triggers.
+    - **Reconcile costs before claiming calibrated confidence:** Claude and GPT both recommended reconciling the BOM and panel estimates; GPT additionally requested common scope and uncertainty definitions.
+    - **Define the Earth comparator and scenarios before adjudication:** Claude proposed freezing these at mid-term; GPT proposed freezing the test, scenarios and bounds before KDP-0B.
+    - **Test the stated falsifiers:** inspect the full accepted decisions and assess equivalent Earth-supply availability, as GPT proposed; assess signed above-Earth demand, as Claude proposed, without assuming agreement on its exemption from caps.
+
+    ```yaml
+    questionId: "rq-0-67"
+    topics:
+      - id: separate-premium-authority
+        topic: Explicit owner authority for above-parity expenditure
+        positions:
+          - statement: Any capability premium requires a separate explicit owner authorisation rather than relying on programme purpose alone.
+            models: ["Claude Opus 5.5", "Gemini 3.1 Pro", "GPT-6.1 Sol"]
+            evidence: "All three round-one recommendations required a separate owner premium decision; GPT explicitly stated that D-01 does not itself authorise one."
+        resolution_status: resolved
+        priority: critical
+      - id: economics-finding
+        topic: Whether an authorised premium can produce a gate pass
+        positions:
+          - statement: A separately pre-authorised premium may support a gate pass within approved limits, with the parity verdict reported separately.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude's proposed pass rule uses owner-approved ratio and dollar caps."
+          - statement: Above-parity expenditure remains an economics failure even when a separate owner decision permits proceeding.
+            models: ["Gemini 3.1 Pro", "GPT-6.1 Sol"]
+            evidence: "Both recommended separating the parity finding from capability-premium approval."
+        resolution_status: open
+        priority: critical
+      - id: premium-authorisation-timing
+        topic: Advance commitment versus gate-time discretion
+        positions:
+          - statement: Authorise the premium normally by the 0A mid-term review, with recorded amendments before the KDP-0B package.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude argued that post-result threshold selection undermines the gate."
+          - statement: A separate premium decision may occur at KDP-0B using current evidence.
+            models: ["Gemini 3.1 Pro", "GPT-6.1 Sol"]
+            evidence: "Gemini valued current signed-demand evidence; GPT allowed the same meeting with distinct findings."
+        resolution_status: open
+        priority: high
+      - id: economic-test-and-readiness
+        topic: Cost statistic and uncertainty assurance
+        positions:
+          - statement: Compare project P70 with Earth P50 and require an estimate-readiness band of ±30% or better.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude's proposed gate text includes these criteria."
+          - statement: Compare equivalent expected costs, with a separate P70 funding envelope and validated uncertainty definitions.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT cautioned that P70/P50 is not a probability of beating Earth supply and that an undefined ±30% band is insufficient assurance."
+        resolution_status: open
+        priority: high
+      - id: premium-cap-exceptions
+        topic: Scenario and market-backed exceptions
+        positions:
+          - statement: Permit a low-launch-price ratio exception within the dollar cap and exempt market-backed premiums from that cap.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude included both provisions in the proposed operational rule."
+          - statement: These exceptions weaken commitment and need equivalent funding safeguards.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT's vote identified both provisions as objections capable of changing approval."
+        resolution_status: open
+        priority: high
+    ```
+  keyPoints:
+    - Separate authority is the common ground.** Claude, Gemini and GPT all required an explicit owner decision for a capability premium; none treated D-01 alone as sufficient approval.
+    - The original undercut position was withdrawn by Gemini.** Gemini’s round-one recommendation used parity with a separate premium route. GPT rejected mandatory undercutting without a justified margin; Claude also rejected it.
+    - Absolute exposure matters alongside ratios.** Claude proposed both ratio and dollar ceilings; GPT required an absolute premium limit and total funding envelope. GPT cautioned that a ratio does not replace either.
+    - The cost statistic remains unsettled.** Claude retained project P70 versus Earth P50. GPT proposed comparable expected costs plus a separate P70 funding envelope and downside limits. Gemini did not resolve that distinction in equivalent detail.
+    - The reported estimate spread is not a calibrated probability distribution.** GPT explicitly warned against that inference. Claude and GPT both called for estimate reconciliation.
+    - Other gates remain independent.** GPT explicitly stated that premium approval cannot waive target, demand, licence or D-02 technical requirements.
+    - Scenario policy remains open.** Claude proposed a low-launch-price exception to the ratio ceiling. GPT instead recommended a non-contingent pass across predeclared core scenarios, or a conditional finding with enforceable triggers.
+  unresolvedQuestions:
+    - Gate semantics:** Should an authorised premium produce Claude’s premium-authorised pass, or Gemini/GPT’s economics failure plus separate investment approval?
+    - Authorisation timing:** Should the owner commit by the 0A mid-term review, as Claude proposed, or retain a distinct KDP-0B decision, as Gemini and GPT allowed?
+    - Cost criterion:** Should the gate use Claude’s P70/P50 comparison or GPT’s expected-cost comparison with separate downside controls?
+    - Caps and exceptions:** Should Claude’s market-backed exemption and low-launch-price ratio exception be retained despite GPT’s objections?
+    - Readiness standard:** What confidence definition and validation support an estimate band such as Claude’s ±30% proposal? GPT disputed treating an undefined band as assurance.
+    - Existing authority and comparator:** Does the full accepted decision text already authorise premiums, and can equivalent Earth supply be specified? GPT identified both as potential ruling-changing evidence.
+  recommendedActions:
+    - Record the shared recommendation for owner decision:** require separate, explicit premium authority; Claude, Gemini and GPT all supported this.
+    - Resolve the remaining governance choices explicitly:** choose the timing and gate-label policy rather than leaving them implicit in \(R\), reflecting the competing Claude and Gemini/GPT proposals.
+    - Prepare bounded premium terms:** use Claude’s named-benefit requirement and GPT’s premium limit, funding envelope, alternatives and stop/review triggers.
+    - Reconcile costs before claiming calibrated confidence:** Claude and GPT both recommended reconciling the BOM and panel estimates; GPT additionally requested common scope and uncertainty definitions.
+    - Define the Earth comparator and scenarios before adjudication:** Claude proposed freezing these at mid-term; GPT proposed freezing the test, scenarios and bounds before KDP-0B.
+    - Test the stated falsifiers:** inspect the full accepted decisions and assess equivalent Earth-supply availability, as GPT proposed; assess signed above-Earth demand, as Claude proposed, without assuming agreement on its exemption from caps.
+    - 'id: separate-premium-authority'
+    - 'statement: Any capability premium requires a separate explicit owner authorisation rather than relying on programme purpose alone.'
+    - 'id: economics-finding'
+    - 'statement: A separately pre-authorised premium may support a gate pass within approved limits, with the parity verdict reported separately.'
+    - 'statement: Above-parity expenditure remains an economics failure even when a separate owner decision permits proceeding.'
+    - 'id: premium-authorisation-timing'
+    - 'statement: Authorise the premium normally by the 0A mid-term review, with recorded amendments before the KDP-0B package.'
+    - 'statement: A separate premium decision may occur at KDP-0B using current evidence.'
+    - 'id: economic-test-and-readiness'
+    - 'statement: Compare project P70 with Earth P50 and require an estimate-readiness band of ±30% or better.'
+    - 'statement: Compare equivalent expected costs, with a separate P70 funding envelope and validated uncertainty definitions.'
+    - 'id: premium-cap-exceptions'
+    - 'statement: Permit a low-launch-price ratio exception within the dollar cap and exempt market-backed premiums from that cap.'
+    - 'statement: These exceptions weaken commitment and need equivalent funding safeguards.'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T22:17:50.727Z'
+alternateSyntheses:
+  - synthesizer: claude-opus-5-5
+    generatedAt: '2026-10-17T22:39:03.065Z'
+    file: conclusion.claude-opus-5-5.md

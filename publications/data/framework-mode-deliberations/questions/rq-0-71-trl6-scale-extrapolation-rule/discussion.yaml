@@ -1,0 +1,774 @@
+questionId: rq-0-71
+questionSlug: trl6-scale-extrapolation-rule
+questionTitle: Should TRL 6 demonstrations carry a fixed scale-extrapolation limit (e.g. ≤ 10×) or none fixed in advance?
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T22:18:14.800Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # TRL 6 Scale-Extrapolation Rule: Fixed Limit or Case-by-Case
+
+          **Position in brief.** Neither panel position should be adopted as it stands.
+
+          - **Claude's** fixed 10× limit is a good *default*, but a poor *test of truth*.
+          - **GPT's** "no fixed factor" is physically correct but cannot be audited at a one-way gate.
+
+          I recommend a **pre-registered, axis-specific, rebuttable presumption with a hard backstop**:
+
+          - **Default:** ≤10× single-unit extrapolation in throughput or power.
+          - **10–100×:** allowed only with a regime-preservation case that is pre-registered and independently reviewed, plus an intermediate anchor test.
+          - **Above 100×:** never counts as TRL 6 for a single unit.
+          - **Modular systems:** numbering-up is assessed separately, through interaction tests.
+          - **Duration:** has its own rule, based on a validated degradation model.
+
+          The decisive feature is **pre-registration**. Each technology's allowed factor and governing regimes are fixed at the 0A mid-term review, *before* the pathfinder data exist. This answers GPT's objection (one number cannot fit all physics) and Claude's implicit concern (case-by-case arguments made after the data arrive drift toward a pass).
+
+          ---
+
+          ## 1. Frame & decision type
+
+          - **Decision type.** This is a *property* decision in Kruchten's ontology: it sets an attribute of the KDP-0B gate criterion defined under D-02. It is not an executive decision about any single technology. It enables a later executive decision: how large each pathfinder must be.
+          - **Reversibility.** The rule itself can be changed until the pathfinders are specified (around the 0A mid-term review). After that it becomes effectively irreversible. Pathfinder hardware is sized to the rule, and changing the rule afterwards either strands that hardware or invites accusations of moving the goalposts.
+          - **What the rule governs.** It governs KDP-0B, which is a one-way door. Under D-02, stringency follows reversibility, so the rule should lean towards protecting against a false pass.
+          - **Cynefin domain.** Complicated, not complex. Whether a 1 kW plasma torch says anything about a 1 MW one is knowable with expert analysis: dimensionless groups, mechanism maps, and physics-of-failure. That favours analysable rules over pure judgement. The analysis, however, differs by technology, so it should not be collapsed into a single number.
+          - **Decision rights.** The owner decides. The panel is advisory. Gemini did not address this question, and its silence is recorded as non-agreement.
+
+          **The real question** is not "10× or nothing". It is: *what evidence standard makes a sub-scale demonstration count as a "representative model" at a gate that cannot be reversed, and who fixes that standard, and when?*
+
+          ## 2. Criteria and weights
+
+          These are stated before the options. I use swing weights: each weight reflects how much it matters to move from the worst plausible option on that criterion to the best.
+
+          | # | Criterion | Swing range across plausible options | Weight | Why this weight |
+          |---|---|---|---|---|
+          | C1 | **One-way-gate protection.** Probability that a technology passes KDP-0B but fails at full scale or full life. | From "any argued extrapolation passes" to "only near-full-scale evidence passes". A false pass commits Phase 1 capital to a project-ending failure. | **0.30** | Largest consequence swing. This is what D-02 exists to protect. |
+          | C2 | **Discrimination and technology fit.** Avoids false fails. Recognises regime-preserving or modular systems that can legitimately be extrapolated far. | From "rejects modular MW arrays tested at 50 kW" to "accepts them on physics". | **0.20** | A false fail sends the programme to the "0A only, Earth supply" fallback without need, or forces a needlessly large pathfinder. Recoverable, but expensive. |
+          | C3 | **Auditability and resistance to motivated reasoning.** Can an independent reviewer check compliance? Is the standard fixed before results arrive? | From a bright line that is fully checkable to "persuade the board". | **0.20** | One-way gates fail through advocacy as often as through physics. Wide swing. |
+          | C4 | **Pathfinder cost and schedule.** | From test facilities that already exist to purpose-built facilities costing 10–30× more. | **0.15** | Real, but partly double-counted with C2. D-01 already accepts that Phase 0 is a capability programme, not a cost saving. |
+          | C5 | **Adaptability.** Can the rule absorb new evidence or technologies without being rewritten? | Moderate swing. | **0.10** | Phase 0 will discover technologies and failure modes that are not yet on the list. |
+          | C6 | **Governance burden.** Review effort and time to administer. | Small swing. Every option needs some review. | **0.05** | Low, because review cost is small compared with pathfinder cost. |
+
+          **Must criteria** (Kepner-Tregoe screening, applied before scoring):
+
+          - **M1.** Consistent with D-02: no waivers at KDP-0B for project-ending technologies.
+          - **M2.** Duration and wear are explicitly covered.
+
+          ## 3. Options
+
+          | ID | Option | Origin |
+          |---|---|---|
+          | **O0** | **Null.** Leave the split. Each KDP-0B review argues extrapolation adequacy on the day. | Status quo |
+          | **O1** | **Hard fixed cap.** ≤10× on every axis, no exceptions. | Strict reading of Claude |
+          | **O2** | **No fixed factor.** Extrapolation justified only by test-validated models, decided per case at the gate. | GPT |
+          | **O3** | **10× unless regimes are preserved.** The escape clause is argued at the gate. | Claude as written |
+          | **O4** | **Pre-registered, axis-specific, rebuttable presumption with a hard backstop.** Described in §8. | Recommended synthesis |
+          | **O5** | **Fully bespoke, pre-registered factor per technology.** No default and no backstop. | Variant of GPT with pre-commitment |
+
+          **Rejected options, with arguments:**
+
+          - **O0 (null) is rejected.**
+            - It postpones the decision until after pathfinders are sized, which is exactly when the decision stops being reversible.
+            - Every pathfinder team would size to the most permissive reading.
+            - The standard would be set at the gate, by the people whose programme depends on passing.
+            - It also fails M1 in spirit: argument at the gate is a waiver by another name.
+          - **O1 (hard cap) is rejected.**
+            - It treats numbering-up of identical modules (solar collector panels, power-beaming emitter tiles, mass-driver coil stages) like scale-up of a single reactor. Thin-film collector arrays scale by replication. A 10× cap on total array power would demand absurd pathfinders while adding little evidence.
+            - Conversely, 10× is not conservative when a regime transition occurs inside the factor. Examples: laminar to turbulent melt flow, onset of electromagnetic skin-depth limits, thermal runaway once the ratio of radiative area to volume falls. A hard cap gives false comfort there.
+          - **O2 (no fixed factor) is rejected as written.**
+            - The physics is right, but the governance fails. "Justified by test-validated models" leaves undefined who sets the validation standard, and when.
+            - Assessed at the gate, it scores worst on C3.
+            - It provides no basis for sizing pathfinders at 0A, which is the decision this rule exists to feed.
+          - **O3 is rejected, narrowly.**
+            - It is close to the right answer, but the escape clause is argued at the gate, after the data exist. That re-imports O2's weakness.
+            - It has no ceiling, so "regimes preserved" can be argued for 1000×.
+            - It does not distinguish numbering-up from scale-up.
+          - **O5 is rejected, narrowly.**
+            - Pre-registration fixes most of O2's problems.
+            - But without a default it has no anchor. Every factor is negotiated from zero, which raises governance burden and invites optimistic factors.
+            - Without a backstop it has no guard against model hubris.
+
+          ## 4. Assessment matrix (QOC)
+
+          Scores run from 1 (poor) to 5 (best). The weighted total is the sum of each score times its criterion weight.
+
+          | Option | C1 Gate protection (0.30) | C2 Fit (0.20) | C3 Audit (0.20) | C4 Cost (0.15) | C5 Adapt (0.10) | C6 Burden (0.05) | **Weighted** | Musts |
+          |---|---|---|---|---|---|---|---|---|
+          | O0 Null | 1 | 3 | 1 | 4 | 3 | 2 | **2.05** | M1 fails in spirit |
+          | O1 Hard 10× | 3 | 1 | 5 | 1 | 1 | 5 | **2.65** | Pass |
+          | O2 No factor | 2 | 5 | 2 | 4 | 5 | 2 | **3.20** | M2 pass; M1 weak |
+          | O3 10× unless | 3 | 4 | 3 | 3 | 4 | 3 | **3.30** | Pass |
+          | O4 Recommended | 4 | 4 | 4 | 3 | 4 | 3 | **3.75** | Pass |
+          | O5 Bespoke, pre-registered | 3 | 5 | 3 | 4 | 4 | 2 | **3.60** | Pass |
+
+          **Robustness.** O4 leads under every reweighting I tried, except one. If C4 (cost) is raised above roughly 0.30 at the expense of C1, O5 overtakes it. That reweighting amounts to valuing cheap pathfinders over one-way-gate protection, which contradicts D-02. O1 never wins unless C3 alone is weighted above about 0.45.
+
+          ## 5. Sensitivity vs trade-off points
+
+          **Sensitivity points.** These are facts or parameters that strongly move one attribute.
+
+          - **S1. The default factor (10× versus 30×)** drives pathfinder cost (C4) almost alone. Gate protection is far less sensitive to it, because the regime case does the real work in the 10–100× band. That is why I am comfortable with 10× as a default and not as a limit.
+          - **S2. The backstop (100× versus 1000×)** drives gate protection (C1) for single-unit technologies. The obvious candidates are ISRU regolith processing at kt/yr and MW-class single-aperture power conversion. Tens of t/yr pilot-scale ISRU is plausible in Phase 0. That is already near 100× short of kt/yr, so the backstop decides whether ISRU can pass KDP-0B on a ground pilot at all.
+          - **S3. Where the numbering-up boundary is drawn** (what counts as the "smallest replicated unit") drives C2 for modular technologies. A generous unit definition lets single-unit scale-up masquerade as replication. The rule must therefore define the unit by its governing physics, not by its packaging.
+
+          **Trade-off points.** These are values questions for the owner, not facts to be settled.
+
+          - **T1. False pass versus false fail at KDP-0B.** Every tightening of the band edges or backstop buys C1 and costs C2 and C4. D-02 has already leaned this towards protection. What it has *not* said is how much pathfinder money that protection is worth. My recommendation assumes the owner prefers a one-to-two-year slip and a larger pathfinder over a material chance of committing 0B on a mis-scaled technology. The owner should confirm or reject that.
+          - **T2. Auditability versus physical fidelity.** A bright line is easy to audit but physically naive. A regime argument is faithful but hard to audit. O4 splits the difference with pre-registration. Someone who distrusts all expert review would prefer O1; someone who distrusts all fixed rules would prefer O5. Which way to lean is a values question.
+          - **T3. Schedule versus life evidence.** Longer duration tests delay KDP-0B. Accelerated tests save time but need a validated acceleration model. How much modelling risk to accept in exchange for time is a values question.
+
+          ## 6. Evidence certainty
+
+          The certainty ratings below are GRADE-style, describing evidence quality. Likelihood terms follow IPCC conventions and describe how probable the claim is, which is a separate judgement.
+
+          | Claim | Certainty of evidence | Likelihood | Notes |
+          |---|---|---|---|
+          | Scale-up failures cluster where governing regimes change: new dominant mechanism, dimensionless group crossing a threshold. | **Moderate** | Very likely | Standard in chemical-engineering scale-up practice. Consistent with RAND's pioneer process plant studies (Merrow et al., early 1980s), which tied performance shortfalls to poor process understanding and new technology. The evidence comes from terrestrial process plants, not space hardware, so it is indirect. |
+          | ~10× per scale-up step is a common practitioner heuristic for single-unit novel processes. | **Low** | Likely | Folklore-grade, not codified. Practice varies widely (10–100× per step, depending on how mature the process models are). Use it as a default anchor, not a law. |
+          | No fixed scale factor appears in the standard TRL definitions. | **High** | Virtually certain | ISO 16290 / ECSS and NASA NPR 7123.1 define TRL 6 as a representative model or prototype in a relevant environment, without numerical scale limits. GPT is correct on this. A Project Dyson factor would therefore be a programme-specific supplement, which is permissible. |
+          | Numbering-up of identical modules carries less scale risk than unit scale-up, but adds interaction risk (thermal coupling, EMI, control, fault propagation). | **Moderate** | Likely | Well established in power electronics and phased-array practice. Interaction effects are often under-tested. |
+          | Accelerated life tests are valid only if the failure mechanism is unchanged across stress levels. | **High** | Virtually certain | A core tenet of physics-of-failure reliability. |
+          | Long-duration life tests tend to reveal failure modes absent from early hours. | **Moderate** | Very likely | Electric-propulsion life-test history (for example the NSTAR and NEXT long-duration tests) shows erosion and wear findings that emerged only with accumulated hours. |
+          | Pre-registering criteria before data reduces motivated pass decisions. | **Moderate** | Likely | Strong evidence in clinical trials. Transfer to engineering gate reviews is plausible but not directly measured. |
+
+          **Overall.** I hold moderate confidence in the *structure* of O4 and low confidence in the *specific numbers* (10× and 100×). The numbers are deliberately exposed as sensitivity points S1 and S2.
+
+          ## 7. Key assumptions
+
+          | # | Assumption | What would falsify it |
+          |---|---|---|
+          | A1 | Governing regimes for each project-ending technology can be identified in advance by mechanism mapping and dimensionless analysis. | A Phase 0 pathfinder shows a dominant failure mechanism that was absent from its pre-registered regime list. Two or more such surprises across technologies would mean pre-registration is not capturing reality. I would then tighten towards O1 for single units. |
+          | A2 | Most MW-class Project Dyson power systems are modular and can be legitimately numbered up. | Design studies show that critical power conversion or beaming needs monolithic single apertures or single units at MW scale. S2 then dominates, and the cost case shifts. |
+          | A3 | Independent review at the 0A mid-term review is genuinely independent of the pathfinder teams. | Reviewers are drawn from teams whose funding depends on the outcome. If that is true, O4 degrades to O3, and a stricter fixed cap becomes preferable. |
+          | A4 | Validated degradation models with mechanism-invariant acceleration can be built for the dominant wear modes within Phase 0 timescales. | Mechanism change is observed between stress levels, or acceleration factors are not reproducible. Duration evidence must then come from real-time testing, and KDP-0B moves later. |
+          | A5 | The owner's values match D-02's lean towards protection (T1). | The owner states that schedule or cost dominates. O5 then becomes preferable. |
+
+          **ACH on the competing hypotheses about what makes extrapolation fail.** Each hypothesis is tested against the evidence in §6.
+
+          - **H1: "Scale factor magnitude is the main predictor."** Contradicted by modular systems that scale far without trouble, and by regime transitions that occur within small factors. This is the **most disconfirmed** of the three.
+          - **H2: "Regime change is the main predictor."** Consistent with the process-plant and life-test evidence. This is the **least disconfirmed** on the physics.
+          - **H3: "Review discipline is the main predictor"** (that is, gate failures are advocacy failures). This is also **weakly disconfirmed**. It is consistent with megaproject literature, with clinical pre-registration findings, and with the history of space programme gate failures driven by schedule pressure.
+
+          **Ranking:** H2 ≈ H3 > H1. O4 is the only option designed around *both* surviving hypotheses: regime analysis addresses H2, and pre-registration addresses H3. The factor magnitude is kept only as a default and backstop, which fits H1's weak standing.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Recommended gate rule text (for `gates-proposal.yaml`, KDP-0B, technology criterion)
+
+          > **TR-6-SCALE. Representative-model scaling for TRL 6 at KDP-0B (project-ending technologies).**
+          >
+          > **(a) Pre-registration.** At the 0A mid-term review, each project-ending technology shall pre-register a Scaling Basis. It shall contain:
+          > 1. the **smallest replicated unit (SRU)**, defined by governing physics;
+          > 2. the governing regimes and dimensionless groups for throughput, power density and thermal and structural load;
+          > 3. the planned test scale and the full-scale target on each axis;
+          > 4. the dominant wear mechanisms and the planned degradation model.
+          >
+          > Once accepted by independent review, the Scaling Basis is frozen. Changes after test data exist require the change, and the reason for it, to be recorded, and they reset the evidence clock for the affected axis.
+          >
+          > **(b) Single-unit scale-up (throughput or power per SRU).**
+          > - **≤10×:** acceptable with a model correlated to test data.
+          > - **>10× to ≤100×:** acceptable only if all three hold:
+          >   - (i) the pre-registered regime case shows that every governing dimensionless group stays within its regime between test and full scale;
+          >   - (ii) at least one intermediate-scale anchor point (geometric mean of test and full scale, ±3×) confirms the model's predictions within pre-registered tolerances;
+          >   - (iii) the review is independent.
+          > - **>100×:** does not satisfy TRL 6 regardless of argument. No waiver applies (per D-02).
+          >
+          > **(c) Numbering-up (system scale from replicated SRUs).** There is no fixed limit on replication count, provided all three hold:
+          > - (i) each SRU meets (b);
+          > - (ii) an interaction test of at least the larger of 4 units or a representative cell is passed in the relevant environment. The cell must include interior and edge or boundary units, shared thermal, power and control paths, and injected single-unit faults;
+          > - (iii) a validated model shows that coupling effects (thermal, electromagnetic, control-loop, fault propagation) do not grow beyond pre-registered bounds at full count.
+          >
+          > **(d) Duration and wear.** Life may be shown by partial test plus a degradation model, provided all four hold:
+          > - (i) real-time test time is at least the larger of 10% of design life or the time for the dominant mechanism to reach at least 25% of its failure criterion;
+          > - (ii) any acceleration is calibrated at at least 3 stress levels, with demonstrated mechanism invariance (same failure mode, same signature);
+          > - (iii) demonstrated equivalent life, real plus accelerated, is at least 1.5× design life;
+          > - (iv) time extrapolation beyond the demonstrated equivalent life is not credited.
+          >
+          > **(e) Axes are independent.** Each axis (throughput, power, duration) must pass on its own; there is no averaging across axes. Combined-environment effects (for example thermal cycling with vacuum and irradiation) must be present in at least one test article.
+
+          ### Y-statement
+
+          > In the context of a one-way KDP-0B gate requiring TRL 6 for project-ending technologies with no waivers, **facing** MW-class and kt/yr targets that no test facility reaches and a panel split between a fixed 10× cap and no fixed factor, **we chose** a pre-registered, axis-specific rebuttable presumption (≤10× default, 10–100× with regime case and anchor test, >100× never, numbering-up assessed through interaction tests, duration through a mechanism-invariant degradation model with 1.5× equivalent-life margin), **to achieve** auditable gate protection that respects technology-specific physics and lets pathfinders be sized at 0A, **accepting** larger and costlier pathfinders for single-unit technologies (ISRU processing especially), more review effort at the 0A mid-term review, and the possibility that a sound technology fails KDP-0B solely on the 100× backstop.
+
+          ### Toulmin structure
+
+          - **Claim:** adopt TR-6-SCALE.
+          - **Grounds:**
+            - Scale-up failures are driven by regime change.
+            - Gate failures are often driven by advocacy.
+            - Standard TRL definitions give no number, so the programme must set one.
+          - **Warrant:** at an irreversible gate, the evidence standard should be (a) tied to the physics that causes failure and (b) fixed before the evidence exists. A default number is useful only as a burden-shifting anchor, and a backstop is needed because models validated over two orders of magnitude rarely hold over three for novel hardware.
+          - **Backing:**
+            - process-plant scale-up experience;
+            - physics-of-failure reliability practice;
+            - electric-propulsion life-test history;
+            - pre-registration practice from clinical trials;
+            - D-02's reversibility principle.
+          - **Qualifier:** probably the right structure (moderate confidence). The specific numbers 10×, 100×, 10% and 1.5× are low-confidence defaults that the owner should treat as tunable until the Scaling Bases are frozen.
+          - **Rebuttal conditions:** the ruling should change if the evidence in §9 materialises.
+
+          ### Accepted downside, stated plainly
+
+          - ISRU at tens of t/yr on the ground cannot pass KDP-0B against a kt/yr target without either an approximately 100 t/yr anchor or a modular SRU argument.
+          - Such an anchor adds cost and possibly a year or more to 0A. That is the intended effect. If it is unaffordable, the pre-committed fallback "0A only, Earth supply" applies, and that is an acceptable outcome under D-01.
+
+          ## 9. Consequences
+
+          **Enables:**
+
+          - **Pathfinder sizing at the 0A mid-term review.** For each technology, the Scaling Basis yields a minimum test scale (full scale ÷ 100 as an absolute floor; full scale ÷ 10 if no regime case is attempted). This converts an argument into a budget line.
+          - **Programme architecture pressure towards modular SRUs.** The rule rewards architectures whose scale comes from replication. This is a design signal to Phase 1 concept teams, and probably a healthy one for collector, beaming and mass-driver elements.
+          - **A clean failure trigger.** A technology exceeding 100× single-unit scale-up with no affordable anchor test is a pre-committed KDP-0B fail, which routes to the fallback without debate.
+
+          **Constrains:**
+
+          - **The "relevant environment" definition** (another of the eleven owner choices). Clause (e) needs that definition to specify which combined environments are mandatory.
+          - **The project-ending technology list.** Classification now carries cost consequences, so there will be pressure to declassify technologies. The list should be frozen alongside the Scaling Bases.
+          - **The 0A mid-term review agenda.** It must include an independent Scaling Basis review, staffed by people outside the pathfinder teams (assumption A3).
+
+          **Evidence that would change the ruling:**
+
+          1. **Two or more pre-registered regime cases fail** during 0A, through unforeseen mechanisms. Move towards O1: hard 10× for single units, no 10–100× band.
+          2. **Anchor tests repeatedly confirm models across about 100×** with tight tolerances, in two or more technologies. Raise the default to around 30× and consider a 300× backstop.
+          3. **Accelerated-test mechanism invariance cannot be shown** for dominant wear modes. Drop accelerated credit, require real-time testing at 25% of design life or more, and accept a later KDP-0B.
+          4. **The owner states that schedule or cost outweighs gate protection** (a reversal of T1). Adopt O5: bespoke pre-registered factors, no backstop.
+          5. **Review independence cannot be staffed.** Adopt O1, because a bright line is the only defence that does not depend on reviewers.
+
+          **Note for later rounds.** I expect GPT's objection to be that the 100× backstop is exactly the "fixed acceptable scale factor assumed in advance" it rejected. I accept that it is. My defence is that, at a no-waiver one-way gate, *some* number must exist that argument cannot cross, and refusing to state it only moves it into the reviewers' heads. That disagreement should be kept for the owner, not averaged away.
+        wordCount: 3843
+        generatedAt: '2026-10-17T22:20:15.013Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          # 1. Frame & decision type
+
+          **Frame:** We must determine the scaling rules for TRL 6 demonstrations at KDP-0B for Project Dyson. Specifically, whether to enforce a fixed scale-extrapolation limit (e.g., $\le 10\times$) for throughput, power, and duration, or allow unlimited extrapolation justified by test-validated models. 
+          **Decision Type:** Executive and Property decision. It is a highly irreversible (one-way door) decision because it dictates the physical sizing, cost, and schedule of Phase 0 pathfinder facilities. 
+          **Cynefin Domain:** Complicated (expert engineering judgment and physics models are required to assess scaling laws).
+
+          # 2. Criteria and weights
+
+          *Swing weights are based on the actual range of variation between a massive, unaffordable MW-class pathfinder and a small, highly uncertain benchtop test.*
+
+          1.  **Pathfinder Cost & Feasibility (Weight: 40%)**: The difference between building a 100 kW pathfinder vs. a 1 MW pathfinder is hundreds of millions of dollars and years of facility construction. We must avoid mandating unaffordable ground tests.
+          2.  **Technical Risk Reduction / Scaling Confidence (Weight: 40%)**: The risk of non-linear physics (e.g., thermal runaway, plasma instabilities) dominating at larger scales. The weight reflects the existential threat to the project if a kt/yr facility fails due to unpredicted scaling effects.
+          3.  **Schedule / Time-to-KDP-0B (Weight: 20%)**: The time required to run duration tests. A strict limit on duration extrapolation (e.g., requiring 50% of life) could delay KDP-0B by years.
+
+          # 3. Options
+
+          *   **Option 1 (Null / Claude's proposal): Fixed $\le 10\times$ limit.** No more than 10× extrapolation in throughput or power, unless governing regimes are shown to be preserved. Duration can be met by partial test plus a validated wear model.
+          *   **Option 2 (GPT's proposal): No fixed limit.** No fixed acceptable scale factor in advance. Extrapolation must be justified entirely by test-validated models. Accelerated testing needs a validated degradation model.
+          *   **Option 3 (Hybrid / Regime-Preservation Rule): No fixed limit for throughput/power, fixed $\le 10\times$ limit for duration.** Power and throughput extrapolation have no fixed limit *if and only if* dimensionless parameters (e.g., Reynolds, Nusselt, Damköhler numbers) match the flight regime. Duration extrapolation is strictly capped at $10\times$ (i.e., minimum 10% life physical test) to anchor wear models.
+          *   **Rejected Option: Full-scale TRL 6 requirement ($1\times$ limit).** *Argument against:* MW-class or kt/yr ground facilities for space systems are financially and physically impossible within Phase 0 budgets.
+
+          # 4. Assessment matrix
+
+          | Criteria | Option 1 (Fixed $\le 10\times$ default) | Option 2 (No fixed limit) | Option 3 (Hybrid: Regime + Duration Cap) |
+          | :--- | :--- | :--- | :--- |
+          | **Pathfinder Cost** | Moderate to High (forces larger pathfinders if regime proof is hard) | Low (allows smaller pathfinders if models are trusted) | Low to Moderate (optimizes size, enforces duration) |
+          | **Scaling Confidence**| High (brute-force physical scale limits risk) | Low to Moderate (relies heavily on model accuracy) | High (anchors physics via dimensionless numbers, anchors wear physically) |
+          | **Schedule** | Moderate | Fast | Moderate (10% life test takes time) |
+
+          # 5. Sensitivity vs trade-off points
+
+          *   **Sensitivity Point:** The decision is highly sensitive to the *accuracy of multi-physics degradation models*. If our wear models are poor, Option 2 fails catastrophically.
+          *   **Trade-off Point:** Pathfinder Cost vs. Scaling Confidence. Option 2 maximizes cost savings but trades away physical scaling confidence. Option 1 maximizes confidence but drives up cost. Option 3 mediates this by splitting the physics (throughput/power) from the chemistry/mechanics (duration/wear).
+
+          # 6. Evidence certainty
+
+          *   *Claim 1:* Non-linear scaling effects in MW-class space power/propulsion often violate small-scale models. 
+              *   **Certainty (GRADE):** Moderate.
+              *   **Likelihood/Confidence (IPCC/ICD 203):** Very likely (90-100%); High confidence based on historical space nuclear and electric propulsion scaling failures.
+          *   *Claim 2:* Wear and degradation mechanisms (e.g., sputtering, creep) cannot be accurately modeled without at least 10% physical runtime.
+              *   **Certainty (GRADE):** High.
+              *   **Likelihood/Confidence:** Virtually certain (99-100%); High confidence. Standard aerospace practice (e.g., NASA EP qualification) requires extensive physical wear testing.
+
+          # 7. Key assumptions
+
+          *   **Assumption 1:** Dimensionless parameters for the target technologies can be fully matched at sub-scale.
+              *   *Falsification:* If a technology requires matching both Froude and Reynolds numbers simultaneously in a 1g environment, sub-scale regime preservation is physically impossible.
+              *   *ACH Ranking:* Hypothesis A (Regimes can be matched) is less disconfirmed than Hypothesis B (Regimes cannot be matched), assuming standard fluid/thermal systems, but requires case-by-case verification.
+          *   **Assumption 2:** 10% life testing is sufficient to capture late-in-life non-linear degradation.
+              *   *Falsification:* Discovery of a wear mechanism (e.g., deep dielectric charging fatigue) that only initiates after 50% life.
+
+          # 8. Decision, warrant, accepted downside
+
+          **Y-Statement:** In the context of Project Dyson's Phase 0 to Phase 1 transition (KDP-0B), facing project-ending technologies requiring MW-class/kt-yr scales, we chose Option 3 (No fixed limit for power/throughput if governing regimes match; fixed $\le 10\times$ extrapolation limit for duration), to achieve affordable pathfinder sizing without sacrificing scaling confidence, accepting the schedule delay inherent in a minimum 10% life physical test.
+
+          **Warrant & Qualifier (Toulmin):** 
+          *   *Claim:* Option 3 provides the best balance of cost and risk.
+          *   *Grounds:* Physical scaling limits (Option 1) drive pathfinder costs beyond Phase 0 budgets, while purely model-based scaling (Option 2) introduces unacceptable risk for wear mechanisms.
+          *   *Warrant:* Because physics regimes can be mathematically proven to match at sub-scale using dimensionless numbers, but material wear over time is highly empirical and non-linear.
+          *   *Qualifier:* This holds true *provided* the technology's governing dimensionless parameters can actually be isolated and matched in a ground test facility.
+
+          # 9. Consequences
+
+          *   **Enables:** The immediate sizing and preliminary design of Phase 0 pathfinder facilities based on regime-matching rather than arbitrary scale factors.
+          *   **Constrains:** Forces the project to immediately begin long-duration life testing (minimum 10% of design life) to meet KDP-0B, constraining the Phase 0 schedule.
+          *   **Follow-on Decisions:** We must now define the specific "governing regimes" (dimensionless numbers) required for each project-ending technology, and establish the review board that validates these regime-preservation arguments.
+        wordCount: 986
+        generatedAt: '2026-10-17T22:20:38.819Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **Recommendation: do not impose a universal scale-extrapolation limit. Impose a binding, technology-specific extrapolation envelope, supported by physical demonstrations, test-validated models and independent review.** Neither “less than 10×” nor “preserves the governing regime” should, alone, establish acceptability.
+
+          This is a **property decision about evidence admissibility**, supporting the executive decision at KDP-0B. The rule can be revised during 0A; committing 0B on inadequate evidence is much less reversible.
+
+          The decision must preserve the accepted Project Dyson positions, as described in the supplied WP-A material:
+
+          - **D-01:** 0B remains a real option, sized by signed Phase 1 demand.
+          - **D-02:** project-ending technologies require TRL 6 in a relevant environment at KDP-0B, without waivers.
+          - Failure retains the pre-committed **“0A only, Earth supply”** fallback.
+
+          The question is not whether a model can replace a demonstration. It cannot. It is how a demonstrated representative prototype can credibly support the **specific deployment configuration** proposed at the gate.
+
+          ## 2. Criteria and weights
+
+          ### Non-compensable requirements
+
+          Before weighted comparison, any adopted rule must:
+
+          1. Preserve the TRL 6 physical demonstration and relevant-environment requirement.
+          2. Prevent cost or schedule pressure from compensating for insufficient evidence on project-ending technologies.
+          3. Identify the deployment configuration and operating envelope to which the readiness judgment applies.
+          4. Produce an auditable pass/fail decision, including treatment of unresolved uncertainty.
+
+          The null option below represents leaving the issue unresolved—not permission to bypass these requirements.
+
+          ### Swing weights
+
+          These are proposed owner values, not empirically measured constants.
+
+          | Criterion | Evaluated swing | Weight | Why this weight fits that range |
+          |---|---|---:|---|
+          | **A. Protection against false readiness** | From accepting poorly supported extrapolation to detecting credible scale-dependent failure | **40%** | This swing affects an irreversible commitment and potential loss of the programme’s rationale. |
+          | **B. Demonstration cost and feasibility** | From requiring unnecessary near-flight-scale facilities to obtaining adequate evidence with practicable tests | **25%** | The swing can determine whether 0A can affordably preserve the 0B option. |
+          | **C. Auditability and consistency** | From discretionary interpretation to reproducible, independently reviewable judgments | **20%** | A technically sophisticated rule is ineffective if vendors or reviewers apply it inconsistently. |
+          | **D. Applicability across technologies** | From one scalar rule that mischaracterises different systems to treatment of power, throughput, replication and life on their own terms | **15%** | This matters across the portfolio, but must not outweigh readiness protection. |
+
+          ## 3. Options
+
+          **N — Null: retain the unresolved panel split.**  
+          Argument: avoids premature standardisation while designs mature.  
+          **Reject:** leaves test teams unable to determine what evidence will count and invites gate-time negotiation.
+
+          **F — Hard ceiling: require no more than 10× extrapolation.**  
+          Argument: simple, predictable and visibly conservative.  
+          **Reject:** the numerical ratio is neither sufficient nor necessary evidence of representativeness. A 3× change can cross an instability threshold; 30× aggregate throughput may come from replicated, already demonstrated modules.
+
+          **P — Presumptive 10× ceiling, rebuttable by regime preservation.**  
+          This approximates Claude’s proposal.  
+          Argument: provides a planning default while allowing physically justified exceptions.  
+          **Reject as the programme-wide acceptance rule:** it risks making ≤10× appear inherently acceptable and >10× an “exception” even when replication is less risky than modest unit scaling. It remains defensible as a temporary planning heuristic, explicitly not a gate entitlement.
+
+          **E — No universal ratio; mandatory evidence-bounded extrapolation envelope.**  
+          Argument: evaluates the actual mechanisms that can invalidate scale-up, while making discretion reviewable.  
+          **Select:** pre-agree the evidence plan, validate predictions against independent test data, quantify uncertainty and limit readiness credit to the resulting deployment envelope.
+
+          This agrees with GPT’s objection to a fixed acceptable factor, but adds an important constraint: **“test-validated models” must become an operational acceptance standard, not an open-ended assurance phrase.**
+
+          ## 4. Assessment matrix
+
+          Scores: 1 = weak, 5 = strong. These are structured engineering judgments, not measured utilities or probabilities.
+
+          | Option | A: Readiness protection 40% | B: Cost/feasibility 25% | C: Auditability 20% | D: Applicability 15% | Weighted score |
+          |---|---:|---:|---:|---:|---:|
+          | N — Unresolved split | 2 | 2 | 1 | 2 | **1.80** |
+          | F — Hard 10× ceiling | 3 | 1 | 5 | 1 | **2.60** |
+          | P — Presumptive 10×, rebuttable | 4 | 3 | 4 | 3 | **3.60** |
+          | E — Evidence-bounded envelope | 4 | 4 | 4 | 5 | **4.15** |
+
+          The equal readiness scores for P and E are deliberate: **there is no Project Dyson evidence demonstrating that either governance approach produces fewer false passes.** E wins principally by avoiding unnecessary demonstrations and fitting heterogeneous technologies—not through an asserted, unmeasured safety advantage.
+
+          No weighted score can override the non-compensable requirements.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points — factual questions
+
+          - **Validation reach:** how far does a model predict successfully outside its calibration conditions?
+          - **Emergent coupling:** does increasing unit count introduce shared power, thermal, control, feedstock or maintenance bottlenecks?
+          - **Damage mechanism:** does accelerated testing reproduce service degradation, or create a different failure process?
+          - **Deployment architecture:** is growth achieved by enlarging equipment or replicating modules?
+
+          These facts can change the preferred test size and potentially the policy ranking.
+
+          For example, if P deserves readiness score 5 and E only 3 because independent review proves ineffective, their totals become **4.00 and 3.75**, respectively. The recommendation therefore depends materially on enforceable assurance—not simply opposition to arbitrary numbers.
+
+          ### Trade-off points — values questions
+
+          - How much additional pathfinder expenditure is justified to reduce residual uncertainty before an irreversible commitment?
+          - How much reviewer discretion is acceptable in exchange for avoiding unnecessary facilities?
+          - Should the programme prefer a smaller, demonstrable 0B architecture over a larger, economically attractive but less supportable one?
+
+          These require owner judgment. More testing can inform them but cannot determine the acceptable balance.
+
+          ## 6. Evidence certainty
+
+          GRADE terms below are **adapted to engineering evidence**, not presented as formal clinical assessments.
+
+          | Key claim | Evidence and certainty | Likelihood versus confidence |
+          |---|---|---|
+          | A universal 10× ratio does not establish TRL 6 representativeness. | **Moderate certainty.** Established scaling physics and TRL definitions support this; direct comparative Project Dyson gate-outcome evidence is absent. | High confidence in the general limitation; no estimated probability of a Dyson gate failure. |
+          | Validated models can support—but not replace—representative physical demonstrations. | **Moderate certainty** for application here. NASA’s *Systems Engineering Handbook*, NASA/SP-2016-6105 Rev 2, and NASA-STD-7009, *Standard for Models and Simulations*, support the underlying distinction and credibility disciplines. | High confidence in the principle; project-specific extrapolation success remains unquantified. |
+          | Modular replication can reduce the required unit-scale extrapolation, while introducing system-level risks. | **Moderate certainty.** Strong engineering basis; applicability depends on architecture and coupling. | Moderate confidence for Dyson until architecture and integrated tests are available; no numerical likelihood assigned. |
+          | Accelerated endurance evidence is credible only when the degradation mechanism and acceleration relationship are supported. | **Moderate certainty.** Established reliability-engineering reasoning; material- and process-specific evidence is still needed. | High confidence in the constraint; low confidence in any presently unspecified lifetime prediction. |
+          | E will cost less than P or F for equivalent assurance. | **Low certainty.** Plausible, but no technology-specific facility costs or evidence plans were supplied. | Low confidence; savings magnitude and likelihood are not estimated. |
+
+          The Project Dyson decision references establish programme intent as supplied in the question. They do not establish technology-specific model validity.
+
+          ## 7. Key assumptions
+
+          | Assumption | Evidence that would falsify it |
+          |---|---|
+          | Independent reviewers can distinguish a validated predictive model from a well-fitted calibration model. | Blind prediction exercises show persistent failures, or separate reviewers cannot reproduce acceptance judgments. |
+          | Each project-ending technology has identifiable dominant scale-sensitive mechanisms. | Larger-scale tests reveal consequential mechanisms omitted from the approved model and test plan. |
+          | Representative testing remains feasible without a universal near-full-scale requirement. | Facility and coupling studies show that only nearly full-scale hardware reproduces the critical environment or interactions. |
+          | The accepted deployment envelope can constrain subsequent design changes. | Procurement or demand decisions repeatedly enlarge the architecture without reopening readiness assessment. |
+
+          ### Competing hypotheses, ranked by least disconfirmed
+
+          1. **Mechanism-specific evidence envelopes best govern admissible extrapolation.** Least contradicted by known differences among physical processes.
+          2. **A rebuttable 10× presumption materially improves decision discipline.** Plausible, but its benefit over explicit evidence requirements is unproven.
+          3. **A universal hard 10× ceiling reliably bounds scale-up risk.** Most contradicted by modular replication and threshold-dependent failures.
+
+          This is a qualitative ACH ranking, not a claim of measured posterior probabilities.
+
+          **Evidence that would change my ruling:** a relevant back-test showing that a particular ratio threshold reliably identifies failures missed by the evidence-envelope approach; poor inter-reviewer reproducibility; or repeated blind-prediction failures that cannot be corrected through improved validation. Conversely, successful cross-scale prediction on representative Dyson technologies would strengthen E.
+
+          ## 8. Decision, warrant, accepted downside
+
+          **Adopt E, with mandatory independent concurrence and configuration control.**
+
+          ### Proposed gate rule
+
+          > **KDP-0B scale and duration evidence**
+          >
+          > Each project-ending technology shall demonstrate TRL 6 through a representative system/subsystem model or prototype in a relevant environment. No universal throughput, power or duration extrapolation ratio establishes or prohibits acceptance.
+          >
+          > Readiness credit shall be limited to a specified deployment configuration and operating envelope, supported by:
+          >
+          > 1. Physical test evidence covering the critical functions, interfaces and relevant environmental conditions.
+          > 2. Identification of scale-sensitive mechanisms, governing regimes, credible transitions and coupled failure modes.
+          > 3. Models calibrated against test data and validated against independent data or pre-declared prediction tests, with measurement uncertainty, parameter uncertainty and model discrepancy addressed.
+          > 4. Demonstrated margins against pre-agreed performance and failure criteria throughout the claimed deployment envelope.
+          > 5. Independent technical concurrence that unresolved extrapolation uncertainty does not defeat those criteria.
+          >
+          > An extrapolation unsupported by this evidence shall receive no readiness credit, irrespective of whether its ratio is below 10×. Supported extrapolation above 10× is not a waiver of the TRL requirement.
+          >
+          > If sufficient evidence cannot be obtained, the programme shall reduce the proposed deployment envelope, obtain further evidence, or withhold KDP-0B approval under the pre-committed failure outcomes.
+
+          **Additional interpretation:**
+
+          - **Throughput:** distinguish unit enlargement from replication; test shared-resource limitations and correlated failures.
+          - **Power:** assess voltage, current density, heat flux, temperature gradients, control stability and electrical interactions—not aggregate watts alone.
+          - **Duration:** permit partial-duration plus accelerated testing only where the degradation model and acceleration relationship are validated. Different damage modes may require different tests; a single “hours multiplier” is insufficient.
+          - **Integration:** component evidence cannot substitute for the representative system/subsystem demonstration.
+          - **Qualification:** TRL 6 is not full operational qualification. Nevertheless, a project-ending lifetime assumption cannot remain unsupported merely because formal qualification comes later.
+
+          The accepted downside is higher front-loaded analysis, independent-review cost and potentially disputed judgments. Some technologies may still require near-deployment-scale tests.
+
+          ## 9. Consequences
+
+          1. **During 0A:** each technology owner produces a scale-and-life evidence plan before committing major pathfinder expenditure. It identifies calibration tests, independent validation tests, uncertainty treatment and acceptance criteria.
+          2. **At the mid-term review:** assess prediction performance and facility adequacy. Revise test scale while the decision remains reversible.
+          3. **At KDP-0B:** reconcile the signed-demand-sized architecture under D-01 with the demonstrated envelope. Demand cannot enlarge readiness credit.
+          4. **After approval:** material changes in module size, operating conditions, coupling or required life trigger reassessment.
+          5. **Keep gates separate:** technology readiness does not establish target suitability, demand, economics or licence acceptability.
+
+          **Y-statement:** In the context of Project Dyson’s irreversible KDP-0B commitment, facing heterogeneous scale-up and lifetime risks, we chose technology-specific, independently reviewed evidence envelopes rather than a universal extrapolation ceiling, to achieve defensible TRL 6 decisions without mandating unnecessary test scale, accepting greater assurance effort and less numerical simplicity.
+
+          **Warrant:** representativeness depends on failure mechanisms, interactions and validated predictive reach—not one aggregate ratio. **Qualifier:** this choice holds only while independent review and validation are demonstrably effective; it does not presume any particular extrapolation is acceptable. **Enabled and constrained decisions:** it enables technology-specific pathfinder sizing and modular architectures, while constraining 0B scope to the evidenced envelope and preserving “0A only, Earth supply” when that envelope is insufficient.
+        wordCount: 2025
+        generatedAt: '2026-10-17T22:22:21.079Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: information
+            reasoning: Criteria come before options, a genuine null option is included, musts are screened first, and sensitivity and trade-off points are separated. Assumptions are falsifiable and certainty is calibrated, with low confidence stated for the specific numbers. Minor arithmetic slips (O4 should be 3.80, O0 2.10, O1 2.60) do not change the ranking. The 100× backstop is openly flagged as a values question for the owner.
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: none
+            reasoning: The response follows the entire decision chain rigorously, with well-defined swing weights, clear options including a true null, structured reasoning via ACH and Toulmin, and a highly actionable commitment.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: Strong governance and explicit alternatives, but the absolute 100× backstop lacks evidence connecting that threshold to acceptable risk. Acknowledging low confidence does not justify making it non-waivable; this could change the choice between O4 and O5.
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: alternatives
+            reasoning: 'There is no genuine null option: Claude''s proposal is mislabelled as the null. Cost is weighted at 40%, equal to risk, which conflicts with D-02''s no-waiver, one-way-gate stance and is not reconciled. The matrix is qualitative with no scores. Certainty is uncalibrated (''virtually certain'' that 10% life testing is needed; regimes ''mathematically proven'' to match). The no-cap power/throughput option has no backstop and does not treat modular numbering-up.'
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: alternatives
+            reasoning: The response lacks a true null option (Option 1 is mislabeled as Null but is actually a fixed limit proposal) and uses percentages for weights without properly calibrating the swing ranges.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: The claimed universal need for at least 10% physical runtime is assigned near-certainty without supporting evidence. That unsupported claim drives the duration cap, while matching dimensionless parameters alone is treated as stronger assurance than warranted.
+        rawScore: 0
+        weightedScore: 0
+        approveCount: 0
+        rejectCount: 3
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: reasoning
+            reasoning: 'Non-compensable requirements and swing weights come first, the options include a null, and the arithmetic checks out. Uncertainty is calibrated honestly: P and E get equal protection scores, and the response shows that the ranking flips if independent review proves ineffective. The gate rule text is operational. The lack of a hard backstop is a defensible values position, and the response explicitly conditions it on effective review.'
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: none
+            reasoning: The response provides a complete and robust decision chain, featuring properly evaluated swing weights, a clear null option, structured evidence assessment, and a well-crafted rule proposal.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: The decision chain connects explicit requirements, alternatives, calibrated evidence and falsifiable assumptions to an actionable evidence-envelope rule. Technology-specific acceptance thresholds remain to be set, but pre-agreed criteria, independent concurrence and withholding approval make that a controlled implementation task.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+    winnerId: gpt-6-1-sol
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: 'A and C converge on the main points: no naive universal ratio, a pre-agreed technology-specific evidence basis, numbering-up separated from scale-up, and duration covered by mechanism-validated models. The remaining difference is whether to have a hard 100× backstop. That is a values trade-off, auditability versus fidelity, which the owner should decide; further rounds are unlikely to resolve it.'
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: Responses A and C provide high-quality, fully reasoned, and actionable policy proposals that resolve the prompt's core question effectively. Further rounds are unnecessary.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: 'C provides a defensible resolution: no universal numerical ceiling, but binding, independently reviewed extrapolation envelopes established before major testing commitments. The remaining work is technology-specific implementation rather than another general policy round.'
+    shouldTerminate: true
+    completedAt: '2026-10-17T22:22:59.769Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 0
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 1
+  totalVotes: 9
+  approvalRate: 55.55555555555556
+  averageResponseWords: 2285
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T22:22:59.890Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    Claude Opus 5.5, Gemini 3.1 Pro and GPT-6.1 Sol did **not converge on a scale-extrapolation limit**. All three proposed technology-specific treatment of governing regimes and degradation, rather than treating a numerical scale factor alone as sufficient evidence. Claude and GPT also explicitly required pre-agreed evidence plans and independent review. Their remaining disagreement concerns whether those controls need universal numerical limits.
+
+    Claude proposed a ≤10× default for single-unit power or throughput, a conditional 10–100× band, and an absolute 100× backstop. Gemini proposed no fixed power/throughput limit where governing regimes match, but a 10× duration-extrapolation cap. GPT proposed no universal ratio on any axis, instead limiting readiness credit to a technology-specific, independently reviewed evidence envelope. Claude and GPT separately distinguished unit enlargement from modular replication.
+
+    The cross-review votes did not establish a substantive decision. Claude’s response received two approvals and one neutral vote; GPT’s received three approvals; Gemini’s received three rejections. Those votes assessed response quality, not agreement on the numerical rule: Claude’s approval of GPT explicitly described the absence of a backstop as a defensible values position.
+
+    ## Decision record
+
+    ### Claude Opus 5.5 — pre-registered limits with an absolute backstop
+
+    **Y-statement:** In the context of the irreversible KDP-0B gate, facing sub-scale demonstrations of project-ending technologies, **Claude chose** pre-registered, axis-specific rules—≤10× default single-unit extrapolation, conditional acceptance through 100×, no acceptance above 100×, separate replication tests and degradation-model requirements—to achieve auditable readiness decisions and predictable pathfinder sizing, accepting larger tests, additional review and possible rejection of a technically sound technology solely because it exceeds the backstop.
+
+    - **Warrant, according to Claude:** regime analysis addresses physical scale-up risk, while pre-registration and a backstop constrain optimistic gate-time arguments.
+    - **Qualifier:** Claude expressed moderate confidence in the structure but low confidence in the numerical thresholds.
+    - **Accepted downside:** Claude identified potentially more expensive or delayed pathfinders and use of the “0A only, Earth supply” fallback where adequate demonstrations are unaffordable.
+
+    ### Gemini 3.1 Pro — no power/throughput cap, fixed duration cap
+
+    **Y-statement:** In the context of KDP-0B, facing MW-class power and kt/yr throughput targets, **Gemini chose** no fixed power/throughput limit when governing regimes match, combined with a maximum 10× duration extrapolation, to achieve affordable pathfinder sizing with physically anchored wear evidence, accepting the schedule required to test at least 10% of design life.
+
+    - **Warrant, according to Gemini:** dimensionless regime matching can support physical scale-up, whereas wear requires empirical runtime.
+    - **Qualifier:** Gemini conditioned its choice on identifying and matching the relevant governing parameters.
+    - **Accepted downside:** Gemini acknowledged longer life-test schedules. Claude and GPT challenged the evidential basis of Gemini’s universal 10% runtime requirement.
+
+    ### GPT-6.1 Sol — technology-specific evidence envelopes without universal ratios
+
+    **Y-statement:** In the context of the irreversible KDP-0B commitment, facing heterogeneous scale-up and lifetime risks, **GPT chose** pre-agreed, independently reviewed evidence envelopes rather than universal extrapolation limits, to achieve defensible TRL 6 judgments without unnecessary test scale, accepting greater assurance effort, reviewer discretion and reduced numerical simplicity.
+
+    - **Warrant, according to GPT:** representativeness depends on failure mechanisms, interactions and demonstrated predictive reach—not an aggregate ratio.
+    - **Qualifier:** GPT conditioned its recommendation on effective independent review, validation and configuration control.
+    - **Accepted downside:** GPT acknowledged disputed judgments, front-loaded assurance costs and the possibility that some technologies still need near-deployment-scale testing.
+
+    ## Decision-quality audit
+
+    ### Round 1 — Claude Opus 5.5
+
+    - **Weakest links named by voters:** Claude named **information**; GPT named **reasoning**; Gemini named **none**.
+    - **Composite Scaffold assessment:** Claude and Gemini judged the decision chain complete. GPT identified an unsupported connection between the absolute 100× threshold and acceptable risk; in GPT’s assessment, acknowledging low confidence did not justify making that threshold non-waivable.
+    - **Other review finding:** Claude’s self-review identified arithmetic corrections in the option matrix but stated that they did not change its ranking.
+    - **Values divergence:** Claude explicitly treated the cost of avoiding a false pass, the acceptable scope of reviewer discretion and the need for an absolute backstop as owner judgments. GPT’s objection leaves the backstop’s evidence basis unresolved rather than establishing that any particular alternative threshold is correct.
+
+    ### Round 1 — Gemini 3.1 Pro
+
+    - **Weakest links named by voters:** Claude and Gemini named **alternatives**; GPT named **information**.
+    - **Missing or unsupported Scaffold elements:** Claude and Gemini found no genuine null option because Gemini labelled Claude’s substantive proposal as the null. Gemini’s self-review also found inadequately calibrated swing weights. Claude criticised the unscored qualitative matrix and the unreconciled equal weighting of cost and risk.
+    - **Evidence problem:** Claude and GPT challenged Gemini’s near-certain claim that wear modelling universally requires at least 10% physical runtime. Both also challenged the strength attributed to dimensionless matching alone.
+    - **Values divergence:** Gemini’s emphasis on affordability and schedule differs from Claude’s stronger stated preference for false-pass protection. Claude regarded Gemini’s weighting as insufficiently reconciled with D-02; the panel did not establish a common owner weighting.
+
+    ### Round 1 — GPT-6.1 Sol
+
+    - **Weakest links named by voters:** Claude named **reasoning**; GPT named **commitment**; Gemini named **none**.
+    - **Composite Scaffold assessment:** All three approved the response. GPT’s self-review identified technology-specific acceptance thresholds as unfinished implementation work, while judging pre-agreed criteria, independent concurrence and withholding approval sufficient to control that work.
+    - **Conditionality:** Claude highlighted GPT’s explicit sensitivity to ineffective independent review and accepted the absence of a backstop as a defensible values position.
+    - **Values divergence:** GPT accepts more reviewer discretion in exchange for avoiding universal numerical restrictions; Claude prefers an absolute boundary against model overconfidence.
+
+    ## Key Points
+
+    - **The null option:** Claude and GPT explicitly rejected leaving the split unresolved because, in their assessments, that invites late negotiation and leaves pathfinder sizing uncertain. Claude and Gemini’s reviews found that Gemini had not assessed a genuine null.
+    - **A small ratio is not an automatic pass:** Claude and GPT both argued that regime transitions can invalidate extrapolation even below 10×.
+    - **Pre-commitment:** Claude and GPT proposed agreeing evidence requirements before major pathfinder commitments; Claude specifically proposed freezing a Scaling Basis at the 0A mid-term review.
+    - **Replication:** Claude and GPT proposed assessing modular numbering-up separately from single-unit enlargement, including coupling and interaction evidence.
+    - **Duration:** All three allowed model-supported life evidence, but their minimum physical-test requirements did not converge. GPT rejected universal hours multipliers; Claude and Gemini proposed numerical requirements.
+    - **Gate consequences:** Claude and GPT explicitly retained withholding KDP-0B approval or applying the supplied fallback where evidence is insufficient. GPT additionally proposed reducing the deployment envelope rather than crediting unsupported scale.
+
+    ## Unresolved Questions
+
+    1. **Universal limits:** Claude requires a 100× single-unit backstop; GPT rejects universal ratios; Gemini rejects a power/throughput cap under its regime-matching condition.
+    2. **Duration thresholds:** Claude proposed several runtime, acceleration and life-margin thresholds; Gemini proposed 10% physical life; GPT required mechanism-specific validation without universal numerical minima.
+    3. **Sufficient validation:** GPT requires independent data or pre-declared prediction tests; Claude adds an intermediate anchor for its 10–100× band. Their required predictive reach remains technology-specific.
+    4. **Assurance capability:** Claude and GPT both made review independence consequential, but neither supplied programme-specific evidence that the proposed review capability is available.
+    5. **Owner preferences:** Claude and GPT explicitly left the balance between false passes, false fails, test expenditure and reviewer discretion to the owner.
+
+    ## Recommended Actions
+
+    - **For owner decision, retain the three positions separately.** Claude and GPT both framed numerical simplicity versus reviewer discretion as a values choice; the cross-review approvals should not be recorded as agreement on a cap.
+    - **Commission pre-gate scale-and-life evidence plans.** Claude’s Scaling Basis and GPT’s evidence-plan proposals both call for deployment targets, mechanisms, test scales, validation criteria and independent review.
+    - **Keep proposed numbers labelled as proposals.** Claude acknowledged low confidence in its thresholds; Claude and GPT disputed Gemini’s universal runtime claim.
+    - **Use the proposed change-of-ruling evidence.** Claude called for results from regime cases and anchor tests; GPT called for cross-scale prediction back-tests and reviewer-reproducibility evidence. Both identified ineffective review as grounds to reconsider their preferred arrangements.
+    - **Preserve configuration and failure controls.** GPT proposed reconciling the demand-sized architecture with the demonstrated envelope; Claude and GPT both retained further testing or withholding approval when evidence is inadequate.
+
+    ```yaml
+    questionId: "rq-0-71"
+    topics:
+      - id: power-throughput-limits
+        topic: Universal limits on single-unit power and throughput extrapolation
+        positions:
+          - statement: "Use a 10× default, permit 10–100× with a pre-registered regime case and intermediate anchor, and prohibit acceptance above 100×."
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude cited regime-change risk and protection against optimistic review, while acknowledging low confidence in the numerical thresholds."
+          - statement: "Set no fixed limit when governing regimes match."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini relied on dimensionless regime matching and pathfinder affordability; Claude and GPT challenged the sufficiency of regime matching alone."
+          - statement: "Use no universal ratio; limit acceptance to an independently reviewed, test-supported deployment envelope."
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT cited threshold-dependent failures, differences among technologies, and validated predictive reach rather than aggregate scale ratios."
+        resolution_status: open
+        priority: critical
+      - id: duration-and-wear
+        topic: Minimum runtime and lifetime extrapolation requirements
+        positions:
+          - statement: "Apply numerical runtime, degradation-validation and equivalent-life requirements separately from power and throughput."
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude invoked physics-of-failure and long-duration testing experience, but identified its specific numerical defaults as low confidence."
+          - statement: "Cap duration extrapolation at 10×, requiring at least 10% physical design-life testing."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini asserted a universal empirical runtime need; Claude and GPT rejected the claimed certainty as unsupported."
+          - statement: "Require validated degradation mechanisms and acceleration relationships without a universal runtime fraction."
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT argued that different damage modes require different tests and that a single hours multiplier is insufficient."
+        resolution_status: open
+        priority: critical
+      - id: precommitment-and-independent-review
+        topic: Advance agreement and assurance controls
+        positions:
+          - statement: "Freeze a Scaling Basis at the 0A mid-term review, with independent review and controlled changes."
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude argued that criteria fixed before test results constrain motivated gate-time interpretation."
+          - statement: "Pre-agree evidence plans and validation criteria, require independent concurrence, and control the approved deployment configuration."
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT conditioned its recommendation on effective validation, reproducible review and enforceable deployment limits."
+          - statement: "Define governing regimes and establish a board to validate regime-preservation arguments."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini identified these as follow-on decisions without specifying Claude's or GPT's pre-commitment controls."
+        resolution_status: partially-resolved
+        priority: high
+      - id: owner-risk-tradeoff
+        topic: Numerical backstops versus discretion, cost and schedule
+        positions:
+          - statement: "Prefer an absolute backstop despite possible unnecessary tests or false rejection."
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude prioritised protection at the one-way gate and explicitly accepted larger pathfinders and possible rejection solely on the backstop."
+          - statement: "Balance affordability and scaling confidence equally, with additional weight on schedule."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini assigned 40% each to cost and technical risk and 20% to schedule; Claude challenged the reconciliation with D-02."
+          - statement: "Accept greater assurance effort and reviewer discretion rather than a universal numerical ceiling."
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT made readiness requirements non-compensable and conditioned discretion on effective independent review."
+        resolution_status: open
+        priority: high
+    ```
+  keyPoints:
+    - The null option:** Claude and GPT explicitly rejected leaving the split unresolved because, in their assessments, that invites late negotiation and leaves pathfinder sizing uncertain. Claude and Gemini’s reviews found that Gemini had not assessed a genuine null.
+    - A small ratio is not an automatic pass:** Claude and GPT both argued that regime transitions can invalidate extrapolation even below 10×.
+    - Pre-commitment:** Claude and GPT proposed agreeing evidence requirements before major pathfinder commitments; Claude specifically proposed freezing a Scaling Basis at the 0A mid-term review.
+    - Replication:** Claude and GPT proposed assessing modular numbering-up separately from single-unit enlargement, including coupling and interaction evidence.
+    - Duration:** All three allowed model-supported life evidence, but their minimum physical-test requirements did not converge. GPT rejected universal hours multipliers; Claude and Gemini proposed numerical requirements.
+    - Gate consequences:** Claude and GPT explicitly retained withholding KDP-0B approval or applying the supplied fallback where evidence is insufficient. GPT additionally proposed reducing the deployment envelope rather than crediting unsupported scale.
+  unresolvedQuestions:
+    - Universal limits:** Claude requires a 100× single-unit backstop; GPT rejects universal ratios; Gemini rejects a power/throughput cap under its regime-matching condition.
+    - Duration thresholds:** Claude proposed several runtime, acceleration and life-margin thresholds; Gemini proposed 10% physical life; GPT required mechanism-specific validation without universal numerical minima.
+    - Sufficient validation:** GPT requires independent data or pre-declared prediction tests; Claude adds an intermediate anchor for its 10–100× band. Their required predictive reach remains technology-specific.
+    - Assurance capability:** Claude and GPT both made review independence consequential, but neither supplied programme-specific evidence that the proposed review capability is available.
+    - Owner preferences:** Claude and GPT explicitly left the balance between false passes, false fails, test expenditure and reviewer discretion to the owner.
+  recommendedActions:
+    - For owner decision, retain the three positions separately.** Claude and GPT both framed numerical simplicity versus reviewer discretion as a values choice; the cross-review approvals should not be recorded as agreement on a cap.
+    - Commission pre-gate scale-and-life evidence plans.** Claude’s Scaling Basis and GPT’s evidence-plan proposals both call for deployment targets, mechanisms, test scales, validation criteria and independent review.
+    - Keep proposed numbers labelled as proposals.** Claude acknowledged low confidence in its thresholds; Claude and GPT disputed Gemini’s universal runtime claim.
+    - Use the proposed change-of-ruling evidence.** Claude called for results from regime cases and anchor tests; GPT called for cross-scale prediction back-tests and reviewer-reproducibility evidence. Both identified ineffective review as grounds to reconsider their preferred arrangements.
+    - Preserve configuration and failure controls.** GPT proposed reconciling the demand-sized architecture with the demonstrated envelope; Claude and GPT both retained further testing or withholding approval when evidence is inadequate.
+    - 'id: power-throughput-limits'
+    - 'statement: "Use a 10× default, permit 10–100× with a pre-registered regime case and intermediate anchor, and prohibit acceptance above 100×."'
+    - 'statement: "Set no fixed limit when governing regimes match."'
+    - 'statement: "Use no universal ratio; limit acceptance to an independently reviewed, test-supported deployment envelope."'
+    - 'id: duration-and-wear'
+    - 'statement: "Apply numerical runtime, degradation-validation and equivalent-life requirements separately from power and throughput."'
+    - 'statement: "Cap duration extrapolation at 10×, requiring at least 10% physical design-life testing."'
+    - 'statement: "Require validated degradation mechanisms and acceleration relationships without a universal runtime fraction."'
+    - 'id: precommitment-and-independent-review'
+    - 'statement: "Freeze a Scaling Basis at the 0A mid-term review, with independent review and controlled changes."'
+    - 'statement: "Pre-agree evidence plans and validation criteria, require independent concurrence, and control the approved deployment configuration."'
+    - 'statement: "Define governing regimes and establish a board to validate regime-preservation arguments."'
+    - 'id: owner-risk-tradeoff'
+    - 'statement: "Prefer an absolute backstop despite possible unnecessary tests or false rejection."'
+    - 'statement: "Balance affordability and scaling confidence equally, with additional weight on schedule."'
+    - 'statement: "Accept greater assurance effort and reviewer discretion rather than a universal numerical ceiling."'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T22:24:07.438Z'
+alternateSyntheses:
+  - synthesizer: claude-opus-5-5
+    generatedAt: '2026-10-17T22:40:35.170Z'
+    file: conclusion.claude-opus-5-5.md

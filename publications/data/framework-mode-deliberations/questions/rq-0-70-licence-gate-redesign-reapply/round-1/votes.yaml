@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: reasoning
+    reasoning: 'Strong chain. Criteria come before options, there is a null option, and musts are separated. The failure classification is pre-committed with an independent classifier. Assumptions carry falsifiers. Ready-to-adopt rule text includes an anti-forum-shopping clause. The matrix arithmetic is wrong: O1 = 385 not 395, O2 = 230 not 260, O3 = 340 not 345. Correcting it widens O4''s lead, so the decision does not change. Scoring O1 at 5 on C3 slightly contradicts the claim that harm barely differs between options.'
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: 'It has the right structure (null option, criteria first, a time box). The central warrant is circular, though: it assumes that because TRL 6 is achieved, any failure is marginal, which is exactly what is in question. Certainty is uncalibrated (''virtually certain'', ''absolute''). Scores are qualitative only, and two options are dropped before assessment. The 6-month box is unjustified. It lists site adjustments as minor changes, which conflicts with licensing scope. Any of these could change the decision.'
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: information
+    reasoning: Musts are kept outside the weighted scoring and weights are swing-based. The arithmetic is correct, and a sensitivity check shows how B would win. Certainty is calibrated honestly, with 'not estimable' where data are absent. Default-to-closure applies if bounds are not pre-approved. It lacks A's objective failure-class thresholds, relying on owner-authorised diagnosis, but the explicit caps and sunset limit the room for discretion.
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: Excellent use of the framework. The classification of failure types adds significant clarity and prevents a one-size-fits-all approach. The reasoning is robust and well-supported by evidence and assumptions.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: alternatives
+    reasoning: Good structure, but the options are slightly less nuanced than A or C (lacking the classification of failure types). The assumption that TRL 6 implies only marginal failures might be overly optimistic.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: information
+    reasoning: Strong alignment with the framework. The distinction between reversible learning and irreversible commitment is a highly effective framing. The proposed rule is clear and auditable.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: information
+    reasoning: The bounded, independently classified retry is well structured, but the 10× terminal threshold and ranking of recoverable failures lack supporting evidence. These assumptions determine eligibility for reapplication and could change the decision.
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: reasoning
+    reasoning: The central warrant incorrectly treats TRL 6 as evidence that licensing failures are likely marginal. Relevant-environment technology demonstration does not establish compliance with an independently specified regulatory limit, so the claimed basis for a short recovery window is unsupported.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: information
+    reasoning: Recovery cost, feasibility and timing remain unknown, but the recommendation explicitly conditions remediation on a credible regulatory pathway, protected funding and precommitted limits. It distinguishes learning from production authorisation and specifies reassessment and terminal outcomes without assuming recovery is likely.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: 'A and C converge independently on the same answer: no waiver, one pre-committed bounded reapplication, and terminal closure to 0A-only otherwise. The remaining differences are parameters for the owner to set (12 vs 18 months, classification thresholds). The values disagreement (T1) is explicitly recorded for the owner rather than left open for further debate.'
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: Responses A and C provide highly mature, compatible recommendations for a single, strictly bounded reapplication with clear rules. The discussion has reached a strong, actionable conclusion.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'Response C provides a satisfactory conditional resolution: failure blocks production, one pre-bounded recovery attempt may be authorised on demonstrated feasibility, and exhaustion closes the existing 0B option. Remaining numerical limits require programme evidence rather than another conceptual round.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: reasoning
+        reasoning: 'Strong chain. Criteria come before options, there is a null option, and musts are separated. The failure classification is pre-committed with an independent classifier. Assumptions carry falsifiers. Ready-to-adopt rule text includes an anti-forum-shopping clause. The matrix arithmetic is wrong: O1 = 385 not 395, O2 = 230 not 260, O3 = 340 not 345. Correcting it widens O4''s lead, so the decision does not change. Scoring O1 at 5 on C3 slightly contradicts the claim that harm barely differs between options.'
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: Excellent use of the framework. The classification of failure types adds significant clarity and prevents a one-size-fits-all approach. The reasoning is robust and well-supported by evidence and assumptions.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: information
+        reasoning: The bounded, independently classified retry is well structured, but the 10× terminal threshold and ranking of recoverable failures lack supporting evidence. These assumptions determine eligibility for reapplication and could change the decision.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: 'It has the right structure (null option, criteria first, a time box). The central warrant is circular, though: it assumes that because TRL 6 is achieved, any failure is marginal, which is exactly what is in question. Certainty is uncalibrated (''virtually certain'', ''absolute''). Scores are qualitative only, and two options are dropped before assessment. The 6-month box is unjustified. It lists site adjustments as minor changes, which conflicts with licensing scope. Any of these could change the decision.'
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: alternatives
+        reasoning: Good structure, but the options are slightly less nuanced than A or C (lacking the classification of failure types). The assumption that TRL 6 implies only marginal failures might be overly optimistic.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: reasoning
+        reasoning: The central warrant incorrectly treats TRL 6 as evidence that licensing failures are likely marginal. Relevant-environment technology demonstration does not establish compliance with an independently specified regulatory limit, so the claimed basis for a short recovery window is unsupported.
+    rawScore: 2
+    weightedScore: 1.5
+    approveCount: 0
+    rejectCount: 1
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: information
+        reasoning: Musts are kept outside the weighted scoring and weights are swing-based. The arithmetic is correct, and a sensitivity check shows how B would win. Certainty is calibrated honestly, with 'not estimable' where data are absent. Default-to-closure applies if bounds are not pre-approved. It lacks A's objective failure-class thresholds, relying on owner-authorised diagnosis, but the explicit caps and sunset limit the room for discretion.
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: information
+        reasoning: Strong alignment with the framework. The distinction between reversible learning and irreversible commitment is a highly effective framing. The proposed rule is clear and auditable.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: information
+        reasoning: Recovery cost, feasibility and timing remain unknown, but the recommendation explicitly conditions remediation on a credible regulatory pathway, protected funding and precommitted limits. It distinguishes learning from production authorisation and specifies reassessment and terminal outcomes without assuming recovery is likely.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: gpt-6-1-sol
+winnerScore: 5

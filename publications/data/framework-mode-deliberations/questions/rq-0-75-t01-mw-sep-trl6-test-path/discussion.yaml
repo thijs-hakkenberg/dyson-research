@@ -1,0 +1,740 @@
+questionId: rq-0-75
+questionSlug: t01-mw-sep-trl6-test-path
+questionTitle: 'Which path should take the MW-class SEP cluster (T01) to TRL 6: ground modules plus a cluster model, or a flight subset?'
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T22:24:10.945Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # T01 path to TRL 6: ground modules, a cluster model, or a flight subset
+
+          **Recommendation in brief:** Neither pure option. Use ground-qualified modules plus a cluster model validated on the ground. Add a small flight anchor that exists to validate the model, not to demonstrate the cluster. A full flight subset is a pre-committed escalation, triggered at the 0A mid-term review only if the model fails its validation criteria.
+
+          ## 1. Frame & decision type
+
+          - **Decision type.** This is an executive and property decision. It sets the evidence route and the rule text for one project-ending technology at a one-way gate (KDP-0B, under D-02). It is not an existence decision. Whether to have MW-class SEP at all belongs to the fallback "0A only, Earth supply".
+          - **Reversibility.** The path choice is two-way during early 0A, because facility bookings and model work are cheap to redirect. It becomes one-way when long-lead flight hardware is committed: arrays, PPUs at flight standard, and a spacecraft slot. The decision should therefore be staged, with the irreversible part deferred to a point where the evidence can discriminate.
+          - **Cynefin domain.** Single-module physics is complicated: experts can analyse it. Cluster behaviour at MW scale in true vacuum is closer to complex, because emergent plume, cathode and charging interactions have not been observed at this scale. Complex domains call for probe, sense, respond. That argues for an instrumented, discriminating step rather than an all-in demonstration.
+
+          **The core physical fact.** I agree with Claude's observation and will quantify it. Take 1 MW jet power at Isp ≈ 2,500 s, xenon, and about 60% efficiency:
+
+          - Mass flow is ṁ ≈ 2ηP/v² ≈ 1.9 g/s, which is about 19,000–20,000 sccm Xe.
+          - Holding background pressure near 10 µTorr (1.3×10⁻³ Pa) requires an effective xenon pumping speed of about 2.5×10⁷ L/s.
+            - That figure matters because Hall thruster operation is measurably pressure-sensitive above roughly that level. Thrust, discharge oscillations, plume divergence and cathode coupling all shift.
+          - The largest EP facilities provide xenon pumping speeds of order 10⁶ L/s. NASA Glenn VF-5 is the usual reference.
+          - The same arithmetic at 100 kW gives about 2.5×10⁶ L/s. That is consistent with the ~100 kW X3 nested-Hall tests at Glenn running at elevated background pressure, which is a useful sanity check.
+
+          So ground facilities are short by roughly an order of magnitude at full cluster scale. Ground can credibly test a module of 50–150 kW and a small cluster of a few modules at reduced power. Ground cannot test the MW cluster at space-representative pressure.
+
+          **The second fact, which both pure options ignore.** TRL 6 for propulsion includes life and wear evidence. Thousands of hours of wear testing cannot be obtained in flight within Phase 0. The flight path is therefore never "flight instead of ground". It is always "ground modules plus flight". The real question is narrower: **what evidence about the cluster, beyond the module, is needed for KDP-0B, and where can it be obtained?**
+
+          ## 2. Criteria and weights
+
+          These are stated before the options. Swing weights reflect the spread of each criterion across plausible paths, not its abstract importance.
+
+          | # | Criterion | Range across plausible paths | Swing weight | Why this weight |
+          |---|---|---|---|---|
+          | C1 | **Validity of the TRL 6 claim at a one-way gate.** Does the evidence close the space-vs-facility and cluster-vs-module gaps? | From "extrapolated 10× with no anchor" to "flown and measured at representative scale" | **30** | Widest consequential range. D-02 forbids waivers, so a weak claim either fails the gate or invites a de facto waiver. |
+          | C2 | **Discriminating power (strong inference).** Does each test separate "the model works" from "it doesn't" early? | From a single pass/fail at the end to staged, falsifiable predictions | **15** | Determines whether failure arrives at the mid-term review (cheap) or at KDP-0B (expensive). |
+          | C3 | **0A cost** | From about $50–150M (ground plus model) to about $0.5–1.5B (dedicated flight subset of several hundred kW). Order-of-magnitude only. | **15** | The range is large, but D-01 already accepts Phase 0 as a capability programme rather than a cost saving. That reduces the weight below its raw dollar span. |
+          | C4 | **Schedule to KDP-0B** | Facility-limited (~3–4 years) vs flight-limited (~5–7 years including spacecraft, launch and operations) | **15** | A flight path can put KDP-0B on the critical path of a launch. |
+          | C5 | **Coupling and risk concentration.** Does T01 evidence tie its fate to the pathfinder or another programme element? | From independent to the pathfinder carrying the propulsion verdict | **10** | Moderate. Coupling can be mitigated by design, but it shapes who owns the failure. |
+          | C6 | **Option value and reversibility** | From committing flight hardware on day 1 to committing only when triggered | **15** | D-02 says stringency follows reversibility. Preserving the ability to escalate or abandon is directly valued. |
+
+          Total: 100.
+
+          ## 3. Options
+
+          - **O0 Null.** Leave the panel split as it stands: no facility rule, no path. *Rejected.* With no rule text, KDP-0B will be argued from whatever evidence happens to exist. Facility limits are known now, so the null option does not defer the problem. It converts a planned trade into an unplanned waiver request. It also leaves undecided whether the pathfinder must carry propulsion, which blocks pathfinder sizing.
+          - **O1 Ground modules plus validated cluster model (pure Claude option a).** Covers:
+            - module qualification and wear at full module power in the best available facility;
+            - small-cluster ground tests;
+            - pressure sweeps;
+            - a physics-based cluster model extrapolated to MW in vacuum.
+          - **O2 Flight subset (pure option b).** A dedicated tug demonstrator flying a substantial fraction of the cluster, roughly 200–500 kW across 4–10 modules, on top of ground module qualification.
+          - **O3 Hybrid with staged escalation (recommended).** O1, plus a *flight anchor*:
+            - **What it is.** 2–4 production-representative modules at 50–200 kW total, flown on the pathfinder if its power budget allows, otherwise on a hosted or small dedicated bus.
+            - **What it is for.** It exists to measure the near-zero-pressure end of the pressure-dependence curve and the small-N interaction terms. Those are precisely the parameters the cluster model must extrapolate.
+            - **Escalation.** A full O2 flight subset is pre-committed as the response if the model fails its validation criteria at the 0A mid-term review.
+          - **O4 Build an MW-class vacuum facility.** *Rejected as the primary path, kept as a contingency study.*
+            - At about 10⁵ L/s per m² of xenon cryopanel, roughly 250 m² of cryosurface would be needed.
+            - The plume dumps on the order of 1 MW of beam power that must be kept off the cryopanels.
+            - Credible cost runs to hundreds of $M and the schedule is 4+ years before the first test.
+            - It buys ground validity at one propellant only. The facility case changes sharply under D-05; see section 7.
+          - **O5 Re-scope.** Lower module count or power, or defer MW clustering to Phase 1 and treat KDP-0B as a module-level gate. *Rejected.* D-02 forbids waiving project-ending technologies, and downgrading the scope of "T01" to pass the gate is a waiver by redefinition. The honest version of O5 is the existing fallback "0A only, Earth supply", which remains available.
+
+          ## 4. Assessment matrix (QOC)
+
+          Scores run 0–10, where 10 is best on the criterion. Weighted totals are /1000.
+
+          | Option | C1 Validity (30) | C2 Discrimination (15) | C3 Cost (15) | C4 Schedule (15) | C5 Coupling (10) | C6 Option value (15) | **Weighted** |
+          |---|---|---|---|---|---|---|---|
+          | O0 Null | 1 | 1 | 9 | 5 | 6 | 3 | **385** |
+          | O1 Ground plus model | 5 | 7 | 9 | 8 | 9 | 8 | **720** |
+          | O2 Flight subset | 9 | 5 | 2 | 3 | 4 | 2 | **535** |
+          | **O3 Hybrid, staged** | **8** | **9** | 6 | 6 | 6 | 9 | **750** |
+          | O4 New facility | 7 | 6 | 3 | 3 | 9 | 4 | **525** |
+          | O5 Re-scope | 2 | 4 | 9 | 9 | 9 | 6 | **545** |
+
+          **Reasoning behind the key cells:**
+
+          - **O1 on C1 (5).** The model must extrapolate about 10× in power and from roughly 10⁻⁵ Torr to space vacuum, with no zero-pressure anchor. Known pressure effects make that an unanchored extrapolation at a one-way gate.
+          - **O3 on C1 (8).** The anchor converts the pressure-dependence extrapolation into interpolation. What remains is the N-scaling from about 4 modules to the full count. That is a smaller and more tractable gap, provided interaction terms saturate with spacing, which the ground small-cluster tests can probe.
+          - **O2 on C2 (5).** A large flight subset tends to be a single, late, expensive pass/fail. It is also ambiguous on failure: was it the thruster, the PPU, the bus or the operations?
+          - **O3 on C2 (9).** The model makes pre-registered predictions for the anchor flight before it flies.
+
+          **Result:** O3 and O1 are close, at 750 versus 720. The gap comes almost entirely from C1, which is why the sensitivity analysis matters.
+
+          ## 5. Sensitivity vs trade-off points
+
+          **Sensitivity points.** These strongly affect one attribute and can be settled by facts.
+
+          - **S1. Gap between ground facility pressure and space at module scale.** If facility effects on the chosen thruster type are small and well characterised below ~10 µTorr, the anchor's value falls. O1 then beats O3 because of its cost and schedule advantage.
+            - Gridded ion engines are less sensitive to background pressure in performance than Hall thrusters, though charge-exchange erosion still matters.
+            - **Thruster type selection is therefore a sensitivity point for this decision.**
+          - **S2. Pathfinder power budget.** If the pathfinder cannot supply about 50 kW or more to an EP payload, the anchor needs its own bus. O3's cost then rises towards O2's lower bound and its C5 score improves.
+          - **S3. Propellant (D-05).**
+            - **Iodine** condenses readily, which eases facility pumping enormously. O1 and O4 strengthen, but contamination and material compatibility become new cluster-model terms.
+            - **Krypton** is harder to cryopump than xenon, which widens the facility gap. O3 and O2 strengthen.
+            - **Argon** widens the gap further.
+            - **Rule:** re-run this matrix when D-05 closes.
+          - **S4. Interaction saturation.** If plume, cathode and charging interactions saturate at N ≈ 3–4 with realistic spacing, small-N ground plus flight data bound the MW cluster. If they grow with N, as collective charging or shared-bus dynamics might, no subscale path suffices and O2 or O4 becomes necessary.
+
+          **Trade-off points.** These affect two attributes in opposite directions. They are values questions for the owner, not facts to settle.
+
+          - **T1. Validity vs cost and schedule (C1 against C3 and C4).** How much residual extrapolation risk is the owner willing to carry through a one-way gate in exchange for a programme $0.3–1B cheaper and 2–3 years faster? D-02 says "no waivers", but it does not say how wide an extrapolation still counts as "demonstrated". **The owner must state a maximum allowed extrapolation ratio.** I propose ≤ 5× in total cluster power from the largest tested configuration, with the pressure axis anchored.
+          - **T2. Pathfinder coupling (C5 against C3).** Putting the anchor on the pathfinder saves a bus but makes the pathfinder's success partly hostage to T01, and vice versa. This is a values question about programme risk ownership.
+
+          ## 6. Evidence certainty
+
+          Likelihood (how probable) is kept separate from confidence (how good the evidence is).
+
+          | Claim | GRADE certainty | Likelihood / confidence |
+          |---|---|---|
+          | MW-class xenon EP needs ~10⁷ L/s pumping for ≤10 µTorr. Existing facilities are ~10⁶ L/s. | **High** for the arithmetic; **moderate** for exact facility figures | *Virtually certain* that a full-scale gap of ≥5× exists; high confidence |
+          | Hall thruster performance and plume depend measurably on background pressure | **High.** Multiple facility-effects studies; community recommended practice on pressure measurement and effective pumping speed (Dankanich et al., *J. Propulsion and Power*, 2017) | *Very likely*; high confidence |
+          | ~100 kW-class Hall operation demonstrated on the ground (X3 at Glenn), with elevated background pressure | **Moderate** | High confidence it occurred; medium confidence on representativeness |
+          | Multi-thruster Hall cluster interactions are characterised at small N and low power (AFRL cluster work, early 2000s) | **Moderate** at low power; **very low** at 100 kW+ per module | Medium confidence it transfers |
+          | Validated models can extrapolate to zero pressure within ±5% thrust and ±10% on divergence | **Low** | *About as likely as not* without a flight anchor; low confidence |
+          | Interaction terms saturate by N≈4 | **Very low.** No data at relevant scale. | Unknown; this is what the programme must test |
+          | Flight subset cost of ~$0.5–1.5B for several hundred kW | **Low.** Analogy to the Gateway PPE-class contract (~50 kW SEP, ~$375M for the 2019 award) scaled for power and arrays. | Medium confidence on order of magnitude only |
+          | T01 is TRL 2–4 today | **Moderate.** The panel agrees on the bracket, not the point. | High confidence that it is below 5 |
+
+          The weakest evidence sits exactly where the decision hinges: model extrapolation and interaction saturation. That is the argument for buying the cheapest test that discriminates on those two, rather than the most impressive one.
+
+          ## 7. Key assumptions
+
+          Each is listed with the evidence that would falsify it.
+
+          - **A1. Cluster-level risk is dominated by a small set of measurable terms.** Those terms are pressure-dependent performance, plume and plume interaction, cathode coupling, PPU and bus dynamics, and spacecraft charging.
+            - *Falsified if* the small-N ground tests show unexplained behaviour not captured by these terms, such as unmodelled oscillatory coupling between modules.
+          - **A2. Module wear and life can be qualified on the ground at full module power.**
+            - *Falsified if* the facility pressure at module scale exceeds the threshold where erosion mechanisms change. Facility carbon backsputter that contaminates wear data is one example.
+            - If so, life evidence also needs an anchor, or a module power reduction.
+          - **A3. The flight anchor can be production-representative.** That means the same module, PPU design and cathode configuration.
+            - *Falsified if* pathfinder power or mass forces a derated or substitute thruster. In that case the anchor no longer anchors.
+          - **A4. The model can be pre-registered and judged against fixed tolerances.**
+            - *Falsified if* modelling teams cannot commit to predictions before data arrive. That is an organisational failure, not a technical one.
+          - **A5. D-05 does not select a propellant that removes the facility gap.**
+            - *Falsified by* an iodine selection with demonstrated cluster-scale condensation pumping. O1 then likely dominates.
+          - **A6. Dependencies on rq-0-16 and rq-0-54.** I assume the requirements these entries carry, plausibly covering propellant logistics and pathfinder scope, do not already fix pathfinder power or propellant. I have not verified their content; the owner should confirm. If either fixes pathfinder EP power below ~50 kW, S2 triggers.
+
+          **ACH: why might O1 vs O3 come out differently?**
+
+          | Hypothesis | Disconfirming evidence | Status |
+          |---|---|---|
+          | H1. Ground plus model is sufficient | Known Hall pressure sensitivity (disconfirms unanchored extrapolation); no flight data at 100 kW+ | Moderately disconfirmed |
+          | H2. Only a large flight subset suffices | Small-N cluster data exist; the module physics is well understood; the large-flight path still needs ground life | Moderately disconfirmed |
+          | H3. Anchored model is sufficient unless interactions grow with N | Nothing currently disconfirms it; the S4 risk is untested | **Least disconfirmed. Adopt H3, and design tests that would disconfirm it early.** |
+
+          ## 8. Decision, warrant, accepted downside
+
+          **Y-statement.** In the context of a project-ending T01 at a no-waiver, one-way KDP-0B, with ground vacuum facilities about 10× short of MW-class pumping, we chose ground-qualified modules plus a pre-registered cluster model, validated by small-N ground cluster tests and pressure sweeps and anchored by a 2–4-module production-representative flight anchor, with a pre-committed escalation to a full flight subset if validation fails at the 0A mid-term review. We did so to reach a defensible TRL 6 claim at least cost and with the earliest discriminating failure. We accept that KDP-0B rests on an interpolated model with up to ~5× extrapolation in N, carrying residual collective-interaction risk into the first Phase 1 vehicle.
+
+          **Toulmin structure:**
+          - **Claim.** O3 gives TRL 6 evidence adequate to a one-way gate.
+          - **Grounds.** The facility arithmetic; the established pressure-sensitivity literature; existing small-N cluster data; ground-only life qualification is unavoidable regardless of path.
+          - **Warrant.** TRL 6 permits a relevant environment, which may be ground or space, with a representative prototype. A model counts as "demonstrated" when it has predicted, before the fact, independent measurements spanning the extrapolation axes. The anchor supplies the one axis, pressure, that ground cannot.
+          - **Backing.** Standard verification-by-analysis practice used for structures and large deployables that cannot be tested at full scale in 1g; D-02's reversibility principle.
+          - **Qualifier.** *Probably sufficient.* I would put about 65–75% on passing the mid-term validation without escalation, at low-to-medium confidence.
+          - **Rebuttal conditions.** Interaction growth with N (S4); D-05 propellant change (S3); pathfinder unable to host a representative anchor (S2/A3).
+
+          **Proposed gate rule text** (for `gates-proposal.yaml`, T01):
+
+          ```yaml
+          T01_evidence_path:
+            kdp_0b_criterion: >
+              TRL 6 in a relevant environment, no waiver. Demonstrated by ALL of:
+              (1) Module: full-power module qualification and wear test to ≥50% of
+                  mission life (balance by validated wear model) at background
+                  pressure ≤ P_max (default 10 µTorr Xe-equivalent, propellant-adjusted
+                  per D-05), with pressure sweep ≥3 points spanning ≥5×.
+              (2) Ground cluster: ≥3 production-representative modules on a shared
+                  PPU/bus architecture, operated simultaneously at the highest power
+                  the facility sustains at ≤ 3×P_max.
+              (3) Cluster model: predictions pre-registered before (2) and (4);
+                  within ±5% thrust, ±10% plume divergence, cathode-coupling voltage
+                  and bus-stability margins as specified.
+              (4) Flight anchor: ≥2 production-representative modules in space,
+                  ≥500 h cumulative, measuring thrust, plume, charging, bus dynamics
+                  against pre-registered predictions.
+              (5) Max extrapolation from largest tested configuration to flight
+                  cluster ≤ 5× in total power; pressure axis anchored by (4).
+            mid_term_0A_trigger: >
+              If (3) fails against (2) or against the ground pressure sweep, or if
+              interaction terms grow with N across tested configurations, escalate to
+              a flight subset of ≥20% of cluster power (owner-approved budget line
+              pre-reserved), or invoke fallback "0A only, Earth supply".
+            rerun_on: [D-05 closure, pathfinder power baseline, thruster-type selection]
+          ```
+
+          **Evidence that would change the ruling:**
+
+          - **Towards O1:**
+            - A facility demonstrated at ≤10 µTorr with ≥500 kW of propellant flow;
+            - an iodine or other condensable propellant selection with demonstrated pumping;
+            - flight data from other programmes (for example, 50 kW-class Gateway PPE operations) showing ground-to-space agreement within the model tolerances for the same thruster family.
+          - **Towards O2 or O4:**
+            - Small-N tests showing interaction terms growing with N;
+            - a model failing its pre-registered predictions;
+            - selection of krypton or argon.
+          - **Towards the fallback:**
+            - Escalation triggered and the flight-subset budget not available.
+
+          ## 9. Consequences
+
+          **Enables:**
+          - Pathfinder sizing can proceed with a defined EP payload: 2–4 modules at 50–200 kW, plus power and thermal provisions. It is no longer an open "might carry propulsion".
+          - Facility booking and an upgrade study for the best available facility can start now.
+          - Model work can begin under pre-registration discipline.
+
+          **Constrains:**
+          - **D-05** must now report its effect on facility pumping, not just on supply.
+          - **Thruster type** (Hall vs gridded) inherits S1 as an explicit criterion.
+          - **Pathfinder** gains a T01 dependency that must be firewalled. The pathfinder's own success criteria should not fail if the anchor underperforms; the anchor's purpose is measurement, not mission.
+
+          **Conflicts to record:**
+          - O3 pre-reserves a contingent flight-subset budget line that sits outside D-01's 0A envelope until triggered. The owner must accept that contingent liability or accept the fallback as the response.
+
+          **Subsumes:**
+          - The "test facility" split in the panel table. With this ruling, Claude's (a)/(b) framing becomes a staged (a)+anchor, then (b) on trigger. GPT's "MW cluster integration unproven" becomes gate criteria (2)–(5).
+        wordCount: 3364
+        generatedAt: '2026-10-17T22:26:15.156Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          Here is the structured decision response regarding the TRL 6 path for the T01 MW-class SEP cluster, following the requested Composite Scaffold framework.
+
+          ### 1. Frame & decision type
+          - **Decision Type:** Executive and property decision. It dictates the programmatic path (executive) and defines the acceptable verification architecture (property) for a project-ending technology.
+          - **Reversibility:** Low (One-way door). Committing to a flight subset (pathfinder) versus ground-plus-modeling fundamentally alters the Phase 0A budget, schedule, and risk profile. 
+          - **Cynefin Domain:** Complicated, bordering on Complex. The physics of MW-class plume interactions are highly coupled, but bounded by known engineering constraints.
+
+          ### 2. Criteria and weights
+          Weights are defined as *swing weights*, based on the actual range of difference between the options for each criterion in the context of Phase 0A.
+
+          - **C1: Compliance with D-02 (TRL 6 in relevant environment)** — *Weight: High (Swing: Critical).* D-02 explicitly forbids waivers for project-ending technologies at KDP-0B. The chosen path must legitimately satisfy the definition of "relevant environment." The swing is massive because failing this criterion fails the gate.
+          - **C2: Phase 0A Cost and Schedule Feasibility** — *Weight: High (Swing: $100M+ and years).* The difference between building a MW-class ground test article versus a spaceflight-rated subset (launch, spacecraft bus, operations) represents an order-of-magnitude cost swing.
+          - **C3: Plume/Cluster Interaction Fidelity** — *Weight: Medium (Swing: Moderate).* The difference between empirical flight data and modeled ground data for cluster dynamics (cross-talk, thermal radiation, background pressure ingestion).
+
+          ### 3. Options
+          - **O0: Null (Leave the panel's split as is)** — *Rejected.* Leaving the definition of TRL 6 ambiguous for a project-ending technology violates the accepted D-02 ruling. It defers a massive cost/schedule variance to KDP-0B, ensuring failure.
+          - **O1: Ground modules plus a validated cluster model.** Test individual thruster/PPU modules at full power in existing vacuum facilities. Use these empirical results to validate a high-fidelity computational model of the full MW cluster.
+          - **O2: Flight subset.** Launch a scaled-down but multi-thruster subset of the cluster on a pathfinder or dedicated tug demonstrator to achieve empirical TRL 6 in the actual space environment.
+
+          ### 4. Assessment matrix (QOC)
+
+          | Option | C1: D-02 Compliance (TRL 6) | C2: Cost/Schedule Feasibility | C3: Plume/Cluster Fidelity |
+          | :--- | :--- | :--- | :--- |
+          | **O0: Null** | Fails (Ambiguous) | Unknown/Unbounded | N/A |
+          | **O1: Ground + Model** | Meets (Requires strict definition of "relevant environment" for models) | Highly feasible (Fits typical Phase 0A capability program scope) | Moderate (Relies heavily on model accuracy; facility background pressure limits fidelity) |
+          | **O2: Flight subset** | Exceeds (Actual environment) | Poor (Likely breaks Phase 0A budget/timeline; turns 0A into a flight program) | High (Empirical data, no facility wall/pumping artifacts) |
+
+          ### 5. Sensitivity vs trade-off points
+          - **Trade-off point:** We are trading *Cost/Schedule Feasibility (C2)* against *Plume/Cluster Fidelity (C3)*. O2 provides undeniable empirical evidence but destroys the Phase 0A budget. O1 preserves the budget but introduces verification risk via modeling.
+          - **Sensitivity point:** O1 is highly sensitive to *facility pumping speed limits*. If existing facilities cannot maintain a low enough background pressure for even a single MW-class module to operate without anomalous facility-ingestion effects, the baseline empirical data feeding the model will be flawed, collapsing C1.
+
+          ### 6. Evidence certainty
+          - **Claim 1:** MW-class plume pumping exceeds demonstrated vacuum facilities. 
+            - *Certainty (GRADE):* High. 
+            - *Likelihood (ICD 203):* Almost certain (>95%). The volumetric flow rate of propellant (e.g., Xenon/Krypton) at MW power levels fundamentally outstrips the cryogenic pumping capacity of facilities like NASA's VF-5 or similar commercial chambers without unacceptable background pressure rise.
+          - **Claim 2:** A flight subset will exceed Phase 0A funding/schedule.
+            - *Certainty (GRADE):* Moderate.
+            - *Likelihood (ICD 203):* Very likely (~90%), based on historical spaceflight demonstrator costs vs. Phase A study budgets.
+
+          ### 7. Key assumptions
+          - **Assumption 1:** A computational cluster model can be validated to a degree that satisfies the TRL 6 "relevant environment" requirement for KDP-0B.
+            - *Falsification:* Falsified if single-module ground tests reveal chaotic plasma instabilities that cannot be deterministically modeled, or if peer review rejects computational fluid/plasma dynamics as a substitute for cluster testing.
+            - *ACH Ranking:* The hypothesis that "models cannot fully capture MW cluster cross-talk" is currently *less disconfirmed* than "models are perfectly adequate," requiring aggressive risk mitigation.
+          - **Assumption 2 (Propellant - D-05):** The choice of propellant (e.g., Argon vs. Xenon) does not change the facility pumping constraint.
+            - *Falsification:* Falsified if a condensable or easily pumped alternative propellant is selected, though MW mass flow rates make this unlikely.
+
+          ### 8. Decision, warrant, accepted downside
+          **Y-Statement:** 
+          In the context of the Phase 0 TRL re-baseline and D-02 strict gate requirements, facing the physical limits of ground vacuum facilities for MW-class SEP, we chose **Option 1 (Ground modules plus a validated cluster model)** to achieve TRL 6 for T01 prior to KDP-0B, accepting the verification risk inherent in relying on computational models for cluster-level plasma and thermal interactions.
+
+          **Warrant (Toulmin):** 
+          Because a flight subset (O2) would escalate Phase 0A from a capability program into a multi-hundred-million-dollar flight demonstrator program, it violates the programmatic constraints of D-01. Therefore, ground testing combined with rigorous modeling is the only viable path to KDP-0B, provided the gate criteria explicitly accept validated models as constituting a "relevant environment" for the cluster integration aspect.
+
+          **Evidence that would change the ruling:** Discovery of a novel, cost-effective sub-scale flight opportunity (e.g., a hosted payload slot on a heavy lift vehicle) that fits within the Phase 0A budget, or a breakthrough in ground facility pumping technology (e.g., advanced gettering) that allows full cluster testing.
+
+          ### 9. Consequences
+          - **Constrains:** Phase 0A budget allocation. A significant portion of the budget must now be ring-fenced for advanced plasma and thermal computational modeling (rq-0-16).
+          - **Enables:** D-05 (propellant selection) can proceed with a focus on single-module performance rather than full-cluster ground facility compatibility.
+          - **Rule Text for Gate KDP-0B:** "For T01, TRL 6 is defined as full-power operation of a single thruster/PPU module in a vacuum facility with background pressure $\le 5 \times 10^{-5}$ Torr, coupled with a peer-reviewed computational model of the full cluster demonstrating acceptable thermal, EMI/EMC, and plasma cross-talk margins."
+        wordCount: 1027
+        generatedAt: '2026-10-17T22:26:42.073Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **Recommend ground qualification plus a representative flight subset as the baseline T01 evidence programme.** Ground modules and a cluster model remain essential, but should not currently be accepted as the sole route to KDP-0B.
+
+          This is an **executive decision about verification strategy**, constraining the propulsion architecture. It is reversible during 0A; accepting its evidence at KDP-0B is not. Under D-02, the question is therefore not “must TRL 6 include flight?”—it need not—but:
+
+          > Can the chosen demonstration establish that the MW-class cluster’s project-ending behaviours are understood and bounded in a relevant environment?
+
+          The information supplied does not yet establish that ground-module tests plus modelling can do that. Equally, Claude’s facility-limit claim is not sufficient evidence that every suitable ground campaign is impossible.
+
+          The immediate decision should fund an evidence strategy, not prematurely certify either route.
+
+          ## 2. Criteria and weights
+
+          **Non-compensable musts**
+
+          - Demonstrate T01 at TRL 6 in its relevant environment before KDP-0B, without waiver.
+          - Cover project-ending cluster interactions, not merely individual thruster maturity.
+          - Trace the demonstration to the selected propellant under D-05 and the applicable requirements, including rq-0-16/rq-0-54.
+          - Provide an independently reviewable verification argument, including model uncertainty and extrapolation limits.
+
+          A high weighted score cannot offset failure of a must.
+
+          The following **swing weights** compare plausible programme outcomes, not abstract importance:
+
+          | Criterion | Weight | Worst-to-best swing being valued |
+          |---|---:|---|
+          | **C1. Cluster-level evidence strength** | 40% | Major coupled behaviours remain extrapolated → flight-scale behaviour is bounded by representative tests and validated predictions. Largest weight because T01 is project-ending. |
+          | **C2. Diagnostic value** | 20% | An anomaly cannot distinguish competing causes → measurements discriminate facility effects, module effects and cluster interactions. This substantially affects whether failures can be corrected. |
+          | **C3. Incremental 0A cost** | 15% | Major new spacecraft/facility development → reuse of funded equipment and infrastructure. Important under D-01, but cannot buy down the assurance standard. |
+          | **C4. Evidence availability before KDP-0B** | 15% | Critical evidence arrives after the decision window → reviewed evidence arrives with time for correction. |
+          | **C5. Adaptability and reusable capability** | 10% | Evidence tied to one brittle configuration → reusable test assets and methods across credible architecture changes. Smaller weight because reuse is secondary to gate closure. |
+
+          These weights are proposed owner value judgments. They are not empirical findings.
+
+          ## 3. Options
+
+          **N — Null: leave the split unresolved.**  
+          Preserves short-term discretion and avoids immediate commitment. Reject: neither facilities nor a flight demonstrator can be credibly scheduled around an undecided evidence architecture. The apparent saving is purchased by allowing T01 to become a late programme veto.
+
+          **A — Ground modules plus a validated cluster model; no planned flight subset.**  
+          Strong argument: controlled, repeatable tests support diagnostics and endurance testing, potentially at much lower incremental cost. Reject **as today’s baseline**, because no supplied evidence establishes that the decisive cluster effects are sufficiently local, separable and measurable on the ground. Keep as a possible later substitution.
+
+          **B — Ground qualification plus a representative flight subset.**  
+          Ground tests establish module performance, endurance, off-nominal behaviour and controlled interactions. Flight tests address the coupled effects whose relevant environment cannot be convincingly reproduced on the ground. Recommend this option.
+
+          **C — Full intended MW-class cluster flight demonstration.**  
+          Strongest direct coverage of full-power geometry and simultaneous operation. Reject as the default: it risks turning the verification vehicle into an expensive precursor mission, with launch, power, thermal and spacecraft integration on the critical path. Full-cluster flight remains a possible escalation if subset scaling cannot be justified.
+
+          A new full-power ground facility is not a separate preferred route here: it is a potential implementation of A that would need its own facility-effectiveness, cost and schedule case.
+
+          ## 4. Assessment matrix
+
+          Illustrative scores: **1 = weak; 5 = strong**. These are structured judgments, not measured utilities or probabilities.
+
+          | Option | C1 Evidence 40% | C2 Diagnostics 20% | C3 Cost 15% | C4 Schedule 15% | C5 Adaptability 10% | Weighted /5 |
+          |---|---:|---:|---:|---:|---:|---:|
+          | N — Unresolved | 1 | 1 | 3 | 1 | 2 | **1.40** |
+          | A — Ground + model | 2 | 3 | 5 | 4 | 3 | **3.05** |
+          | **B — Ground + flight subset** | **4** | **4** | **2** | **2** | **4** | **3.40** |
+          | C — Full-cluster flight | 5 | 4 | 1 | 1 | 1 | **3.20** |
+
+          All substantive routes remain **conditional on satisfying the musts**. In particular, neither a flight subset nor a full-cluster flight automatically qualifies as TRL 6.
+
+          The ranking favours B, but not overwhelmingly. Its warrant must come from the verification case, not the decimal score.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points — facts that could change the ranking
+
+          1. **Nonlocal cluster physics.** Do plume overlap, spacecraft potential, neutral transport or power-system interactions change materially as active area and total power increase?
+          2. **Facility perturbation.** Can background pressure, ingestion, charge exchange and wall effects be measured and corrected within the required uncertainty?
+          3. **Flight-subset representativeness.** Does the selected geometry reproduce the controlling interactions, or merely show that several thrusters operate together?
+          4. **Host availability.** A pathfinder with compatible power, propellant, thermal rejection, communications and schedule could substantially improve B’s cost and schedule scores.
+          5. **Propellant choice under D-05.** A change can invalidate discharge, erosion, plume and facility assumptions; transferability must be demonstrated rather than presumed.
+
+          ### Trade-off points — owner values, not unresolved physics
+
+          - **Additional 0A expenditure versus residual extrapolation risk at an irreversible gate.**
+          - **Shared pathfinder efficiency versus independent demonstrator scheduling and design control.**
+          - **Earlier commitment to a propulsion configuration versus retaining propellant and architecture flexibility.**
+
+          Under D-01/D-02, I favour spending more on discriminating evidence rather than lowering the standard or relying on schedule optimism. That does **not** justify unlimited demonstrator spending: if the evidence programme becomes uneconomic, retain “0A only, Earth supply.”
+
+          ## 6. Evidence certainty
+
+          GRADE labels below are adapted to engineering evidence. Confidence concerns the strength of the assessment; likelihood concerns a future outcome. They are not interchangeable.
+
+          | Key claim | Evidence certainty / confidence | Likelihood judgment |
+          |---|---|---|
+          | TRL 6 requires a representative system/subsystem demonstration in a relevant environment; flight is not universally mandatory. | **High / high.** Consistent with NASA’s *Systems Engineering Handbook*, NASA/SP-2016-6105 Rev 2. | Not a probability claim. |
+          | Facility background and boundaries can alter electric-propulsion measurements. | **High / high** for the general phenomenon; **low / low** for its magnitude in this particular T01 configuration. | Material distortion is plausible; no project-specific probability is justified. |
+          | No available facility can support the required T01 demonstration. | **Very low / low** on the supplied record: one panel assertion, without a facility/configuration comparison. | Undetermined. |
+          | A flight subset plus ground evidence can close full-cluster TRL 6. | **Low / low-to-moderate** before configuration and scaling validation. It is a testable engineering hypothesis. | Plausible, not established. |
+          | Ground-only closure can satisfy D-02 for this architecture. | **Low / low** for the same reason. | Plausible under favourable scaling and facility evidence; not yet demonstrated. |
+          | Requiring a dedicated flight demonstrator increases integration and schedule exposure. | **Moderate / moderate** as an engineering judgment; no project cost estimate is supplied. | More likely than not relative to ground-only work, but the increment is unquantified. |
+
+          I have not inspected the referenced repository files or the full text of rq-0-16/rq-0-54. Their acceptance limits must be incorporated before this becomes a controlled specification.
+
+          ## 7. Key assumptions
+
+          ### ACH: competing hypotheses, ranked by least disconfirmed
+
+          The available record is too sparse for a decisive empirical ranking. A provisional, **low-confidence** ranking is:
+
+          1. **H-B: ground evidence plus a flight subset can bound the important scaling effects.** No supplied observation directly contradicts it, but representative scaling remains unproven.
+          2. **H-A: ground modules and modelling alone suffice.** More exposed to the unresolved facility and cluster-integration concerns.
+          3. **H-C: only full-cluster flight can suffice.** Makes a stronger necessity claim than the supplied evidence supports.
+
+          This is a ranking of working hypotheses, not proof of B.
+
+          | Key assumption | Evidence that would falsify it |
+          |---|---|
+          | A subset can reproduce the controlling interaction topology. | Tests show new collective behaviour with increasing active area, cluster size or total power that the subset cannot reproduce or predict. |
+          | Ground tests can establish module endurance and degradation. | Facility-dependent erosion or ingestion prevents mission-relevant life inference within allocated uncertainty. |
+          | Cluster models can predict rather than merely fit. | Pre-registered predictions fail on withheld configurations, operating points or flight measurements. |
+          | A suitable host or dedicated demonstrator is feasible within 0A. | Resource budgets, interfaces, procurement or schedule analysis show no credible route to reviewed results before KDP-0B. |
+          | The demonstrated propellant/configuration represents the eventual design. | D-05 or later architecture changes introduce materially different operating physics outside the validated domain. |
+
+          **What would change my ruling:** an independently reviewed ground-only assurance case demonstrating acceptable facility effects, successful blind predictions across cluster configurations, and bounded full-scale extrapolation would justify switching to A. Conversely, evidence of unbounded size-dependent interactions would require C—or stopping 0B.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Proposed gate rule
+
+          > **T01 shall demonstrate TRL 6 before KDP-0B through a configuration-controlled verification case combining representative hardware tests and validated analysis. The baseline shall include ground qualification and a representative flight subset.**
+          >
+          > **The demonstration shall cover the selected propellant, relevant cluster geometry, simultaneous operation, shared power/PPU interactions, thermal behaviour, plume–spacecraft interactions, and representative operating and fault transitions. Each project-ending behaviour shall be demonstrated directly or bounded by validated extrapolation against applicable requirements and allocated uncertainty.**
+          >
+          > **A ground-only substitution requires independent technical approval of equivalent evidence; this is an alternative means of compliance, not a TRL waiver. Missing or inconclusive evidence shall block KDP-0B.**
+
+          The flight subset should be sized by **interaction coverage**, not a nominal power percentage or arbitrary thruster count. It must include the neighbour relationships, shared electrical architecture and spacecraft interfaces needed to test the scaling argument. A single thruster flown on an unrelated bus would not close cluster integration.
+
+          Ground endurance evidence remains necessary: a short flight cannot establish mission life.
+
+          **Accepted downside:** B adds spacecraft integration, launch dependence and possible propulsion-design commitment before 0B is authorised. It can also fail to close the gate. Those are preferable to declaring full-cluster maturity from an unvalidated extrapolation.
+
+          ## 9. Consequences
+
+          - **At KDP-0A:** approve the T01 verification architecture, uncertainty budget, facility survey and flight-host trade—not a claim of achieved maturity.
+          - **At the 0A mid-term review:** require representative ground data, withheld-data model predictions, the subset scaling argument, D-05 alignment and a credible demonstrator delivery plan. Decide whether to continue B, substitute proven A, escalate, or stop 0B preparation.
+          - **Before KDP-0B:** independently review the evidence against rq-0-16/rq-0-54 and all linked T01 requirements. No launch, no useful telemetry, or failed scaling validation means no closure.
+          - Choose the pathfinder as host only if it can carry the evidence obligations without compromising its primary objectives; otherwise assess a dedicated tug demonstrator explicitly.
+          - Preserve the pre-committed outcome: **0A capability programme only, Earth supply** if T01 cannot close affordably and on time.
+
+          **Y-statement:** In the context of D-01’s gated capability programme and D-02’s no-waiver KDP-0B, facing unresolved facility effects and MW-cluster scaling, we choose ground qualification plus a representative flight subset to obtain defensible cluster-level evidence, accepting added cost, launch dependence and possible gate failure. **Warrant:** complementary environments test different failure mechanisms and reduce reliance on unsupported extrapolation. **Qualifier:** this recommendation is provisional on representative scaling; independently demonstrated ground equivalence may replace flight, while unbounded scaling may require full-cluster demonstration or termination. It enables demonstrator and facility planning, constrains D-05 and propulsion configuration changes, and does not authorise 0B.
+        wordCount: 1987
+        generatedAt: '2026-10-17T22:28:19.211Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: values
+            reasoning: Criteria and weights come before options, and it includes null, re-scope and facility options. The facility arithmetic checks out (~2 g/s Xe, ~2.5e7 L/s needed vs ~1e6 available). Assumptions are falsifiable, likelihood is kept separate from confidence, the qualifier is calibrated, and the escalation triggers and gate text are concrete. The O3-vs-O1 margin is narrow and rests on judgment scores, but A says so openly and routes it through sensitivity points S1–S4 and an owner-set extrapolation ratio.
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: none
+            reasoning: Excellent decision chain with strong physical grounding, clear alternatives including a staged hybrid, and robust falsifiable assumptions.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: The staged strategy is strong, but a small flight anchor does not itself bound full-cluster interactions. The proposed 5× extrapolation limit and numerical acceptance thresholds lack a requirements-based justification; validating those assumptions could change the required demonstration scale.
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: Its own ACH says 'models cannot capture cluster cross-talk' is the less disconfirmed hypothesis, yet it chooses ground plus model without any anchor. The proposed rule text requires only a single module at 5e-5 Torr, above pressure-sensitive levels, which does not close cluster-level TRL 6. It claims argon would not change the pumping constraint, which is wrong. Weights are not numeric, and it calls the decision one-way even though the path is redirectable during 0A.
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: Identifies the facility pumping limit but chooses the ground-only option anyway, accepting the verification risk without a clear mitigation or anchor, which weakens the claim that it meets the strict no-waiver TRL 6 requirement.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: The claim that flight almost certainly exceeds programme constraints lacks a supplied budget or schedule baseline. More importantly, single-module testing plus peer-reviewed modelling is declared sufficient without independent cluster-level validation, effectively redefining the gate rather than demonstrating compliance.
+        rawScore: 2
+        weightedScore: 1.5
+        approveCount: 0
+        rejectCount: 1
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: NEUTRAL
+            weakestLink: information
+            reasoning: 'The structure is sound: non-compensable musts, null and escalation options, ACH and falsifiers. However, it rates the facility gap as very-low-certainty when straightforward mass-flow and pumping arithmetic establishes it, and it never quantifies the cost of a flight subset. The scores are close (3.40 vs 3.20 vs 3.05), so better information on cost and facility limits could flip the ranking or point toward a smaller anchor.'
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: none
+            reasoning: Solid decision chain that correctly identifies that flight subset must be combined with ground endurance testing, and provides a clear, conditional commitment.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: Provides a coherent provisional baseline, non-compensable acceptance criteria, calibrated uncertainty, falsifiable scaling assumptions, and explicit substitution, escalation and stop conditions. Detailed acceptance limits remain to be controlled, but the decision does not presume either flight or modelling automatically establishes TRL 6.
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+    winnerId: claude-opus-5-5
+    winnerScore: 4
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: 'A gives a well-quantified, falsifiable and staged resolution with gate rule text. C converges on the same core point: ground evidence plus a flight element, with triggers for substitution or escalation. Remaining differences are about sizing that the proposed mid-term review is designed to settle.'
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: Responses A and C provide highly rigorous, actionable, and well-reasoned paths forward that resolve the core tension. Further discussion is unlikely to yield better baseline strategies.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: 'C supplies a satisfactory conditional resolution: plan ground qualification plus a representative flight subset, permit independently demonstrated ground equivalence, and block the gate if cluster scaling remains unbounded.'
+    shouldTerminate: true
+    completedAt: '2026-10-17T22:29:07.043Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 1
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 0
+  totalVotes: 9
+  approvalRate: 44.44444444444444
+  averageResponseWords: 2126
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T22:29:07.165Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    Claude Opus 5.5, Gemini 3.1 Pro and GPT-6.1 Sol agreed that leaving the evidence path unresolved is unacceptable, that T01 must satisfy D-02’s no-waiver TRL 6 requirement at KDP-0B, and that modelling must accompany hardware evidence. **They did not converge on whether flight evidence should be mandatory or how much flight hardware would be sufficient.** Their recommendations therefore remain alternatives, not an agreed owner decision.
+
+    Claude recommended ground-tested modules and a validated cluster model, anchored by a small representative flight experiment, with escalation if validation fails. GPT recommended ground qualification plus a representative flight subset as the baseline, permitting ground-only substitution only after independent approval of equivalent evidence. Gemini recommended ground modules plus a validated model without planned flight, principally on cost and schedule grounds. Claude and GPT challenged whether Gemini’s proposed single-module demonstration and modelling would close cluster-level maturity; GPT also challenged the unsupported assumption that flight necessarily exceeds programme constraints.
+
+    The reviews favoured a staged, falsifiable evidence programme but did not resolve its scale. Gemini approved both Claude’s and GPT’s responses; Claude approved its own response and was neutral on the others; GPT approved its own response, was neutral on Claude’s, and rejected Gemini’s. GPT’s principal reservation about Claude’s proposal was that a small flight anchor and a fixed extrapolation ratio do not, without further justification, bound full-cluster behaviour.
+
+    ## Decision record
+
+    ### Position 1 — Small flight anchor with staged escalation  
+    **Held by Claude Opus 5.5**
+
+    > In the context of D-02’s no-waiver KDP-0B, facing ground-facility limitations and uncertain cluster scaling, we chose ground-tested modules, small-cluster tests and a pre-registered cluster model with a production-representative flight anchor, to obtain discriminating evidence before committing to a larger demonstration, accepting residual full-cluster extrapolation risk and a contingent escalation commitment.
+
+    - **Warrant — Claude:** A flight anchor can test pressure-dependent behaviour and small-N interactions that ground tests cannot fully reproduce, while ground testing remains necessary for endurance evidence.
+    - **Qualifier — Claude:** Sufficiency depends on successful predictive validation and bounded interaction scaling; D-05, thruster selection and host capability may change the route.
+    - **Accepted downside — Claude:** Residual collective-interaction risk, flight-host coupling and a reserved escalation liability.
+    - **Unaccepted detail — GPT:** Claude’s proposed module counts, test durations, tolerances and maximum 5× power extrapolation require requirements-based justification.
+
+    ### Position 2 — Ground modules plus model, without planned flight  
+    **Held by Gemini 3.1 Pro**
+
+    > In the context of a gated capability programme, facing MW-class ground-facility constraints and the anticipated cost and schedule burden of flight, we chose full-power module testing plus a validated cluster model, to pursue TRL 6 within 0A’s presumed constraints, accepting verification risk for cluster-level plasma and thermal interactions.
+
+    - **Warrant — Gemini:** Ground testing and rigorous modelling offer the feasible programme route if the gate explicitly accepts that evidence for cluster integration.
+    - **Qualifier — Gemini:** The approach depends on sufficiently representative module tests and model validation; an affordable flight opportunity or improved facility capability could change the choice.
+    - **Accepted downside — Gemini:** Dependence on computational prediction rather than direct flight measurement.
+    - **Contested warrant — Claude and GPT:** The proposed evidence does not establish cluster-level closure. GPT additionally rejected the inference that D-01 rules out a flight demonstrator without a supplied budget and schedule baseline.
+
+    ### Position 3 — Representative flight subset as the baseline  
+    **Held by GPT-6.1 Sol**
+
+    > In the context of D-01’s gated capability programme and D-02’s no-waiver KDP-0B, facing unresolved facility effects and MW-cluster scaling, we chose ground qualification plus a representative flight subset, to obtain defensible cluster-level evidence, accepting added cost, launch dependence and possible gate failure.
+
+    - **Warrant — GPT:** Complementary ground and flight environments test different failure mechanisms and reduce unsupported extrapolation.
+    - **Qualifier — GPT:** Subset representativeness must itself be demonstrated; independently approved ground equivalence may replace flight, while unbounded scaling may require a larger demonstration or stopping 0B preparation.
+    - **Accepted downside — GPT:** Spacecraft integration, launch dependency and earlier propulsion-configuration commitments.
+    - **Reservation — Claude:** Better facility and cost information could favour a smaller anchor rather than GPT’s baseline subset.
+
+    ## Decision-quality audit
+
+    ### Round 1 — Claude Opus 5.5 response
+
+    - **Weakest links named in votes:** Claude named **values**; GPT named **reasoning**; Gemini named none.
+    - **Scaffold coverage:** Claude and Gemini judged the criteria-first structure, alternatives, falsifiable assumptions and staged decision chain strong. No voter identified an omitted scaffold step.
+    - **Unsupported elements:** GPT challenged whether the small flight anchor bounds full-cluster interactions and whether the numerical acceptance thresholds and 5× extrapolation limit have a requirements-based foundation.
+    - **Trade-off rather than factual dispute:** Claude identified assurance versus cost/schedule, and pathfinder reuse versus risk coupling, as owner value choices. Its self-review acknowledged that the narrow hybrid-versus-ground ranking depends on judgment scores.
+
+    ### Round 1 — Gemini 3.1 Pro response
+
+    - **Weakest links named in votes:** Claude and Gemini named **reasoning**; GPT named **information**.
+    - **Unsupported elements:** GPT found no supplied budget or schedule basis for Gemini’s claim that flight would exceed programme constraints. Claude and GPT challenged the transition from single-module tests and reviewed modelling to cluster-level TRL 6.
+    - **Internal reasoning gap:** Gemini’s self-review acknowledged that accepting modelling risk without a clear mitigation or anchor weakens compliance with the no-waiver requirement. Claude likewise noted tension between Gemini’s uncertainty about cluster cross-talk and its ground-only conclusion.
+    - **Scaffold weaknesses:** Claude criticised non-numeric weights and treating the early path choice as one-way. Claude also disputed Gemini’s propellant assumption and proposed pressure criterion.
+    - **Trade-off rather than factual dispute:** Gemini framed cost/schedule versus interaction fidelity as the principal trade-off. GPT’s objection was that this trade cannot establish compliance with a non-compensable gate requirement.
+
+    ### Round 1 — GPT-6.1 Sol response
+
+    - **Weakest links named in votes:** Claude named **information**; GPT named **commitment**; Gemini named none.
+    - **Scaffold coverage:** Claude and Gemini endorsed the conditional baseline, non-compensable requirements, alternatives, falsifiers and stop conditions. No voter identified an omitted scaffold step.
+    - **Unsupported elements:** Claude criticised GPT’s low confidence in the facility-limit claim and the absence of quantified flight-subset costs. GPT acknowledged that detailed acceptance limits remain uncontrolled.
+    - **Commitment limitation:** GPT’s recommendation commits to an evidence architecture, not a fixed demonstrator size or a guaranteed TRL outcome.
+    - **Trade-off rather than factual dispute:** GPT identified additional 0A expenditure versus residual extrapolation risk, shared-host efficiency versus independence, and early configuration commitment versus flexibility as owner choices.
+
+    ## Key Points
+
+    - **Ground testing remains necessary:** Claude and GPT stated that a flight experiment does not replace module endurance and degradation evidence.
+    - **Flight is not automatically sufficient:** GPT required evidence that a subset represents the controlling interactions, rather than merely demonstrating simultaneous thruster operation.
+    - **A small anchor has a narrower purpose:** Claude proposed using flight primarily to test model predictions about pressure and small-N interactions; GPT questioned whether that closes full-cluster scaling.
+    - **Facility limits require configuration-specific treatment:** Claude quantified a substantial xenon pumping gap; Gemini also asserted a full-scale limitation. GPT accepted the general importance of facility effects but considered the supplied record insufficient to rule out every suitable ground campaign.
+    - **Gate acceptance remains contested:** Gemini proposed single-module operation plus a peer-reviewed cluster model. Claude proposed multiple specified demonstrations and numerical limits. GPT proposed requirements-traced coverage, allocated uncertainty and independently reviewed extrapolation.
+    - **D-05 remains consequential:** Claude and GPT required reassessment after propellant selection. Claude disputed Gemini’s assumption that propellant choice would not materially change the pumping constraint.
+    - **The requirements remain unverified in the responses:** Claude and GPT explicitly stated that they had not verified the contents of rq-0-16/rq-0-54.
+    - **Failure must remain consequential:** Claude and GPT retained escalation or “0A only, Earth supply” rather than treating missing evidence as grounds for a waiver.
+
+    ## Unresolved Questions
+
+    1. **What constitutes sufficient cluster representation?** Claude proposed a small flight anchor; GPT required interaction-based sizing and challenged fixed counts or power ratios.
+    2. **Can ground-only evidence demonstrate equivalence?** Gemini assumed it can; Claude and GPT required stronger cluster-level validation.
+    3. **What facility conditions are relevant for the selected configuration?** Claude and Gemini asserted a substantial full-scale constraint; GPT requested a configuration-specific facility comparison.
+    4. **What expenditure and schedule can 0A support?** Gemini treated flight as infeasible; GPT challenged that premise, while Claude supplied only order-of-magnitude estimates.
+    5. **Which numerical limits are justified?** GPT challenged Claude’s proposed thresholds; Claude challenged Gemini’s pressure criterion.
+    6. **Can the pathfinder host representative propulsion evidence without compromising its own objectives?** Claude and GPT made host suitability conditional.
+    7. **How will D-05 and rq-0-16/rq-0-54 constrain acceptance?** Claude and GPT left that mapping to be verified.
+
+    ## Recommended Actions
+
+    The following actions reflect proposals made by the models, rather than a new rapporteur ruling:
+
+    1. **Define the verification case before declaring a route sufficient.** GPT proposed requirements-traced coverage and uncertainty allocation; Claude proposed pre-registered predictions and explicit validation criteria.
+    2. **Complete the facility and host trades.** GPT proposed a facility survey and flight-host comparison; Claude proposed facility booking and an upgrade study. Both made flight-host use conditional.
+    3. **Validate numerical acceptance limits.** GPT’s review called for a requirements basis for Claude’s thresholds; Claude’s review challenged Gemini’s pressure threshold.
+    4. **Use the 0A mid-term review as a decision point.** Claude proposed validation-triggered escalation; GPT proposed choosing among continuation, proven ground substitution, escalation or stopping 0B preparation.
+    5. **Revisit the route after D-05 and requirement verification.** Claude and GPT proposed reassessment when propellant and architecture choices alter the validated domain.
+    6. **Resolve the owner’s risk and funding preference explicitly.** Claude and GPT identified the assurance–cost–schedule trade-off; Claude requested acceptance of either the contingent escalation liability or the fallback.
+    7. **Preserve the no-waiver outcome.** Claude and GPT proposed blocking KDP-0B if T01 evidence remains missing, inconclusive or unaffordable.
+
+    ```yaml
+    questionId: "rq-0-75"
+    topics:
+      - id: evidence-path
+        topic: Baseline route to T01 TRL 6
+        positions:
+          - statement: Use ground modules and a validated cluster model with a small flight anchor, escalating if validation fails.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude cited facility pumping limits, pressure-sensitive behaviour, ground endurance needs and pre-registered predictive validation."
+          - statement: Use ground modules plus a validated cluster model without planned flight.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini cited anticipated flight cost and schedule burdens and conditional acceptance of modelling for cluster integration."
+          - statement: Baseline ground qualification plus a representative flight subset, allowing independently approved ground-only substitution.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT cited unresolved cluster scaling and facility effects, and the absence of a demonstrated ground-only assurance case."
+        resolution_status: open
+        priority: critical
+      - id: demonstration-scale
+        topic: Required flight scale and extrapolation limits
+        positions:
+          - statement: A small representative flight anchor can support model validation, subject to bounded scaling and escalation.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude proposed two to four modules and a maximum fivefold power extrapolation, conditional on validation."
+          - statement: Size the subset by interaction coverage rather than fixed module counts or power percentages.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT argued that a small anchor does not itself bound full-cluster behaviour and challenged the requirements basis of Claude's numerical limits."
+        resolution_status: open
+        priority: critical
+      - id: ground-only-acceptance
+        topic: Conditions for accepting ground evidence without flight
+        positions:
+          - statement: Full-power single-module testing and a peer-reviewed cluster model can constitute the gate evidence.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini proposed module operation at no more than 5e-5 Torr and modelled thermal, electromagnetic and plasma interaction margins."
+          - statement: The proposed single-module and modelling rule does not establish cluster-level closure.
+            models: ["Claude Opus 5.5", "GPT-6.1 Sol"]
+            evidence: "Claude challenged the pressure criterion and missing cluster demonstration; GPT required independent cluster validation and an equivalent-evidence case."
+        resolution_status: open
+        priority: critical
+      - id: feasibility-basis
+        topic: Facility and programme feasibility assumptions
+        positions:
+          - statement: A substantial full-scale pumping gap supports a flight anchor, with route reassessment after propellant selection.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude supplied xenon flow and pumping estimates and identified propellant-dependent facility effects."
+          - statement: Full-scale pumping is constrained and flight is likely outside programme cost and schedule limits.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini cited general facility capacity and historical demonstrator experience, without a supplied programme budget baseline."
+          - statement: Neither universal ground infeasibility nor flight unaffordability is established by the supplied record.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT requested a configuration-specific facility comparison and a credible host, budget and schedule assessment."
+        resolution_status: open
+        priority: high
+    ```
+  keyPoints:
+    - Ground testing remains necessary:** Claude and GPT stated that a flight experiment does not replace module endurance and degradation evidence.
+    - Flight is not automatically sufficient:** GPT required evidence that a subset represents the controlling interactions, rather than merely demonstrating simultaneous thruster operation.
+    - A small anchor has a narrower purpose:** Claude proposed using flight primarily to test model predictions about pressure and small-N interactions; GPT questioned whether that closes full-cluster scaling.
+    - Facility limits require configuration-specific treatment:** Claude quantified a substantial xenon pumping gap; Gemini also asserted a full-scale limitation. GPT accepted the general importance of facility effects but considered the supplied record insufficient to rule out every suitable ground campaign.
+    - Gate acceptance remains contested:** Gemini proposed single-module operation plus a peer-reviewed cluster model. Claude proposed multiple specified demonstrations and numerical limits. GPT proposed requirements-traced coverage, allocated uncertainty and independently reviewed extrapolation.
+    - D-05 remains consequential:** Claude and GPT required reassessment after propellant selection. Claude disputed Gemini’s assumption that propellant choice would not materially change the pumping constraint.
+    - The requirements remain unverified in the responses:** Claude and GPT explicitly stated that they had not verified the contents of rq-0-16/rq-0-54.
+    - Failure must remain consequential:** Claude and GPT retained escalation or “0A only, Earth supply” rather than treating missing evidence as grounds for a waiver.
+  unresolvedQuestions:
+    - What constitutes sufficient cluster representation?** Claude proposed a small flight anchor; GPT required interaction-based sizing and challenged fixed counts or power ratios.
+    - Can ground-only evidence demonstrate equivalence?** Gemini assumed it can; Claude and GPT required stronger cluster-level validation.
+    - What facility conditions are relevant for the selected configuration?** Claude and Gemini asserted a substantial full-scale constraint; GPT requested a configuration-specific facility comparison.
+    - What expenditure and schedule can 0A support?** Gemini treated flight as infeasible; GPT challenged that premise, while Claude supplied only order-of-magnitude estimates.
+    - Which numerical limits are justified?** GPT challenged Claude’s proposed thresholds; Claude challenged Gemini’s pressure criterion.
+    - Can the pathfinder host representative propulsion evidence without compromising its own objectives?** Claude and GPT made host suitability conditional.
+    - How will D-05 and rq-0-16/rq-0-54 constrain acceptance?** Claude and GPT left that mapping to be verified.
+  recommendedActions:
+    - Define the verification case before declaring a route sufficient.** GPT proposed requirements-traced coverage and uncertainty allocation; Claude proposed pre-registered predictions and explicit validation criteria.
+    - Complete the facility and host trades.** GPT proposed a facility survey and flight-host comparison; Claude proposed facility booking and an upgrade study. Both made flight-host use conditional.
+    - Validate numerical acceptance limits.** GPT’s review called for a requirements basis for Claude’s thresholds; Claude’s review challenged Gemini’s pressure threshold.
+    - Use the 0A mid-term review as a decision point.** Claude proposed validation-triggered escalation; GPT proposed choosing among continuation, proven ground substitution, escalation or stopping 0B preparation.
+    - Revisit the route after D-05 and requirement verification.** Claude and GPT proposed reassessment when propellant and architecture choices alter the validated domain.
+    - Resolve the owner’s risk and funding preference explicitly.** Claude and GPT identified the assurance–cost–schedule trade-off; Claude requested acceptance of either the contingent escalation liability or the fallback.
+    - Preserve the no-waiver outcome.** Claude and GPT proposed blocking KDP-0B if T01 evidence remains missing, inconclusive or unaffordable.
+    - 'id: evidence-path'
+    - 'statement: Use ground modules and a validated cluster model with a small flight anchor, escalating if validation fails.'
+    - 'statement: Use ground modules plus a validated cluster model without planned flight.'
+    - 'statement: Baseline ground qualification plus a representative flight subset, allowing independently approved ground-only substitution.'
+    - 'id: demonstration-scale'
+    - 'statement: A small representative flight anchor can support model validation, subject to bounded scaling and escalation.'
+    - 'statement: Size the subset by interaction coverage rather than fixed module counts or power percentages.'
+    - 'id: ground-only-acceptance'
+    - 'statement: Full-power single-module testing and a peer-reviewed cluster model can constitute the gate evidence.'
+    - 'statement: The proposed single-module and modelling rule does not establish cluster-level closure.'
+    - 'id: feasibility-basis'
+    - 'statement: A substantial full-scale pumping gap supports a flight anchor, with route reassessment after propellant selection.'
+    - 'statement: Full-scale pumping is constrained and flight is likely outside programme cost and schedule limits.'
+    - 'statement: Neither universal ground infeasibility nor flight unaffordability is established by the supplied record.'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T22:31:59.105Z'
+alternateSyntheses:
+  - synthesizer: claude-opus-5-5
+    generatedAt: '2026-10-17T22:42:03.611Z'
+    file: conclusion.claude-opus-5-5.md

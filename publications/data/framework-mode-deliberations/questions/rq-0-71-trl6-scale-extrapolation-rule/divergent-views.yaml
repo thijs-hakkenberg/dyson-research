@@ -1,0 +1,95 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-71
+topics:
+  - id: power-throughput-limits
+    topic: Universal limits on single-unit power and throughput extrapolation
+    positions:
+      - statement: >-
+          Use a 10× default, permit 10–100× with a pre-registered regime case and intermediate anchor, and prohibit
+          acceptance above 100×.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Claude cited regime-change risk and protection against optimistic review, while acknowledging low confidence
+          in the numerical thresholds.
+      - statement: Set no fixed limit when governing regimes match.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Gemini relied on dimensionless regime matching and pathfinder affordability; Claude and GPT challenged the
+          sufficiency of regime matching alone.
+      - statement: Use no universal ratio; limit acceptance to an independently reviewed, test-supported deployment envelope.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT cited threshold-dependent failures, differences among technologies, and validated predictive reach rather
+          than aggregate scale ratios.
+    resolution_status: open
+    priority: critical
+  - id: duration-and-wear
+    topic: Minimum runtime and lifetime extrapolation requirements
+    positions:
+      - statement: >-
+          Apply numerical runtime, degradation-validation and equivalent-life requirements separately from power and
+          throughput.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Claude invoked physics-of-failure and long-duration testing experience, but identified its specific numerical
+          defaults as low confidence.
+      - statement: Cap duration extrapolation at 10×, requiring at least 10% physical design-life testing.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Gemini asserted a universal empirical runtime need; Claude and GPT rejected the claimed certainty as
+          unsupported.
+      - statement: Require validated degradation mechanisms and acceleration relationships without a universal runtime fraction.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT argued that different damage modes require different tests and that a single hours multiplier is
+          insufficient.
+    resolution_status: open
+    priority: critical
+  - id: precommitment-and-independent-review
+    topic: Advance agreement and assurance controls
+    positions:
+      - statement: Freeze a Scaling Basis at the 0A mid-term review, with independent review and controlled changes.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude argued that criteria fixed before test results constrain motivated gate-time interpretation.
+      - statement: >-
+          Pre-agree evidence plans and validation criteria, require independent concurrence, and control the approved
+          deployment configuration.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT conditioned its recommendation on effective validation, reproducible review and enforceable deployment
+          limits.
+      - statement: Define governing regimes and establish a board to validate regime-preservation arguments.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini identified these as follow-on decisions without specifying Claude's or GPT's pre-commitment controls.
+    resolution_status: partially-resolved
+    priority: high
+  - id: owner-risk-tradeoff
+    topic: Numerical backstops versus discretion, cost and schedule
+    positions:
+      - statement: Prefer an absolute backstop despite possible unnecessary tests or false rejection.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Claude prioritised protection at the one-way gate and explicitly accepted larger pathfinders and possible
+          rejection solely on the backstop.
+      - statement: Balance affordability and scaling confidence equally, with additional weight on schedule.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Gemini assigned 40% each to cost and technical risk and 20% to schedule; Claude challenged the reconciliation
+          with D-02.
+      - statement: Accept greater assurance effort and reviewer discretion rather than a universal numerical ceiling.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT made readiness requirements non-compensable and conditioned discretion on effective independent review.
+    resolution_status: open
+    priority: high

@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: information
+    reasoning: Sets criteria before options and includes a null option. Its weighted totals check out, and it reports a re-weighting check. Its key insight is to fix the premium before the evidence arrives (by the 0A mid-term), with a dollar cap and a default of R_max = 1. The L-low pass rule and the ±30% readiness band rest on somewhat assumed calibration, but they would not change the ruling.
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: Reaches a defensible conclusion (parity in the gate, a separate owner decision for any premium). However, the 4.7 and 8.5 scores come from Low/Medium/High labels with no shown arithmetic. It also says Option 1's R is pre-set yet 'hidden'. It deliberately lets the owner set the premium after seeing the KDP-0B numbers, which reopens the escalation path it claims to close. Evidence and assumptions are thin.
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: 'Clearly separates the economics finding from the premium investment decision. It has a non-compensable gate structure, an absolute funding cap that is not reduced to a ratio, and strong certainty caveats. Two weaknesses do not change the conclusion: the premium may still be authorised at the KDP-0B meeting after the evidence is seen, and Option C scores 3.8, not 3.75.'
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: none
+    reasoning: Excellent decision chain, clear separation of facts and values, strong commitment and operationalisation.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: alternatives
+    reasoning: Sound in part, but the options and assessment matrix are less rigorous than A and C. The null option is rejected too quickly without fully exploring the consequences of the baseline.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: none
+    reasoning: Very strong structural reasoning, excellent distinction between economics finding and investment decision, well-calibrated evidence section.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: commitment
+    reasoning: 'Separate owner authorisation and bounded premiums are sound, but the operational rule weakens its own commitments: late amendments undermine pre-evidence freezing, the low-launch scenario waives the ratio ceiling, and market-backed premiums escape the dollar cap without equivalent funding safeguards. These exceptions could change approval.'
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: 'The separate-authorisation recommendation is defensible, but its comparison unfairly treats an explicitly owner-preset R as hidden or lacking oversight. It also reverses the arithmetic: with fixed R and quantity, a lower Earth benchmark reduces the permitted absolute premium. Correcting these points could change the ranking of governance options.'
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: information
+    reasoning: Clearly separates cost competitiveness from investment authority, preserves a funded premium route and a fallback, and specifies comparable costs, uncertainty reporting, bounds and independent gates. Its principal evidence limitation—unverified underlying decision text—is explicitly qualified and paired with falsifiers rather than treated as established authority.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: 'All three responses agree: parity in the gate, with any premium needing a separate, explicit, bounded owner decision. A adds the timing safeguard, which can be adopted directly. Further rounds are unlikely to change the ruling.'
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: Responses A and C provide highly rigorous and complementary solutions that resolve the core tension. Further rounds are unlikely to improve the decision structure.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'Response C provides a satisfactory resolution: above-parity investment may proceed through explicit, bounded owner authorisation, while the economics finding remains separately reported and cannot be relabelled by capability value.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: information
+        reasoning: Sets criteria before options and includes a null option. Its weighted totals check out, and it reports a re-weighting check. Its key insight is to fix the premium before the evidence arrives (by the 0A mid-term), with a dollar cap and a default of R_max = 1. The L-low pass rule and the ±30% readiness band rest on somewhat assumed calibration, but they would not change the ruling.
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: none
+        reasoning: Excellent decision chain, clear separation of facts and values, strong commitment and operationalisation.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: commitment
+        reasoning: 'Separate owner authorisation and bounded premiums are sound, but the operational rule weakens its own commitments: late amendments undermine pre-evidence freezing, the low-launch scenario waives the ratio ceiling, and market-backed premiums escape the dollar cap without equivalent funding safeguards. These exceptions could change approval.'
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: Reaches a defensible conclusion (parity in the gate, a separate owner decision for any premium). However, the 4.7 and 8.5 scores come from Low/Medium/High labels with no shown arithmetic. It also says Option 1's R is pre-set yet 'hidden'. It deliberately lets the owner set the premium after seeing the KDP-0B numbers, which reopens the escalation path it claims to close. Evidence and assumptions are thin.
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: alternatives
+        reasoning: Sound in part, but the options and assessment matrix are less rigorous than A and C. The null option is rejected too quickly without fully exploring the consequences of the baseline.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: 'The separate-authorisation recommendation is defensible, but its comparison unfairly treats an explicitly owner-preset R as hidden or lacking oversight. It also reverses the arithmetic: with fixed R and quantity, a lower Earth benchmark reduces the permitted absolute premium. Correcting these points could change the ranking of governance options.'
+    rawScore: 3
+    weightedScore: 2.5
+    approveCount: 0
+    rejectCount: 0
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: 'Clearly separates the economics finding from the premium investment decision. It has a non-compensable gate structure, an absolute funding cap that is not reduced to a ratio, and strong certainty caveats. Two weaknesses do not change the conclusion: the premium may still be authorised at the KDP-0B meeting after the evidence is seen, and Option C scores 3.8, not 3.75.'
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: none
+        reasoning: Very strong structural reasoning, excellent distinction between economics finding and investment decision, well-calibrated evidence section.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: information
+        reasoning: Clearly separates cost competitiveness from investment authority, preserves a funded premium route and a fallback, and specifies comparable costs, uncertainty reporting, bounds and independent gates. Its principal evidence limitation—unverified underlying decision text—is explicitly qualified and paired with falsifiers rather than treated as established authority.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: gpt-6-1-sol
+winnerScore: 5

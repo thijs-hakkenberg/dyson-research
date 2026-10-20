@@ -1,0 +1,73 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-66
+topics:
+  - id: blanket-trl-six
+    topic: Blanket TRL-6 requirement for all five technologies
+    positions:
+      - statement: >-
+          Reject a uniform duplicate demonstration requirement; reuse applicable 0A evidence and distinguish
+          dependencies.
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: All three rejected blanket treatment and the unresolved null option in Round 1.
+    resolution_status: resolved
+    priority: high
+  - id: t18-gate-criterion
+    topic: Binding requirement for T18
+    positions:
+      - statement: >-
+          Retain project-ending status and require selected-target in-situ bulk-grade evidence; ground TRL 6 alone is
+          insufficient.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude's proposed target-evidence provenance rule and no-waiver requirement.
+      - statement: Assess T18 through 0A mission evidence rather than a separate pre-gate TRL requirement.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini's tiered exemption, conditional on scout evidence supporting the gate.
+      - statement: Require TRL 6 for the applicable sampling-and-assay capability plus acceptable target-specific results.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT's distinction between capability maturity and target adequacy.
+    resolution_status: partially-resolved
+    priority: critical
+  - id: t11-evidence-and-reentry
+    topic: T11 evidence inheritance and return to KDP-0B
+    positions:
+      - statement: Remove T11 from the list unless Phase 1 inherits its hardware or software.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude's explicit inheritance-based re-entry condition.
+      - statement: Assess T11 through its 0A mission data.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini's classification of T11 as a self-proving 0A flight technology.
+      - statement: Reuse applicable 0A evidence and require TRL 6 for outstanding scout capabilities critical to 0B.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT's configuration-applicability and continuing-dependency tests.
+    resolution_status: partially-resolved
+    priority: high
+  - id: supporting-system-exceptions
+    topic: Exceptions for T09, T12 and T20
+    positions:
+      - statement: >-
+          Default to TRL 6; permit TRL 5 only with TRL-6 fallbacks, joint-fallback economics, baseline penalties and
+          independent authority.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude's waiver-stacking analysis; fallback feasibility remains conditional.
+      - statement: Permit TRL 5 with an approved waiver, defined fallback and fully funded maturation plan.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini's architecture-change classification; Claude and GPT challenged its confidence in substitutability.
+      - statement: >-
+          Require TRL 6 for irreversible dependencies; otherwise permit TRL 5 only with independently demonstrated
+          substitution or deferral and commitment controls.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT's dependency rule, stop triggers and default to TRL 6 when reversibility is unproven.
+    resolution_status: partially-resolved
+    priority: critical

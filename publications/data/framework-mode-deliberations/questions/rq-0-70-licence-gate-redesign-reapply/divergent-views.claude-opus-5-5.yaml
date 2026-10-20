@@ -1,0 +1,191 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-70
+topics:
+  - id: core-failure-ruling
+    topic: Is g-licence failure final, or may 0B be redesigned and reapplied?
+    positions:
+      - statement: >-
+          Failure prohibits 0B production with no waiver, but permits one bounded redesign and reapplication that
+          returns to KDP-0B; a second failure or exhausted bounds closes 0B (0A only, Earth supply).
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          A retry meets the unchanged criterion later and is not a waiver (Claude, GPT); D-01 keeps 0B as a real option;
+          escalation-of-commitment literature supports bounded rather than open retries (Claude, moderate certainty);
+          sensitivity checks show the margin over closure is narrow (Claude 400 vs 385 after its self-vote correction;
+          GPT 4.00 vs 3.80).
+      - statement: >-
+          Any first failure ends 0B. This was the prior gate-synthesis position, now retained only as the owner's T1
+          trade-off alternative.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Absolute pre-commitment discipline; legitimate if the owner judges any post-failure deliberation corrosive, or
+          if the classification dry run shows poor inter-rater agreement.
+    resolution_status: resolved
+    priority: critical
+  - id: retry-eligibility-mechanism
+    topic: How eligibility for the single retry is determined
+    positions:
+      - statement: >-
+          An independent board not funded by 0B classifies the failure using thresholds frozen at pathfinder PDR. F1, F2
+          and F5 get one retry; F3 (>10x the limit or an uncontained abnormal event) and F4 (refusal or unachievable
+          limit) are terminal; F6 is NOT READY.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          ACH ranks metrology and fixable engineering defects as the least-disconfirmed failure causes; a tenfold
+          retention gain is judged not credible within one iteration. GPT noted the 10x threshold lacks supporting
+          evidence.
+      - statement: >-
+          The owner may authorise one retry only with a documented diagnosis, a regulator-informed evidence plan, and a
+          cap and deadline set before the gate. Non-remediability, as in a written regulatory determination, closes 0B.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Governance distinction between reversible learning and irreversible commitment; probability of successful
+          correction rated not estimable.
+      - statement: Retry is allowed unless a fundamental technology change is required.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Warrant that TRL 6 implies marginal failures; Claude and GPT judged this warrant circular.
+    resolution_status: open
+    priority: high
+  - id: time-box-length
+    topic: Length of the bounded extension
+    positions:
+      - statement: About 6 months; a box over 12 months makes hard-fail the better choice.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Schedule predictability for D-01 demand sizing; Claude called the figure unjustified.
+      - statement: 12 months from recorded failure, set before the initial gate.
+        models:
+          - GPT-6.1 Sol
+        evidence: A governance proposal, not evidence-derived; sufficiency rated very low certainty.
+      - statement: 18 months from classification, extendable to 24 if schedule data require it.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          One containment hardware iteration plus a repeat T08 campaign is plausibly 12-18 months (low-confidence
+          engineering estimate).
+    resolution_status: open
+    priority: high
+  - id: permitted-redesign-scope
+    topic: Which changes are permitted without restarting KDP-0B
+    positions:
+      - statement: >-
+          Containment hardware, procedures and duty cycle, instrumentation and throughput reduction (with economics and
+          demand re-run) are permitted. Site, architecture or chemistry change, an added project-ending technology, a
+          throughput increase or a licensing-state change require a full new KDP-0B.
+        models:
+          - Claude Opus 5.5
+        evidence: Site change re-opens g-target; architecture change is a restart.
+      - statement: >-
+          Containment changes or derating are permitted within the approved envelope with renewed evidence. A material
+          site change, new process, throughput increase, new hazard class or changed jurisdiction requires owner-level
+          rebaselining.
+        models:
+          - GPT-6.1 Sol
+        evidence: Only demonstrably unaffected evidence may be reused.
+      - statement: >-
+          Site adjustments, throughput throttling and containment sensor upgrades are permitted; changing the core
+          particle-retention mechanism triggers hard fail.
+        models:
+          - Gemini 3.1 Pro
+        evidence: None given beyond the framework; Claude said site adjustments conflict with licensing scope.
+    resolution_status: open
+    priority: high
+  - id: retry-authority
+    topic: Who decides whether the retry is granted
+    positions:
+      - statement: An independent review board not funded by 0B.
+        models:
+          - Claude Opus 5.5
+        evidence: Classification can be gamed, so an independent classifier and pre-fixed thresholds are needed.
+      - statement: The owner, subject to pre-approved conditions, with default closure if bounds are not set.
+        models:
+          - GPT-6.1 Sol
+        evidence: Explicit caps and sunset limit discretion (noted in Claude's vote).
+    resolution_status: open
+    priority: medium
+  - id: not-ready-handling
+    topic: Treatment when no binding limit exists at KDP-0B
+    positions:
+      - statement: Status is NOT READY, governed by D-01 option expiry; it does not consume the reapplication.
+        models:
+          - Claude Opus 5.5
+        evidence: Conflating not-ready with failure would let an unresolved regulator question consume the single retry.
+      - statement: >-
+          Status is not ready; it blocks KDP-0B and requires an explicit hold with a sunset, not an unlimited waiting
+          category.
+        models:
+          - GPT-6.1 Sol
+        evidence: An incomplete licensing basis cannot count as passed.
+    resolution_status: partially-resolved
+    priority: medium
+  - id: funding-and-default
+    topic: Funding of the retry and the default when bounds are unset
+    positions:
+      - statement: >-
+          A ring-fenced cost cap is set at KDP-0B entry; if the 0A reserve cannot fund a repeat T08 campaign, choose
+          terminal honestly.
+        models:
+          - Claude Opus 5.5
+        evidence: Assumption A3 and its falsifier.
+      - statement: >-
+          The expenditure cap is protected from 0A and fixed before the initial gate; with no approved cap and deadline,
+          failure defaults to closure.
+        models:
+          - GPT-6.1 Sol
+        evidence: Prevents improvised extensions after failure.
+      - statement: Phase 0 schedule and budget carry a risk buffer (for example 6 months of holding costs).
+        models:
+          - Gemini 3.1 Pro
+        evidence: Schedule predictability.
+    resolution_status: partially-resolved
+    priority: medium
+  - id: jurisdiction-change
+    topic: Changing licensing state after failure
+    positions:
+      - statement: >-
+          Requires a full new KDP-0B; under the new state the limit is no looser than the stricter of the original
+          binding limit and the D-03 ALARP value (anti-forum-shopping).
+        models:
+          - Claude Opus 5.5
+        evidence: A project that only works under a lenient state is not licensable in D-02's sense.
+      - statement: A changed licence jurisdiction requires owner-level rebaselining; it is not a minor correction.
+        models:
+          - GPT-6.1 Sol
+        evidence: Material change to the licence basis.
+    resolution_status: partially-resolved
+    priority: medium
+  - id: verification-sufficiency
+    topic: Adequacy of the detection-limit criterion for a pass
+    positions:
+      - statement: >-
+          Pass requires uncertainty-bounded annualised escape, including credible failures, below the binding limit, a
+          detection limit of at most 10% of the limit, T04/T08/T19 at TRL 6 and accepted frequency filings.
+        models:
+          - Claude Opus 5.5
+        evidence: Metrology immaturity is the least-disconfirmed failure hypothesis.
+      - statement: >-
+          The 10% detection limit is useful discipline but insufficient alone; the assurance case must cover normal
+          operation, credible failures, measurement uncertainty and the statistical basis.
+        models:
+          - GPT-6.1 Sol
+        evidence: rq-0-41 sets particle and velocity classes, confidence, averaging interval and abnormal-event limits.
+    resolution_status: partially-resolved
+    priority: medium
+  - id: frequency-coordination
+    topic: Treatment of ITU and national frequency coordination shortfalls
+    positions:
+      - statement: >-
+          A frequency-only shortfall (F5) gets an administrative cure inside the same box; filings must begin during 0A,
+          because coordination for non-geostationary systems typically takes multiple years.
+        models:
+          - Claude Opus 5.5
+        evidence: ITU Radio Regulations timelines (low-moderate certainty).
+    resolution_status: open
+    priority: low

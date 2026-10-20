@@ -1,0 +1,74 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-72
+topics:
+  - id: headline-rule
+    topic: Bounded integration assessment versus automatic inheritance
+    positions:
+      - statement: >-
+          Use integration assessment within a weakest-critical-function bound, updating sub-ratings from applicable
+          integrated evidence before applying the bound.
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          Claude proposed the bounded rule; all three approved Claude's response. Gemini independently recommended a
+          hybrid minimum.
+      - statement: >-
+          Do not automatically inherit published constituent minima; reconcile lower ratings through applicable evidence
+          or a justified scope distinction without excluding actual dependencies.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT's original recommendation; Claude's critique identified scope reconciliation as a possible gate escape
+          hatch.
+    resolution_status: partially-resolved
+    priority: high
+  - id: integrated-article-ceiling
+    topic: TRL 4 ceiling and assessment boundary
+    positions:
+      - statement: >-
+          Do not exceed TRL 4 without a tested integrated article implementing all critical functions and coupled
+          interfaces.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude's R2 in the unanimously approved response.
+      - statement: >-
+          Article requirements must follow the claimed technology level and assessment boundary, not an arbitrary
+          whole-system boundary.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT's original critique of the blanket ceiling; final approval did not separately explain this boundary issue.
+    resolution_status: partially-resolved
+    priority: high
+  - id: t26-consistency
+    topic: Relationship to the existing T26 ruling
+    positions:
+      - statement: Verify T26's supporting sub-ratings and conditions before claiming compatibility.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude explicitly identified compatibility as an unverified assumption.
+      - statement: Retain TRL 3 with TRL 4 conditional; the general rule does not itself rerate or reinterpret T26.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT's continuity requirement and consequences.
+      - statement: The hybrid rule retroactively justifies T26.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini's consequences section; Claude and GPT challenged the assertion as unsupported.
+    resolution_status: open
+    priority: medium
+  - id: assessment-calibration
+    topic: Reproducibility and assessment burden
+    positions:
+      - statement: >-
+          Pilot independent assessments and reconsider the approach if material inconsistency or excessive burden
+          appears.
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          Both identified calibration as missing; Claude proposed simplifying the rule if variance is excessive, while
+          GPT proposed tightening criteria or using a conservative interim default.
+    resolution_status: partially-resolved
+    priority: high

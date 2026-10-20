@@ -1,0 +1,78 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-67
+topics:
+  - id: separate-premium-authority
+    topic: Explicit owner authority for above-parity expenditure
+    positions:
+      - statement: >-
+          Any capability premium requires a separate explicit owner authorisation rather than relying on programme
+          purpose alone.
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          All three round-one recommendations required a separate owner premium decision; GPT explicitly stated that
+          D-01 does not itself authorise one.
+    resolution_status: resolved
+    priority: critical
+  - id: economics-finding
+    topic: Whether an authorised premium can produce a gate pass
+    positions:
+      - statement: >-
+          A separately pre-authorised premium may support a gate pass within approved limits, with the parity verdict
+          reported separately.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude's proposed pass rule uses owner-approved ratio and dollar caps.
+      - statement: Above-parity expenditure remains an economics failure even when a separate owner decision permits proceeding.
+        models:
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: Both recommended separating the parity finding from capability-premium approval.
+    resolution_status: open
+    priority: critical
+  - id: premium-authorisation-timing
+    topic: Advance commitment versus gate-time discretion
+    positions:
+      - statement: Authorise the premium normally by the 0A mid-term review, with recorded amendments before the KDP-0B package.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude argued that post-result threshold selection undermines the gate.
+      - statement: A separate premium decision may occur at KDP-0B using current evidence.
+        models:
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: Gemini valued current signed-demand evidence; GPT allowed the same meeting with distinct findings.
+    resolution_status: open
+    priority: high
+  - id: economic-test-and-readiness
+    topic: Cost statistic and uncertainty assurance
+    positions:
+      - statement: Compare project P70 with Earth P50 and require an estimate-readiness band of ±30% or better.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude's proposed gate text includes these criteria.
+      - statement: Compare equivalent expected costs, with a separate P70 funding envelope and validated uncertainty definitions.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT cautioned that P70/P50 is not a probability of beating Earth supply and that an undefined ±30% band is
+          insufficient assurance.
+    resolution_status: open
+    priority: high
+  - id: premium-cap-exceptions
+    topic: Scenario and market-backed exceptions
+    positions:
+      - statement: >-
+          Permit a low-launch-price ratio exception within the dollar cap and exempt market-backed premiums from that
+          cap.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude included both provisions in the proposed operational rule.
+      - statement: These exceptions weaken commitment and need equivalent funding safeguards.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT's vote identified both provisions as objections capable of changing approval.
+    resolution_status: open
+    priority: high

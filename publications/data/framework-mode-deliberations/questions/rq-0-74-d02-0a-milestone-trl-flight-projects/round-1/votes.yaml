@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: information
+    reasoning: 'The decision chain is complete. Criteria and musts come before options, a real null option is included, and the weighted arithmetic checks out. The sensitivity analysis gives an explicit tipping condition (w1 > 2w2 + w3 + w5), evidence certainty is calibrated per claim, and every assumption has a falsifier. The enabling vs under-test distinction resolves the circularity of requiring TRL before the flight that produces it. The weakest link is information: the 25% pathfinder threshold and the TRL 5 figure for technologies under test are engineering judgment. The response admits this, and it would not change the direction of the ruling.'
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: 'There is no genuine null option: Option A is the Gemini/GPT position relabelled. The matrix is qualitative and unweighted. The response states ''Almost certain; high confidence'' that launches require TRL 6 at PDR, which is uncalibrated and conflates launch irreversibility with PDR policy. Assumption 2 has no falsifier. The sensitivity point confuses the MTR with the PDR. Blanket TRL 6 at PDR is applied to technologies whose flight is meant to raise their TRL, a circularity the response does not address.'
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: reasoning
+    reasoning: 'Non-compensable requirements and swing weights are set before options. The null option is considered and rejected, the weighted scores are arithmetically correct, and claims carry calibrated GRADE and likelihood labels. Assumptions have falsifiers with stated effects on the ruling. The amendment cleanly separates the MTR from flight authorisation and flight-enabling technologies from experimental ones. The weakest link is reasoning: there is no quantified tipping point, and the experimental pathway relies on a discretionary assurance case rather than a stated TRL floor. Independent review of that boundary mitigates the gap, so it is unlikely to change the decision.'
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: Excellent breakdown of the decision chain. The distinction between enabling technologies and technologies under test elegantly resolves the paradox. The evidence, assumptions, and proposed text are highly rigorous.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: information
+    reasoning: Generally sound, but the evidence and assumptions sections are underdeveloped. The 'Null' option presented is actually one of the active arguments rather than a true null (do nothing/leave ambiguous), and the falsification conditions are weak.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: alternatives
+    reasoning: Strong, well-reasoned response that correctly identifies the need to separate flight-enabling tech from experimental payloads. The criteria and assumptions are well-calibrated, though the options could be slightly more distinct from one another.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: The role-and-commitment distinction is useful, but rejecting TRL 6 at PDR as circular does not follow when the flight is intended to establish TRL 7. The proposed TRL 5 exception and mandatory 25% budget threshold could therefore change with better justification.
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: It labels the inference from launch irreversibility to mandatory TRL 6 at PDR as almost certain without establishing universal applicability. It also omits the experimental-technology distinction, which could materially change the blanket requirement.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: The recommendation connects consequence-based criteria, genuine alternatives, calibrated evidence and falsifiable assumptions to an actionable amendment. It preserves reversible funding, independently gates flight-enabling functions, and permits experiments only with bounded failure effects and credible learning outcomes.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: A and C independently reach the same ruling. Both keep TRL 4–5 for reversible MTR tranche releases and require TRL 6 at PDR for enabling or flight-enabling technologies. Both give a bounded, gated pathway for technologies under test and leave KDP-0B unchanged. The remaining differences are drafting details, such as A's 25% pathfinder threshold and Class D waiver path, which the owner can settle when finalising the D-02 amendment.
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: Responses A and C both provide excellent, highly detailed, and actionable resolutions that address the core paradox using the same logical mechanism (separating enabling tech from experimental tech). Further discussion is unlikely to yield a better framework.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: Response C provides a satisfactory resolution while making the remaining project-specific assurance and classification decisions explicit.
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: information
+        reasoning: 'The decision chain is complete. Criteria and musts come before options, a real null option is included, and the weighted arithmetic checks out. The sensitivity analysis gives an explicit tipping condition (w1 > 2w2 + w3 + w5), evidence certainty is calibrated per claim, and every assumption has a falsifier. The enabling vs under-test distinction resolves the circularity of requiring TRL before the flight that produces it. The weakest link is information: the 25% pathfinder threshold and the TRL 5 figure for technologies under test are engineering judgment. The response admits this, and it would not change the direction of the ruling.'
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: Excellent breakdown of the decision chain. The distinction between enabling technologies and technologies under test elegantly resolves the paradox. The evidence, assumptions, and proposed text are highly rigorous.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: The role-and-commitment distinction is useful, but rejecting TRL 6 at PDR as circular does not follow when the flight is intended to establish TRL 7. The proposed TRL 5 exception and mandatory 25% budget threshold could therefore change with better justification.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: 'There is no genuine null option: Option A is the Gemini/GPT position relabelled. The matrix is qualitative and unweighted. The response states ''Almost certain; high confidence'' that launches require TRL 6 at PDR, which is uncalibrated and conflates launch irreversibility with PDR policy. Assumption 2 has no falsifier. The sensitivity point confuses the MTR with the PDR. Blanket TRL 6 at PDR is applied to technologies whose flight is meant to raise their TRL, a circularity the response does not address.'
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: information
+        reasoning: Generally sound, but the evidence and assumptions sections are underdeveloped. The 'Null' option presented is actually one of the active arguments rather than a true null (do nothing/leave ambiguous), and the falsification conditions are weak.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: It labels the inference from launch irreversibility to mandatory TRL 6 at PDR as almost certain without establishing universal applicability. It also omits the experimental-technology distinction, which could materially change the blanket requirement.
+    rawScore: 1
+    weightedScore: 0.5
+    approveCount: 0
+    rejectCount: 2
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: reasoning
+        reasoning: 'Non-compensable requirements and swing weights are set before options. The null option is considered and rejected, the weighted scores are arithmetically correct, and claims carry calibrated GRADE and likelihood labels. Assumptions have falsifiers with stated effects on the ruling. The amendment cleanly separates the MTR from flight authorisation and flight-enabling technologies from experimental ones. The weakest link is reasoning: there is no quantified tipping point, and the experimental pathway relies on a discretionary assurance case rather than a stated TRL floor. Independent review of that boundary mitigates the gap, so it is unlikely to change the decision.'
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: alternatives
+        reasoning: Strong, well-reasoned response that correctly identifies the need to separate flight-enabling tech from experimental payloads. The criteria and assumptions are well-calibrated, though the options could be slightly more distinct from one another.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: The recommendation connects consequence-based criteria, genuine alternatives, calibrated evidence and falsifiable assumptions to an actionable amendment. It preserves reversible funding, independently gates flight-enabling functions, and permits experiments only with bounded failure effects and credible learning outcomes.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: gpt-6-1-sol
+winnerScore: 5

@@ -1,0 +1,100 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-68
+topics:
+  - id: multiplier-meaning
+    topic: Meaning of within 3×
+    positions:
+      - statement: Interpret 3× as quantity coverage, not a timing tolerance.
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          All three Round 1 responses connect the quantity interpretation to D-01 demand-led sizing; GPT revises its
+          earlier timing position.
+    resolution_status: resolved
+    priority: high
+  - id: capacity-sizing
+    topic: Capacity authorised after passing coverage
+    positions:
+      - statement: >-
+          Cap nameplate at the smaller of three times accepted demand and accepted demand divided by justified
+          availability times yield.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude proposes an eta-based cap and requires justification for nameplate above accepted demand.
+      - statement: Permit nameplate up to three times explicitly funded or contracted annual demand.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini explicitly gives 0.2 kt/yr demand supporting a maximum 0.6 kt/yr capacity.
+      - statement: >-
+          Apply coverage separately and authorise the smallest technically feasible configuration meeting accepted
+          demand and approved reliability requirements.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT argues that a coverage allowance does not authorise speculative capacity; unavoidable surplus requires
+          economic assessment.
+    resolution_status: open
+    priority: critical
+  - id: signed-demand-backing
+    topic: Financial backing and independence of signed demand
+    positions:
+      - statement: >-
+          Accept committed purchase funding or a costed Earth-supply baseline displaced by demand, with an independent
+          budget-authorised signatory.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Claude proposes a counterfactual test that demand exists if 0B is cancelled, while acknowledging residual
+          baseline inflation risk.
+      - statement: Accept a binding external offtake agreement or a distinct formally funded internal Phase 1 line item.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Gemini identifies financial commitment and T22 specification artifacts but does not specify an independent
+          signatory.
+      - statement: >-
+          Require an independent customer budget authority and funded or equivalently approved budget commitment;
+          external demand also needs counterparty-performance evidence.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT distinguishes resource-backed obligations from technical endorsements and unfunded planning allowances.
+    resolution_status: partially-resolved
+    priority: critical
+  - id: approval-conditionality
+    topic: Whether demand may depend on KDP-0B approval
+    positions:
+      - statement: Qualifying demand must not be conditional on 0B approval.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude includes this prohibition in its proposed qualifying-instrument rule.
+      - statement: >-
+          Explicit KDP-0B and conforming-delivery conditions may qualify, but dependence on an otherwise unapproved
+          downstream programme may not.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT distinguishes deployment conditions from unresolved downstream need or funding.
+    resolution_status: open
+    priority: high
+  - id: demand-window
+    topic: Measurement periods and delivery timing
+    positions:
+      - statement: >-
+          Average over three years from planned first-nameplate date and require first qualifying delivery within 24
+          months.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude proposes these parameters; GPT's review finds their justification insufficient.
+      - statement: Require a dated schedule and leave the epoch and delivery window to the owner.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini explicitly lists those definitions as follow-on decisions.
+      - statement: >-
+          Test coverage in each predeclared annual period and freeze the commitment window and commissioning profile
+          before assessment.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT seeks to prevent demand shifting between periods and leaves numerical duration for controlled approval.
+    resolution_status: open
+    priority: high

@@ -1,0 +1,211 @@
+schema: project-dyson/deliberation-provenance@1
+generated: '2026-10-17T22:39:18.769Z'
+orchestrator:
+  git_commit: e8a3f1ae6ee66271faadf7473a88f700a654af6a
+  git_dirty: false
+  node: v26.4.0
+  files:
+    scripts/run-discussion.js: a41a284992d65024fec461e059191535185c67521530b62fd8fdf0c97bc8ad80
+    scripts/lib/llm.js: 066db44310dc28b84f1e7373daf1c6e153b5c4163effaa4d43f3c2726fc1d439
+    scripts/lib/critique.js: 38b3a0b0f73e5f031cdc4e30e4b6c6597f996cb762ec39da98c64edf4b448a56
+    scripts/lib/provenance.js: 54650fffe8624cd92c92b79c08f9ed53ae7b729f7a58aa467115ae9cc9cfb540
+    scripts/lib/yaml-block.js: b020eb423016f55367273868f13a631723e78b941e237742646f1cc20ee30ae5
+    package-lock.json: 6c45370ff2e96c52be7080ecf4c19d014b96b01292ad2b98d873205db607bbf9
+method:
+  framework:
+    path: src/content/methodology/decision-frameworks.md
+    sha: 18f503fe4ec6
+  hiddenWinner: true
+  blindVoting: true
+  priorContext: full
+  config:
+    maxRounds: 5
+    maxResponseWords: 2000
+    allowSelfVoting: true
+    selfVoteWeight: 0.5
+    unanimousTermination: true
+    consecutiveConcludeRounds: 2
+  responseWords: 3000
+  synthesizer: gpt-6-1-sol
+  alternateSynthesizers:
+    - claude-opus-5-5
+models:
+  - key: claude-opus-5-5
+    name: Claude Opus 5.5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+  - key: gemini-3-1-pro
+    name: Gemini 3.1 Pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+  - key: gpt-6-1-sol
+    name: GPT-6.1 Sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+parameters_sent:
+  claude-opus-5-5:
+    max_tokens:
+      - 32000
+      - 16000
+    temperature: not sent (endpoint default)
+  gemini-3-1-pro:
+    max_tokens:
+      - 32000
+      - 16000
+    temperature: not sent (endpoint default)
+  gpt-6-1-sol:
+    temperature: not sent (endpoint default)
+system_prompts:
+  af7f15a0646222bba105aa959797509de694ca36e512b56a008048ae4b7c35d8: You are synthesizing a multi-model discussion into actionable conclusions.
+  3c2b93c18f5f163b6476e4659ab8443a27a91da65c1557c3e50ba71d74d8264a: >-
+    You are a space systems engineering expert participating in a multi-stakeholder discussion about Project Dyson
+    specifications.
+  506604f683a03ca72848b4f5254d8d2cc64da9b2b3e798b8d70f390c171d9339: You are evaluating responses in a structured discussion. Respond only with valid JSON.
+exchanges:
+  - file: >-
+      data/raw-exchanges/discussions/gate-risk-class-split-technologies/claude-opus-5-5/conclusion-1792276758680.b8d0ca817771.raw.json
+    sha256: b56fa62c3314c8bf9b2931cdef783468a2e1ed714cd50fd32be9cf2a0132d7b3
+    request_sha256: b8d0ca817771ee59f858bcf040ddc659b3ad654655eaee3bd8ee1ce67ce33291
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T22:37:49.068Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 10170
+      prompt_tokens: 18108
+      total_tokens: 28278
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/gate-risk-class-split-technologies/claude-opus-5-5/round-1-response-1792275271356.249cd8f0f4cb.raw.json
+    sha256: adbabeb396cb6eccfdb2b8f4dfa9600f3a7ef037fd44f3fde1b879efaf889dd7
+    request_sha256: 249cd8f0f4cb167d59dc51231ffbd81b590d2f30ac2f901660324ac26cfd4a00
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T22:12:29.553Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 11381
+      prompt_tokens: 5450
+      total_tokens: 16831
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/gate-risk-class-split-technologies/claude-opus-5-5/round-1-vote-1792275402741.e2216ffefa4d.raw.json
+    sha256: 863d44ad5da64efe61b8c416bf12f23c5bacb2f1b02756ba034a016b75dad6ea
+    request_sha256: e2216ffefa4db9c1c209692d77f98ef8faf9cf27db541a3b32bbc46ae2958585
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T22:16:21.642Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 1932
+      prompt_tokens: 14682
+      total_tokens: 16614
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/gate-risk-class-split-technologies/gemini-3-1-pro/round-1-response-1792275294869.0de141badfe8.raw.json
+    sha256: 0751c094e24fc2cbdae3b9ff694c03de22be0c77354856baf3ede0bd168a4e49
+    request_sha256: 0de141badfe8392444334e63a04ef51a7b81c106dd6a8a601ac77ccea699eb69
+    model: gemini-3-1-pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+    started: '2026-10-17T22:14:31.361Z'
+    finish: stop
+    usage:
+      prompt_tokens: 3739
+      completion_tokens: 1472
+      total_tokens: 5980
+      reasoning_tokens: 769
+  - file: >-
+      data/raw-exchanges/discussions/gate-risk-class-split-technologies/gemini-3-1-pro/round-1-vote-1792275413351.101cc8c7de51.raw.json
+    sha256: 1cb6a1dc507cbf04fb2b9ca5251d17913acdf8d8440f8ca949cc93adaa8abed9
+    request_sha256: 101cc8c7de51773fd6c73d80f155b7126d9529aaa66edc39d5e3fd0d3355466c
+    model: gemini-3-1-pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+    started: '2026-10-17T22:16:42.744Z'
+    finish: stop
+    usage:
+      prompt_tokens: 9860
+      completion_tokens: 253
+      total_tokens: 10704
+      reasoning_tokens: 591
+  - file: >-
+      data/raw-exchanges/discussions/gate-risk-class-split-technologies/gpt-6-1-sol/conclusion-1792275493588.1b67e5b26f5d.raw.json
+    sha256: 267bc7c56f01a301b90dabb261c3d398fea48a2a643bea9e59c539802ffb60d8
+    request_sha256: 1b67e5b26f5da5e804fd1f823172cfee4da68609d425e14a2150bc08ce9624da
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T22:17:06.240Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 11584
+        cached_tokens: 0
+      input_tokens: 11587
+      output_tokens_details:
+        reasoning_tokens: 63
+      total_tokens: 14658
+      output_tokens: 3071
+  - file: >-
+      data/raw-exchanges/discussions/gate-risk-class-split-technologies/gpt-6-1-sol/round-1-response-1792275381640.6c61509e13d5.raw.json
+    sha256: 71097ef6bb944cc568966cca89cc592d813de64657df4578c83fad3d255bbfe7
+    request_sha256: 6c61509e13d55ea4cf3482c6d868924d0aed01bbf274115e3e5adf5bd69de540
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T22:14:54.871Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 3520
+        cached_tokens: 0
+      input_tokens: 3523
+      output_tokens_details:
+        reasoning_tokens: 156
+      total_tokens: 6520
+      output_tokens: 2997
+  - file: >-
+      data/raw-exchanges/discussions/gate-risk-class-split-technologies/gpt-6-1-sol/round-1-vote-1792275426113.5a098900ac74.raw.json
+    sha256: 1d1494a24a1ebfa76493804142cbe8133e897905cde92ef9045cf26b53fb7824
+    request_sha256: 5a098900ac7447353e4e6a733551c4d0991debfb235f31bd34204639016f5eb5
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T22:16:53.354Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 9300
+        cached_tokens: 0
+      input_tokens: 9303
+      output_tokens_details:
+        reasoning_tokens: 124
+      total_tokens: 9749
+      output_tokens: 446
+outputs:
+  - file: src/content/research-questions/phase-0/rq-0-65-gate-risk-class-split-technologies/conclusion.claude-opus-5-5.md
+    sha256: feb431aa132d9af4687eea15cf3eb90168b248bd62b31e791ec1c780ea82b5c8
+  - file: src/content/research-questions/phase-0/rq-0-65-gate-risk-class-split-technologies/conclusion.md
+    sha256: edf4ac695bccbd72f8054d8dcddb6b7dee5ae3e4e74d9e437df47bef45959f42
+  - file: src/content/research-questions/phase-0/rq-0-65-gate-risk-class-split-technologies/discussion.yaml
+    sha256: a6df7c6b674324116bba09e082ef23ed3e65a05ba2c5223e99fa54e3f55ffe0b
+  - file: >-
+      src/content/research-questions/phase-0/rq-0-65-gate-risk-class-split-technologies/divergent-views.claude-opus-5-5.yaml
+    sha256: 654246aab7b4c9ef18ff7b1458cd55f78dabff3ab8f4cd6559a88aaeb7fceef6
+  - file: src/content/research-questions/phase-0/rq-0-65-gate-risk-class-split-technologies/divergent-views.yaml
+    sha256: 2cc89aed3a4486d87a722281fed6caf1da876f3e84c8482e0059b2f8c57c2e6d
+  - file: src/content/research-questions/phase-0/rq-0-65-gate-risk-class-split-technologies/round-1/claude-opus-5-5.md
+    sha256: 576a8bf9e77a381b2fe98a33717e56672e917d94898bb7524c9cdd07dcb8b207
+  - file: src/content/research-questions/phase-0/rq-0-65-gate-risk-class-split-technologies/round-1/gemini-3-1-pro.md
+    sha256: dff232d75004757f45bb61b73a46fdbf4c35c3e6940a80dde08e7fbf079e4c09
+  - file: src/content/research-questions/phase-0/rq-0-65-gate-risk-class-split-technologies/round-1/gpt-6-1-sol.md
+    sha256: b41bc494b90ed222b45fbe40aa4e74ae94f3a6dfe26a54060de1d1ea4391e310
+  - file: src/content/research-questions/phase-0/rq-0-65-gate-risk-class-split-technologies/round-1/votes.yaml
+    sha256: b3e44faeb7ac0c061e8aad683aa723ce6b0027c6e4b381944fccad6bfebec3c0

@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: 'This is the strongest analysis overall: a generating rule (CR-1), function-level splitting, ACH on why the panel split, and good sensitivity points and falsifiers. However, the per-technology table contradicts its own rule. CR-1 makes a function project-ending until a dossier is accepted, yet T14, T24, T25 and T10b are ruled architecture-change now, ''provisional on dossiers'' that do not yet exist. This changes the operative decision. There are also minor arithmetic slips: option A should be 3.2, not 3.30, and option E should be 3.0, not 3.10.'
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: The criteria weights are only 'High/Medium', the matrix is qualitative, and the certainty claims are thin and appeal to unnamed 'standard studies'. The per-technology split is weakly evidenced, for example MW arrays are made architecture-change on a bare 'smaller arrays' fallback. The warrant also leans on the economics gate to catch problems, which conflicts with D-02. The decision could easily flip.
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: alternatives
+    reasoning: The ruling is coherent and internally consistent. It applies a default project-ending rule with an explicit reclassification test and a time-bounded, self-elevating T26 ruling that respects rq-0-64. It handles common-cause failures, allows splitting a technology by function, and calibrates its evidence. Weaknesses are minor arithmetic slips (option B should be 3.4, option D 2.35) and options B and C differing mainly by the reclassification path. Neither would change the decision.
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: none
+    reasoning: Excellent decision chain with a strong generative rule, rigorous ACH, and clear commitment.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: information
+    reasoning: Sound in part, but the information section lacks a structured Analysis of Competing Hypotheses (ACH) to explain the panel split, weakening the evidence base.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: none
+    reasoning: Thorough and well-reasoned response that effectively uses an evidence-conditioned rule and respects the decision framework.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: commitment
+    reasoning: 'The fallback rule is explicit and testable, but the current rulings contradict it: T14, T24, T25 and T10b receive architecture-change status before the required dossiers are accepted. Applying the stated default would change those classifications.'
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: The decisive fallback claims are asserted without architecture-specific evidence, and high confidence in T26 substitution is not calibrated to demonstrated service capacity. Smaller arrays, localized power and Earth-based packaging are not shown to preserve viable 0B production; the economics gate cannot substitute for that missing technical evidence.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: information
+    reasoning: The response acknowledges the limited evidence rather than treating hypothetical substitutes as established fallbacks. Its conservative interim classifications, explicit alternatives, owner-value trade-offs, falsifiable assumptions and independently reviewed reclassification process form a consistent decision chain.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: 'A and C converge on the same structure: project-ending by default unless an independently reviewed fallback preserves 0B production, with function splitting and T26 left under rq-0-64. C''s current rulings are the consistent application of that rule, and the remaining differences are dossier work for 0A.'
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: Responses A and C provide highly robust, actionable rules that resolve the core issue. Further discussion is unlikely to yield a better framework.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'Response C provides a satisfactory evidence-conditioned resolution: retain conservative classifications, preserve T26''s existing ruling pending bounded closure, and permit changes only after independently reviewed fallback evidence.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: 'This is the strongest analysis overall: a generating rule (CR-1), function-level splitting, ACH on why the panel split, and good sensitivity points and falsifiers. However, the per-technology table contradicts its own rule. CR-1 makes a function project-ending until a dossier is accepted, yet T14, T24, T25 and T10b are ruled architecture-change now, ''provisional on dossiers'' that do not yet exist. This changes the operative decision. There are also minor arithmetic slips: option A should be 3.2, not 3.30, and option E should be 3.0, not 3.10.'
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: none
+        reasoning: Excellent decision chain with a strong generative rule, rigorous ACH, and clear commitment.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: commitment
+        reasoning: 'The fallback rule is explicit and testable, but the current rulings contradict it: T14, T24, T25 and T10b receive architecture-change status before the required dossiers are accepted. Applying the stated default would change those classifications.'
+    rawScore: 4
+    weightedScore: 3.5
+    approveCount: 1
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: The criteria weights are only 'High/Medium', the matrix is qualitative, and the certainty claims are thin and appeal to unnamed 'standard studies'. The per-technology split is weakly evidenced, for example MW arrays are made architecture-change on a bare 'smaller arrays' fallback. The warrant also leans on the economics gate to catch problems, which conflicts with D-02. The decision could easily flip.
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: information
+        reasoning: Sound in part, but the information section lacks a structured Analysis of Competing Hypotheses (ACH) to explain the panel split, weakening the evidence base.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: The decisive fallback claims are asserted without architecture-specific evidence, and high confidence in T26 substitution is not calibrated to demonstrated service capacity. Smaller arrays, localized power and Earth-based packaging are not shown to preserve viable 0B production; the economics gate cannot substitute for that missing technical evidence.
+    rawScore: 1
+    weightedScore: 0.5
+    approveCount: 0
+    rejectCount: 2
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: alternatives
+        reasoning: The ruling is coherent and internally consistent. It applies a default project-ending rule with an explicit reclassification test and a time-bounded, self-elevating T26 ruling that respects rq-0-64. It handles common-cause failures, allows splitting a technology by function, and calibrates its evidence. Weaknesses are minor arithmetic slips (option B should be 3.4, option D 2.35) and options B and C differing mainly by the reclassification path. Neither would change the decision.
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: none
+        reasoning: Thorough and well-reasoned response that effectively uses an evidence-conditioned rule and respects the decision framework.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: information
+        reasoning: The response acknowledges the limited evidence rather than treating hypothetical substitutes as established fallbacks. Its conservative interim classifications, explicit alternatives, owner-value trade-offs, falsifiable assumptions and independently reviewed reclassification process form a consistent decision chain.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: gpt-6-1-sol
+winnerScore: 5

@@ -1,0 +1,147 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-71
+topics:
+  - id: hard-backstop
+    topic: Whether a non-waivable single-unit extrapolation ceiling should exist
+    positions:
+      - statement: >-
+          Single-unit extrapolation above 100× never satisfies TRL 6, regardless of argument; some number must exist
+          that argument cannot cross at a no-waiver one-way gate
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Models validated over two orders of magnitude rarely hold over three for novel hardware; refusing to state a
+          number moves it into reviewers' heads; backstop flagged as low-confidence sensitivity point S2
+      - statement: >-
+          No universal ratio establishes or prohibits acceptance; readiness credit limited to an evidence-bounded
+          deployment envelope with independent concurrence
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Ratio is neither sufficient nor necessary evidence of representativeness; no evidence links 100× to acceptable
+          risk; NASA-STD-7009 and NASA/SP-2016-6105 credibility disciplines
+      - statement: No fixed limit for power and throughput if governing dimensionless regimes match
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Physics regimes can be shown to match at sub-scale via dimensionless numbers; fixed limits drive pathfinder
+          costs beyond Phase 0 budgets
+    resolution_status: open
+    priority: critical
+  - id: default-presumption
+    topic: Role of a 10× default for single-unit scale-up
+    positions:
+      - statement: >-
+          10× is a burden-shifting default; 10–100× requires a pre-registered regime case, an intermediate anchor test
+          and independent review
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Practitioner heuristic of about 10× per step (rated low certainty); scale-up failures cluster at regime
+          changes (Merrow et al. pioneer plant studies, moderate certainty)
+      - statement: >-
+          10× is at most a temporary planning heuristic and confers no gate entitlement; unsupported extrapolation below
+          10× earns no credit
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          A 3× change can cross an instability threshold; replication can make larger factors less risky than modest
+          unit scaling
+    resolution_status: open
+    priority: high
+  - id: regime-sufficiency
+    topic: Whether regime matching alone justifies extrapolation
+    positions:
+      - statement: Matching dimensionless parameters suffices for power and throughput extrapolation
+        models:
+          - Gemini 3.1 Pro
+        evidence: Regimes can be mathematically proven to match; qualified by the Froude-Reynolds conflict in 1g as a falsifier
+      - statement: >-
+          Regime preservation must be accompanied by validated prediction against independent or anchor data and
+          quantified uncertainty
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          Claude requires an anchor test at the geometric mean of test and full scale; GPT requires pre-declared
+          prediction tests addressing model discrepancy; GPT's vote held that Gemini overstates regime-matching
+          assurance
+    resolution_status: partially-resolved
+    priority: high
+  - id: duration-rule
+    topic: Duration and wear evidence standard
+    positions:
+      - statement: >-
+          Real-time test of at least 10% of design life or 25% of the failure criterion; acceleration calibrated at 3 or
+          more stress levels with mechanism invariance; at least 1.5× equivalent life; no credit beyond the demonstrated
+          life
+        models:
+          - Claude Opus 5.5
+        evidence: Physics-of-failure practice; NSTAR and NEXT life-test history
+      - statement: Duration extrapolation capped at 10× (at least a 10% physical life test)
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Claimed near-certain that wear cannot be modelled without 10% runtime, citing NASA EP qualification practice;
+          GPT's vote said this was unsupported
+      - statement: >-
+          Partial plus accelerated testing only with a validated degradation model and acceleration relationship; no
+          single hours multiplier; different damage modes may need different tests
+        models:
+          - GPT-6.1 Sol
+        evidence: Reliability-engineering reasoning (moderate certainty)
+    resolution_status: partially-resolved
+    priority: high
+  - id: numbering-up
+    topic: Treatment of modular replication versus single-unit scale-up
+    positions:
+      - statement: >-
+          No limit on replication count if each smallest replicated unit (defined by governing physics) passes and
+          interaction tests and coupling models bound the coupling effects
+        models:
+          - Claude Opus 5.5
+        evidence: Power-electronics and phased-array practice; interaction effects often under-tested
+      - statement: Distinguish unit enlargement from replication; test shared-resource limits and correlated failures
+        models:
+          - GPT-6.1 Sol
+        evidence: Strong engineering basis; applicability depends on architecture (moderate certainty)
+    resolution_status: partially-resolved
+    priority: medium
+  - id: pre-registration-firmness
+    topic: Whether the scaling basis is frozen or revisable at the mid-term review
+    positions:
+      - statement: >-
+          Scaling Basis frozen at the 0A mid-term review once accepted; post-data changes are recorded and reset the
+          evidence clock
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Clinical-trial pre-registration evidence (transfer to engineering plausible but unmeasured); gate failures
+          driven by advocacy
+      - statement: >-
+          Evidence plan agreed before major spend; test scale revised at the mid-term review while still reversible;
+          configuration control triggers reassessment after approval
+        models:
+          - GPT-6.1 Sol
+        evidence: Non-compensable auditability requirement; deployment-envelope assumption
+    resolution_status: partially-resolved
+    priority: medium
+  - id: cost-weighting
+    topic: Weight of pathfinder cost against gate protection
+    positions:
+      - statement: Cost weighted at 15%, below one-way-gate protection at 30%
+        models:
+          - Claude Opus 5.5
+        evidence: D-01 frames Phase 0 as a capability programme, not a cost saving; D-02 reversibility principle
+      - statement: Cost weighted at 25%, below readiness protection at 40%
+        models:
+          - GPT-6.1 Sol
+        evidence: Cost can determine whether 0A affordably preserves the 0B option
+      - statement: Cost weighted at 40%, equal to technical risk
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Difference between 100 kW and 1 MW pathfinders is hundreds of millions and years; Claude's vote said this is
+          not reconciled with D-02
+    resolution_status: open
+    priority: high

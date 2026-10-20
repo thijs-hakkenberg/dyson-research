@@ -1,0 +1,206 @@
+schema: project-dyson/deliberation-provenance@1
+generated: '2026-10-17T22:40:42.665Z'
+orchestrator:
+  git_commit: e8a3f1ae6ee66271faadf7473a88f700a654af6a
+  git_dirty: false
+  node: v26.4.0
+  files:
+    scripts/run-discussion.js: a41a284992d65024fec461e059191535185c67521530b62fd8fdf0c97bc8ad80
+    scripts/lib/llm.js: 066db44310dc28b84f1e7373daf1c6e153b5c4163effaa4d43f3c2726fc1d439
+    scripts/lib/critique.js: 38b3a0b0f73e5f031cdc4e30e4b6c6597f996cb762ec39da98c64edf4b448a56
+    scripts/lib/provenance.js: 54650fffe8624cd92c92b79c08f9ed53ae7b729f7a58aa467115ae9cc9cfb540
+    scripts/lib/yaml-block.js: b020eb423016f55367273868f13a631723e78b941e237742646f1cc20ee30ae5
+    package-lock.json: 6c45370ff2e96c52be7080ecf4c19d014b96b01292ad2b98d873205db607bbf9
+method:
+  framework:
+    path: src/content/methodology/decision-frameworks.md
+    sha: 18f503fe4ec6
+  hiddenWinner: true
+  blindVoting: true
+  priorContext: full
+  config:
+    maxRounds: 5
+    maxResponseWords: 2000
+    allowSelfVoting: true
+    selfVoteWeight: 0.5
+    unanimousTermination: true
+    consecutiveConcludeRounds: 2
+  responseWords: 3000
+  synthesizer: gpt-6-1-sol
+  alternateSynthesizers:
+    - claude-opus-5-5
+models:
+  - key: claude-opus-5-5
+    name: Claude Opus 5.5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+  - key: gemini-3-1-pro
+    name: Gemini 3.1 Pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+  - key: gpt-6-1-sol
+    name: GPT-6.1 Sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+parameters_sent:
+  claude-opus-5-5:
+    max_tokens:
+      - 32000
+      - 16000
+    temperature: not sent (endpoint default)
+  gemini-3-1-pro:
+    max_tokens:
+      - 32000
+      - 16000
+    temperature: not sent (endpoint default)
+  gpt-6-1-sol:
+    temperature: not sent (endpoint default)
+system_prompts:
+  af7f15a0646222bba105aa959797509de694ca36e512b56a008048ae4b7c35d8: You are synthesizing a multi-model discussion into actionable conclusions.
+  3c2b93c18f5f163b6476e4659ab8443a27a91da65c1557c3e50ba71d74d8264a: >-
+    You are a space systems engineering expert participating in a multi-stakeholder discussion about Project Dyson
+    specifications.
+  506604f683a03ca72848b4f5254d8d2cc64da9b2b3e798b8d70f390c171d9339: You are evaluating responses in a structured discussion. Respond only with valid JSON.
+exchanges:
+  - file: data/raw-exchanges/discussions/phase-0-sunset-rule/claude-opus-5-5/conclusion-1792276842205.9d73d06b7124.raw.json
+    sha256: 70f046bdf66410ad386eb317eacad89961f74c4e61b2dfe4398c3d25dee1de51
+    request_sha256: 9d73d06b7124aae0393d74a3508d805e3bcef76e93d202d21509edccd23ea765
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T22:39:04.315Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 11214
+      prompt_tokens: 18543
+      total_tokens: 29757
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/phase-0-sunset-rule/claude-opus-5-5/round-1-response-1792275607246.2de836f01e04.raw.json
+    sha256: 46c4a4eaa10056da6585635ef9cba5b64d73275c21c33bfe4fc96bc4304c97b0
+    request_sha256: 2de836f01e04cafbba3cea859274ec3dd4e62f675d34cfb2e11b940acee1a0e9
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T22:17:52.063Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 12423
+      prompt_tokens: 4586
+      total_tokens: 17009
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/phase-0-sunset-rule/claude-opus-5-5/round-1-vote-1792275756904.6a9ba5a4fccc.raw.json
+    sha256: 117bc0fb281b961738dd0db9605ecb62af77e0d0ef09c1b93720e17cc0498eb4
+    request_sha256: 6a9ba5a4fcccb5299765d8f1cebd5f97ca5a2135fe6d38e5cfeb3b264997a465
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T22:22:19.339Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 1566
+      prompt_tokens: 15875
+      total_tokens: 17441
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/phase-0-sunset-rule/gemini-3-1-pro/round-1-response-1792275630510.0371a62021ee.raw.json
+    sha256: dc14beafed490ad972c36e91464066028f6092734a361952e8de253aa398d9f9
+    request_sha256: 0371a62021ee6636bd3c01b2342e5501b49b7b4bbce5fdbe87f995619ec9e2e1
+    model: gemini-3-1-pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+    started: '2026-10-17T22:20:07.251Z'
+    finish: stop
+    usage:
+      prompt_tokens: 2982
+      completion_tokens: 1558
+      total_tokens: 5250
+      reasoning_tokens: 710
+  - file: data/raw-exchanges/discussions/phase-0-sunset-rule/gemini-3-1-pro/round-1-vote-1792275764603.e04e09176934.raw.json
+    sha256: d09564fba0e0edf07f334254cb5bfc05db9fd6da7a5d7ae119d537d94a978a90
+    request_sha256: e04e09176934a216fa98e5d36ec33ef340a0fc383a9a90128339e4f808ca292f
+    model: gemini-3-1-pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+    started: '2026-10-17T22:22:36.907Z'
+    finish: stop
+    usage:
+      prompt_tokens: 10457
+      completion_tokens: 316
+      total_tokens: 11023
+      reasoning_tokens: 250
+  - file: data/raw-exchanges/discussions/phase-0-sunset-rule/gpt-6-1-sol/conclusion-1792275849894.113b09bfd4c7.raw.json
+    sha256: 1aaeb234a3e33b1fd03b0cf527aee28c9be9891b93a09542cf67da8699955691
+    request_sha256: 113b09bfd4c700fcc8da05f352d7db51d3c9fe01d5049b04dc743450c71d7090
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T22:22:55.045Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 11608
+        cached_tokens: 0
+      input_tokens: 11611
+      output_tokens_details:
+        reasoning_tokens: 48
+      total_tokens: 14692
+      output_tokens: 3081
+  - file: >-
+      data/raw-exchanges/discussions/phase-0-sunset-rule/gpt-6-1-sol/round-1-response-1792275739335.317d9dd0b719.raw.json
+    sha256: 38d068941a9210d8b0ec71f1c7f490ab6fd39478f32be0e4606742d86b125ced
+    request_sha256: 317d9dd0b7193b49e07c53cc4f3ae1b5c6d3ce9c0dc6292e4cce9718a4678d49
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T22:20:30.513Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 2849
+        cached_tokens: 0
+      input_tokens: 2852
+      output_tokens_details:
+        reasoning_tokens: 516
+      total_tokens: 6422
+      output_tokens: 3570
+  - file: data/raw-exchanges/discussions/phase-0-sunset-rule/gpt-6-1-sol/round-1-vote-1792275774934.d2e2ace18cc8.raw.json
+    sha256: 409c208bdd9c031c814f9653f1cd4d63b9f5a88c7a45347b9b5ec1b8f36de28f
+    request_sha256: d2e2ace18cc82952d292f6faae3c1a816572edd029e0a472bf8669997c0f97e3
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T22:22:44.605Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 9949
+        cached_tokens: 0
+      input_tokens: 9952
+      output_tokens_details:
+        reasoning_tokens: 76
+      total_tokens: 10355
+      output_tokens: 403
+outputs:
+  - file: src/content/research-questions/phase-0/rq-0-69-phase-0-sunset-rule/conclusion.claude-opus-5-5.md
+    sha256: 35dfb9d9254f4bf2080b08cf56c30eca6288a96a235dd87a3efc45cf31994e63
+  - file: src/content/research-questions/phase-0/rq-0-69-phase-0-sunset-rule/conclusion.md
+    sha256: c1da1e1869da37b072d190c0be95bf4a02cdd9b9e4539e08602b076e277523b9
+  - file: src/content/research-questions/phase-0/rq-0-69-phase-0-sunset-rule/discussion.yaml
+    sha256: ceef485f51f7666271499d3002fdae49df1ef8665b3470803ca94b8dd4d1c5fc
+  - file: src/content/research-questions/phase-0/rq-0-69-phase-0-sunset-rule/divergent-views.claude-opus-5-5.yaml
+    sha256: 8a64878ee048d75eadc77282d0bc0f13547a276109ec43296a401258f791d1fa
+  - file: src/content/research-questions/phase-0/rq-0-69-phase-0-sunset-rule/divergent-views.yaml
+    sha256: f4a62a7c19c6bf9a648aa336fe394e4b447fe392651a31cd0a3f08db0363f3c7
+  - file: src/content/research-questions/phase-0/rq-0-69-phase-0-sunset-rule/round-1/claude-opus-5-5.md
+    sha256: 894811fa03b8f5f011d7db14376f9b3169ab75598cd281034ed3077c5afb1a36
+  - file: src/content/research-questions/phase-0/rq-0-69-phase-0-sunset-rule/round-1/gemini-3-1-pro.md
+    sha256: 1f05e7207ef85b7a4d51382f56c57d1de709310d5b305a488cb72f71459308c1
+  - file: src/content/research-questions/phase-0/rq-0-69-phase-0-sunset-rule/round-1/gpt-6-1-sol.md
+    sha256: d97289ccd3f210c815a69f4cd98ad1fe4e144cb9a69b0ba304fbab440539d15e
+  - file: src/content/research-questions/phase-0/rq-0-69-phase-0-sunset-rule/round-1/votes.yaml
+    sha256: 08ceb880cd1556ba7b3a394a4f3bbb8b33eceecf5e4825201baa06f250645d78

@@ -1,0 +1,158 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-69
+topics:
+  - id: sunset-default-execution
+    topic: Whether M180 executes the fallback by default without further decision
+    positions:
+      - statement: >-
+          M180 is a ceiling granting no authority; if KDP-0B is not passed by S the fallback executes by default (stop
+          0B spend except closure, Earth-supply baseline subject to Phase 1 gates, 0A completes)
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          D-02 reversibility logic puts burden of proof on continuation; escalation-of-commitment (Staw 1976; Arkes &
+          Blumer 1985) and status-quo bias (Samuelson & Zeckhauser 1988) literature; null and planning-boundary options
+          fail the must-criterion of bounding every §6 slip
+      - statement: >-
+          Existing 0B development authority expires automatically at M180; "0A only, Earth supply" becomes the planning
+          baseline by default; inaction cannot extend funding
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          a real option requires a controlled cost of waiting; a decision point alone leaves unresolved what happens
+          without a decision; weighted QOC (85.0 against 63.8 hard fallback and 70.0 decision point only)
+      - statement: M180 is a hard sunset that automatically triggers the fallback
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          megaprojects resist cancellation once capital is deployed; 180 months judged ample margin (asserted >90%
+          likelihood from Apollo/ISS analogues, which peers called uncalibrated)
+    resolution_status: resolved
+    priority: critical
+  - id: continuation-before-expiry
+    topic: Whether bounded continuation can be authorised in place before S or only by re-entry after S
+    positions:
+      - statement: >-
+          In-place extension of S is not available; 0B may be reopened only after S by a new owner decision record
+          showing g-target, g-demand and g-economics passed, meeting KDP-0B criteria, priced as a new commitment
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          re-entry is a door that can be abused and must be made expensive; ACH shows only the near-ready-but-late
+          hypothesis justifies continuation, and it predicts the other gates have passed
+      - statement: >-
+          A new owner decision effective before expiry may authorise a bounded corrective or preservation programme with
+          scope, absolute cap, expiry, deliverables and stop conditions; it cannot constitute or waive KDP-0B
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          preserves accountable choice when circumstances change; capability can be expensive to reconstruct; Claude's
+          vote called this slightly looser but bounded and explicit
+    resolution_status: open
+    priority: critical
+  - id: fallback-reversibility
+    topic: What the fallback commits to and whether it is reversible
+    positions:
+      - statement: >-
+          The fallback is reversible; it switches the Phase 1 supply baseline to Earth subject to Phase 1's own gates
+          and commits nothing irreversible; if contract analysis shows otherwise, the fallback needs its own D-02
+          treatment and automatic execution is wrong
+        models:
+          - Claude Opus 5.5
+        evidence: restart cost, not irrevocable commitment, is the cost of undoing; assumption K2 with a stated falsifier
+      - statement: >-
+          Expiry adopts Earth supply as a planning baseline only and does not authorise a long-term Earth-supply
+          purchase
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          D-01's demand-sized approach and the separation of supply strategy from purchasing authority (moderate
+          certainty, high confidence in the distinction)
+      - statement: >-
+          The fallback is a highly irreversible one-way door committing the programme to a fifteen-year Earth-supply
+          paradigm
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          frame statement only; Claude and GPT both flagged it as conflicting with D-02 and conflating fallback with
+          procurement
+    resolution_status: partially-resolved
+    priority: high
+  - id: kdp-0b-planning-buffer
+    topic: Whether rq-0-63 must place planned KDP-0B at least 24 months before S
+    positions:
+      - statement: >-
+          rq-0-63 shall set planned KDP-0B P at or before S minus 24 months, narrowing the planning envelope to 96–156;
+          if no credible schedule meets this, the owner changes S before KDP-0A or accepts fallback as plan
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          makes the integrated schedule falsifiable and nests §6 slips; Claude rates the 24-month figure itself very low
+          certainty, to be replaced by rq-0-63 output
+      - statement: >-
+          Retain M180 as the provisional outer limit and the 72–180 envelope pending rq-0-63; the 24-month buffer is
+          unsupported
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          the envelope is not evidence of a validated schedule; rq-0-63 must assess feasibility and include review,
+          notice and safe-stop durations
+    resolution_status: open
+    priority: high
+  - id: exogenous-shock-carve-out
+    topic: Treatment of exogenous shocks and launch-window-locked tests near S
+    positions:
+      - statement: A catastrophic exogenous shock warrants an extraordinary owner-level D-03 decision to pause the clock
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          trade-off between sunk-cost prevention and shock absorption; risk of killing a viable architecture at month
+          179
+      - statement: >-
+          Reject a carve-out; the ruling is most fragile here; would accept anchoring S to the earlier of M180 or the
+          first result of the last relevant-environment test launched before M180, only with a hard outer bound
+        models:
+          - Claude Opus 5.5
+        evidence: sensitivity point SP4 on launch-window-locked demonstrations
+      - statement: >-
+          Changes to the sunset date require an explicit owner decision citing schedule evidence; re-baselining cannot
+          reset the epoch
+        models:
+          - GPT-6.1 Sol
+        evidence: rq-0-63 may recommend but cannot change spending authority by itself
+    resolution_status: open
+    priority: medium
+  - id: option-keeping-spend
+    topic: Scope and cap of spend to keep the 0B option alive after deferral
+    positions:
+      - statement: >-
+          Permitted list (data curation, licences, ≤5 FTE core team, remote-survey purchase, re-tests, TRL≤5 ground work
+          already contracted); no flight hardware, long-lead, pathfinder or contracts past S; owner-set cap at KDP-0A as
+          a low single-digit percentage of the 0A run rate, acting as a second sunset trigger; lower cap after S
+        models:
+          - Claude Opus 5.5
+        evidence: time and spend drift both need catching; cap to be justified by a restart-cost estimate (low certainty)
+      - statement: >-
+          Separately identified, evidence-producing budget before sunset; no evergreen allowance; any preservation
+          justified item by item (data, samples, software, storage, time-limited personnel) under an absolute cap in a
+          new decision; no tooling or long-lead production disguised as preservation
+        models:
+          - GPT-6.1 Sol
+        evidence: weakest evidential link is the economic value of keeping the option alive (very low certainty)
+    resolution_status: partially-resolved
+    priority: high
+  - id: re-entry-criteria-consistency
+    topic: Whether re-entry requires full KDP-0B compliance or a scheduled relevant-environment test
+    positions:
+      - statement: >-
+          SUN-7(b) permits re-entry if KDP-0B is met in full or the relevant-environment test is scheduled with a funded
+          plan
+        models:
+          - Claude Opus 5.5
+        evidence: rule text as drafted
+      - statement: This conflicts with the requirement for full KDP-0B compliance and weakens commitment
+        models:
+          - GPT-6.1 Sol
+        evidence: peer vote naming commitment as Claude's weakest link
+    resolution_status: open
+    priority: medium

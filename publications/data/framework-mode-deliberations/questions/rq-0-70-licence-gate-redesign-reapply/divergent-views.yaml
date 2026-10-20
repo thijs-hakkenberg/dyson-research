@@ -1,0 +1,102 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-70
+topics:
+  - id: bounded-reapplication
+    topic: Whether first licence-gate failure ends 0B
+    positions:
+      - statement: >-
+          Permit at most one bounded recovery opportunity for a remediable failure, without production authorisation or
+          relaxation of gate requirements.
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          All Round 1 responses selected bounded reapplication, rejected unresolved failure handling and open-ended
+          retries, and retained the 0A-only fallback.
+    resolution_status: resolved
+    priority: critical
+  - id: extension-duration
+    topic: Duration of the recovery window
+    positions:
+      - statement: Allow up to 18 months.
+        models:
+          - Claude Opus 5.5
+        evidence: Low-confidence estimate of one containment iteration and repeat relevant-environment campaign.
+      - statement: >-
+          Use a short extension, exemplified by six months; extensions beyond 12 months undermine schedule
+          predictability.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Schedule-predictability preference; no validated recovery schedule supplied.
+      - statement: Use a proposed 12-month default, with any alternative fixed before the initial gate.
+        models:
+          - GPT-6.1 Sol
+        evidence: Explicit governance proposal, conditional on regulator-informed testing and review schedules.
+    resolution_status: open
+    priority: high
+  - id: recovery-eligibility
+    topic: Which failures qualify for reapplication
+    positions:
+      - statement: >-
+          Use independently assigned, precommitted failure classes, including a proposed 10-times-limit terminal
+          threshold.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Distinction between metrological, engineering, architectural, administrative and regulatory failures; GPT
+          challenged the numerical threshold's evidence.
+      - statement: Allow limited corrections but terminate recovery if fundamental technology change is required.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Conditional bounded-extension proposal; Claude and GPT rejected its inference that TRL 6 makes licensing
+          failure likely marginal.
+      - statement: >-
+          Require a documented corrective action and credible regulatory pathway within protected budget and schedule
+          bounds.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Failure-specific recovery feasibility remains unknown; no supplied basis establishes a universal numerical
+          eligibility threshold.
+    resolution_status: partially-resolved
+    priority: critical
+  - id: redesign-scope
+    topic: Changes permitted within the existing 0B option
+    positions:
+      - statement: >-
+          Permit limited containment, instrumentation, operational and throughput-reduction changes; require a full new
+          KDP for specified site, architecture, throughput-increase or licensing-state changes.
+        models:
+          - Claude Opus 5.5
+        evidence: Proposed rule distinguishes corrective iteration from reopening target, technology and licensing assumptions.
+      - statement: >-
+          Define minor changes to include limited scaling and potentially site adjustments, excluding fundamental
+          technology changes.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Examples in the proposed follow-on scope decision; Claude challenged site adjustments as minor changes.
+      - statement: >-
+          Return every resubmission to KDP-0B and require owner-level rebaselining for material site, process,
+          throughput, hazard or jurisdiction changes.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Only demonstrably unaffected evidence may be reused; affected demand, economics and other gate evidence must
+          be reassessed.
+    resolution_status: partially-resolved
+    priority: high
+  - id: absent-licensing-basis
+    topic: Treatment of an unresolved binding licence basis
+    positions:
+      - statement: Classify the gate as not ready rather than failed, subject to D-01 option expiry.
+        models:
+          - Claude Opus 5.5
+        evidence: An absent binding limit cannot support the proposed failure classification and should not consume the retry.
+      - statement: Block authorisation as not ready and impose an explicit hold sunset.
+        models:
+          - GPT-6.1 Sol
+        evidence: An incomplete licensing basis is not a pass and must not create unlimited waiting.
+    resolution_status: partially-resolved
+    priority: high

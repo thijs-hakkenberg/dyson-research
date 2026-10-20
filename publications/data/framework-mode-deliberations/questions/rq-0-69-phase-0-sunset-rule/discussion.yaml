@@ -1,0 +1,789 @@
+questionId: rq-0-69
+questionSlug: phase-0-sunset-rule
+questionTitle: Should the month-180 sunset trigger the fallback automatically, or be a planning boundary?
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T22:17:52.061Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # Month-180 Sunset: Automatic Fallback or Planning Boundary?
+
+          ## 1. Frame & decision type
+
+          **Decision type.** This is a property decision on the gate set: what the sunset *is*. It is not an executive decision on the schedule. It sits inside D-02, so the reversibility logic applies to it directly.
+
+          **Reversibility, which settles most of the question.** The two branches at month 180 are not symmetric.
+
+          - **Executing the fallback** ("0A only, Earth supply") stops 0B option spend. It also switches the Phase 1 supply baseline to Earth. Both can be undone: 0B can re-enter later through a new gate. The cost of undoing it is restart cost and lost time, not a commitment that cannot be withdrawn.
+          - **Continuing past 180 without passing KDP-0B** is the drift path. Each extension looks reversible, but extensions add up to sunk-cost escalation. Under D-02, the burden of proof belongs on the path that tends toward irreversibility, which is continuation.
+
+          **What the dispute actually is.** Claude and GPT are mostly arguing about different things.
+
+          - Claude's concern is the **default**. What happens if nobody decides?
+          - GPT's concern is **authority**. A fixed M180 must not be read as authorising fifteen years of spend.
+
+          These concerns are compatible. A sunset can remove authority (Claude) without granting any (GPT). The real disagreements are narrower:
+          - whether the fallback executes without a fresh decision;
+          - whether the owner can extend in place, or only re-enter through a new decision;
+          - who sets the number: the panel now, or rq-0-63.
+
+          **Cynefin domain.** This is a complicated-to-complex problem. The month-180 state of the world is unknowable now, so the rule must work across all of its possible states. That argues for a rule that fixes the default and the burden of proof, not one that tries to predict the outcome.
+
+          **Null option.** Leave the split as drafted ("disputed"). Assessed below; it fails a must-criterion.
+
+          ## 2. Criteria and weights (stated before options)
+
+          **Must-criteria (Kepner-Tregoe screen), pass or fail:**
+
+          - **M1.** It bounds every slip permitted in the §6 failure outcomes: the KDP-0A re-plan, the MTR re-plan, the g-target scout wave, the g-demand deferral and the KDP-0B slip.
+          - **M2.** It authorises no spend by itself. GPT's point, which I accept.
+          - **M3.** It cannot be used to waive D-02's "TRL 6 in a relevant environment, no waiver" at KDP-0B.
+
+          **Want-criteria, with swing weights.** Each weight reflects how far apart the options actually spread on that criterion.
+
+          | # | Criterion | Weight | Why this weight fits the range |
+          |---|---|---|---|
+          | C1 | **Drift containment.** Caps cumulative 0B option spend and elapsed time. | 0.30 | Widest swing across options: from no ceiling at all (null, rolling) to a hard ceiling. Escalation of commitment is the dominant failure mode of long gated programmes. |
+          | C2 | **Schedule coherence.** Consistent with rq-0-63, the 72–180 KDP-0B envelope and the §6 slips. | 0.20 | Options range from arithmetically impossible (KDP-0B planned at 180 *and* a slip allowed) to fully nested. Errors here are latent contradictions found late. |
+          | C3 | **Option value preserved.** Does not kill a nearly ready 0B on a technicality. | 0.20 | The swing is real but narrow. It matters only in the case where 0B is close at month 180. Under the other causes of failure (economics, demand), option value is near zero. |
+          | C4 | **Decision rights / legitimacy.** The owner keeps real authority. | 0.15 | All workable options leave the owner able to decide something new. The swing is between "the machine decides with no recourse" and "the owner must decide affirmatively". That is a moderate range. |
+          | C5 | **Auditability / simplicity.** | 0.15 | The range runs from one testable date to a contingent negotiation. This matters because the rule must be enforceable by people who were not on this panel. |
+
+          ## 3. Options
+
+          **A. Null: leave the split.** Both texts stand, and rq-0-63 resolves them implicitly.
+          - *Rejected.* It fails M1. Claude's g-demand deferral re-tests "at Phase 1 milestones", and GPT allows a "bounded extension" with no bound stated. With no agreed sunset, neither is bounded.
+          - In practice, ambiguity resolves toward continuation, because continuation is what the funded team proposes. The split would quietly hand GPT's position the win without the owner having chosen it.
+
+          **B. Hard automatic sunset (Claude as drafted).** At M180 the fallback executes, with no override.
+          - It passes all the musts.
+          - *Rejected as drafted, for three reasons.*
+            - No rule can bind a future owner. Pretending it can invites the rule to be ignored rather than used.
+            - "Execution of fallback" is not defined. It is unclear what stops, what continues and what Earth supply commits to.
+            - The number 180 is asserted by the panel instead of being derived from the integrated schedule.
+
+          **C. Planning boundary (GPT).** M180 is set via rq-0-63. At the boundary a mandatory decision is taken, with no pre-set default.
+          - It passes M2 and M3. It fails M1 in substance: a decision point with no default bounds nothing, because "extend" is always available at the meeting.
+          - *Rejected.* It puts the burden of proof on stopping, which inverts D-02.
+
+          **D. Default-executing ceiling with re-entry by new decision (recommended).** The sunset is S = M180 from the 0A funding start. It is a ceiling, not an entitlement.
+          - rq-0-63 sets the planned KDP-0B date P at or before S − 24 months, and all §6 slips must complete before S.
+          - At S, the defined fallback executes by default, with no further decision.
+          - The owner keeps full authority to *re-enter* 0B later. This is done only by a new decision record that meets the full KDP-0B criteria and is priced as a new commitment. It cannot be done by extending in place.
+          - An option-keeping spend cap is a second trigger.
+
+          **E. Rolling sunset.** S = P + a fixed slip allowance, with no absolute ceiling.
+          - *Rejected.* Each slip is bounded but the total is not, because re-planning P moves S. This is GPT's position with extra steps. It fails M1 cumulatively.
+
+          **F. Spend-only trigger.** Sunset when cumulative 0B option spend reaches a cap.
+          - *Rejected as a standalone rule.* Time is the binding cost here: Phase 1 schedule, team retention and launch-price drift all run on time.
+          - It is kept inside D as a second trigger, so that low-burn drift and high-burn drift are both caught.
+
+          ## 4. Assessment matrix (QOC)
+
+          Scores are 1–5 (5 = best).
+
+          | Option | M1 | M2 | M3 | C1 Drift (0.30) | C2 Coherence (0.20) | C3 Option value (0.20) | C4 Rights (0.15) | C5 Audit (0.15) | Weighted |
+          |---|---|---|---|---|---|---|---|---|---|
+          | A Null | ✗ | ✓ | ? | 1 | 1 | 3 | 2 | 1 | 1.55 |
+          | B Hard auto | ✓ | ✓ | ✓ | 5 | 4 | 2 | 2 | 5 | 3.75 |
+          | C Planning boundary | ✗ | ✓ | ✓ | 2 | 3 | 4 | 5 | 3 | 3.20 |
+          | **D Default + re-entry** | ✓ | ✓ | ✓ | 4 | 5 | 4 | 4 | 4 | **4.20** |
+          | E Rolling | ✗ | ✓ | ✓ | 2 | 2 | 4 | 3 | 3 | 2.70 |
+          | F Spend-only | ✓ | ✓ | ✓ | 4 | 2 | 3 | 3 | 3 | 3.15 |
+
+          **Why D beats B on C3 and C4.** In D, the owner can bring 0B back at full rigour the day after S. B scores 2 on rights because it pretends otherwise. D scores 4, not 5, on drift because re-entry is a door that can be abused. The rule's job is to make that door expensive: a new business case, full KDP-0B criteria and no inherited budget.
+
+          ## 5. Sensitivity vs trade-off points
+
+          **Sensitivity points** are facts that, if they change, move the ranking.
+
+          - **SP1. The critical path to TRL 6 in a relevant environment.** If rq-0-63 shows the relevant-environment demonstration cannot credibly finish by about M156, then P ≤ S − 24 cannot be met. The fallback then becomes the *planned* outcome, not a contingency.
+            - The correct response is to change S **now**, by owner decision with the schedule evidence. Discovering the problem at M175 is the wrong response.
+            - This is the single most important input, and it is why GPT is right that rq-0-63 must inform the number.
+          - **SP2. Restart cost of 0B after fallback.** If re-entry after fallback costs little more than continuing (team, data and supplier base survive cheaply), D's advantage over B narrows and B's simplicity wins. If restart is very expensive, pressure for in-place extension rises, and D's discipline matters more.
+          - **SP3. How often the owner overrides.** If re-entry is used routinely, D collapses toward C. This is observable: it can be tracked against the cost-and-schedule-growth record of major projects.
+          - **SP4. Launch-window-locked demonstrations.** If a relevant-environment test is tied to a launch window, a slip of a few months can push its result past S. This is where the argument for a carve-out is strongest. I reject a carve-out (see §8), but this is the point where the ruling is most fragile.
+
+          **Trade-off points** are values questions, to be decided by the owner and not settled by evidence.
+
+          - **TP1. Drift containment vs owner discretion.** Any increase in automaticity reduces the authority of the decision-maker at the moment of decision. I weight containment higher because the moment of decision is when sunk-cost pressure peaks. That is a value judgement, and the owner may weight it differently.
+          - **TP2. Slip allowance size (my 24 months).**
+            - A larger allowance gives schedule realism and protects option value.
+            - A smaller allowance reduces spend and moves Phase 1 certainty earlier.
+            - This decision also narrows GPT's KDP-0B planning envelope from 96–180 to 96–156 *planned*. GPT should be asked directly whether it accepts that. The disagreement should be recorded, not averaged.
+          - **TP3. Size of the option-keeping cap.** A larger cap buys cheaper restart at the cost of a larger drift budget.
+
+          ## 6. Evidence certainty
+
+          | Claim | GRADE certainty | Likelihood / confidence |
+          |---|---|---|
+          | Decision-makers escalate commitment to failing courses of action after sunk investment (Staw 1976; Arkes & Blumer 1985). | **Moderate.** Robust in experiments; indirect for programme boards. | Very likely that the effect operates at an M180 review; high confidence. |
+          | Defaults strongly shape outcomes when a choice is required (status-quo bias, Samuelson & Zeckhauser 1988). | **Moderate.** Strong general evidence; indirect here. | Likely that a no-default decision point resolves to "extend"; medium confidence. |
+          | Large space development projects routinely show schedule growth beyond baselines (GAO, *NASA: Assessments of Major Projects*, annual series). | **Moderate** for NASA; indirect for a Project Dyson ISRU programme. | Likely (~60–80 %) that at least one §6 slip is invoked; medium confidence. |
+          | Legislative sunset clauses reliably terminate programmes. | **Low.** The literature is mixed; many are routinely renewed. | About as likely as not that a sunset with easy renewal terminates anything; low confidence. *This is why D makes re-entry costly rather than relying on the date alone.* |
+          | The 24-month slip allowance is adequate. | **Very low.** A panel judgement; rq-0-63 does not exist yet as evidence. | No likelihood assigned; to be replaced by rq-0-63 output. |
+          | Fallback is cheaply reversible. | **Low.** Restart cost for an ISRU team and data set is not estimated anywhere in `trl-baseline.yaml` as far as I know. | Plausible; low confidence. This is SP2 and should be estimated. |
+
+          ## 7. Key assumptions (with falsifiers) and competing hypotheses
+
+          **Key assumptions.**
+
+          | Assumption | Falsified by |
+          |---|---|
+          | K1. Phase 0 month 0 is the 0A funding start under D-01. | rq-0-63 defining t₀ differently, for example from Phase 1 award. S must then be re-expressed, not silently shifted. |
+          | K2. Executing the fallback commits nothing irreversible. Earth supply for Phase 1 remains subject to Phase 1's own gates. | A Phase 1 contract structure in which an Earth-supply baseline locks in long-term launch contracts that cannot be exited. If so, the fallback is itself a one-way door and needs its own D-02 treatment. |
+          | K3. Option-keeping activities can be separated from development spend. | Audit showing "option-keeping" contracts funding hardware or long-lead items. This is the usual way caps are evaded. |
+          | K4. The relevant-environment test fits before M156. | rq-0-63 critical path (SP1). |
+
+          **Competing hypotheses (ACH)** for the state "KDP-0B not passed at S":
+
+          - **H1.** The technology is near-ready and narrowly late.
+          - **H2.** The economics fail structurally.
+          - **H3.** Demand is absent.
+          - **H4.** The target resource is inadequate.
+
+          | Hypothesis | Fallback correct? | What disconfirms it at month 180 |
+          |---|---|---|
+          | H1 | No | Evidence that is *not* consistent with H1: the TRL 5 relevant-environment test not yet flown, or its outcome adverse. |
+          | H2 | Yes | g-economics passed. |
+          | H3 | Yes | Signed demand in hand. |
+          | H4 | Yes | g-target passed. |
+
+          **Implication for the rule.** Only H1 justifies anything other than the fallback. H1 also predicts that the other gates have already passed. So re-entry should require g-target, g-demand and g-economics all passed, plus a scheduled relevant-environment test. That screens out H2–H4, which are the common cases, and lets the owner act only on the hypothesis that survives disconfirmation.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Ruling: adopt Option D
+
+          The proposed rule text for `gates-proposal.yaml`, tagged `sunset`, is below.
+
+          > **SUN-1 Ceiling.** The 0B sunset S is month 180 from the 0A funding start (t₀ per rq-0-63). S is a ceiling on 0B option authority. It authorises no tranche or spend. 0A funding continues only through KDP-0A and MTR.
+          >
+          > **SUN-2 Planning date.** rq-0-63 shall set the planned KDP-0B date P with P ≤ S − 24 months. If no credible schedule meets this, rq-0-63 reports it to the owner, who either changes S by decision record before KDP-0A or accepts fallback as the planned outcome. S is not adjusted after KDP-0A except by a new owner decision citing schedule evidence, and never within 36 months of S.
+          >
+          > **SUN-3 Slip containment.** Every slip permitted by the failure outcomes must complete before S. A slip that cannot complete before S is unavailable, and the fallback applies. In particular:
+          > - a g-target scout wave (≤ 36 months) is available only if it starts by S − 36;
+          > - the single KDP-0B slip ends at S.
+          >
+          > **SUN-4 Default execution.** If KDP-0B has not been passed by S, the fallback executes at S without further decision:
+          > - (a) all 0B spend stops, except closure and archiving;
+          > - (b) the Phase 1 supply baseline becomes Earth supply, subject to Phase 1's own gates;
+          > - (c) 0A completes its funded plan.
+          >
+          > **SUN-5 Second trigger.** The fallback also executes when cumulative option-keeping spend (SUN-6) reaches the cap the owner sets at KDP-0A, if that comes first.
+          >
+          > **SUN-6 Option-keeping spend.**
+          > - *Permitted* after a deferral and before S: data curation; licence and claim maintenance; a standing core team (suggested ≤ 5 FTE); remote-survey data purchase; demand and price re-tests; ground-lab work at TRL ≤ 5 already under contract.
+          > - *Not permitted*: flight hardware, long-lead procurement, pathfinder work, or new contracts extending past S.
+          > - *Cap*: owner-set at KDP-0A as a fraction of the 0A annual run rate. A low single-digit percentage is suggested and must be justified by the SP2 restart-cost estimate.
+          > - *After S*: only archiving and the pre-set g-economics re-test triggers, at a lower cap.
+          >
+          > **SUN-7 Re-entry.** After S, 0B may be reopened only by a new owner decision record that:
+          > - (a) shows g-target, g-demand and g-economics passed;
+          > - (b) meets KDP-0B criteria in full, with no waiver per D-02, or schedules the relevant-environment test with a funded plan;
+          > - (c) is priced and approved as a new commitment, not as a continuation of 0A or 0B budgets.
+          >
+          > In-place extension of S is not available.
+          >
+          > **SUN-8 No early lock.** Nothing in SUN-1 to SUN-7 delays an earlier fallback that the failure outcomes require.
+
+          ### Y-statement
+
+          *In the context of* a gated Phase 0 where 0B is a real option and D-02 ties rigour to reversibility,
+          *facing* a split between an automatic sunset (Claude) and a planning boundary (GPT), and §6 slips that are unbounded without a common ceiling,
+          *we chose* a month-180 ceiling that grants no authority, executes the fallback by default, places planned KDP-0B at least 24 months before it (via rq-0-63) and allows 0B back only through a new, fully gated decision,
+          *to achieve* bounded slips, a capped drift budget, and owner authority exercised where escalation pressure is weakest,
+          *accepting* that a genuinely near-ready 0B may be stopped and must pay restart cost, and that GPT's 96–180 KDP-0B planning envelope narrows to 96–156.
+
+          ### Toulmin structure
+
+          - **Grounds:** §6 permits at least five slips with no shared bound. The null option leaves them open-ended.
+          - **Warrant:** under D-02, the burden of proof belongs on the path that tends toward irreversibility. Defaults decide outcomes when commitment pressure is high. So the default must be the reversible branch (fallback), and the escape route must be priced as new.
+          - **Backing:** the escalation-of-commitment and status-quo-bias literature; the major-project schedule-growth record (§6).
+          - **Qualifier:** probably right, medium confidence. It depends on SP1 and on the unestimated restart cost.
+          - **Rebuttal conditions:** see the next subsection.
+
+          ### Evidence that would change the ruling
+
+          The ruling should be reopened if any of the following is shown.
+
+          1. **rq-0-63 shows the relevant-environment test cannot complete before ~M156.** Then move S now, or accept fallback as plan.
+          2. **Restart cost after fallback is a large multiple of option-keeping cost.** That would justify a single in-place extension under SUN-7(a)–(b) criteria, moving toward a C/D hybrid.
+          3. **Demonstrations are tied to launch windows** in a way that makes a fixed S arbitrary. That would justify anchoring S to "earlier of M180 or first result date of the last scheduled relevant-environment test, if launched before M180". I would accept this only with a hard outer bound.
+          4. **Phase 1 contract analysis shows Earth supply is itself a one-way door (K2).** Then the fallback needs its own gate, and automatic execution is wrong.
+
+          ### Note for later rounds
+
+          The weakest Decision Quality link in each original position:
+
+          - **Claude: alternatives.** It offered no route back after fallback, so it over-claims commitment.
+          - **GPT: values.** It did not say who carries the burden of proof at M180. Its silence lets the burden fall on stopping.
+          - **Gemini:** silent. Its "Fallback" entries throughout §6 suggest it would accept the default, but that should not be assumed.
+
+          ## 9. Consequences
+
+          **Enables:**
+          - rq-0-63 gets a hard constraint: P ≤ S − 24. The integrated schedule becomes falsifiable.
+          - The §6 failure outcomes become mutually consistent:
+            - the g-target scout wave must start by about M144;
+            - the KDP-0B slip ends at S;
+            - Claude's g-demand "re-test at Phase 1 milestones" runs only until S, and afterwards only as a SUN-7 re-entry trigger.
+          - Phase 1 planning can carry Earth supply as the baseline, with ISRU as an upside option rather than a dependency.
+
+          **Constrains:**
+          - GPT's KDP-0B upper bound of 180 becomes a sunset rather than a planning date. This is a recorded disagreement for GPT to accept or contest.
+          - The owner must set the option-keeping cap and confirm t₀ at KDP-0A. Both are new owner-decision items.
+          - A restart-cost estimate (SP2) becomes a required input to KDP-0A.
+
+          **Conflicts with:**
+          - Any reading of D-01 in which 0B is "held" indefinitely. D-01 says 0B is held as a *gated* option, and SUN-1 to SUN-7 define what gated means in time.
+
+          **Follow-on decisions unlocked:**
+          - the slip allowance (TP2);
+          - the cap (TP3);
+          - whether the fallback's Earth-supply baseline needs its own reversibility review (K2).
+        wordCount: 3382
+        generatedAt: '2026-10-17T22:20:07.249Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          Here is the systems engineering assessment of the month-180 sunset condition for Project Dyson, structured via the Composite Scaffold.
+
+          ### 1. Frame & decision type
+          - **Frame:** We must determine the authority and execution mechanism of the month-180 (M180) sunset clause for Phase 0. Specifically, whether reaching M180 without passing KDP-0B automatically triggers the fallback ("0A only, Earth supply"), or if M180 merely prompts a schedule review via rq-0-63.
+          - **Decision type:** Executive and property decision. It is a highly irreversible, one-way door decision (an automatic fallback commits the programme to a 15-year Earth-supply paradigm). 
+          - **Cynefin domain:** Complicated. The variables are known, but the interactions between schedule slips, option-keeping spend, and exogenous delays require expert analysis.
+
+          ### 2. Criteria and weights
+          *Swing weights are based on the actual range of outcomes between a strict 15-year guillotine and an open-ended schedule.*
+
+          1. **Sunk-Cost Prevention (Weight: 80/100):** The ability of the rule to definitively cap Phase 0A spend and prevent "zombie" project drift. A 15-year (180-month) runway is already exceptionally long for a Phase 0 capability programme; the weight is high because the range between "capped at 15 years" and "indefinite extension" represents billions in potential sunk costs.
+          2. **Exogenous Shock Absorption (Weight: 40/100):** The programme's ability to survive delays outside its control (e.g., heavy-lift launch vehicle availability, geopolitical shifts). Weighted lower because a 180-month window already contains massive schedule margin.
+          3. **Schedule Integration (Weight: 60/100):** Alignment with the integrated schedule (rq-0-63). The rule must not create contradictory triggers where the system schedule allows a test, but the sunset clause forbids it.
+
+          ### 3. Options
+          - **Option 0: Null (Status Quo / Keep the split).** Leave the panel's disagreement unresolved. *Rejected:* Fails to provide the owner with a clear gate condition for KDP-0B, guaranteeing a governance crisis at the first major schedule slip.
+          - **Option 1: Automatic Execution (Claude's position).** M180 is a hard sunset. Reaching M180 without clearing KDP-0B automatically triggers the "0A only, Earth supply" fallback. Caps 0A spend and prevents drift.
+          - **Option 2: Planning Boundary (GPT's position).** M180 is a planning boundary set via rq-0-63. It forces a review but is not authority for an automatic fifteen-year fallback commitment. Allows extensions for exogenous delays.
+
+          ### 4. Assessment matrix (QOC)
+
+          | Option | Sunk-Cost Prevention (80) | Shock Absorption (40) | Schedule Integration (60) |
+          | :--- | :--- | :--- | :--- |
+          | **Option 0 (Null)** | Low (ambiguous) | High (de facto infinite) | Low (unresolved) |
+          | **Option 1 (Automatic)** | **High** (guaranteed cap) | Low (blind guillotine) | Medium (overrides rq-0-63) |
+          | **Option 2 (Boundary)** | Low (invites waivers) | **High** (human-in-the-loop) | **High** (driven by rq-0-63) |
+
+          ### 5. Sensitivity vs trade-off points
+          - **Sensitivity point:** Option 1 is highly sensitive to *Sunk-Cost Prevention*. If the primary owner concern is runaway R&D budgets, Option 1 dominates.
+          - **Trade-off point:** There is a direct trade-off between *Sunk-Cost Prevention* (Option 1) and *Exogenous Shock Absorption* (Option 2). Enforcing a hard stop prevents budget drift but risks killing a viable architecture at month 179 due to a minor, external launch delay.
+
+          ### 6. Evidence certainty
+          - *Claim:* A 180-month window is sufficient to absorb normal aerospace development delays without needing further extensions.
+            - **Certainty:** Moderate (GRADE). 
+            - **Likelihood:** Very Likely (>90% probability, IPCC) that 15 years is enough for Phase 0/TRL 6 maturation.
+            - **Confidence:** High confidence (ICD 203) based on historical analogues (e.g., Apollo, ISS early phases) where fundamental architecture decisions were forced within a decade.
+
+          ### 7. Key assumptions
+          *Evaluated using Analysis of Competing Hypotheses (ACH) principles.*
+
+          1. **Assumption:** An automatic trigger will actually be enforced by future stakeholders.
+             - *Falsification:* Historical data showing that "automatic" cancellations in mega-projects are routinely overridden by political or owner waivers at the deadline.
+          2. **Assumption:** The integrated schedule (rq-0-63) cannot effectively cap costs without an external sunset clause.
+             - *Falsification:* Evidence that rq-0-63 contains hard funding gates that automatically zero out budgets upon milestone failure.
+             - *ACH Ranking:* The hypothesis that "human-in-the-loop boundaries lead to sunk-cost drift" is the *least disconfirmed* by historical aerospace systems engineering data.
+
+          ### 8. Decision, warrant, accepted downside
+          **Y-Statement:** In the context of the Phase 0 TRL re-baseline, facing a panel split on the M180 sunset condition, we chose **Option 1 (Automatic Execution)**, to achieve definitive sunk-cost prevention and bound the KDP-0B real option, accepting the downside that a viable but delayed project might be forced into the Earth-supply fallback due to exogenous shocks near the deadline.
+
+          **Toulmin Argument:**
+          - **Claim:** The M180 sunset must automatically trigger the fallback.
+          - **Grounds:** 180 months (15 years) provides excessive schedule margin for reaching TRL 6 in a relevant environment.
+          - **Warrant:** Because mega-projects inherently resist cancellation once capital is deployed, only pre-committed, automatic structural guillotines can successfully terminate failing developmental pathways.
+          - **Qualifier:** Unless a catastrophic, non-project-related exogenous shock (e.g., global launch stand-down) occurs, which would require an extraordinary owner-level D-03 decision to pause the clock.
+
+          ### 9. Consequences
+          - **Constrains:** The integrated schedule (rq-0-63) must now be built backwards from a hard M180 deadline. No internal 0A milestones can be planned beyond M150 to allow for the 36-month scout wave.
+          - **Enables:** Provides financial stakeholders with a guaranteed maximum exposure duration for the Phase 0 capability programme.
+          - **Subsumes:** This decision subsumes the KDP-0B slip rule (Claude's "One slip inside the month-180 sunset, then fallback" is now structurally enforced).
+        wordCount: 898
+        generatedAt: '2026-10-17T22:20:30.512Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **Recommendation: make M180 an automatic expiry of the existing 0B development authorisation, with “0A only, Earth supply” as the default programme disposition. Require a review before expiry; do not let a missed decision extend funding. Any continuation needs a new, explicit, bounded owner decision.**
+
+          This separates three things that the present wording risks conflating:
+
+          - **A planning boundary:** when the integrated schedule expects a decision.
+          - **An authority boundary:** when permission to continue spending expires.
+          - **A supply commitment:** what Earth-supply contracts are actually authorised.
+
+          M180 should perform the first two functions, **not automatically create a fifteen-year Earth-supply procurement commitment**.
+
+          This is an **executive governance decision** governing a reversible option and its eventual one-way exercise. It must preserve D-01’s demand-sized real option and D-02’s non-waivable KDP-0B requirements.
+
+          I use the supplied extracts from `gates.md`, `gates-proposal.yaml`, `trl-baseline.yaml`, and `decisions.md`; I have not independently inspected those files. Proposed dates and controls below are recommendations, not existing specifications.
+
+          ## 2. Criteria and weights
+
+          ### Mandatory constraints
+
+          Before weighted assessment, any adopted policy must:
+
+          1. Preserve the KDP-0B TRL 6 relevant-environment requirement for project-ending technologies, without waivers.
+          2. Require signed Phase 1 demand to size 0B at the gate.
+          3. Prevent schedule approval, silence, or option-keeping expenditure from becoming implicit production authority.
+          4. Preserve safety, legal compliance, and necessary disposition of existing assets when funding authority expires.
+
+          ### Swing weights
+
+          These weights value movement across the **specified worst-to-best ranges**, not abstract importance.
+
+          | Criterion | Range being valued | Weight | Why this swing merits the weight |
+          |---|---|---:|---|
+          | **C1. Financial exposure control** | Ambiguous duration and cumulative spend → enforceable expiry and capped exceptions | **30%** | Fifteen years of potentially repeated deferrals makes cumulative exposure the largest governance concern. |
+          | **C2. Decision integrity and reversibility** | Silence can determine programme direction → accountable, explicit decisions without premature irreversible commitments | **25%** | D-01 and D-02 explicitly distinguish preserving an option from exercising it. |
+          | **C3. Avoidable capability loss** | Abrupt loss of valuable teams, data, assets and learning → proportionate retention where justified | **20%** | Space-system capability can be expensive to reconstruct, but retaining it cannot justify indefinite development. |
+          | **C4. Operational executability** | Unclear ownership and contracts at expiry → implementable transition with auditable authority | **15%** | A sunset that cannot be executed safely or contractually is not a credible control. |
+          | **C5. Demand and schedule adaptability** | Fixed response despite changed demand → bounded adjustment to material new evidence | **10%** | Adaptability matters, but must remain subordinate to financial control and gate integrity. |
+
+          These are proposed owner values, not empirically measured weights.
+
+          ## 3. Options
+
+          **N — Null: leave the panel split unresolved.**  
+          Argument for: avoids deciding before rq-0-63 establishes the integrated schedule.  
+          **Reject:** baseline and contracting decisions would inherit an unresolved authority question. Silence is not a neutral implementation rule.
+
+          **A — Hard automatic fallback at M180.**  
+          All permitted slips terminate at M180 and the existing programme executes fallback, with no continuation route within this policy.  
+          Argument for: strongest pre-commitment against drift.  
+          **Reject as the complete rule:** it needs a more precise definition of “fallback” and can destroy useful capability regardless of the marginal cost of preservation. If “fallback” means a long-term procurement commitment, it also exceeds what a sunset should authorise.
+
+          **B — M180 is only a mandatory decision point.**  
+          The owner reviews the programme and selects continuation, deferral or fallback.  
+          Argument for: accommodates uncertain mission schedules and future demand.  
+          **Reject unless paired with an expiry default:** it leaves unresolved what happens if the owner does not decide. If all relevant authority expires pending that decision, this converges toward Option C.
+
+          **C — Automatic authority expiry, pre-expiry review, explicit replacement authority.**  
+          Absent a new owner decision, the existing 0B development authorisation expires at M180 and fallback becomes the programme baseline. A new decision may authorise tightly bounded preservation or corrective work, but cannot waive KDP-0B.
+
+          **Select C.** It preserves Claude’s enforceable default while accepting GPT’s objection to interpreting a planning date as automatic authority for a long-duration commitment.
+
+          ## 4. Assessment matrix
+
+          **QOC question:** What should M180 do if KDP-0B has not passed?
+
+          Scores: **0 = worst, 4 = best** within the criterion ranges above. Totals are weighted scores out of 100. These are transparent policy judgments, not predicted programme outcomes.
+
+          | Option | C1 Exposure 30% | C2 Integrity 25% | C3 Capability 20% | C4 Execution 15% | C5 Adaptability 10% | Total |
+          |---|---:|---:|---:|---:|---:|---:|
+          | N — Unresolved split | 0 | 2 | 2 | 0 | 1 | **25.0** |
+          | A — Hard automatic fallback | 4 | 2 | 1 | 3 | 2 | **63.8** |
+          | B — Decision point only | 1 | 4 | 4 | 2 | 4 | **70.0** |
+          | **C — Expiry plus explicit replacement authority** | **3** | **4** | **3** | **4** | **3** | **85.0** |
+
+          C loses a point on exposure because exceptions can increase cumulative expenditure, and loses capability/adaptability points because an expiry can still cause interruption. Those are real costs, not implementation defects to assume away.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points — facts or implementation details
+
+          - **Meaning of “automatic fallback.”** If it means only cessation of 0B development and adoption of an Earth-supply baseline, the disagreement with C narrows substantially.
+          - **rq-0-63 schedule feasibility.** If an independently reviewed critical path cannot plausibly support qualification and gate review by M180, the owner must reconsider the date explicitly—not allow the schedule team to move it implicitly.
+          - **Preservation cost and restart cost.** Low preservation cost relative to demonstrable restart cost strengthens C. Expensive preservation with little retained value strengthens A.
+          - **Enforceability of exceptions.** If budgets and contracts cannot prevent recurring “temporary” extensions, C’s exposure score falls sharply.
+
+          With the illustrative scores held fixed and other weights reduced proportionally, A overtakes C only when exposure control receives roughly **62%** of total weight. This is a weight sensitivity test, not evidence that C is objectively optimal.
+
+          ### Trade-off points — owner values
+
+          - **Credible fiscal commitment versus preserving a potentially valuable capability.**
+          - **Protecting future-owner discretion versus binding the programme against drift.**
+          - **Accepting a temporary capability interruption versus funding continuity before demand exists.**
+
+          These cannot be settled by better schedule estimates alone.
+
+          ## 6. Evidence certainty
+
+          GRADE labels below describe certainty supporting the substantive claim. Likelihood is stated separately; no numerical probabilities are justified by the supplied material.
+
+          | Key claim | Evidence and GRADE certainty | Likelihood versus analytic confidence |
+          |---|---|---|
+          | D-01 and D-02 require a demand-sized option and non-waivable technical readiness at KDP-0B. | Explicit in the supplied accepted-decision summaries. **High certainty for the supplied governance record**, not independently verified against files. | Documentary interpretation, not a probabilistic forecast; **high confidence**. |
+          | The supplied positions do not establish M180 as an integrated, feasible critical-path deadline. | Wide KDP-0B windows and GPT’s reference to rq-0-63. **Low certainty about actual schedule feasibility**. | Whether M180 is achievable: **likelihood unassessed; low confidence**. |
+          | Explicit expiry removes authority arising merely from inaction. | Direct consequence of the proposed rule, subject to enforceable budget and contractual implementation. **Moderate certainty**. | **High confidence in the rule’s logic**; actual compliance likelihood remains unquantified. |
+          | The expiry rule will reduce actual expenditure drift. | Plausible governance mechanism, but no Project Dyson expenditure or exception-history evidence supplied. **Low certainty**. | Direction is plausible; magnitude and likelihood are **unquantified, low confidence**. |
+          | Limited preservation may cost less than later reconstitution. | No asset inventory, retention plan or restart estimate supplied. **Very low certainty**. | Could be true for particular assets; **likelihood unassessed, low confidence**. |
+          | Expiry alone does not justify long-term Earth procurement. | Consistent with D-01’s demand-sized approach and separation of supply strategy from purchasing authority. **Moderate certainty as governance interpretation**. | Not a forecast; **high confidence** in the distinction. |
+
+          The weakest evidential link is **the economic value of keeping the option alive**, not the ability to write an expiry rule.
+
+          ## 7. Key assumptions
+
+          | Assumption | Evidence that would falsify it |
+          |---|---|
+          | 0B development authority can be separated from 0A operations, safety and preservation obligations. | Contractual and systems dependency analysis showing that stopping 0B necessarily disables essential 0A functions or creates unacceptable hazards. |
+          | The owner can act before expiry. | Governance and procurement lead-time analysis showing that a complete decision cannot be obtained within the proposed review period. |
+          | Earth supply can serve as the fallback baseline. | A qualified supply-chain and delivery analysis demonstrating that required Phase 1 demand cannot be met through Earth supply within acceptable constraints. |
+          | Some option-retention activities may have positive value. | Independent costing showing preservation costs exceed conservative avoided restart costs and credible information value. |
+          | M180 is a defensible provisional limit, though not yet a demonstrated schedule outcome. | rq-0-63 showing an unavoidable, justified critical path beyond M180, or showing that a materially earlier sunset achieves the same capability outcome. |
+
+          ### Competing hypotheses: least-disconfirmed ranking
+
+          This is a provisional ACH assessment, not a probability ranking:
+
+          1. **Expiry plus separately authorised retention best reconciles the accepted decisions.** Least disconfirmed by D-01’s option framing and the need for bounded spending.
+          2. **Hard fallback is necessary to stop drift.** Plausible, but not yet supported by evidence that bounded exceptions cannot be controlled.
+          3. **A mandatory review alone provides adequate control.** Most challenged by the unresolved outcome when no decision is made.
+
+          Evidence of systematic abuse of capped exceptions would move hypothesis 2 upward.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Proposed gate-rule text
+
+          > **Sunset and authority expiry.** Unless KDP-0B has been formally passed, existing authorisation for 0B development expires at M180, measured from the programme epoch recorded in the controlled baseline. Schedule re-baselining does not reset that epoch.
+          >
+          > **Pre-expiry review.** The owner shall receive a sunset disposition package by M168, or earlier if contractual notice and safe-transition lead times require. The package shall recommend KDP-0B approval, fallback, or a separately authorised bounded programme.
+          >
+          > **Default disposition.** Without replacement authority effective before expiry, cease new discretionary 0B development commitments and adopt “0A only, Earth supply” as the planning baseline. Execute only authorised 0A activities, unavoidable obligations, safety and compliance work, and approved transition or disposition tasks. This does not authorise a long-term Earth-supply purchase.
+          >
+          > **Replacement authority.** Any post-sunset corrective or preservation programme requires a new owner decision specifying scope, absolute funding cap, expiry, deliverables, stop conditions and cumulative expenditure. No evergreen option-keeping allowance is permitted.
+          >
+          > **Gate integrity.** Replacement authority does not constitute KDP-0B approval and cannot waive its technical, target, demand, economics or licence requirements.
+
+          **Warrant:** a real option requires both a controlled exercise decision and a controlled cost of waiting. Expiring the old authority controls waiting; a new decision preserves accountability when circumstances genuinely change.
+
+          **Accepted downside:** capability continuity may be interrupted, preservation may prove uneconomic, and preparing the review consumes resources. These are preferable to implicit continuation.
+
+          ## 9. Consequences
+
+          - **rq-0-63:** establish the epoch, assess M180 feasibility, and include gate-review, contractual notice and safe-stop durations. It may recommend changing the sunset; it cannot change spending authority by itself.
+          - **KDP-0B window:** retain M180 as the provisional outer limit under current authority. The panel’s 72–180-month envelope is not evidence of a validated schedule.
+          - **Failure outcomes:** corrective plans, scout waves and slips remain inside the sunset unless a new owner decision explicitly supersedes that constraint. No silent clock restart.
+          - **Demand deferral:** before sunset, option-keeping requires a separately identified budget and evidence-producing scope. After sunset, there is no automatic entitlement to continue it.
+          - **Permitted preservation:** justify specific data, samples, software, storage, minimum maintenance or time-limited personnel retention. Do not disguise production tooling, facility expansion or long-lead production procurement as preservation.
+          - **Change evidence:** move toward a harder sunset if exception controls fail; reconsider timing if rq-0-63 establishes an unavoidable critical-path conflict; permit bounded retention only when independently reviewed costs and benefits support it.
+
+          **Final Y-statement:** In the context of D-01’s demand-sized 0B real option and D-02’s non-waivable readiness gate, facing an unresolved M180 sunset, we chose automatic expiry of existing 0B development authority with a pre-expiry review and explicit replacement-authority mechanism, to achieve credible spending control without silently committing to long-term supply, accepting possible capability interruption and the administrative cost of justified exceptions.
+
+          **Warrant and qualifier:** this preserves accountable choice while making inaction terminate discretionary authority; it remains conditional on enforceable financial controls and rq-0-63 validating—or explicitly prompting revision of—the sunset date. It **enables** bounded preservation and demand-driven re-entry, and **constrains** automatic extensions, schedule-driven clock resets, gate waivers and unapproved long-term procurement.
+        wordCount: 2130
+        generatedAt: '2026-10-17T22:22:19.337Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: information
+            reasoning: 'Complete chain: a null option, must and want criteria set before options, six alternatives including hybrids, and weighted totals that check arithmetically. It separates sensitivity points from trade-off points, has falsifiable assumptions, and uses ACH to shape the re-entry criteria. The weakest input is the 24-month slip allowance and the restart cost. Both are explicitly flagged as very-low or low certainty and tied to rq-0-63 and SP2, so the gap is unlikely to change the decision.'
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: information
+            reasoning: The response provides a highly structured and complete decision chain. The weakest link is information, as the restart cost remains unestimated, but this is acknowledged and handled via sensitivity analysis.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: commitment
+            reasoning: 'The default-expiry approach is well developed, but re-entry requirements conflict: the recommendation requires full KDP-0B compliance, while SUN-7 permits merely scheduling the relevant-environment test. The unsupported 24-month buffer also materially narrows the planning envelope.'
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: 'Certainty is uncalibrated: it claims >90% likelihood with high confidence from loose Apollo and ISS analogues. The frame contradicts itself, calling the fallback a highly irreversible one-way door and then choosing to make it automatic, which conflicts with D-02 reversibility logic. It confuses capping 0A spend with 0B spend. It considers only three options with no hybrid, and its matrix is qualitative with no weighted aggregation.'
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: alternatives
+            reasoning: The response follows the structure well but presents a somewhat binary choice between Option 1 and Option 2 without exploring hybrid solutions that might better balance the trade-offs. The null option is also dismissed without full matrix evaluation.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: The decisive claim that 180 months provides sufficient margin is assigned greater than 90% likelihood without relevant supporting evidence. It also conflates fallback with an irreversible fifteen-year procurement commitment, and its M150 cutoff cannot accommodate a 36-month scout wave before M180.
+        rawScore: 1
+        weightedScore: 0.5
+        approveCount: 0
+        rejectCount: 2
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: reasoning
+            reasoning: 'Sound chain. It separates the planning, authority and supply-commitment functions, includes a null option, sets mandatory constraints before options, has calibrated evidence with unquantified likelihoods acknowledged, and gives falsifiers plus a weight-sensitivity test. One arithmetic slip: Option B should total 72.5, not 70. This does not change the ranking. Allowing replacement authority before expiry is slightly looser than an outright ban on in-place extension, but it is bounded and explicit.'
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: values
+            reasoning: A rigorous and well-reasoned response that clearly separates authority expiry from supply commitment. The weakest link is values, as the swing weights are explicitly proposed owner values rather than empirically derived, but this is properly caveated.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: information
+            reasoning: Clearly separates planning, spending authority and procurement commitments; evaluates alternatives against explicit criteria; and specifies an executable default with bounded replacement authority. Schedule feasibility and preservation economics remain uncertain, but are explicitly identified with falsifiers and review conditions rather than assumed.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+    winnerId: gpt-6-1-sol
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: 'A and C converge on the substantive answer. M180 should be an automatic expiry that executes the fallback by default, grants no spend authority and does not create a long-term Earth-supply commitment. Continuation should require a new explicit, bounded owner decision that cannot waive KDP-0B. The remaining differences can be recorded as owner trade-off items rather than resolved by further rounds: the 24-month planning buffer, the spend cap, and post-expiry re-entry versus pre-expiry replacement authority.'
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: The discussion has produced multiple high-quality, actionable rulings (Responses A and C) that resolve the core dispute effectively. Further rounds are unlikely to yield significant new insights.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: 'Response C provides a satisfactory resolution: existing authority expires automatically, fallback becomes the planning baseline, and any continuation requires explicit bounded authority without waiving KDP-0B.'
+    shouldTerminate: true
+    completedAt: '2026-10-17T22:22:54.936Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 0
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 1
+  totalVotes: 9
+  approvalRate: 55.55555555555556
+  averageResponseWords: 2137
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T22:22:55.045Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    Claude Opus 5.5 and GPT-6.1 Sol converged on a central distinction: **M180 should end existing 0B spending authority by default, not merely prompt a review, and should not itself authorise long-term Earth-supply procurement.** Gemini 3.1 Pro also favoured an automatic fallback, although its rationale treated that fallback as an irreversible supply commitment—a framing Claude and GPT challenged. All three rejected leaving the original split unresolved.
+
+    The panel did **not** converge on the continuation mechanism. Claude would prohibit in-place extension and require re-entry through a new decision; GPT would allow explicitly bounded replacement authority, including preservation or corrective work before full KDP-0B approval; Gemini favoured a hard automatic fallback with an extraordinary owner-level exception for catastrophic external shocks. Claude’s own re-entry wording remained inconsistent: GPT noted that it alternately required full KDP-0B compliance and allowed a funded plan for a future relevant-environment test.
+
+    Claude and GPT both treated the integrated schedule, preservation economics and enforceability of exceptions as material unresolved inputs. Neither established that M180 is a validated critical-path deadline. Claude’s proposed 24-month planning buffer was explicitly provisional; Gemini’s claim that fifteen years provides sufficient margin was rejected by Claude and GPT as unsupported.
+
+    ## Decision record
+
+    **The shared direction is automatic expiry/default fallback, but the exception and re-entry rules remain unresolved. The following records preserve the distinct positions rather than imply a final agreement.**
+
+    ### Claude Opus 5.5 — default-executing ceiling with re-entry
+
+    > In the context of D-01’s gated 0B option and D-02’s reversibility principle, facing potentially cumulative deferrals and slips, **Claude chose** an M180 ceiling that authorises no spending, executes “0A only, Earth supply” by default, and permits subsequent 0B re-entry only through a new owner decision, to achieve bounded delay and expenditure, accepting that a nearly ready programme may stop and incur restart costs.
+
+    - **Warrant — Claude:** Continuation should carry the burden of proof; a review without an expiry default does not adequately contain drift.
+    - **Qualifier — Claude:** Medium confidence, dependent particularly on rq-0-63 and unestimated restart costs.
+    - **Accepted downside — Claude:** Capability interruption and restart costs; its proposed 24-month buffer would narrow the planned KDP-0B window.
+    - **Unresolved qualification — GPT:** Claude’s re-entry requirements conflict over whether full KDP-0B compliance is required immediately or a future test may merely be scheduled.
+
+    ### GPT-6.1 Sol — authority expiry with bounded replacement authority
+
+    > In the context of D-01’s demand-sized option and D-02’s non-waivable readiness gate, facing an unresolved sunset, **GPT chose** automatic expiry of existing 0B development authority at M180, preceded by a disposition review and permitting explicit bounded replacement authority, to achieve spending control without silently creating a long-term supply commitment, accepting possible capability interruption and the administrative cost of justified exceptions.
+
+    - **Warrant — GPT:** A real option requires control over both its exercise and the cost of waiting; inaction must not extend discretionary authority.
+    - **Qualifier — GPT:** The mechanism depends on enforceable financial controls and rq-0-63 validating—or prompting explicit revision of—the date.
+    - **Accepted downside — GPT:** Interrupted capability, potentially uneconomic preservation and review overhead.
+    - **Boundary — GPT:** Replacement authority is not KDP-0B approval and cannot waive its requirements.
+
+    ### Gemini 3.1 Pro — hard automatic fallback with extraordinary shock exception
+
+    > In the context of the Phase 0 re-baseline, facing a choice between automatic fallback and a planning boundary, **Gemini chose** automatic fallback at M180, to achieve a definitive limit on programme drift, accepting that a viable programme delayed by external events could be stopped.
+
+    - **Warrant — Gemini:** Long-running programmes resist cancellation, making a pre-committed stop necessary.
+    - **Qualifier — Gemini:** A catastrophic external shock could justify an extraordinary owner-level decision to pause the clock.
+    - **Accepted downside — Gemini:** Loss of a viable but delayed development path.
+    - **Challenge — Claude and GPT:** Gemini’s asserted schedule sufficiency and irreversible-procurement framing were not adequately supported.
+
+    ## Decision-quality audit
+
+    ### Round 1 — Claude Opus 5.5 response
+
+    - **Weakest links named in votes:** Claude and Gemini named **information**; GPT named **commitment**.
+    - **Composite Scaffold assessment:** Claude and Gemini credited the response with explicit criteria, alternatives, a null option, sensitivity analysis and falsifiable assumptions. They identified the unestimated restart cost as its principal information gap.
+    - **Unsupported or inconsistent elements:** GPT challenged the unsupported 24-month buffer and the conflicting re-entry requirements. Claude itself rated the buffer’s evidence very low and restart-cost evidence low.
+    - **Trade-off rather than factual dispute:** Claude identified drift containment versus owner discretion, the size of the slip allowance and the option-keeping cap as owner value judgments. GPT’s objection to mandatory stop-and-re-entry also leaves a choice between stronger pre-commitment and continuity under bounded authority.
+
+    ### Round 1 — Gemini 3.1 Pro response
+
+    - **Weakest links named in votes:** Claude and GPT named **information**; Gemini named **alternatives**.
+    - **Composite Scaffold assessment:** Gemini acknowledged that its options were too binary and did not fully evaluate the null option. Claude also criticised the absence of hybrid alternatives and weighted aggregation.
+    - **Unsupported or inconsistent elements:** Claude and GPT rejected Gemini’s greater-than-90% schedule-sufficiency claim as unsupported by the Apollo/ISS analogies. Both challenged its treatment of fallback as an irreversible fifteen-year supply commitment. Claude identified confusion between limiting 0A and 0B expenditure.
+    - **Schedule inconsistency:** GPT noted that Gemini’s M150 milestone cutoff cannot accommodate a 36-month scout wave before M180.
+    - **Trade-off rather than factual dispute:** Gemini explicitly prioritised sunk-cost prevention over resilience to external delays. The other models challenged its factual justification, not merely that preference.
+
+    ### Round 1 — GPT-6.1 Sol response
+
+    - **Weakest links named in votes:** Claude named **reasoning**, Gemini named **values**, and GPT named **information**.
+    - **Composite Scaffold assessment:** All three approved the response. Claude credited its separation of planning, spending authority and procurement, together with alternatives, falsifiers and calibrated uncertainty. Gemini noted that the weights were proposed owner values, appropriately caveated.
+    - **Unsupported or uncertain elements:** GPT identified schedule feasibility and preservation economics as unresolved. Claude noted that replacement authority before expiry is less restrictive than its own prohibition on in-place extension.
+    - **Arithmetic correction:** Claude reported that GPT’s Option B total should be **72.5**, not **70**, without changing the ranking.
+    - **Trade-off rather than factual dispute:** GPT explicitly treated fiscal commitment versus capability preservation, future-owner discretion versus anti-drift discipline, and interruption versus funded continuity as values questions.
+
+    ## Key Points
+
+    - **Default on inaction:** Claude, Gemini and GPT all supported an automatic stopping consequence at M180 rather than an unresolved or review-only boundary.
+    - **Authority versus procurement:** Claude and GPT agreed that the sunset should remove authority, not grant fifteen years of funding or automatically purchase long-term Earth supply.
+    - **Gate integrity:** Claude and GPT explicitly preserved D-02’s non-waivable TRL 6 relevant-environment requirement for project-ending technologies at KDP-0B.
+    - **Schedule authority:** Claude and GPT said rq-0-63 should inform the date and transition arrangements; neither allowed schedule re-baselining alone to create continued spending authority.
+    - **Scope of the stop:** Claude and GPT retained authorised 0A activity and necessary closure or disposition work. Claude rejected Gemini’s characterisation of the sunset as a general cap on 0A expenditure.
+    - **Option keeping:** Claude and GPT supported separately bounded preservation rather than an indefinite allowance, but differed over when and how new authority could be granted.
+
+    ## Unresolved Questions
+
+    1. **Continuation mechanism:** Claude requires stop-and-re-entry; GPT permits bounded replacement authority; Gemini permits an extraordinary clock pause for catastrophic external shocks.
+    2. **Meaning of re-entry:** GPT identified an unresolved inconsistency in Claude’s proposal between full KDP-0B approval and authorisation to complete a future test.
+    3. **Sunset date and epoch:** Claude proposed the 0A funding start; GPT called for the epoch to be recorded in the controlled baseline. Both required rq-0-63 input.
+    4. **Planning buffer:** Claude proposed 24 months before M180; GPT disputed imposing that buffer without schedule evidence. Gemini proposed a cutoff that GPT found arithmetically incompatible with the scout-wave allowance.
+    5. **Preservation scope and cap:** Claude suggested specific staffing and spending limits; GPT required independently justified scope, costs, expiry and deliverables. No common numerical cap emerged.
+    6. **Fallback reversibility:** Claude and GPT questioned whether actual Earth-supply contracts might introduce irreversible commitments requiring separate treatment.
+    7. **Exception enforceability:** Claude and GPT both identified repeated or weakly controlled exceptions as evidence that could favour a harder rule.
+
+    ## Recommended Actions
+
+    The following actions consolidate proposals made by the models; they do not resolve the remaining owner choices.
+
+    1. **Record the shared core separately from disputed exceptions.** Following Claude and GPT, draft automatic expiry of existing 0B authority and default Earth-supply planning, explicitly excluding automatic long-term procurement authority.
+    2. **Obtain an owner ruling on continuation.** Present Claude’s stop-and-re-entry rule, GPT’s bounded replacement-authority rule and Gemini’s extraordinary-shock exception as distinct choices.
+    3. **Resolve the gate-versus-corrective-work distinction.** Following GPT’s critique, state separately what authorises preservation or further testing and what constitutes KDP-0B approval.
+    4. **Commission the rq-0-63 inputs requested by Claude and GPT.** Establish the epoch, critical path, gate-review duration, contractual notice periods and safe-transition requirements before fixing a planning buffer.
+    5. **Cost preservation and restart.** Following Claude and GPT, obtain a scoped estimate before setting option-keeping limits or deciding whether interruption is justified.
+    6. **Review fallback contracts for irreversibility.** Following Claude and GPT, distinguish an Earth-supply baseline from binding procurement commitments.
+    7. **Specify executable stop controls.** Following Claude and GPT, identify permitted residual obligations, excluded development activities, cumulative spending disclosure and the authority required for any exception.
+
+    ```yaml
+    questionId: "rq-0-69"
+    topics:
+      - id: sunset-default
+        topic: Automatic consequence at M180
+        positions:
+          - statement: M180 should automatically expire existing 0B authority and make fallback the default, rather than merely prompt a review.
+            models: ["Claude Opus 5.5", "GPT-6.1 Sol"]
+            evidence: Both argued that a review without an expiry default leaves continuation through inaction unresolved.
+          - statement: M180 should automatically execute the fallback.
+            models: ["Gemini 3.1 Pro"]
+            evidence: Gemini prioritised pre-committed termination against sunk-cost drift.
+        resolution_status: partially-resolved
+        priority: critical
+      - id: continuation-authority
+        topic: Exceptions and post-sunset continuation
+        positions:
+          - statement: Prohibit in-place extension and require a new owner decision for re-entry.
+            models: ["Claude Opus 5.5"]
+            evidence: Claude argued that continuation should be priced and approved as a new commitment; GPT identified inconsistent re-entry criteria in the proposed text.
+          - statement: Allow explicit bounded replacement authority for preservation or corrective work without treating it as KDP-0B approval.
+            models: ["GPT-6.1 Sol"]
+            evidence: GPT proposed scope, funding cap, expiry, deliverables, stop conditions and cumulative expenditure controls.
+          - statement: Permit an extraordinary owner-level clock pause for catastrophic external shocks.
+            models: ["Gemini 3.1 Pro"]
+            evidence: Gemini qualified its hard sunset with an exception for events such as a global launch stand-down.
+        resolution_status: open
+        priority: critical
+      - id: schedule-and-buffer
+        topic: Validation of M180 and the planning allowance
+        positions:
+          - statement: Plan KDP-0B at least 24 months before M180, subject to rq-0-63 evidence.
+            models: ["Claude Opus 5.5"]
+            evidence: Claude proposed a slip allowance but rated its evidential basis very low.
+          - statement: Keep M180 provisional and derive transition and review timing from rq-0-63 without imposing an unsupported 24-month buffer.
+            models: ["GPT-6.1 Sol"]
+            evidence: GPT said the supplied gate windows do not validate critical-path feasibility and challenged Claude's buffer.
+          - statement: Treat fifteen years as sufficient margin and schedule backwards from a hard deadline.
+            models: ["Gemini 3.1 Pro"]
+            evidence: Gemini cited Apollo and ISS analogies; Claude and GPT rejected the resulting confidence claim as unsupported.
+        resolution_status: open
+        priority: high
+      - id: fallback-and-procurement
+        topic: Whether fallback creates a binding supply commitment
+        positions:
+          - statement: Default Earth-supply planning does not itself authorise long-term Earth-supply procurement.
+            models: ["Claude Opus 5.5", "GPT-6.1 Sol"]
+            evidence: Both separated removal of 0B authority from supply contracting and called for attention to contractual irreversibility.
+          - statement: Automatic fallback is a highly irreversible commitment to a fifteen-year Earth-supply paradigm.
+            models: ["Gemini 3.1 Pro"]
+            evidence: Gemini used this framing in its decision assessment; Claude and GPT challenged it.
+        resolution_status: open
+        priority: high
+      - id: option-preservation
+        topic: Scope and cost of keeping the option alive
+        positions:
+          - statement: Use a capped preservation allowance before sunset and stop discretionary 0B spending at sunset, with narrowly defined residual activities.
+            models: ["Claude Opus 5.5"]
+            evidence: Claude proposed permitted and excluded activities plus owner-set caps, while acknowledging unestimated restart costs.
+          - statement: Require separately justified, time-limited preservation authority with no evergreen allowance.
+            models: ["GPT-6.1 Sol"]
+            evidence: GPT identified preservation economics as uncertain and required explicit scope, costs, expiry and stop conditions.
+        resolution_status: partially-resolved
+        priority: high
+    ```
+  keyPoints:
+    - Default on inaction:** Claude, Gemini and GPT all supported an automatic stopping consequence at M180 rather than an unresolved or review-only boundary.
+    - Authority versus procurement:** Claude and GPT agreed that the sunset should remove authority, not grant fifteen years of funding or automatically purchase long-term Earth supply.
+    - Gate integrity:** Claude and GPT explicitly preserved D-02’s non-waivable TRL 6 relevant-environment requirement for project-ending technologies at KDP-0B.
+    - Schedule authority:** Claude and GPT said rq-0-63 should inform the date and transition arrangements; neither allowed schedule re-baselining alone to create continued spending authority.
+    - Scope of the stop:** Claude and GPT retained authorised 0A activity and necessary closure or disposition work. Claude rejected Gemini’s characterisation of the sunset as a general cap on 0A expenditure.
+    - Option keeping:** Claude and GPT supported separately bounded preservation rather than an indefinite allowance, but differed over when and how new authority could be granted.
+  unresolvedQuestions:
+    - Continuation mechanism:** Claude requires stop-and-re-entry; GPT permits bounded replacement authority; Gemini permits an extraordinary clock pause for catastrophic external shocks.
+    - Meaning of re-entry:** GPT identified an unresolved inconsistency in Claude’s proposal between full KDP-0B approval and authorisation to complete a future test.
+    - Sunset date and epoch:** Claude proposed the 0A funding start; GPT called for the epoch to be recorded in the controlled baseline. Both required rq-0-63 input.
+    - Planning buffer:** Claude proposed 24 months before M180; GPT disputed imposing that buffer without schedule evidence. Gemini proposed a cutoff that GPT found arithmetically incompatible with the scout-wave allowance.
+    - Preservation scope and cap:** Claude suggested specific staffing and spending limits; GPT required independently justified scope, costs, expiry and deliverables. No common numerical cap emerged.
+    - Fallback reversibility:** Claude and GPT questioned whether actual Earth-supply contracts might introduce irreversible commitments requiring separate treatment.
+    - Exception enforceability:** Claude and GPT both identified repeated or weakly controlled exceptions as evidence that could favour a harder rule.
+  recommendedActions:
+    - Record the shared core separately from disputed exceptions.** Following Claude and GPT, draft automatic expiry of existing 0B authority and default Earth-supply planning, explicitly excluding automatic long-term procurement authority.
+    - Obtain an owner ruling on continuation.** Present Claude’s stop-and-re-entry rule, GPT’s bounded replacement-authority rule and Gemini’s extraordinary-shock exception as distinct choices.
+    - Resolve the gate-versus-corrective-work distinction.** Following GPT’s critique, state separately what authorises preservation or further testing and what constitutes KDP-0B approval.
+    - Commission the rq-0-63 inputs requested by Claude and GPT.** Establish the epoch, critical path, gate-review duration, contractual notice periods and safe-transition requirements before fixing a planning buffer.
+    - Cost preservation and restart.** Following Claude and GPT, obtain a scoped estimate before setting option-keeping limits or deciding whether interruption is justified.
+    - Review fallback contracts for irreversibility.** Following Claude and GPT, distinguish an Earth-supply baseline from binding procurement commitments.
+    - Specify executable stop controls.** Following Claude and GPT, identify permitted residual obligations, excluded development activities, cumulative spending disclosure and the authority required for any exception.
+    - 'id: sunset-default'
+    - 'statement: M180 should automatically expire existing 0B authority and make fallback the default, rather than merely prompt a review.'
+    - 'statement: M180 should automatically execute the fallback.'
+    - 'id: continuation-authority'
+    - 'statement: Prohibit in-place extension and require a new owner decision for re-entry.'
+    - 'statement: Allow explicit bounded replacement authority for preservation or corrective work without treating it as KDP-0B approval.'
+    - 'statement: Permit an extraordinary owner-level clock pause for catastrophic external shocks.'
+    - 'id: schedule-and-buffer'
+    - 'statement: Plan KDP-0B at least 24 months before M180, subject to rq-0-63 evidence.'
+    - 'statement: Keep M180 provisional and derive transition and review timing from rq-0-63 without imposing an unsupported 24-month buffer.'
+    - 'statement: Treat fifteen years as sufficient margin and schedule backwards from a hard deadline.'
+    - 'id: fallback-and-procurement'
+    - 'statement: Default Earth-supply planning does not itself authorise long-term Earth-supply procurement.'
+    - 'statement: Automatic fallback is a highly irreversible commitment to a fifteen-year Earth-supply paradigm.'
+    - 'id: option-preservation'
+    - 'statement: Use a capped preservation allowance before sunset and stop discretionary 0B spending at sunset, with narrowly defined residual activities.'
+    - 'statement: Require separately justified, time-limited preservation authority with no evergreen allowance.'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T22:24:09.897Z'
+alternateSyntheses:
+  - synthesizer: claude-opus-5-5
+    generatedAt: '2026-10-17T22:40:42.238Z'
+    file: conclusion.claude-opus-5-5.md

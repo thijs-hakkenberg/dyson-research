@@ -1,0 +1,75 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-64
+topics:
+  - id: assessment-object
+    topic: Integrated service versus component heritage
+    positions:
+      - statement: Rate the required integrated service and publish non-averaged component sub-ratings.
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          Component demonstrations do not establish the required fleet-scale authenticated service; heritage remains
+          valuable supporting evidence.
+    resolution_status: resolved
+    priority: critical
+  - id: current-headline-rating
+    topic: Evidential status of TRL 3
+    positions:
+      - statement: Carry TRL 3, with TRL 4 conditional on integrated breadboard evidence.
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+        evidence: No qualifying integrated article or sufficient authentication-lifecycle evidence was supplied.
+      - statement: Treat TRL 3 as provisional and verify its own exit criteria.
+        models:
+          - GPT-6.1 Sol
+        evidence: Missing higher-level evidence does not itself establish a lower TRL.
+    resolution_status: partially-resolved
+    priority: high
+  - id: composite-rating-rule
+    topic: Mechanical caps versus integration-specific assessment
+    positions:
+      - statement: >-
+          Cap the headline by the lowest critical sub-rating and integration maturity; apply a TRL 4 ceiling without an
+          integrated article.
+        models:
+          - Claude Opus 5.5
+        evidence: A critical immature function can constrain service capability.
+      - statement: Do not mechanically take the minimum; assess demonstrated integration in the stated configuration.
+        models:
+          - GPT-6.1 Sol
+        evidence: The proposed minimum cap and blanket ceiling were not sufficiently justified.
+    resolution_status: open
+    priority: high
+  - id: gate-obligation
+    topic: When TRL 6 becomes mandatory
+    positions:
+      - statement: Apply the TRL 6 KDP-0B requirement now because command failure may become project-ending.
+        models:
+          - Claude Opus 5.5
+        evidence: Waiting for D-03 resolution could leave insufficient Phase 0A maturation time.
+      - statement: Establish a funded path to integrated TRL 6 before KDP-0B.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Integration and security risks require early retirement.
+      - statement: Require TRL 6 under D-02 for capabilities whose absence is project-ending.
+        models:
+          - GPT-6.1 Sol
+        evidence: Gate obligations depend on the approved configuration and consequence classification.
+    resolution_status: partially-resolved
+    priority: critical
+  - id: demonstration-environment
+    topic: Required form of the TRL 6 demonstration
+    positions:
+      - statement: Include real DSN passes and at least one deep-space-distance link.
+        models:
+          - Claude Opus 5.5
+        evidence: The proposed test package combines representative hardware, fleet emulation, outages and security exercises.
+      - statement: Justify the relevant environment function by function rather than impose a universal flight prerequisite.
+        models:
+          - GPT-6.1 Sol
+        evidence: Representative hardware, emulation, heritage and operational exercises may support the required demonstration.
+    resolution_status: open
+    priority: high

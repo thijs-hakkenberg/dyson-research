@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: values
+    reasoning: Criteria and weights come before options, and it includes null, re-scope and facility options. The facility arithmetic checks out (~2 g/s Xe, ~2.5e7 L/s needed vs ~1e6 available). Assumptions are falsifiable, likelihood is kept separate from confidence, the qualifier is calibrated, and the escalation triggers and gate text are concrete. The O3-vs-O1 margin is narrow and rests on judgment scores, but A says so openly and routes it through sensitivity points S1–S4 and an owner-set extrapolation ratio.
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: Its own ACH says 'models cannot capture cluster cross-talk' is the less disconfirmed hypothesis, yet it chooses ground plus model without any anchor. The proposed rule text requires only a single module at 5e-5 Torr, above pressure-sensitive levels, which does not close cluster-level TRL 6. It claims argon would not change the pumping constraint, which is wrong. Weights are not numeric, and it calls the decision one-way even though the path is redirectable during 0A.
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: NEUTRAL
+    weakestLink: information
+    reasoning: 'The structure is sound: non-compensable musts, null and escalation options, ACH and falsifiers. However, it rates the facility gap as very-low-certainty when straightforward mass-flow and pumping arithmetic establishes it, and it never quantifies the cost of a flight subset. The scores are close (3.40 vs 3.20 vs 3.05), so better information on cost and facility limits could flip the ranking or point toward a smaller anchor.'
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: none
+    reasoning: Excellent decision chain with strong physical grounding, clear alternatives including a staged hybrid, and robust falsifiable assumptions.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: Identifies the facility pumping limit but chooses the ground-only option anyway, accepting the verification risk without a clear mitigation or anchor, which weakens the claim that it meets the strict no-waiver TRL 6 requirement.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: none
+    reasoning: Solid decision chain that correctly identifies that flight subset must be combined with ground endurance testing, and provides a clear, conditional commitment.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: The staged strategy is strong, but a small flight anchor does not itself bound full-cluster interactions. The proposed 5× extrapolation limit and numerical acceptance thresholds lack a requirements-based justification; validating those assumptions could change the required demonstration scale.
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: The claim that flight almost certainly exceeds programme constraints lacks a supplied budget or schedule baseline. More importantly, single-module testing plus peer-reviewed modelling is declared sufficient without independent cluster-level validation, effectively redefining the gate rather than demonstrating compliance.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: Provides a coherent provisional baseline, non-compensable acceptance criteria, calibrated uncertainty, falsifiable scaling assumptions, and explicit substitution, escalation and stop conditions. Detailed acceptance limits remain to be controlled, but the decision does not presume either flight or modelling automatically establishes TRL 6.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: 'A gives a well-quantified, falsifiable and staged resolution with gate rule text. C converges on the same core point: ground evidence plus a flight element, with triggers for substitution or escalation. Remaining differences are about sizing that the proposed mid-term review is designed to settle.'
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: Responses A and C provide highly rigorous, actionable, and well-reasoned paths forward that resolve the core tension. Further discussion is unlikely to yield better baseline strategies.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'C supplies a satisfactory conditional resolution: plan ground qualification plus a representative flight subset, permit independently demonstrated ground equivalence, and block the gate if cluster scaling remains unbounded.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: values
+        reasoning: Criteria and weights come before options, and it includes null, re-scope and facility options. The facility arithmetic checks out (~2 g/s Xe, ~2.5e7 L/s needed vs ~1e6 available). Assumptions are falsifiable, likelihood is kept separate from confidence, the qualifier is calibrated, and the escalation triggers and gate text are concrete. The O3-vs-O1 margin is narrow and rests on judgment scores, but A says so openly and routes it through sensitivity points S1–S4 and an owner-set extrapolation ratio.
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: none
+        reasoning: Excellent decision chain with strong physical grounding, clear alternatives including a staged hybrid, and robust falsifiable assumptions.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: The staged strategy is strong, but a small flight anchor does not itself bound full-cluster interactions. The proposed 5× extrapolation limit and numerical acceptance thresholds lack a requirements-based justification; validating those assumptions could change the required demonstration scale.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: Its own ACH says 'models cannot capture cluster cross-talk' is the less disconfirmed hypothesis, yet it chooses ground plus model without any anchor. The proposed rule text requires only a single module at 5e-5 Torr, above pressure-sensitive levels, which does not close cluster-level TRL 6. It claims argon would not change the pumping constraint, which is wrong. Weights are not numeric, and it calls the decision one-way even though the path is redirectable during 0A.
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: Identifies the facility pumping limit but chooses the ground-only option anyway, accepting the verification risk without a clear mitigation or anchor, which weakens the claim that it meets the strict no-waiver TRL 6 requirement.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: The claim that flight almost certainly exceeds programme constraints lacks a supplied budget or schedule baseline. More importantly, single-module testing plus peer-reviewed modelling is declared sufficient without independent cluster-level validation, effectively redefining the gate rather than demonstrating compliance.
+    rawScore: 2
+    weightedScore: 1.5
+    approveCount: 0
+    rejectCount: 1
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: NEUTRAL
+        weakestLink: information
+        reasoning: 'The structure is sound: non-compensable musts, null and escalation options, ACH and falsifiers. However, it rates the facility gap as very-low-certainty when straightforward mass-flow and pumping arithmetic establishes it, and it never quantifies the cost of a flight subset. The scores are close (3.40 vs 3.20 vs 3.05), so better information on cost and facility limits could flip the ranking or point toward a smaller anchor.'
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: none
+        reasoning: Solid decision chain that correctly identifies that flight subset must be combined with ground endurance testing, and provides a clear, conditional commitment.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: Provides a coherent provisional baseline, non-compensable acceptance criteria, calibrated uncertainty, falsifiable scaling assumptions, and explicit substitution, escalation and stop conditions. Detailed acceptance limits remain to be controlled, but the decision does not presume either flight or modelling automatically establishes TRL 6.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+winnerId: claude-opus-5-5
+winnerScore: 4

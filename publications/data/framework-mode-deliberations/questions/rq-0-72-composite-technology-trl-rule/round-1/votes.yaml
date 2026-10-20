@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: information
+    reasoning: The chain is complete. Musts are screened before scoring, swing weights are tied to each criterion's range, a null option is included, and likelihood is kept separate from confidence. Assumptions have falsifiers, and R4 answers the attribution objection. The remaining weak points are unverified T26 sub-ratings and low confidence that assessors will reproduce each other's ratings. Both are flagged, with a calibration step and a fallback to O5, so neither should flip the decision.
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: alternatives
+    reasoning: The chosen hybrid rule, min(integration, weakest critical), never appears among the evaluated options or in the matrix. The decision therefore isn't supported by the analysis. The matrix is qualitative with no aggregation. The weights reflect importance rather than swing range. The certainty labels don't separate likelihood from confidence. The claim that T26 is retroactively justified is asserted without checking the record.
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: 'This is well structured: non-compensable musts, weight sensitivity analysis, a null option, and falsifiable assumptions. However, the rule lets a lower critical rating be reconciled by a ''justified scope distinction'' rather than mechanically capping the headline. That is an escape hatch at a one-way, no-waiver gate, yet B still scores 5 on false-claim prevention. Listing ''preserve T26'' as a must also mixes continuity with a technical requirement.'
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: none
+    reasoning: The response provides a comprehensive and robust decision chain, with clearly defined alternatives, well-calibrated evidence, and a strong commitment to a detailed rule.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: The chosen 'Hybrid Rule' in the commitment section was not explicitly defined and scored as a distinct option in the alternatives and assessment matrix, creating a gap between the analysis and the final decision.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: none
+    reasoning: The response follows the decision framework rigorously, presenting clear alternatives, transparent value trade-offs, and a well-reasoned commitment that directly follows from the analysis.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: information
+    reasoning: The bounded integration rule addresses both immature critical functions and integration failures. Evidence attribution prevents stale component ratings from imposing artificial limits. Assessor reproducibility remains unproven, but the proposed calibration and explicit findings make that uncertainty manageable.
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: The hybrid recommendation is plausible but is not assessed as an option in the matrix. Claims of absolute gate integrity contradict the acknowledged limitations of mechanical caps, and T26 is retroactively justified despite its underlying rationale remaining an unverified assumption.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: information
+    reasoning: The recommendation ties maturity to configuration-specific evidence while making unresolved critical deficiencies binding blockers. It compares alternatives, preserves existing rulings, identifies falsifiable assumptions, and commits to auditable reporting. Its expected consistency remains uncertain, but a pilot explicitly tests that uncertainty.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: 'A and C largely converge: integration assessment, critical-function blocking, no arithmetic, and configuration-tied evidence. A''s R4 attribution rule reconciles the remaining cap-versus-scope difference. The open items are owner calibration and definition tasks, not points needing further debate.'
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: The discussion has produced multiple high-quality, actionable frameworks that converge on a bounded integration assessment, providing a solid basis for a final decision.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'A and C converge operationally: assess integration directly, block unsupported critical functions, and reconcile constituent ratings using applicable evidence. Their remaining difference largely concerns whether the resulting constraint is expressed as a formal cap or an evidence requirement.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: information
+        reasoning: The chain is complete. Musts are screened before scoring, swing weights are tied to each criterion's range, a null option is included, and likelihood is kept separate from confidence. Assumptions have falsifiers, and R4 answers the attribution objection. The remaining weak points are unverified T26 sub-ratings and low confidence that assessors will reproduce each other's ratings. Both are flagged, with a calibration step and a fallback to O5, so neither should flip the decision.
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: none
+        reasoning: The response provides a comprehensive and robust decision chain, with clearly defined alternatives, well-calibrated evidence, and a strong commitment to a detailed rule.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: information
+        reasoning: The bounded integration rule addresses both immature critical functions and integration failures. Evidence attribution prevents stale component ratings from imposing artificial limits. Assessor reproducibility remains unproven, but the proposed calibration and explicit findings make that uncertainty manageable.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: alternatives
+        reasoning: The chosen hybrid rule, min(integration, weakest critical), never appears among the evaluated options or in the matrix. The decision therefore isn't supported by the analysis. The matrix is qualitative with no aggregation. The weights reflect importance rather than swing range. The certainty labels don't separate likelihood from confidence. The claim that T26 is retroactively justified is asserted without checking the record.
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: The chosen 'Hybrid Rule' in the commitment section was not explicitly defined and scored as a distinct option in the alternatives and assessment matrix, creating a gap between the analysis and the final decision.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: The hybrid recommendation is plausible but is not assessed as an option in the matrix. Claims of absolute gate integrity contradict the acknowledged limitations of mechanical caps, and T26 is retroactively justified despite its underlying rationale remaining an unverified assumption.
+    rawScore: 2
+    weightedScore: 1.5
+    approveCount: 0
+    rejectCount: 1
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: 'This is well structured: non-compensable musts, weight sensitivity analysis, a null option, and falsifiable assumptions. However, the rule lets a lower critical rating be reconciled by a ''justified scope distinction'' rather than mechanically capping the headline. That is an escape hatch at a one-way, no-waiver gate, yet B still scores 5 on false-claim prevention. Listing ''preserve T26'' as a must also mixes continuity with a technical requirement.'
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: none
+        reasoning: The response follows the decision framework rigorously, presenting clear alternatives, transparent value trade-offs, and a well-reasoned commitment that directly follows from the analysis.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: information
+        reasoning: The recommendation ties maturity to configuration-specific evidence while making unresolved critical deficiencies binding blockers. It compares alternatives, preserves existing rulings, identifies falsifiable assumptions, and commits to auditable reporting. Its expected consistency remains uncertain, but a pilot explicitly tests that uncertainty.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+winnerId: claude-opus-5-5
+winnerScore: 5

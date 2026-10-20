@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: reasoning
+    reasoning: A complete chain. The frame and criteria come before the options, which include a null option and a strong split rival (O5), and the robustness check addresses that rival. Evidence is calibrated, falsifiers are explicit and the commitment is concrete. A few weighted totals are slightly off (O1 should be 2.05, O3 3.65), but none of the errors changes the ranking or the decision.
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: values
+    reasoning: The conclusion is right, but the criteria omit diagnostic or investment value, which is the only feature separating Option 3 from Option 2. Both options score 'High' on every stated criterion, yet receive 0.85 and 0.95 with no derivation. Evidence and assumptions are thin, and no concrete KDP-0B test is specified, so the chosen option is not justified by its own matrix.
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: 'A well-framed, cited and calibrated response. It covers null, headline-only and sub-ratings-only alternatives, makes the useful TRL 4/5/6 correction and sets a detailed KDP-0B evidence package. The commitment is slightly hedged: it gives a provisional TRL 3 with a conditional risk branch, and it rejects the minimum-cap rule without specifying a replacement aggregation. None of this would change the decision.'
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: The response is comprehensive, strictly follows the requested decision chain, and provides a highly detailed and logically sound evaluation of the TRL rating object.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: The response follows the structure well and includes all required elements, but the assessment matrix and reasoning are somewhat brief compared to the depth required for a fully robust decision.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: values
+    reasoning: The response provides a very strong, well-reasoned decision chain with excellent use of swing weights, clearly defined options including a null, and well-calibrated evidence certainty.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: The integrated-service object and component reporting are well justified, but absent flight precedent does not establish TRL 3. The mechanical weakest-component cap and blanket TRL 4 ceiling also need justification; they could change the baseline and demonstration obligations.
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: The reporting recommendation is sound, but identical qualitative matrix scores produce different totals without explanation. Accepting unauthenticated commands would not resolve fleet-scale integration gaps, so the stated sensitivity could incorrectly make the heritage-only option viable.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: information
+    reasoning: The remaining evidence gaps are explicitly bounded rather than converted into definitive maturity claims. The response distinguishes service integration, component heritage, security assurance, and licensing, with falsifiable assumptions and configuration-specific gate criteria.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: 'All three responses converge on the same rating object: an integrated-service headline (TRL 3, 4 conditional) with non-averaged sub-ratings. A and C give rigorous, gate-ready justification and differ only in presentation details, such as the cap rule versus integration-based judgment. Further rounds are unlikely to change the decision.'
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: The responses have converged on a highly detailed and logically sound consensus (Option E/4/3) regarding the rating object and sub-ratings, making further rounds unnecessary.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'Response C provides a satisfactory resolution: assess the required integrated service, retain evidence-linked component ratings, and make the precise TRL conditional on demonstrated exit criteria.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: reasoning
+        reasoning: A complete chain. The frame and criteria come before the options, which include a null option and a strong split rival (O5), and the robustness check addresses that rival. Evidence is calibrated, falsifiers are explicit and the commitment is concrete. A few weighted totals are slightly off (O1 should be 2.05, O3 3.65), but none of the errors changes the ranking or the decision.
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: The response is comprehensive, strictly follows the requested decision chain, and provides a highly detailed and logically sound evaluation of the TRL rating object.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: The integrated-service object and component reporting are well justified, but absent flight precedent does not establish TRL 3. The mechanical weakest-component cap and blanket TRL 4 ceiling also need justification; they could change the baseline and demonstration obligations.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: values
+        reasoning: The conclusion is right, but the criteria omit diagnostic or investment value, which is the only feature separating Option 3 from Option 2. Both options score 'High' on every stated criterion, yet receive 0.85 and 0.95 with no derivation. Evidence and assumptions are thin, and no concrete KDP-0B test is specified, so the chosen option is not justified by its own matrix.
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: The response follows the structure well and includes all required elements, but the assessment matrix and reasoning are somewhat brief compared to the depth required for a fully robust decision.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: The reporting recommendation is sound, but identical qualitative matrix scores produce different totals without explanation. Accepting unauthenticated commands would not resolve fleet-scale integration gaps, so the stated sensitivity could incorrectly make the heritage-only option viable.
+    rawScore: 3
+    weightedScore: 2.5
+    approveCount: 0
+    rejectCount: 0
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: 'A well-framed, cited and calibrated response. It covers null, headline-only and sub-ratings-only alternatives, makes the useful TRL 4/5/6 correction and sets a detailed KDP-0B evidence package. The commitment is slightly hedged: it gives a provisional TRL 3 with a conditional risk branch, and it rejects the minimum-cap rule without specifying a replacement aggregation. None of this would change the decision.'
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: values
+        reasoning: The response provides a very strong, well-reasoned decision chain with excellent use of swing weights, clearly defined options including a null, and well-calibrated evidence certainty.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: information
+        reasoning: The remaining evidence gaps are explicitly bounded rather than converted into definitive maturity claims. The response distinguishes service integration, component heritage, security assurance, and licensing, with falsifiable assumptions and configuration-specific gate criteria.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: gpt-6-1-sol
+winnerScore: 5

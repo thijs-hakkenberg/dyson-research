@@ -1,0 +1,65 @@
+# Owner rulings on the WP-A gate proposal (rq-0-65 … rq-0-75). Kept apart from rulings.yaml,
+# which holds per-technology rulings that run-trl-assessment.js applies to the baseline.
+# Source sheet: gate-rulings-sheet.md. Each entry is a point both syntheses report as converged
+# and the round-1 responses bear out (round-1/gates/ruling-syntheses-comparison.md).
+# Open choices are not ruled here; they are routed to evidence questions rq-0-76 … rq-0-83.
+rulings:
+  - id: G-1.1
+    question: rq-0-68
+    decided: '2026-10-20'
+    decided_by: owner
+    ruling: >-
+      "Within 3×" in the demand gate is a quantity ratio (capacity against signed demand), not a timing tolerance.
+    still_open: [capacity authorised after a pass (rq-0-81), measurement window (rq-0-81)]
+  - id: G-1.2
+    question: rq-0-68
+    decided: '2026-10-20'
+    decided_by: owner
+    ruling: >-
+      "Signed" demand means specified, financially backed commitments; technical endorsements and planning allowances
+      do not count.
+    still_open: [what financial backing qualifies, signatory independence, conditionality on 0B approval (rq-0-81)]
+  - id: G-1.3
+    question: rq-0-70
+    decided: '2026-10-20'
+    decided_by: owner
+    ruling: >-
+      After a failed licence gate, at most one bounded redesign and reapplication for a remediable failure, with gate
+      requirements unchanged, no production authorisation meanwhile, and the 0A-only fallback retained.
+    still_open: [recovery window, eligible failures, redesign scope (rq-0-83)]
+  - id: G-1.4
+    question: rq-0-74
+    decided: '2026-10-20'
+    decided_by: owner
+    ruling: >-
+      TRL 4-5 may release reversible 0A funding tranches. A scout or pathfinder PDR is a separate gate requiring TRL 6
+      for flight-critical technology.
+    still_open: [readiness of technologies flown as experiments, amend D-02 or interpret it (rq-0-76)]
+  - id: G-1.5
+    question: rq-0-73
+    decided: '2026-10-20'
+    decided_by: owner
+    ruling: T11 (rendezvous scouts) and T18 (sampling and assay) at TRL 6 at scout PDR.
+    still_open: [pre-launch qualification level (rq-0-76), target-gate evidence (rq-0-80)]
+  - id: G-1.6
+    question: rq-0-69
+    decided: '2026-10-20'
+    decided_by: owner
+    ruling: The month-180 sunset acts automatically; it is not only a prompt for review.
+    still_open: [expiry vs execution, exceptions and re-entry, planning buffer (rq-0-83, rq-0-63)]
+  - id: G-1.7
+    question: rq-0-67
+    decided: '2026-10-20'
+    decided_by: owner
+    ruling: >-
+      Any cost above Earth supply needs a separate, explicit owner authorisation; D-01's purpose does not authorise a
+      premium by itself.
+    still_open: [whether an authorised premium can produce a gate pass, timing, cost statistic (rq-0-82)]
+  - id: G-1.8
+    question: rq-0-66
+    decided: '2026-10-20'
+    decided_by: owner
+    ruling: >-
+      No blanket duplicate TRL 6 demonstration for T11, T18, T09, T12 and T20 at KDP-0B; applicable 0A evidence is
+      reused.
+    still_open: [T18 evidence standard (rq-0-80), T09/T12/T20 exceptions (rq-0-77), T11 re-entry (rq-0-77)]

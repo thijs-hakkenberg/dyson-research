@@ -1,0 +1,172 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-75
+topics:
+  - id: t01-evidence-path-baseline
+    topic: Baseline evidence path to TRL 6 for T01
+    positions:
+      - statement: >-
+          Ground-qualified modules plus a pre-registered cluster model, validated by small-N ground cluster tests and
+          anchored by a 2-4 module production-representative flight anchor; escalate to a flight subset of at least 20%
+          of cluster power if validation fails at the 0A mid-term review
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Facility arithmetic (~1.9 g/s Xe at 1 MW needs ~2.5e7 L/s vs ~1e6 L/s available); Hall pressure-sensitivity
+          literature (Dankanich et al. 2017); weighted score 750 vs 720 for ground plus model; ground life testing
+          unavoidable on any path
+      - statement: Ground modules plus a validated computational cluster model, no planned flight element
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          A flight subset would make 0A a multi-hundred-million-dollar flight programme, judged very likely (~90%) to
+          exceed 0A budget, which conflicts with D-01; no budget baseline supplied
+      - statement: >-
+          Ground qualification plus a representative flight subset as baseline; ground-only allowed only as an
+          independently approved alternative means of compliance; full-cluster flight as escalation
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          No supplied evidence shows that decisive cluster effects are local, separable and measurable on the ground;
+          weighted score 3.40 vs 3.20 (full-cluster flight) vs 3.05 (ground plus model); NASA/SP-2016-6105 Rev 2 on TRL
+          6
+    resolution_status: open
+    priority: critical
+  - id: flight-element-sizing
+    topic: Size and purpose of any flight element
+    positions:
+      - statement: >-
+          Small anchor (2-4 modules, 50-200 kW) to anchor the pressure axis and small-N interaction terms, so the model
+          interpolates rather than extrapolates
+        models:
+          - Claude Opus 5.5
+        evidence: Remaining gap is N-scaling, which is tractable if interactions saturate with spacing, testable on the ground
+      - statement: >-
+          Subset sized by interaction coverage (neighbour relationships, shared electrical architecture, spacecraft
+          interfaces), not a power percentage or thruster count; a small anchor does not bound full-cluster interactions
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Representativeness of controlling interaction topology is unproven; a single thruster on an unrelated bus
+          would not close cluster integration
+    resolution_status: open
+    priority: high
+  - id: facility-gap-certainty
+    topic: Certainty that ground facilities cannot support the required demonstration
+    positions:
+      - statement: >-
+          Full-scale gap of at least 5x is virtually certain (high certainty arithmetic, moderate on exact facility
+          figures); ground can test a 50-150 kW module and a small reduced-power cluster
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Mass-flow and pumping-speed calculation; VF-5-class pumping ~1e6 L/s; X3 ~100 kW tests run at elevated
+          background pressure
+      - statement: MW-class plume pumping exceeding facilities is almost certain (>95%)
+        models:
+          - Gemini 3.1 Pro
+        evidence: Propellant volumetric flow at MW levels outstrips cryopumping of VF-5-class chambers
+      - statement: >-
+          Facility effects in general are high certainty, but their magnitude for T01 is low certainty, and the claim
+          that no facility can support the required demonstration is very low certainty on the supplied record
+        models:
+          - GPT-6.1 Sol
+        evidence: Only one panel assertion was supplied, with no facility or configuration comparison
+    resolution_status: partially-resolved
+    priority: high
+  - id: gate-rule-text-and-thresholds
+    topic: KDP-0B rule text, extrapolation limit and acceptance thresholds
+    positions:
+      - statement: >-
+          Rule text with module qualification at no more than 10 uTorr (propellant-adjusted), ground cluster of at least
+          3 modules, pre-registered model within +/-5% thrust and +/-10% divergence, flight anchor of at least 500 h,
+          and maximum 5x power extrapolation; owner to set the ratio
+        models:
+          - Claude Opus 5.5
+        evidence: Proposed owner value judgment on acceptable residual extrapolation at a one-way gate
+      - statement: >-
+          Single full-power module at no more than 5e-5 Torr plus a peer-reviewed full-cluster model showing thermal,
+          EMI/EMC and cross-talk margins
+        models:
+          - Gemini 3.1 Pro
+        evidence: Treats validated models as constituting the relevant environment for cluster integration
+      - statement: >-
+          Configuration-controlled verification case covering propellant, geometry, simultaneous operation, PPU,
+          thermal, plume-spacecraft and fault transitions; each project-ending behaviour demonstrated or bounded by
+          validated extrapolation against requirements; missing evidence blocks KDP-0B; thresholds must be
+          requirements-based
+        models:
+          - GPT-6.1 Sol
+        evidence: Claude's 5x limit and tolerances lack requirements justification; Gemini's text redefines the gate
+    resolution_status: open
+    priority: high
+  - id: propellant-d05-effect
+    topic: Effect of D-05 propellant choice on the facility constraint
+    positions:
+      - statement: >-
+          Propellant changes the facility case sharply; iodine eases pumping but adds contamination terms, krypton and
+          argon widen the gap; re-run the trade at D-05 closure
+        models:
+          - Claude Opus 5.5
+        evidence: Condensability and cryopumping differences between propellants
+      - statement: Propellant choice is unlikely to change the pumping constraint at MW mass flows
+        models:
+          - Gemini 3.1 Pro
+        evidence: Assertion; Claude disputed it for argon
+      - statement: >-
+          A propellant change can invalidate discharge, erosion, plume and facility assumptions; transferability must be
+          demonstrated
+        models:
+          - GPT-6.1 Sol
+        evidence: Engineering judgment
+    resolution_status: partially-resolved
+    priority: medium
+  - id: pathfinder-hosting
+    topic: Whether the pathfinder carries T01 flight evidence
+    positions:
+      - statement: >-
+          Host the anchor on the pathfinder if it can supply about 50 kW or more, otherwise use a hosted or small
+          dedicated bus; firewall pathfinder success criteria from anchor performance
+        models:
+          - Claude Opus 5.5
+        evidence: Sensitivity S2; trade-off T2 (coupling vs cost)
+      - statement: >-
+          Use the pathfinder only if it carries the evidence obligations without compromising its primary objectives;
+          otherwise assess a dedicated tug demonstrator
+        models:
+          - GPT-6.1 Sol
+        evidence: Host-availability sensitivity; shared efficiency vs independent control trade-off
+    resolution_status: partially-resolved
+    priority: medium
+  - id: flight-cost-baseline
+    topic: Cost of flight evidence relative to the 0A envelope
+    positions:
+      - statement: >-
+          About $50-150M for ground plus model vs about $0.5-1.5B for a dedicated subset of several hundred kW (low
+          certainty, Gateway PPE analogy); a contingent budget line would sit outside the D-01 0A envelope
+        models:
+          - Claude Opus 5.5
+        evidence: Gateway PPE award (~$375M, 2019) scaled for power and arrays
+      - statement: A flight subset very likely breaks the 0A budget and timeline
+        models:
+          - Gemini 3.1 Pro
+        evidence: Historical demonstrator costs vs Phase A study budgets; no programme baseline supplied
+      - statement: Dedicated flight increases integration and schedule exposure; the increment is unquantified
+        models:
+          - GPT-6.1 Sol
+        evidence: No project cost estimate supplied
+    resolution_status: open
+    priority: medium
+  - id: decision-reversibility
+    topic: Reversibility classification of the path choice
+    positions:
+      - statement: Two-way during early 0A, one-way once long-lead flight hardware is committed; stage the decision accordingly
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: Facility bookings and model work are redirectable; acceptance of evidence at KDP-0B is irreversible
+      - statement: One-way door
+        models:
+          - Gemini 3.1 Pro
+        evidence: Path choice alters 0A budget, schedule and risk profile
+    resolution_status: partially-resolved
+    priority: low

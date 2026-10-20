@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: information
+    reasoning: Criteria come before options, a genuine null option is included, musts are screened first, and sensitivity and trade-off points are separated. Assumptions are falsifiable and certainty is calibrated, with low confidence stated for the specific numbers. Minor arithmetic slips (O4 should be 3.80, O0 2.10, O1 2.60) do not change the ranking. The 100× backstop is openly flagged as a values question for the owner.
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: alternatives
+    reasoning: 'There is no genuine null option: Claude''s proposal is mislabelled as the null. Cost is weighted at 40%, equal to risk, which conflicts with D-02''s no-waiver, one-way-gate stance and is not reconciled. The matrix is qualitative with no scores. Certainty is uncalibrated (''virtually certain'' that 10% life testing is needed; regimes ''mathematically proven'' to match). The no-cap power/throughput option has no backstop and does not treat modular numbering-up.'
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: reasoning
+    reasoning: 'Non-compensable requirements and swing weights come first, the options include a null, and the arithmetic checks out. Uncertainty is calibrated honestly: P and E get equal protection scores, and the response shows that the ranking flips if independent review proves ineffective. The gate rule text is operational. The lack of a hard backstop is a defensible values position, and the response explicitly conditions it on effective review.'
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: none
+    reasoning: The response follows the entire decision chain rigorously, with well-defined swing weights, clear options including a true null, structured reasoning via ACH and Toulmin, and a highly actionable commitment.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: alternatives
+    reasoning: The response lacks a true null option (Option 1 is mislabeled as Null but is actually a fixed limit proposal) and uses percentages for weights without properly calibrating the swing ranges.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: none
+    reasoning: The response provides a complete and robust decision chain, featuring properly evaluated swing weights, a clear null option, structured evidence assessment, and a well-crafted rule proposal.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: Strong governance and explicit alternatives, but the absolute 100× backstop lacks evidence connecting that threshold to acceptable risk. Acknowledging low confidence does not justify making it non-waivable; this could change the choice between O4 and O5.
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: The claimed universal need for at least 10% physical runtime is assigned near-certainty without supporting evidence. That unsupported claim drives the duration cap, while matching dimensionless parameters alone is treated as stronger assurance than warranted.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: The decision chain connects explicit requirements, alternatives, calibrated evidence and falsifiable assumptions to an actionable evidence-envelope rule. Technology-specific acceptance thresholds remain to be set, but pre-agreed criteria, independent concurrence and withholding approval make that a controlled implementation task.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: 'A and C converge on the main points: no naive universal ratio, a pre-agreed technology-specific evidence basis, numbering-up separated from scale-up, and duration covered by mechanism-validated models. The remaining difference is whether to have a hard 100× backstop. That is a values trade-off, auditability versus fidelity, which the owner should decide; further rounds are unlikely to resolve it.'
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: Responses A and C provide high-quality, fully reasoned, and actionable policy proposals that resolve the prompt's core question effectively. Further rounds are unnecessary.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'C provides a defensible resolution: no universal numerical ceiling, but binding, independently reviewed extrapolation envelopes established before major testing commitments. The remaining work is technology-specific implementation rather than another general policy round.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: information
+        reasoning: Criteria come before options, a genuine null option is included, musts are screened first, and sensitivity and trade-off points are separated. Assumptions are falsifiable and certainty is calibrated, with low confidence stated for the specific numbers. Minor arithmetic slips (O4 should be 3.80, O0 2.10, O1 2.60) do not change the ranking. The 100× backstop is openly flagged as a values question for the owner.
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: none
+        reasoning: The response follows the entire decision chain rigorously, with well-defined swing weights, clear options including a true null, structured reasoning via ACH and Toulmin, and a highly actionable commitment.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: Strong governance and explicit alternatives, but the absolute 100× backstop lacks evidence connecting that threshold to acceptable risk. Acknowledging low confidence does not justify making it non-waivable; this could change the choice between O4 and O5.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: alternatives
+        reasoning: 'There is no genuine null option: Claude''s proposal is mislabelled as the null. Cost is weighted at 40%, equal to risk, which conflicts with D-02''s no-waiver, one-way-gate stance and is not reconciled. The matrix is qualitative with no scores. Certainty is uncalibrated (''virtually certain'' that 10% life testing is needed; regimes ''mathematically proven'' to match). The no-cap power/throughput option has no backstop and does not treat modular numbering-up.'
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: alternatives
+        reasoning: The response lacks a true null option (Option 1 is mislabeled as Null but is actually a fixed limit proposal) and uses percentages for weights without properly calibrating the swing ranges.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: The claimed universal need for at least 10% physical runtime is assigned near-certainty without supporting evidence. That unsupported claim drives the duration cap, while matching dimensionless parameters alone is treated as stronger assurance than warranted.
+    rawScore: 0
+    weightedScore: 0
+    approveCount: 0
+    rejectCount: 3
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: reasoning
+        reasoning: 'Non-compensable requirements and swing weights come first, the options include a null, and the arithmetic checks out. Uncertainty is calibrated honestly: P and E get equal protection scores, and the response shows that the ranking flips if independent review proves ineffective. The gate rule text is operational. The lack of a hard backstop is a defensible values position, and the response explicitly conditions it on effective review.'
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: none
+        reasoning: The response provides a complete and robust decision chain, featuring properly evaluated swing weights, a clear null option, structured evidence assessment, and a well-crafted rule proposal.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: The decision chain connects explicit requirements, alternatives, calibrated evidence and falsifiable assumptions to an actionable evidence-envelope rule. Technology-specific acceptance thresholds remain to be set, but pre-agreed criteria, independent concurrence and withholding approval make that a controlled implementation task.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: gpt-6-1-sol
+winnerScore: 5
