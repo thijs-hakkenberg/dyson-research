@@ -19,7 +19,7 @@ this roadmap was built on. Sections below that cite Gates 1–5, the 12 TRL rows
 | Phase 0 scope | One programme, "pure research" | **D-01 (accepted):** fund 0A (research and pathfinders); hold 0B (production) as a gated real option sized by signed Phase 1 demand |
 | Architecture | Central 50 kt/yr station at Sun–Earth L4, human-tended | Processing co-located at the NEA; Phase 0 uncrewed; cryogenic depot removed from Phase 0 |
 | Transport | 100+ kW SEP rated TRL 6–7 | 1–2.5 MWe tugs, rated TRL 2–4 |
-| Readiness | 12 TRL assessments | **26 critical technologies** re-rated on TRL and AD² by a three-model panel (24 agree, 2 diverge, 1 set by owner ruling) |
+| Readiness | 12 TRL assessments | **26 critical technologies** re-rated on TRL and AD² by a three-model panel (24 agree, 1 diverges (T24), 1 set by owner ruling (T26)) |
 | Gates | Gates 1–5 by month | **D-02 (accepted):** KDP-0A, 0A mid-term review, KDP-0B, plus target, demand, economics and licence gates; stringency follows reversibility; TRL 6 with no waiver for project-ending technologies at KDP-0B |
 | Cost | Phase 0 ≈ $15.7B | Panel range $22–195B; to be re-derived from the revised BOM |
 | Owner decisions pending | — | D-03 debris limit, D-04 delivery node, D-05 tug propellant (proposed, interim positions) |
