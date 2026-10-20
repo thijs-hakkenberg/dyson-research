@@ -1,0 +1,129 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-72
+topics:
+  - id: weakest-part-as-bound-vs-reconcilable
+    topic: Whether the lowest critical sub-rating is a hard upper bound or a constraint that can be reconciled
+    positions:
+      - statement: >-
+          Headline may not exceed the lowest critical sub-rating; integrated evidence that demonstrates a critical
+          function updates that sub-rating first (R4), so the cap never binds wrongly; integration judgment may only
+          hold at or lower the headline
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          TRL definitions at 5 and above presuppose integration (NPR 7123.1, ISO 16290); a system cannot be more
+          demonstrated than its least-demonstrated essential function; D-02 already accepts false-negative cost at
+          one-way gates
+      - statement: Headline = min(integration TRL, lowest critical sub-component TRL)
+        models:
+          - Gemini 3.1 Pro
+        evidence: D-02 no-waiver rule; integration commonly less mature than parts (NASA SE practice)
+      - statement: >-
+          Do not automatically inherit the minimum; lower ratings stay visible and are reconciled by applicable
+          evidence, a justified scope distinction, or reducing the claim; a current, applicable, undemonstrated critical
+          deficiency caps in practice
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Component ratings may concern different configurations, environments or boundaries, or be stale;
+          NASA/SP-2016-6105 Rev 2 on integration maturity
+    resolution_status: partially-resolved
+    priority: critical
+  - id: scope-distinction-escape-hatch
+    topic: Whether a justified scope distinction may discharge a lower critical rating at a no-waiver gate
+    positions:
+      - statement: >-
+          A scope distinction that releases a critical rating without updating it is an escape hatch at a one-way,
+          no-waiver gate
+        models:
+          - Claude Opus 5.5
+        evidence: Vote critique of GPT; D-02 no-waiver requirement
+      - statement: >-
+          Scope distinctions are legitimate provided they do not remove a dependency actually required by the claimed
+          capability
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Scope-mismatched or stale component ratings can mischaracterise maturity (moderate certainty, frequency
+          unknown)
+    resolution_status: open
+    priority: critical
+  - id: integrated-article-ceiling
+    topic: Blanket TRL 4 ceiling without a tested integrated article
+    positions:
+      - statement: >-
+          Headline capped at 4 without an integrated article of the rated configuration (all critical functions and
+          coupled-load interfaces present, simulations excluded); at most 5 without a relevant-environment test; at most
+          6 without a system or subsystem model or prototype in a relevant environment
+        models:
+          - Claude Opus 5.5
+        evidence: NPR 7123.1 and ISO 16290 TRL definitions; S2 definition
+      - statement: >-
+          "Integrated article" is underspecified; the required article must follow the claimed level and assessment
+          boundary, not an arbitrary whole-system boundary; TRL 6 needs a representative model or prototype in a
+          justified relevant environment
+        models:
+          - GPT-6.1 Sol
+        evidence: Assessment-boundary sensitivity (thruster vs cluster)
+    resolution_status: partially-resolved
+    priority: high
+  - id: t26-consistency
+    topic: How the T26 ruling (TRL 3, 4 conditional) relates to the general rule
+    positions:
+      - statement: T26 is retroactively justified because the integration lacked a validated article
+        models:
+          - Gemini 3.1 Pro
+        evidence: Asserted, record not checked (flagged by Claude and GPT)
+      - statement: Consistency is assumed but unverified (A4); T26 sub-ratings must be checked and reconciled
+        models:
+          - Claude Opus 5.5
+        evidence: T26 sub-rating detail not inspected
+      - statement: Preserve T26 as ruled, as a non-compensable requirement; the general rule neither upgrades nor changes it
+        models:
+          - GPT-6.1 Sol
+        evidence: Supplied owner ruling record (high certainty of what was ruled, not an independent reassessment)
+    resolution_status: open
+    priority: medium
+  - id: judgment-reproducibility
+    topic: Whether bounded or traceable integration judgment is reproducible across assessors at acceptable cost
+    positions:
+      - statement: >-
+          Downward-only judgment with a named finding per level; reproducibility within ±1 is about as likely as not
+          (low confidence); calibrate, and fall back to the mechanical O5 if variance exceeds one level
+        models:
+          - Claude Opus 5.5
+        evidence: No calibration data for this panel
+      - statement: >-
+          Traceability should improve consistency, but magnitude is low certainty; pilot with a blind reassessment and
+          adopt a simpler default if the mechanical minimum gives the same defensible result more cheaply
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Prospective governance judgment; weight sensitivity shows the mechanical option overtakes B only at about 50%
+          weight on economy
+    resolution_status: open
+    priority: high
+  - id: no-arithmetic-aggregation
+    topic: Averaging or arithmetic aggregation of TRLs
+    positions:
+      - statement: Reject averaging, weighting, products and SRL-style matrices because TRL is ordinal
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: Ordinal measurement theory; Kujawski (2013) critique of SRL (Claude)
+    resolution_status: resolved
+    priority: low
+  - id: null-option
+    topic: Leaving the panel split unresolved
+    positions:
+      - statement: Reject; produces incompatible headlines and inconsistent KDP-0B evidence, and T26 shows the case-by-case cost
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          T26 required a specific owner ruling without a general rule; risk of assessors choosing whichever convention
+          suits them
+    resolution_status: resolved
+    priority: medium

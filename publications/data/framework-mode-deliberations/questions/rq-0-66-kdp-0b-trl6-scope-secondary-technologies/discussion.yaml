@@ -1,0 +1,825 @@
+questionId: rq-0-66
+questionSlug: kdp-0b-trl6-scope-secondary-technologies
+questionTitle: Must T11, T18, T09, T12 and T20 be at TRL 6 at KDP-0B?
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T22:12:29.553Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # Must T11, T18, T09, T12 and T20 be at TRL 6 at KDP-0B?
+
+          **Short answer: no, not uniformly. The five do not form one class, and treating them as one is what produces the Claude/GPT split.**
+
+          - **T18 (sampling and assay)** stays project-ending at KDP-0B. Its evidence should come from the 0A scout mission itself, which is a higher bar than ground TRL 6.
+          - **T11 (scout spacecraft)** leaves the KDP-0B technology list. It returns only under a named re-entry condition.
+          - **T09, T12 and T20** are held at TRL 6 for the selected reference implementation by default. A waiver is allowed only for an item that has a qualified TRL 6 fallback, and only if the economics gate still closes with every waived item on its fallback at the same time.
+
+          This position is neither Claude's nor GPT's. I argue it below. Gemini's stated positions are counted only where it actually stated them.
+
+          ---
+
+          ## 1. Frame & decision type
+
+          **Decision type.** This is a property decision on the KDP-0B gate: what membership and criterion apply to five technologies. Two executive sub-decisions sit inside it: what "selected reference implementation" binds, and what conditions a waiver must meet.
+
+          **Reversibility.**
+          - The gate text is cheap to change before KDP-0B.
+          - The gate outcome is not cheap to change. Under D-02, KDP-0B is a one-way door, so the rule must be written as if it will be applied mechanically by people under schedule pressure.
+
+          **Cynefin domain.** Complicated, not complex. The facts that matter are knowable before KDP-0B:
+          - whether the scouts returned assay data;
+          - whether a fallback exists for each item;
+          - whether economics closes with that fallback.
+
+          So the decision can be made now and resolved by evidence later. That is the property a real-options gate under D-01 should have.
+
+          **What is actually being decided.** The question as posed asks "TRL 6 or not?". The more useful question is: what failure must KDP-0B protect against for each item, and is TRL 6 the right instrument for it?
+          - **T11 and T18.** The risk is committing Phase 1 to a target whose grade was never measured. TRL is a weak proxy for that. The target gate is the real instrument.
+          - **T09, T12 and T20.** The risk is committing Phase 1 to an architecture that fails economically if one of these is late or underperforms. TRL 6 is one guard against that. A proven fallback that closes economics is a second, equally valid guard.
+
+          ---
+
+          ## 2. Criteria and weights
+
+          These are swing weights, stated before options. Each weight reflects how much the options differ on that criterion, not how important the topic is in the abstract.
+
+          | # | Criterion | Swing range across options | Weight | Why this weight |
+          |---|---|---|---|---|
+          | C1 | **Protection against an irreversible wrong commitment at KDP-0B** | From "a Phase 1 commitment can go through with an unmeasured target or an unfallbacked TRL 4–5 item" to "cannot" | 0.35 | Under D-02 this is the reason the gate exists. The options differ sharply here. |
+          | C2 | **Cost of delay at KDP-0B** | From "the gate can slip by more than 12 months waiting on T12 TRL 6" to "no slip from these items" | 0.20 | Real but bounded. D-01 sizes 0B by signed demand, and demand has a shelf life. |
+          | C3 | **Auditability and resistance to gaming** | From "a waiver is a promise ('funded path')" to "a waiver is a pass/fail check on stated evidence" | 0.20 | One-way gates fail through erosion more than through bad initial rules. The options differ a lot here. |
+          | C4 | **Consistency with D-01, D-02 and the four discriminating gates** | From "duplicates or conflicts with the target and economics gates" to "composes with them" | 0.15 | Matters, but the differences are mostly drafting quality. |
+          | C5 | **Phase 0 resource burden** | From "fund TRL 6 campaigns for all five plus fallbacks" to "fund only what the gate needs" | 0.10 | The swing is a few qualification campaigns. It is meaningful but small relative to the 0B commitment. |
+
+          A deliberate omission: "agreement with the panel majority" is not a criterion. Per the guidelines, disagreements are kept, not averaged away.
+
+          ---
+
+          ## 3. Options
+
+          ### Group A: T11 and T18 (0A flight technologies)
+
+          - **A0 (null).** Leave the split as it is.
+            - Effect: T18 is project-ending (Gemini, GPT, panel headline). T11 is project-ending in GPT's view and the panel headline, absent from Gemini's YAML, and architecture-change in Claude's view.
+            - Result: the gate text is ambiguous, and whoever drafts the YAML decides.
+          - **A1 (GPT).** Both at TRL 6 technology maturity before KDP-0B.
+          - **A2 (Claude).** Both treated as 0A flight technology, gated at scout PDR (TRL 6), and absent from the KDP-0B list.
+          - **A3 (recommended).**
+            - T18 stays project-ending at KDP-0B. Its criterion is evidence provenance: the target gate must be satisfied by T18-class measurements made at the target. Ground TRL 6 alone does not satisfy KDP-0B.
+            - T11 is off the KDP-0B list. It re-enters if any Phase 1 element inherits T11 hardware or software, for example a scout-derived bus for repeat prospecting or a T12 handling vehicle.
+
+          ### Group B: T09, T12, T20 (supporting systems)
+
+          - **B0 (null).** Leave the split. In practice this means GPT's TRL 6 for the drafter who reads the headline, and Claude's TRL ≥ 5 waiverable for the drafter who reads the classification. This is the worst outcome for a one-way gate.
+          - **B1 (GPT).** TRL 6 for selected implementations, no waiver. Substitutions trigger reassessment.
+          - **B2 (Claude).** TRL ≥ 5, waiverable, with a funded path to TRL 6.
+          - **B3 (recommended): TRL 6 default with a substitution-backed waiver.**
+            - The selected reference implementation must be at TRL 6.
+            - A waiver down to TRL ≥ 5 is permitted only if all three conditions hold:
+              1. A named fallback implementation is at TRL 6 in a relevant environment.
+              2. The economics gate passes in a joint-fallback case, with every waived item on its fallback simultaneously.
+              3. The fallback's mass, power and schedule penalties are carried in the Phase 1 baseline, not held in reserve.
+          - **B4 (rejected): make them project-ending.** This is TRL 6 with no waiver and no fallback route. It differs from B1 only in labelling, and it overstates the consequence of failure. These are architecture-change by unanimous classification.
+
+          ### Why I reject the alternatives
+
+          - **A1.** It asks for ground TRL 6 on technologies that, by KDP-0B, should have flight evidence or should have failed the target gate. The criterion is redundant when the scouts succeed. When they fail it is misleading, because a TRL 6 sampler on the ground does not make an unmeasured target investable. It also puts T11 bus maturity on a gate where it has no decision value.
+          - **A2.** It is right about T11 but leaves a gap for T18.
+            - If the target gate were satisfied by remote sensing alone, which nothing in the current four-gate text forbids, KDP-0B could pass without bulk grade ever being measured in situ.
+            - Phase 1 site selection also depends on T18-class assay, not just Phase 0.
+            - Dropping T18 from the list removes its only binding hook.
+          - **B1.** It is safe but blunt.
+            - T12, autonomous handling of 150–300 t payloads, is the item least likely to reach TRL 6 by KDP-0B. Panel estimates are TRL 2–4, with AD² 5–6.
+            - Under B1 the whole Phase 1 decision waits on T12, even where smaller-payload handling at TRL 6 could carry the architecture at a known cost.
+            - That turns an architecture-change technology into a project-schedule-ending one, which is the classification error D-02 was meant to avoid.
+          - **B2.** It is efficient but not auditable.
+            - A "funded path to 6" is a budget line, not evidence. It does not answer what happens to Phase 1 if the path fails, and that is the only question a one-way gate should ask.
+            - Three independent waivers can also stack. Each item is survivable alone, but the joint failure was never tested.
+
+          ---
+
+          ## 4. Assessment matrix (QOC)
+
+          Scores run from 1 (poor) to 5 (best) on each criterion's swing range, weighted per Section 2.
+
+          **Group A: T11 and T18**
+
+          | Option | C1 (0.35) | C2 (0.20) | C3 (0.20) | C4 (0.15) | C5 (0.10) | Weighted |
+          |---|---|---|---|---|---|---|
+          | A0 null | 2 | 3 | 1 | 2 | 3 | **2.05** |
+          | A1 GPT | 3 | 3 | 4 | 2 | 2 | **2.95** |
+          | A2 Claude | 3 | 5 | 3 | 4 | 5 | **3.80** |
+          | **A3** | **5** | 4 | 5 | 5 | 4 | **4.65** |
+
+          Rationale for the key cells:
+          - **A3 on C1 (5).** It closes the remote-sensing loophole. A2 does not, so A2 scores 3.
+          - **A1 on C4 (2).** It duplicates the target gate with a weaker criterion.
+
+          **Group B: T09, T12, T20**
+
+          | Option | C1 (0.35) | C2 (0.20) | C3 (0.20) | C4 (0.15) | C5 (0.10) | Weighted |
+          |---|---|---|---|---|---|---|
+          | B0 null | 2 | 3 | 1 | 1 | 3 | **1.95** |
+          | B1 GPT | 5 | 1 | 5 | 3 | 2 | **3.60** |
+          | B2 Claude | 2 | 5 | 2 | 3 | 4 | **2.95** |
+          | **B3** | **4** | 4 | 4 | 5 | 2 | **3.95** |
+          | B4 project-ending | 5 | 1 | 5 | 1 | 2 | **3.30** |
+
+          Rationale for the key cells:
+          - **B3 on C1 (4, not 5).** A fallback at TRL 6 protects against the item failing. It does not protect against the fallback's penalty being underestimated.
+          - **B3 on C5 (2).** It requires qualifying fallbacks, which is real money.
+          - **B3 on C4 (5).** It makes the economics gate test the architecture-change consequence directly, which is what "architecture-change" means.
+
+          **Robustness of the Group B ranking.** B3's margin over B1 is about 0.35, which is not large.
+          - If C2 falls below roughly 0.10 and C1 rises to roughly 0.45, B1 wins. This is the trade-off point in Section 5.
+          - The ranking is robust to any reasonable C3/C4/C5 reweighting.
+
+          ---
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points (facts that, once settled, decide the issue)
+
+          - **S1: When the scouts report relative to KDP-0B.**
+            - If scout assay data reliably arrives before KDP-0B, A3 costs nothing extra.
+            - If the KDP-0B date is planned before scout return, A3 forces a slip. That is correct: the target gate could not honestly pass anyway. But the owner should see the slip now.
+          - **S2: Whether a TRL 6 fallback exists or can be qualified for T12.**
+            - Plausible fallbacks are smaller handling units (30–60 t class) with more transfers, or crewed or teleoperated assist.
+            - If no fallback can be qualified, B3 collapses to B1 for T12. That is acceptable and honest.
+          - **S3: Economics margin in the joint-fallback case.**
+            - Example penalties include a lower-voltage T09 with more conductor mass, a smaller-unit T12 with more cycles, and an oversized T20.
+            - If the margin is thin, B3 effectively forbids the waivers. The rule self-adjusts; the owner does not need to rule twice.
+          - **S4: Whether any Phase 1 element inherits T11.** This determines whether T11 re-enters the list.
+
+          ### Trade-off points (values questions for the owner, not facts)
+
+          - **T-1: Schedule versus one-way safety for T12.**
+            - B3 accepts a Phase 1 that may run on a fallback with a worse cost per tonne, in exchange for not waiting on T12 TRL 6.
+            - B1 accepts waiting.
+            - No evidence settles this. It depends on how the owner values a signed-demand window under D-01 against architecture purity. I recommend B3, but this is the owner's call and should be recorded as such.
+          - **T-2: Phase 0 spend on fallbacks versus Phase 0 spend on primaries.**
+            - Money spent qualifying a fallback is not spent advancing the primary.
+            - This is the "capability programme, not a cost saving" framing of D-01, made concrete.
+
+          ---
+
+          ## 6. Evidence certainty
+
+          Likelihood (how probable) is kept separate from confidence (how good the evidence is). Every TRL estimate here is panel judgment, not test data.
+
+          | Claim | Likelihood | Confidence / GRADE | Basis |
+          |---|---|---|---|
+          | T18 current TRL is 2–4 | — | Low (three estimates span two levels; no cited test campaigns) | Panel table |
+          | T12 reaches TRL 6 for 150–300 t by a nominal KDP-0B | Unlikely (~20–35%) | Low | Lowest TRL and highest AD² in the group; no analogue at that payload class in an autonomous surface or proximity context |
+          | T20 reaches TRL 6 by KDP-0B | Likely (~60–75%) | Medium | Storage cell technology is mature terrestrially. The risk is environment (thermal cycling, dust, radiation) and microgrid management if GPT's scope is used. AD² 4–5 is the lowest in the group. |
+          | T09 reaches TRL 6 by KDP-0B | About as likely as not | Low | High-voltage distribution over regolith couples arcing, charging and dust; little directly relevant heritage |
+          | Remote sensing alone could satisfy the current target-gate text | Likely | Medium | Inferred from the gate structure as summarised; worth confirming against `gates-proposal.yaml` |
+          | Independent waivers stack into an untested joint failure | Very likely (structural) | High | Follows from B2's text, which contains no joint test |
+          | Gemini's T11 classification is a drafting inconsistency (prose vs YAML), not a considered position | Likely | Medium | Gemini's response was brief; prose and YAML disagree |
+
+          **What these probabilities are.** They are my judgment, offered as calibrated language so others can disagree in numbers. They are not elicited estimates. Before KDP-0A they should be replaced by a structured elicitation, using Cooke's classical method or SHELF, on T12 and T09 specifically.
+
+          ---
+
+          ## 7. Key assumptions
+
+          | # | Assumption | What would falsify it |
+          |---|---|---|
+          | K1 | The 0A scout mission carries a T18-class instrument capable of bulk grade assay | Scout payload definition at 0A mid-term review omits in-situ assay or limits it to surface spectroscopy. A3's provenance rule then cannot be met, and either the scout scope or the target gate must change. |
+          | K2 | Phase 1 does not reuse T11 hardware or software | Phase 1 concept baseline lists a scout-derived bus for prospecting, tugs or handling. T11 re-enters at TRL 6. |
+          | K3 | Credible TRL 6 fallbacks exist for T09 and T20, and plausibly for T12 | A fallback trade at 0A mid-term shows no fallback within, say, a 2× penalty on the affected subsystem. That item reverts to B1. |
+          | K4 | The economics model can represent fallback penalties at subsystem resolution | The economics gate model is top-down (cost per tonne) without subsystem hooks. B3's joint-fallback test becomes unauditable, and B1 is the safer default. |
+          | K5 | Waivers are granted by an authority independent of the Phase 1 advocate | Decision rights (RAPID) give the 0B programme manager waiver authority. Raise C3 weight; B1 gains. |
+
+          ### Competing hypotheses for why GPT holds TRL 6 on T09, T12 and T20 (ACH)
+
+          The test was which hypothesis the panel record disconfirms least.
+
+          1. **H1: Waiver erosion (fewest disconfirmations).** GPT distrusts waiver processes at one-way gates. Its "substitutions reassessed" clause targets this.
+             - B3 answers H1 directly: a waiver becomes a pass/fail check on fallback evidence.
+          2. **H2: Fallbacks would not close economics.** No disconfirming evidence, but no confirming evidence either. Nobody has run the joint case.
+             - B3 makes this testable rather than assumed.
+          3. **H3: TRL 5 to 6 is a large step for these items.** Partially disconfirmed. GPT's own AD² for T09, T12 and T20 is 5, lower than its 6 for T11 and T18. That suggests GPT sees them as less hard, not harder.
+
+          If H1 is the real driver, B3 should be acceptable to GPT. If H2 is, the joint-fallback test will vindicate GPT empirically. Either way B3 is the better-structured rule.
+
+          ---
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Recommended gate text
+
+          Drafted for `gates-proposal.yaml`:
+
+          ```yaml
+          kdp_0b_technology_criteria:
+            T18:
+              class: project-ending
+              criterion: >
+                Bulk grade assay of the selected target obtained by a T18-class
+                instrument operating at the target (TRL >= 7 by flight). Ground TRL 6
+                alone does not satisfy KDP-0B. The target gate shall not pass on
+                remote-sensing evidence without T18 in-situ confirmation.
+              waiver: none
+              if_phase1_assay_differs_from_scout_instrument: Phase 1 variant at TRL 6
+            T11:
+              class: 0A flight technology (not on KDP-0B list)
+              governed_by: scout PDR, TRL 6
+              re_entry: >
+                If any Phase 1 element inherits T11 hardware or software, T11
+                is added to KDP-0B at TRL 6, class architecture-change.
+              failure_path: captured by target-gate pre-committed failure outcome
+            T09, T12, T20:
+              class: architecture-change
+              reference_implementation: >
+                The specific design (operating point, payload class, chemistry and
+                control scope) named in the Phase 1 configuration baseline frozen at
+                KDP-0B. Any post-KDP-0B substitution triggers reclassification and
+                a re-run of the economics gate.
+              criterion: TRL 6 in a relevant environment for the reference implementation
+              waiver:
+                permitted_to: TRL >= 5
+                all_conditions_required:
+                  - named fallback implementation at TRL 6 in a relevant environment
+                  - economics gate passes in the joint-fallback case
+                    (every waived item on its fallback simultaneously)
+                  - fallback penalties carried in the Phase 1 baseline, not in reserve
+                  - waiver authority independent of the Phase 1 programme office
+                if_no_qualified_fallback: no waiver (reverts to TRL 6, no waiver)
+          ```
+
+          ### Y-statement
+
+          In the context of a one-way KDP-0B gate under D-02, facing a panel split between "TRL 6 for all five" and "TRL ≥ 5 waiverable for the supporting three, 0A-only for the scouts", we chose to:
+          - bind T18 to flight-provenance evidence through the target gate;
+          - remove T11 from the list, with a re-entry condition;
+          - hold T09, T12 and T20 at TRL 6 with a waiver earned only by a qualified fallback that closes joint-fallback economics,
+
+          to achieve a gate that tests the actual irreversible consequence of each technology failing, accepting:
+          - that Phase 1 may start on a costlier fallback architecture, most likely for T12;
+          - that Phase 0 must fund fallback qualification;
+          - that KDP-0B cannot precede scout assay return.
+
+          ### Toulmin structure
+
+          - **Grounds.** All three models classify T09, T12 and T20 as architecture-change. Two of three plus the headline classify T18 as project-ending. T11's classification is inconsistent across sources.
+          - **Warrant.** For a one-way gate, the right test of a technology is whether the commitment survives that technology's failure. For architecture-change items, a qualified fallback that closes economics answers this as well as TRL 6 on the primary. For a sampling technology that should already have flown, flight evidence answers it better than ground TRL.
+          - **Backing.** D-02's "stringency follows reversibility". The real-options logic of D-01.
+          - **Qualifier.** Probably the right rule for T09 and T20 (medium confidence). Plausibly right for T12, low confidence, contingent on S2. Very likely right for T18 and T11.
+          - **Rebuttal conditions.** The rule fails if:
+            - fallback penalties are systematically underestimated (K4);
+            - waiver authority is captured (K5);
+            - no T12 fallback exists, in which case B1 holds for T12.
+
+          ### Accepted downside, stated plainly
+
+          - A Phase 1 baseline carrying, for example, smaller-unit T12 handling with a cost-per-tonne penalty of unknown size.
+          - A KDP-0B date that is hostage to scout return.
+
+          I would rather slip the gate than pass it on an unmeasured grade.
+
+          ---
+
+          ## 9. Consequences
+
+          ### Enables
+          - An economics-gate specification that must include a joint-fallback case. This is new work for the economics gate owner.
+          - Clean KDP-0B YAML with no drafter-dependent ambiguity. It also resolves the Gemini prose/YAML inconsistency on T11.
+          - A defined meaning for "selected reference implementation" that the other open choices can reuse, notably T25 and T26 if they land as architecture-change.
+
+          ### Constrains
+          - **0A mid-term review** must deliver:
+            - the scout payload definition confirming T18-class in-situ assay (K1);
+            - a fallback trade for T09, T12 and T20 naming fallback implementations and their penalties;
+            - a structured elicitation of T12 and T09 TRL trajectories.
+          - **Phase 0 budget** must carry fallback qualification lines, roughly one campaign each, likely smaller than the primary campaigns.
+          - **The KDP-0B schedule** must be set after nominal scout assay return plus analysis margin.
+          - **The target gate text** must be amended to forbid a remote-sensing-only pass.
+
+          ### Related open decisions
+          - **T25 and T26.** If ruled architecture-change, they inherit B3 and should not get a separate rule.
+          - **Claude's split classes** (T02, T10, T14, T15, T22, T24) are unaffected. They stay at TRL 6 with no waiver pending ruling.
+
+          ### Evidence that would change this ruling
+          1. **The scout scope excludes in-situ bulk assay.** A3 then fails, and the target gate needs an alternative provenance rule.
+          2. **The Phase 1 concept reuses T11.** T11 then returns at TRL 6.
+          3. **The fallback trade shows no TRL 6 fallback for T12 within a tolerable penalty.** T12 then reverts to B1, TRL 6 with no waiver. I would accept that without reopening the rule.
+          4. **The joint-fallback economics case fails with all three waived.** The rule then forbids waivers in practice. B3 converges to B1 empirically, which is the intended behaviour.
+          5. **Decision rights put waiver authority inside the Phase 1 programme office.** I would then switch my recommendation to B1, because B3's protection depends on independent adjudication.
+        wordCount: 3604
+        generatedAt: '2026-10-17T22:14:24.184Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          Here is the decision ruling on the KDP-0B TRL requirements for T11, T18, T09, T12, and T20, structured via the Composite Scaffold.
+
+          ### 1. Frame & decision type
+          **Frame:** We must define the stringency of the KDP-0B gate for five disputed technologies. KDP-0B is a one-way door (committing to Phase 1 based on Phase 0 outcomes). 
+          **Decision Type:** Executive and property decision (setting the gate criteria). 
+          **Cynefin Domain:** Complicated. We are balancing the risk of premature commitment against the schedule cost of demanding TRL 6 for non-critical or self-proving systems.
+
+          ### 2. Criteria and weights
+          Criteria are established before evaluating alternatives, using swing weights based on the actual range of impact at KDP-0B:
+          *   **C1: Risk Containment (Weight: 10/10).** The gate must prevent the project from proceeding if a true *project-ending* technology is unproven. The swing here is existential (project success vs. total failure).
+          *   **C2: Schedule Realism (Weight: 8/10).** The gate must not be artificially delayed by demanding TRL 6 for technologies that can be substituted or are proven in parallel flight. The swing is between a realistic KDP-0B date and a multi-year delay.
+          *   **C3: Architectural Flexibility (Weight: 6/10).** The ability to swap implementations (e.g., power tethers for beamed power) without failing the gate. 
+
+          ### 3. Options
+          *   **O1: The Null Option (Status Quo).** Leave the panel split unresolved. *Rejected:* A gate cannot function with ambiguous criteria; KDP-0B would be unexecutable.
+          *   **O2: Strict TRL 6 (GPT's stance).** All five technologies (T11, T18, T09, T12, T20) must reach TRL 6 before KDP-0B. *Rejected:* T11 and T18 are 0A flight technologies; demanding TRL 6 *before* the gate ignores that their 0A flight *is* their maturation path. Demanding TRL 6 for T09/T12/T20 ignores that they are substitutable.
+          *   **O3: Tiered Exemption (Claude's stance).** T11 and T18 are classed as 0A flight technologies (exempt from the standard KDP-0B TRL 6 rule, as their maturity is settled by their scout missions). T09, T12, and T20 are classed as architecture-change (TRL ≥ 5 acceptable at KDP-0B with a waiver and a fully funded path to TRL 6).
+          *   **O4: Hybrid.** T18 (sampling) is deemed project-ending (TRL 6 required), T11 is 0A flight, and T09/T12/T20 are architecture-change. 
+
+          ### 4. Assessment matrix
+
+          | Option | C1: Risk Containment (10) | C2: Schedule Realism (8) | C3: Arch. Flexibility (6) |
+          | :--- | :--- | :--- | :--- |
+          | **O1 (Null)** | Low | Low | Low |
+          | **O2 (Strict)** | High | Low (Forces massive delays) | Low (Locks in implementations) |
+          | **O3 (Tiered)** | Medium-High | High | High |
+          | **O4 (Hybrid)** | High | Medium | High |
+
+          ### 5. Sensitivity vs trade-off points
+          *   **Sensitivity Point:** The classification of T18 (Subsurface sampling). If sampling is strictly required to validate the economic case at KDP-0B, then O3 fails C1.
+          *   **Trade-off Point:** We are trading absolute risk containment (O2) for schedule realism and architectural flexibility (O3). Demanding TRL 6 for distributed energy storage (T20) at KDP-0B would delay the gate for a system that can be substituted with centralized storage if necessary.
+
+          ### 6. Evidence certainty
+          *   *Claim:* T09, T12, and T20 are architecture-change, not project-ending. **Certainty: High (GRADE).** There are known terrestrial and orbital fallbacks for power distribution and payload handling, even if less efficient.
+          *   *Claim:* T11 and T18 are 0A flight technologies. **Certainty: High.** Project Dyson's baseline funds 0A scout missions specifically to demonstrate these capabilities.
+
+          ### 7. Key assumptions
+          *   **Assumption 1:** A waivered TRL 5 technology (T09, T12, T20) with a funded path to TRL 6 will not experience a fundamental physics failure in Phase 1. *Falsification:* Ground testing during Phase 0A reveals insurmountable environmental degradation (e.g., regolith shorting the high-voltage tethers).
+          *   **Assumption 2:** T18 (sampling) does not need to be TRL 6 *before* KDP-0B because the 0A scout flight will provide the necessary data. *Falsification:* The scout mission fails to launch before KDP-0B, leaving the economic gate without assay data.
+
+          ### 8. Decision, warrant, accepted downside
+          **Y-Statement:** In the context of defining KDP-0B gate criteria, facing a panel split on five non-core technologies, we chose the Tiered Exemption (O3) to achieve schedule realism and architectural flexibility, accepting the risk that a waivered TRL 5 architecture-change technology might require an expensive Phase 1 redesign.
+
+          **Warrant:** KDP-0B is a gate to assess the viability of the project. Project-ending technologies must be TRL 6 because their failure ends the mission. Architecture-change technologies (T09, T12, T20) only degrade efficiency or require mass/cost penalties if they fail, which can be managed via waivers and funded maturation. T11 and T18 are self-proving via 0A flights; applying standard pre-gate TRL 6 rules to them creates a circular dependency.
+
+          ### 9. Consequences
+          *   **Enables:** KDP-0B can be scheduled based on the maturation of the core 14 project-ending technologies, rather than waiting for tether (T09) or handling (T12) implementations to reach TRL 6.
+          *   **Constrains:** The Systems Engineering team must draft strict waiver conditions for T09, T12, and T20, defining exactly what constitutes a "funded path to TRL 6" and identifying the fallback architectures for each.
+          *   **Rule Text:** *"At KDP-0B, 0A flight technologies (T11, T18) are assessed via their mission data, not pre-gate TRL. Architecture-change technologies (T09, T12, T20) require TRL 6 in a relevant environment, OR TRL 5 with an approved waiver, a defined fallback architecture, and a fully funded Phase 1 maturation plan."*
+        wordCount: 896
+        generatedAt: '2026-10-17T22:14:50.602Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **Recommendation: do not impose a blanket five-technology TRL-6 requirement. Gate the capabilities on which the irreversible KDP-0B commitment depends.**
+
+          Specifically:
+
+          - **T18:** require TRL 6 for the sampling-and-assay capability supporting the selected target’s investment case, plus acceptable target-specific results.
+          - **T11:** accept maturity demonstrated through 0A; do not require a second demonstration simply because KDP-0B occurs later. Require TRL 6 for any unresolved scout capability whose failure could still invalidate 0B.
+          - **T09, T12 and T20:** require TRL 6 for the selected implementation **when 0B creates an irreversible dependence on it**. Otherwise permit TRL ≥5 only under a tightly bounded, funded substitution or deferral provision.
+
+          This is an **executive gate-policy decision**, with architecture-property consequences. The policy can be revised before commitment; expenditure and dependencies authorised at KDP-0B may not be reversible.
+
+          D-02 already resolves the governing principle: project-ending technologies need TRL 6 in a relevant environment, without waivers. The remaining issue is classification—not whether to weaken D-02.
+
+          **“Selected” is insufficient to establish criticality; “supporting” is insufficient to establish reversibility.**
+
+          ## 2. Criteria and weights
+
+          First apply two **non-compensable musts**:
+
+          1. No project-ending dependency passes KDP-0B below TRL 6.
+          2. The target, demand, economics and licence gates remain independent; technological maturity cannot compensate for failing one.
+
+          For options satisfying those musts, use these provisional **swing weights**. They are proposed owner values, not empirical measurements.
+
+          | Criterion | Weight | Range being valued and reason |
+          |---|---:|---|
+          | **C1. Protection against irreversible exposure** | **40%** | From accepting an unresolved essential dependency to demonstrating it before commitment. This is the largest swing because it implements D-02 and protects programme viability. |
+          | **C2. Auditability and enforceability** | **25%** | From ambiguous labels and discretionary exceptions to testable evidence and explicit stop conditions. Gate ambiguity can defeat an otherwise sound policy. |
+          | **C3. Proportionate maturation cost and schedule** | **20%** | From duplicating demonstrations or maturing dispensable branches to testing only what the committed architecture needs. Important, but not exchangeable for programme survival. |
+          | **C4. Preservation of useful options** | **15%** | From prematurely locking implementations to retaining executable substitutions and demand-sized deployment. This supports D-01, but only within a credible delivery envelope. |
+
+          The cost criterion covers **avoidable maturation burden**, not the entire programme budget. The option-value criterion covers **usable alternatives**, not speculative redesigns.
+
+          ## 3. Options
+
+          **O0 — Null: leave the panel split unresolved.**  
+          Argument: avoids a premature classification before architecture and mission evidence mature.  
+          **Reject:** teams cannot confidently define demonstrations, reserves or acceptance criteria. Deferring evidence is reasonable; deferring the rule for judging it is not.
+
+          **O1 — Blanket TRL 6 for all five at KDP-0B.**  
+          Argument: simple, conservative and readily auditable.  
+          **Reject as the general rule:** may duplicate completed 0A qualification and force maturation of implementations the programme need not irreversibly depend upon. Retain as the default where reversibility is unproven.
+
+          **O2 — Fixed categorical split.**  
+          Treat T11/T18 solely through their 0A mission gates; allow T09/T12/T20 at TRL ≥5 with waivers and funded maturation.  
+          Argument: respects mission ownership and avoids overloading KDP-0B.  
+          **Reject:** flight-project ownership does not remove 0B’s dependence on its evidence. Likewise, an “architecture-change” subsystem may become project-ending once a site, payload interface or power architecture is committed.
+
+          **O3 — Dependency-based gate with inherited evidence.**  
+          Reuse completed 0A evidence; require TRL 6 for irreversible dependencies; permit lower maturity only where an executable alternative prevents project-ending exposure.  
+          **Recommend:** best implements D-01 and D-02 together, albeit with a greater assurance burden.
+
+          ## 4. Assessment matrix
+
+          Scores are **ordinal judgments**, from 1 = poor to 5 = strong. Weighted totals structure the discussion; they are not calculated probabilities of success.
+
+          | Option | C1: protection 40% | C2: auditability 25% | C3: burden 20% | C4: options 15% | Weighted /5 |
+          |---|---:|---:|---:|---:|---:|
+          | O0: unresolved split | 2 | 1 | 3 | 2 | **1.95** |
+          | O1: all five TRL 6 | 5 | 5 | 1 | 2 | **3.70** |
+          | O2: categorical split | 2 | 4 | 4 | 4 | **3.20** |
+          | O3: dependency-based | 5* | 4 | 4* | 4* | **4.40** |
+
+          \*O3 earns these scores **only with independently reviewed dependency and fallback evidence**. Without that evidence, its claimed protection and flexibility are not established; affected items revert to the TRL-6 default.
+
+          O2 also fails the mandatory screen wherever its waiver would cover a genuinely project-ending dependency. A favourable weighted score could not cure that failure.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points — facts that can change the ruling
+
+          - **Commitment boundary:** Does KDP-0B actually authorise procurement, deployment or interface commitments that make replacement prohibitively disruptive? Moving the last responsible commitment date changes the maturity deadline.
+          - **Alternative feasibility:** Can the substitute meet signed Phase 1 demand within the approved economics, schedule and licence envelope?
+          - **Relevant environment:** Do demonstrations reproduce the dominant failure mechanisms—rather than merely resemble the operating setting?
+          - **Evidence inheritance:** Does 0A’s demonstrated configuration cover the capability and environment claimed at 0B?
+
+          The recommendation is most sensitive to the first two. If feasible alternatives disappear, O3 converges on O1 for the affected technology.
+
+          ### Trade-off points — owner values, not facts
+
+          - How much demonstration expenditure should be accepted to avoid conditional authorisation?
+          - How much deployment delay is acceptable to preserve implementation flexibility?
+          - How much independently bounded rework risk may remain after project-ending risk has been excluded?
+
+          These require owner choices. More testing can inform them, but cannot determine the preferred balance.
+
+          ## 6. Evidence certainty
+
+          The Project Dyson positions below are taken from the supplied account of `gates.md`, `gates-proposal.yaml`, `trl-baseline.yaml` and `decisions.md`; I have not independently inspected those files. GRADE labels here are adapted to engineering evidence.
+
+          | Key claim | Evidence certainty | Confidence and likelihood |
+          |---|---|---|
+          | D-02 requires TRL 6 without waivers for project-ending dependencies | **High**, as a stated decision premise | **High confidence** in the policy interpretation; likelihood is not applicable to a normative rule. |
+          | T18 maturity alone cannot establish economically adequate target grade | **Moderate**, based on the distinction between instrument capability and target observations | **High confidence** in the distinction. Probability of target adequacy is **unquantified**. |
+          | T11 evidence can be inherited without a duplicate demonstration if configuration, environment and capability remain applicable | **Moderate**, established engineering reasoning but no mission evidence supplied | **Moderate confidence** in applicability here; likelihood of a material configuration gap is **unknown**. |
+          | T09/T12/T20 have executable alternatives within the committed programme | **Very low**, no substitution cases supplied | **Low confidence** that any particular alternative is currently adequate; likelihood **unquantified**. |
+          | O3 reduces unnecessary maturation expenditure relative to O1 | **Low**, no costed work breakdown or critical path supplied | **Moderate confidence** in the mechanism, **low confidence** in the saving’s magnitude or occurrence here. |
+
+          Thus, the recommendation is **not** a finding that the three supporting systems already qualify for exceptions. It establishes what evidence would make such treatment defensible.
+
+          ## 7. Key assumptions
+
+          | Assumption | Evidence that would falsify it | Consequence |
+          |---|---|---|
+          | 0A can deliver decision-quality sampling and assay evidence before 0B | Target coverage, bias, contamination or uncertainty remain insufficient for the investment case | Hold 0B, obtain additional evidence, or change target; do not substitute a TRL label for missing knowledge. |
+          | T11’s relevant scout functions can be completed before 0B | Continuing scouting is essential to sustain committed production or validate later irrevocable expenditure | Gate that continuing capability at TRL 6. |
+          | Some T09/T12/T20 choices remain reversible | Replacement requires stranded infrastructure, unqualified interfaces, unacceptable demand loss or economics-gate failure | Require TRL 6 for the selected dependency. |
+          | Relevant-environment demonstrations can represent dominant coupled failure modes | Analysis identifies unrepresented electrostatic/dust effects, thermal cycling, contact dynamics, transients or autonomy failures | Revise demonstration scope before awarding the gate credit. |
+
+          **ACH ranking, provisional and by least disconfirmed:**
+
+          1. **Criticality follows the committed dependency chain**, not technology identifiers. Most consistent with D-02 and the possibility of changing architectures.
+          2. **All five will prove effectively irreversible by 0B.** Plausible, but not established without commitment and substitution analyses.
+          3. **The existing categorical labels are sufficient.** Most challenged: they do not establish whether replacements preserve demand, economics and licensing.
+
+          A credible alternative case would weaken hypothesis 2. Conversely, evidence that substitution breaks the investment case would eliminate the proposed exception for that item.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Proposed rule text
+
+          > **At KDP-0B, every technology capability whose failure would invalidate the authorised investment case shall have demonstrated TRL 6 in a documented relevant environment. No maturity waiver is permitted for such a capability.**
+          >
+          > **Previously accepted 0A evidence may satisfy this requirement where its configuration, operating envelope and demonstrated functions remain applicable. Completion of a mission, or assignment of a technology-level TRL, does not by itself establish applicability.**
+          >
+          > **For T09, T12 and T20, the selected reference implementation is the configuration used in the approved architecture, performance model, cost estimate, interfaces and qualification plan—not merely a preferred candidate. It requires TRL 6 where KDP-0B creates an irreversible dependence upon it.**
+          >
+          > **An implementation at TRL ≥5 may be accepted only if independent review verifies a funded, scheduled and interface-compatible alternative or deferral that preserves the approved demand, economics, safety and licence case. The alternative must itself be sufficiently demonstrated for its assigned role.**
+          >
+          > **Each exception shall identify its owner, evidence, contingency funding, latest substitution date and automatic stop trigger. No irreversible commitment dependent on that implementation may occur after that date without TRL 6 or activation of the accepted alternative.**
+
+          ### Technology-specific application
+
+          - **T18:** require TRL 6 for the relevant sampling and assay capability **and** target-specific evidence meeting predeclared uncertainty and representativeness criteria.
+          - **T11:** inherit satisfactory 0A demonstration evidence. Gate outstanding critical functions, not the spacecraft’s historical existence.
+          - **T09:** assess distribution, insulation, protection and load interaction under the selected site conditions.
+          - **T12:** require evidence addressing the selected 150–300 t payload regime and governing contact/control dynamics; a small demonstration needs a validated scaling argument.
+          - **T20:** assess storage together with the microgrid functions on which operations depend, including transient response, fault isolation and degraded operation.
+
+          **Warrant:** D-02 ties stringency to irreversibility. Evidence inheritance avoids duplicate work; demonstrated substitutability distinguishes a reversible implementation risk from a project-ending dependency.
+
+          **Accepted downside:** this policy requires more assurance work and judgment than a blanket list. It may still conclude that all five need TRL 6.
+
+          ## 9. Consequences
+
+          Before KDP-0A, adopt the classification procedure and assign evidence owners. Before KDP-0B, require an independently reviewed dependency map and, for every proposed exception, a costed substitution case and commitment schedule.
+
+          This decision:
+
+          - **Enables** reuse of 0A evidence and demand-sized 0B planning under D-01.
+          - **Constrains** procurement and interface commitments that would silently make a lower-maturity implementation indispensable.
+          - **Does not relax** the target, demand, economics or licence gates.
+          - **Preserves** the pre-committed “0A only, Earth supply” outcome if required evidence is unavailable.
+
+          **Y-statement:** In the context of D-01’s gated real option and D-02’s no-waiver rule, facing disputed technology labels and potentially irreversible dependencies, we choose capability-based TRL-6 gating with inherited 0A evidence and strictly demonstrated reversibility, to protect the investment case without unnecessary duplicate maturation, accepting additional assurance effort. **The warrant is that irreversibility—not list membership—determines required stringency; the qualifier is that any unproven substitution defaults to TRL 6, constraining 0B authorisation until the dependency is demonstrated or removed.**
+        wordCount: 1922
+        generatedAt: '2026-10-17T22:18:18.397Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: information
+            reasoning: Response A sets weighted criteria before options and includes null options for both groups. It separates likelihood from confidence, lists falsifiable assumptions, and checks robustness. Its rule text is concrete, and the joint-fallback waiver test closes the waiver-stacking gap. The weak spot is that the TRL estimates and the remote-sensing loophole rest on panel judgment and an unconfirmed reading of the gate text. A says so openly, so this is unlikely to change the decision.
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: none
+            reasoning: The response provides a complete and robust decision chain, including clear swing weights, well-defined options, calibrated evidence, and a highly specific commitment.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: information
+            reasoning: Some maturity forecasts and fallback possibilities remain speculative, but they are explicitly qualified and do not automatically earn gate credit. Qualified fallbacks, joint-fallback economics, independent waiver authority and default reversion to TRL 6 make the recommendation conditional on testable evidence.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: Response B names T18 as its own sensitivity point, and its matrix rates O4 (hybrid) higher than O3 on risk containment. It still chooses O3 without resolving either issue or aggregating the scores. It rates the existence of fallbacks for T09, T12 and T20 at 'High' certainty, though no evidence supports that. Its 'funded path' waiver does not address several waivers failing together. The choice between O3 and O4 could plausibly flip.
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: alternatives
+            reasoning: The response dismisses the null option immediately without full evaluation and lacks a rigorous analysis of competing hypotheses (ACH), weakening the information and alternatives links.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: The tiered approach is plausible, but a funded maturation path and a named fallback do not establish that Phase 1 survives failure of the waived technologies. Unsupported high confidence in substitutability and no requirement to test combined fallback economics could change the decision.
+        rawScore: 3
+        weightedScore: 2.5
+        approveCount: 0
+        rejectCount: 0
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: 'Response C sets non-compensable musts and swing weights before options, includes a null option, and gives honest certainty ratings including ''very low'' and ''unquantified''. Its assumptions are falsifiable, and the default is clear: any unproven substitution reverts to TRL 6. The weak spot is that the commitment is conditional and less concrete than A''s, since it may still end with TRL 6 for all five. The default rule makes it executable, though.'
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: none
+            reasoning: The response meticulously follows the decision-making framework, explicitly linking evidence certainty, assumptions, and swing-weighted criteria to a well-formulated policy commitment.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: The dependency-based rule coherently connects irreversibility, applicable inherited evidence and independently demonstrated alternatives. Implementation requires judgment about sufficient alternative maturity, but explicit evidence requirements, stop triggers and default TRL-6 treatment prevent uncertainty from becoming an unconditional exemption.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+    winnerId: claude-opus-5-5
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: A and C reach the same well-supported position independently. No blanket rule. T18 is bound to target-specific assay evidence and T11 inherits its 0A evidence. T09, T12 and T20 default to TRL 6, with exceptions only for a demonstrated fallback that closes economics under independent review. The remaining differences are drafting details the owner can settle; another round is unlikely to add to them.
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: Responses A and C provide highly rigorous, executable, and well-reasoned policies that resolve the prompt's core conflict. Further discussion is unlikely to yield a substantially better framework.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: 'A and C establish a satisfactory common resolution: no blanket exemption or blanket five-item requirement; retain target-specific assay evidence, reuse applicable scout evidence, and permit lower-maturity supporting implementations only when demonstrated alternatives protect the committed investment case. A supplies concrete joint-fallback safeguards for implementation.'
+    shouldTerminate: true
+    completedAt: '2026-10-17T22:18:53.026Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 1
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 0
+  totalVotes: 9
+  approvalRate: 66.66666666666666
+  averageResponseWords: 2141
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T22:18:53.150Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    **All three models rejected a blanket requirement that all five technologies receive a new TRL-6 demonstration at KDP-0B.** Claude Opus 5.5, Gemini 3.1 Pro and GPT-6.1 Sol supported using applicable 0A mission evidence for T11/T18 and distinguishing supporting implementations from project-ending dependencies. All three rejected leaving the panel split unresolved. Their mutual approvals of Claude’s and GPT’s responses establish support for those approaches, but not convergence on identical gate text.
+
+    **The remaining disagreement concerns T18’s binding criterion and the strength of exceptions for T09, T12 and T20.** Claude retained T18 as project-ending and required target-specific in-situ bulk-grade evidence; Gemini assessed T18 through its 0A mission rather than a separate pre-gate TRL requirement; GPT required TRL 6 for the relevant sampling-and-assay capability plus acceptable target-specific results. For T09/T12/T20, Claude proposed TRL 6 by default, with TRL-5 exceptions backed by qualified TRL-6 fallbacks and joint-fallback economics. Gemini allowed TRL 5 with an approved waiver, defined fallback and funded maturation plan. GPT tied TRL 6 to irreversible dependency, permitting lower maturity only where independently demonstrated substitution or deferral protects the authorised investment case.
+
+    Claude and GPT expressly treated fallback adequacy as unproven; both required the affected item to revert to TRL-6 treatment when the exception’s evidence is insufficient. Gemini expressed greater confidence in substitutability, which Claude and GPT challenged as unsupported. No response established that any particular fallback already qualifies.
+
+    ## Decision record
+
+    ### Claude Opus 5.5: differentiated gates with qualified-fallback exceptions
+
+    **Y-statement:** In the context of D-01’s gated real option and D-02’s one-way KDP-0B gate, facing disputed classifications and potentially cumulative waiver exposure, **Claude chose** to retain T18 as project-ending with target-specific in-situ assay evidence, remove T11 from the KDP-0B list unless Phase 1 inherits its hardware or software, and require TRL 6 for T09/T12/T20 unless a qualified-fallback exception is earned, to protect the irreversible commitment without unnecessarily blocking substitutable implementations, accepting fallback-qualification expenditure, potentially worse Phase 1 economics, and a gate date dependent on scout assay return.
+
+    - **Warrant — Claude:** The gate should test the consequence of failure; target evidence addresses T18’s risk, while qualified alternatives can address architecture-change risk.
+    - **Qualifier — Claude:** A TRL-5 exception requires a named TRL-6 fallback, passing economics with all waived items on their fallbacks simultaneously, fallback penalties in the baseline, and independent waiver authority.
+    - **Accepted downside — Claude:** Phase 1 may use a costlier fallback; absent qualifying evidence, the item requires TRL 6 without an exception.
+
+    ### Gemini 3.1 Pro: mission-evidence assessment and tiered exemption
+
+    **Y-statement:** In the context of defining KDP-0B criteria, facing a split over five technologies outside the agreed core, **Gemini chose** to assess T11/T18 through their 0A mission evidence and permit T09/T12/T20 at TRL 5 with an approved waiver, defined fallback and fully funded maturation plan, to preserve schedule realism and architectural flexibility, accepting the possibility of expensive Phase 1 redesign.
+
+    - **Warrant — Gemini:** 0A flight technologies mature through their missions, while architecture-change technologies can be substituted rather than treated as project-ending.
+    - **Qualifier — Gemini:** Its recommendation depends on scout evidence arriving before KDP-0B and on supporting-system failures remaining manageable through alternatives.
+    - **Accepted downside — Gemini:** A waived technology may require costly redesign. Gemini also identified T18’s necessity to the economic case as a sensitivity that could invalidate its preferred exemption.
+
+    ### GPT-6.1 Sol: dependency-based gate with inherited evidence
+
+    **Y-statement:** In the context of D-01 and D-02, facing disputed labels and potentially irreversible dependencies, **GPT chose** capability-based TRL-6 gating with applicable inherited 0A evidence and independently demonstrated reversibility, to protect the investment case without duplicate maturation, accepting additional assurance work and the possibility that all five ultimately require TRL 6.
+
+    - **Warrant — GPT:** Irreversibility, rather than technology-list membership or selection alone, determines required stringency.
+    - **Qualifier — GPT:** An unproven substitution defaults to TRL-6 treatment. Lower-maturity acceptance requires a funded, scheduled, interface-compatible alternative or deferral preserving demand, economics, safety and licensing.
+    - **Accepted downside — GPT:** The rule requires judgment, dependency analysis and explicit commitment controls rather than a simple fixed list.
+
+    ## Decision-quality audit
+
+    ### Round 1 — Claude Opus 5.5
+
+    - **Weakest link named in votes:** Claude and GPT named **information**; Gemini named **none**.
+    - **Composite Scaffold support:** Claude and GPT’s votes recognised criteria-before-options, null options, sensitivity analysis, falsifiable assumptions and concrete gate text. Their reservations concerned speculative maturity forecasts, possible fallbacks and the unconfirmed interpretation that current target-gate text permits remote-sensing-only evidence.
+    - **Missing or unsupported elements identified:** No voter identified a missing scaffold step. Claude and GPT identified evidence gaps within the information and certainty steps; approval did not establish the forecasts or fallback feasibility as facts.
+    - **Values trade-off identified by Claude:** Waiting for the preferred implementation versus accepting a costlier qualified fallback; spending Phase 0 resources on primary maturation versus fallback qualification.
+
+    ### Round 1 — Gemini 3.1 Pro
+
+    - **Weakest links named in votes:** Claude and GPT named **reasoning**; Gemini named **alternatives**. All three votes were neutral.
+    - **Composite Scaffold support gaps identified by Claude/GPT:** Gemini selected its tiered exemption without resolving its own T18 sensitivity. Claude noted that Gemini’s matrix favoured the hybrid on risk containment without a demonstrated aggregation supporting the final choice. Both challenged high confidence in substitutability and the absence of combined-fallback economics.
+    - **Missing or unsupported elements identified by Gemini:** Gemini’s self-review cited insufficient null-option evaluation and no rigorous competing-hypotheses analysis.
+    - **Values trade-off identified by Gemini:** Schedule realism and flexibility versus stronger pre-commitment risk containment. Claude and GPT’s objections also concerned missing evidence, not merely different values.
+
+    ### Round 1 — GPT-6.1 Sol
+
+    - **Weakest link named in votes:** Claude and GPT named **commitment**; Gemini named **none**.
+    - **Composite Scaffold support:** The votes recognised non-compensable requirements, criteria-before-options, a null option, qualified evidence ratings, falsifiable assumptions and a default-to-TRL-6 rule.
+    - **Missing or unsupported elements identified:** No voter identified a missing scaffold step. Claude described the commitment as less concrete because its application could still require TRL 6 for all five; GPT acknowledged judgment remains over sufficient alternative maturity.
+    - **Values trade-offs identified by GPT:** Demonstration expenditure versus conditional authorisation, deployment delay versus flexibility, and the amount of bounded rework risk acceptable after project-ending exposure is excluded.
+
+    ## Key Points
+
+    - **All three models:** No uniform, duplicate TRL-6 demonstration requirement is justified solely by these five technology identifiers.
+    - **All three models:** Leaving the split unresolved is not an acceptable gate policy.
+    - **Claude and GPT:** T18’s technological maturity cannot substitute for adequate selected-target evidence.
+    - **Claude:** T18 must supply in-situ bulk-grade evidence; ground TRL 6 alone is insufficient.
+    - **Gemini:** T11/T18 should be assessed through 0A mission data rather than a separate pre-gate TRL rule.
+    - **Claude and GPT:** Applicable 0A evidence should be reused, although Claude’s T11 re-entry trigger is hardware/software inheritance and GPT’s is an outstanding critical capability.
+    - **Claude and GPT:** A funded maturation plan alone does not establish that Phase 1 survives implementation failure.
+    - **Claude:** Multiple exceptions must pass a simultaneous joint-fallback economics case.
+    - **GPT:** Exceptions must remain reversible through explicit substitution deadlines and automatic stop triggers.
+    - **All three models:** Their proposed flexibility does not authorise a waiver for a genuinely project-ending dependency under D-02.
+
+    ## Unresolved Questions
+
+    1. **T18’s exact criterion:** Claude requires target-based in-situ bulk assay; GPT requires applicable TRL 6 plus acceptable target evidence; Gemini relies on mission evidence. The panel did not agree identical wording.
+    2. **T11’s return to the gate:** Claude uses Phase 1 hardware/software inheritance; GPT uses continuing critical dependency. Gemini did not specify an equivalent re-entry rule.
+    3. **Exception strength:** Claude requires TRL-6 fallbacks and joint-fallback economics; Gemini proposes a defined fallback and funded maturation; GPT requires independently demonstrated reversibility without Claude’s explicit universal fallback-TRL threshold.
+    4. **Fallback feasibility:** Claude and GPT identify this as unevidenced; Gemini’s higher confidence was challenged in the votes.
+    5. **Reference implementation:** Claude binds it to the frozen design and operating scope; GPT binds it to the configuration underpinning the approved architecture, models, interfaces and qualification plan. The precise shared definition remains unwritten.
+    6. **Owner preferences:** Claude and GPT identify acceptable delay, fallback expenditure and bounded rework exposure as values decisions rather than facts testing alone can settle.
+
+    ## Recommended Actions
+
+    - **Following all three models:** Replace the unresolved split with explicit gate text before teams rely on it for maturation planning.
+    - **Following Claude and GPT:** Require an evidence-applicability record showing which 0A demonstrations satisfy which KDP-0B capabilities.
+    - **Following Claude and GPT:** Confirm the scout payload, assay scope, target-evidence acceptance criteria and delivery date; inspect the actual target-gate text before accepting Claude’s proposed remote-sensing loophole as established.
+    - **Following Claude:** Commission named fallback trades for T09/T12/T20 and test simultaneous fallback economics, carrying penalties in the baseline.
+    - **Following GPT:** Map irreversible commitments, substitution deadlines, interface constraints and automatic stop triggers.
+    - **Following Claude and GPT:** Default affected dependencies to TRL 6 when exception evidence is inadequate; do not treat proposed alternatives as qualified.
+    - **Following the distinctions identified by all three:** Ask the owner to settle T18 wording, T11 re-entry and exception thresholds explicitly, while recording schedule-versus-assurance preferences.
+    - **Following GPT:** Preserve the pre-committed “0A only, Earth supply” outcome if required evidence is unavailable.
+
+    ```yaml
+    questionId: "rq-0-66"
+    topics:
+      - id: blanket-trl-six
+        topic: Blanket TRL-6 requirement for all five technologies
+        positions:
+          - statement: Reject a uniform duplicate demonstration requirement; reuse applicable 0A evidence and distinguish dependencies.
+            models: ["Claude Opus 5.5", "Gemini 3.1 Pro", "GPT-6.1 Sol"]
+            evidence: "All three rejected blanket treatment and the unresolved null option in Round 1."
+        resolution_status: resolved
+        priority: high
+
+      - id: t18-gate-criterion
+        topic: Binding requirement for T18
+        positions:
+          - statement: Retain project-ending status and require selected-target in-situ bulk-grade evidence; ground TRL 6 alone is insufficient.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude's proposed target-evidence provenance rule and no-waiver requirement."
+          - statement: Assess T18 through 0A mission evidence rather than a separate pre-gate TRL requirement.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini's tiered exemption, conditional on scout evidence supporting the gate."
+          - statement: Require TRL 6 for the applicable sampling-and-assay capability plus acceptable target-specific results.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT's distinction between capability maturity and target adequacy."
+        resolution_status: partially-resolved
+        priority: critical
+
+      - id: t11-evidence-and-reentry
+        topic: T11 evidence inheritance and return to KDP-0B
+        positions:
+          - statement: Remove T11 from the list unless Phase 1 inherits its hardware or software.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude's explicit inheritance-based re-entry condition."
+          - statement: Assess T11 through its 0A mission data.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini's classification of T11 as a self-proving 0A flight technology."
+          - statement: Reuse applicable 0A evidence and require TRL 6 for outstanding scout capabilities critical to 0B.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT's configuration-applicability and continuing-dependency tests."
+        resolution_status: partially-resolved
+        priority: high
+
+      - id: supporting-system-exceptions
+        topic: Exceptions for T09, T12 and T20
+        positions:
+          - statement: Default to TRL 6; permit TRL 5 only with TRL-6 fallbacks, joint-fallback economics, baseline penalties and independent authority.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude's waiver-stacking analysis; fallback feasibility remains conditional."
+          - statement: Permit TRL 5 with an approved waiver, defined fallback and fully funded maturation plan.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini's architecture-change classification; Claude and GPT challenged its confidence in substitutability."
+          - statement: Require TRL 6 for irreversible dependencies; otherwise permit TRL 5 only with independently demonstrated substitution or deferral and commitment controls.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT's dependency rule, stop triggers and default to TRL 6 when reversibility is unproven."
+        resolution_status: partially-resolved
+        priority: critical
+    ```
+  keyPoints:
+    - All three models:** No uniform, duplicate TRL-6 demonstration requirement is justified solely by these five technology identifiers.
+    - All three models:** Leaving the split unresolved is not an acceptable gate policy.
+    - Claude and GPT:** T18’s technological maturity cannot substitute for adequate selected-target evidence.
+    - Claude:** T18 must supply in-situ bulk-grade evidence; ground TRL 6 alone is insufficient.
+    - Gemini:** T11/T18 should be assessed through 0A mission data rather than a separate pre-gate TRL rule.
+    - Claude and GPT:** Applicable 0A evidence should be reused, although Claude’s T11 re-entry trigger is hardware/software inheritance and GPT’s is an outstanding critical capability.
+    - Claude and GPT:** A funded maturation plan alone does not establish that Phase 1 survives implementation failure.
+    - Claude:** Multiple exceptions must pass a simultaneous joint-fallback economics case.
+    - GPT:** Exceptions must remain reversible through explicit substitution deadlines and automatic stop triggers.
+    - All three models:** Their proposed flexibility does not authorise a waiver for a genuinely project-ending dependency under D-02.
+  unresolvedQuestions:
+    - T18’s exact criterion:** Claude requires target-based in-situ bulk assay; GPT requires applicable TRL 6 plus acceptable target evidence; Gemini relies on mission evidence. The panel did not agree identical wording.
+    - T11’s return to the gate:** Claude uses Phase 1 hardware/software inheritance; GPT uses continuing critical dependency. Gemini did not specify an equivalent re-entry rule.
+    - Exception strength:** Claude requires TRL-6 fallbacks and joint-fallback economics; Gemini proposes a defined fallback and funded maturation; GPT requires independently demonstrated reversibility without Claude’s explicit universal fallback-TRL threshold.
+    - Fallback feasibility:** Claude and GPT identify this as unevidenced; Gemini’s higher confidence was challenged in the votes.
+    - Reference implementation:** Claude binds it to the frozen design and operating scope; GPT binds it to the configuration underpinning the approved architecture, models, interfaces and qualification plan. The precise shared definition remains unwritten.
+    - Owner preferences:** Claude and GPT identify acceptable delay, fallback expenditure and bounded rework exposure as values decisions rather than facts testing alone can settle.
+  recommendedActions:
+    - Following all three models:** Replace the unresolved split with explicit gate text before teams rely on it for maturation planning.
+    - Following Claude and GPT:** Require an evidence-applicability record showing which 0A demonstrations satisfy which KDP-0B capabilities.
+    - Following Claude and GPT:** Confirm the scout payload, assay scope, target-evidence acceptance criteria and delivery date; inspect the actual target-gate text before accepting Claude’s proposed remote-sensing loophole as established.
+    - Following Claude:** Commission named fallback trades for T09/T12/T20 and test simultaneous fallback economics, carrying penalties in the baseline.
+    - Following GPT:** Map irreversible commitments, substitution deadlines, interface constraints and automatic stop triggers.
+    - Following Claude and GPT:** Default affected dependencies to TRL 6 when exception evidence is inadequate; do not treat proposed alternatives as qualified.
+    - Following the distinctions identified by all three:** Ask the owner to settle T18 wording, T11 re-entry and exception thresholds explicitly, while recording schedule-versus-assurance preferences.
+    - Following GPT:** Preserve the pre-committed “0A only, Earth supply” outcome if required evidence is unavailable.
+    - 'id: blanket-trl-six'
+    - 'statement: Reject a uniform duplicate demonstration requirement; reuse applicable 0A evidence and distinguish dependencies.'
+    - 'id: t18-gate-criterion'
+    - 'statement: Retain project-ending status and require selected-target in-situ bulk-grade evidence; ground TRL 6 alone is insufficient.'
+    - 'statement: Assess T18 through 0A mission evidence rather than a separate pre-gate TRL requirement.'
+    - 'statement: Require TRL 6 for the applicable sampling-and-assay capability plus acceptable target-specific results.'
+    - 'id: t11-evidence-and-reentry'
+    - 'statement: Remove T11 from the list unless Phase 1 inherits its hardware or software.'
+    - 'statement: Assess T11 through its 0A mission data.'
+    - 'statement: Reuse applicable 0A evidence and require TRL 6 for outstanding scout capabilities critical to 0B.'
+    - 'id: supporting-system-exceptions'
+    - 'statement: Default to TRL 6; permit TRL 5 only with TRL-6 fallbacks, joint-fallback economics, baseline penalties and independent authority.'
+    - 'statement: Permit TRL 5 with an approved waiver, defined fallback and fully funded maturation plan.'
+    - 'statement: Require TRL 6 for irreversible dependencies; otherwise permit TRL 5 only with independently demonstrated substitution or deferral and commitment controls.'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T22:19:58.765Z'
+alternateSyntheses:
+  - synthesizer: claude-opus-5-5
+    generatedAt: '2026-10-17T22:39:12.976Z'
+    file: conclusion.claude-opus-5-5.md

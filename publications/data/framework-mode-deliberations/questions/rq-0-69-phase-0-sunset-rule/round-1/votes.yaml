@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: information
+    reasoning: 'Complete chain: a null option, must and want criteria set before options, six alternatives including hybrids, and weighted totals that check arithmetically. It separates sensitivity points from trade-off points, has falsifiable assumptions, and uses ACH to shape the re-entry criteria. The weakest input is the 24-month slip allowance and the restart cost. Both are explicitly flagged as very-low or low certainty and tied to rq-0-63 and SP2, so the gap is unlikely to change the decision.'
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: 'Certainty is uncalibrated: it claims >90% likelihood with high confidence from loose Apollo and ISS analogues. The frame contradicts itself, calling the fallback a highly irreversible one-way door and then choosing to make it automatic, which conflicts with D-02 reversibility logic. It confuses capping 0A spend with 0B spend. It considers only three options with no hybrid, and its matrix is qualitative with no weighted aggregation.'
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: reasoning
+    reasoning: 'Sound chain. It separates the planning, authority and supply-commitment functions, includes a null option, sets mandatory constraints before options, has calibrated evidence with unquantified likelihoods acknowledged, and gives falsifiers plus a weight-sensitivity test. One arithmetic slip: Option B should total 72.5, not 70. This does not change the ranking. Allowing replacement authority before expiry is slightly looser than an outright ban on in-place extension, but it is bounded and explicit.'
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: information
+    reasoning: The response provides a highly structured and complete decision chain. The weakest link is information, as the restart cost remains unestimated, but this is acknowledged and handled via sensitivity analysis.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: alternatives
+    reasoning: The response follows the structure well but presents a somewhat binary choice between Option 1 and Option 2 without exploring hybrid solutions that might better balance the trade-offs. The null option is also dismissed without full matrix evaluation.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: values
+    reasoning: A rigorous and well-reasoned response that clearly separates authority expiry from supply commitment. The weakest link is values, as the swing weights are explicitly proposed owner values rather than empirically derived, but this is properly caveated.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: commitment
+    reasoning: 'The default-expiry approach is well developed, but re-entry requirements conflict: the recommendation requires full KDP-0B compliance, while SUN-7 permits merely scheduling the relevant-environment test. The unsupported 24-month buffer also materially narrows the planning envelope.'
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: The decisive claim that 180 months provides sufficient margin is assigned greater than 90% likelihood without relevant supporting evidence. It also conflates fallback with an irreversible fifteen-year procurement commitment, and its M150 cutoff cannot accommodate a 36-month scout wave before M180.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: information
+    reasoning: Clearly separates planning, spending authority and procurement commitments; evaluates alternatives against explicit criteria; and specifies an executable default with bounded replacement authority. Schedule feasibility and preservation economics remain uncertain, but are explicitly identified with falsifiers and review conditions rather than assumed.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: 'A and C converge on the substantive answer. M180 should be an automatic expiry that executes the fallback by default, grants no spend authority and does not create a long-term Earth-supply commitment. Continuation should require a new explicit, bounded owner decision that cannot waive KDP-0B. The remaining differences can be recorded as owner trade-off items rather than resolved by further rounds: the 24-month planning buffer, the spend cap, and post-expiry re-entry versus pre-expiry replacement authority.'
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: The discussion has produced multiple high-quality, actionable rulings (Responses A and C) that resolve the core dispute effectively. Further rounds are unlikely to yield significant new insights.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'Response C provides a satisfactory resolution: existing authority expires automatically, fallback becomes the planning baseline, and any continuation requires explicit bounded authority without waiving KDP-0B.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: information
+        reasoning: 'Complete chain: a null option, must and want criteria set before options, six alternatives including hybrids, and weighted totals that check arithmetically. It separates sensitivity points from trade-off points, has falsifiable assumptions, and uses ACH to shape the re-entry criteria. The weakest input is the 24-month slip allowance and the restart cost. Both are explicitly flagged as very-low or low certainty and tied to rq-0-63 and SP2, so the gap is unlikely to change the decision.'
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: information
+        reasoning: The response provides a highly structured and complete decision chain. The weakest link is information, as the restart cost remains unestimated, but this is acknowledged and handled via sensitivity analysis.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: commitment
+        reasoning: 'The default-expiry approach is well developed, but re-entry requirements conflict: the recommendation requires full KDP-0B compliance, while SUN-7 permits merely scheduling the relevant-environment test. The unsupported 24-month buffer also materially narrows the planning envelope.'
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: 'Certainty is uncalibrated: it claims >90% likelihood with high confidence from loose Apollo and ISS analogues. The frame contradicts itself, calling the fallback a highly irreversible one-way door and then choosing to make it automatic, which conflicts with D-02 reversibility logic. It confuses capping 0A spend with 0B spend. It considers only three options with no hybrid, and its matrix is qualitative with no weighted aggregation.'
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: alternatives
+        reasoning: The response follows the structure well but presents a somewhat binary choice between Option 1 and Option 2 without exploring hybrid solutions that might better balance the trade-offs. The null option is also dismissed without full matrix evaluation.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: The decisive claim that 180 months provides sufficient margin is assigned greater than 90% likelihood without relevant supporting evidence. It also conflates fallback with an irreversible fifteen-year procurement commitment, and its M150 cutoff cannot accommodate a 36-month scout wave before M180.
+    rawScore: 1
+    weightedScore: 0.5
+    approveCount: 0
+    rejectCount: 2
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: reasoning
+        reasoning: 'Sound chain. It separates the planning, authority and supply-commitment functions, includes a null option, sets mandatory constraints before options, has calibrated evidence with unquantified likelihoods acknowledged, and gives falsifiers plus a weight-sensitivity test. One arithmetic slip: Option B should total 72.5, not 70. This does not change the ranking. Allowing replacement authority before expiry is slightly looser than an outright ban on in-place extension, but it is bounded and explicit.'
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: values
+        reasoning: A rigorous and well-reasoned response that clearly separates authority expiry from supply commitment. The weakest link is values, as the swing weights are explicitly proposed owner values rather than empirically derived, but this is properly caveated.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: information
+        reasoning: Clearly separates planning, spending authority and procurement commitments; evaluates alternatives against explicit criteria; and specifies an executable default with bounded replacement authority. Schedule feasibility and preservation economics remain uncertain, but are explicitly identified with falsifiers and review conditions rather than assumed.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: gpt-6-1-sol
+winnerScore: 5

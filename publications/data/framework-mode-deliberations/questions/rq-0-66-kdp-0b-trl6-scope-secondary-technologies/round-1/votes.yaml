@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: information
+    reasoning: Response A sets weighted criteria before options and includes null options for both groups. It separates likelihood from confidence, lists falsifiable assumptions, and checks robustness. Its rule text is concrete, and the joint-fallback waiver test closes the waiver-stacking gap. The weak spot is that the TRL estimates and the remote-sensing loophole rest on panel judgment and an unconfirmed reading of the gate text. A says so openly, so this is unlikely to change the decision.
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: Response B names T18 as its own sensitivity point, and its matrix rates O4 (hybrid) higher than O3 on risk containment. It still chooses O3 without resolving either issue or aggregating the scores. It rates the existence of fallbacks for T09, T12 and T20 at 'High' certainty, though no evidence supports that. Its 'funded path' waiver does not address several waivers failing together. The choice between O3 and O4 could plausibly flip.
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: 'Response C sets non-compensable musts and swing weights before options, includes a null option, and gives honest certainty ratings including ''very low'' and ''unquantified''. Its assumptions are falsifiable, and the default is clear: any unproven substitution reverts to TRL 6. The weak spot is that the commitment is conditional and less concrete than A''s, since it may still end with TRL 6 for all five. The default rule makes it executable, though.'
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: none
+    reasoning: The response provides a complete and robust decision chain, including clear swing weights, well-defined options, calibrated evidence, and a highly specific commitment.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: alternatives
+    reasoning: The response dismisses the null option immediately without full evaluation and lacks a rigorous analysis of competing hypotheses (ACH), weakening the information and alternatives links.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: none
+    reasoning: The response meticulously follows the decision-making framework, explicitly linking evidence certainty, assumptions, and swing-weighted criteria to a well-formulated policy commitment.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: information
+    reasoning: Some maturity forecasts and fallback possibilities remain speculative, but they are explicitly qualified and do not automatically earn gate credit. Qualified fallbacks, joint-fallback economics, independent waiver authority and default reversion to TRL 6 make the recommendation conditional on testable evidence.
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: The tiered approach is plausible, but a funded maturation path and a named fallback do not establish that Phase 1 survives failure of the waived technologies. Unsupported high confidence in substitutability and no requirement to test combined fallback economics could change the decision.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: The dependency-based rule coherently connects irreversibility, applicable inherited evidence and independently demonstrated alternatives. Implementation requires judgment about sufficient alternative maturity, but explicit evidence requirements, stop triggers and default TRL-6 treatment prevent uncertainty from becoming an unconditional exemption.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: A and C reach the same well-supported position independently. No blanket rule. T18 is bound to target-specific assay evidence and T11 inherits its 0A evidence. T09, T12 and T20 default to TRL 6, with exceptions only for a demonstrated fallback that closes economics under independent review. The remaining differences are drafting details the owner can settle; another round is unlikely to add to them.
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: Responses A and C provide highly rigorous, executable, and well-reasoned policies that resolve the prompt's core conflict. Further discussion is unlikely to yield a substantially better framework.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'A and C establish a satisfactory common resolution: no blanket exemption or blanket five-item requirement; retain target-specific assay evidence, reuse applicable scout evidence, and permit lower-maturity supporting implementations only when demonstrated alternatives protect the committed investment case. A supplies concrete joint-fallback safeguards for implementation.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: information
+        reasoning: Response A sets weighted criteria before options and includes null options for both groups. It separates likelihood from confidence, lists falsifiable assumptions, and checks robustness. Its rule text is concrete, and the joint-fallback waiver test closes the waiver-stacking gap. The weak spot is that the TRL estimates and the remote-sensing loophole rest on panel judgment and an unconfirmed reading of the gate text. A says so openly, so this is unlikely to change the decision.
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: none
+        reasoning: The response provides a complete and robust decision chain, including clear swing weights, well-defined options, calibrated evidence, and a highly specific commitment.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: information
+        reasoning: Some maturity forecasts and fallback possibilities remain speculative, but they are explicitly qualified and do not automatically earn gate credit. Qualified fallbacks, joint-fallback economics, independent waiver authority and default reversion to TRL 6 make the recommendation conditional on testable evidence.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: Response B names T18 as its own sensitivity point, and its matrix rates O4 (hybrid) higher than O3 on risk containment. It still chooses O3 without resolving either issue or aggregating the scores. It rates the existence of fallbacks for T09, T12 and T20 at 'High' certainty, though no evidence supports that. Its 'funded path' waiver does not address several waivers failing together. The choice between O3 and O4 could plausibly flip.
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: alternatives
+        reasoning: The response dismisses the null option immediately without full evaluation and lacks a rigorous analysis of competing hypotheses (ACH), weakening the information and alternatives links.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: The tiered approach is plausible, but a funded maturation path and a named fallback do not establish that Phase 1 survives failure of the waived technologies. Unsupported high confidence in substitutability and no requirement to test combined fallback economics could change the decision.
+    rawScore: 3
+    weightedScore: 2.5
+    approveCount: 0
+    rejectCount: 0
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: 'Response C sets non-compensable musts and swing weights before options, includes a null option, and gives honest certainty ratings including ''very low'' and ''unquantified''. Its assumptions are falsifiable, and the default is clear: any unproven substitution reverts to TRL 6. The weak spot is that the commitment is conditional and less concrete than A''s, since it may still end with TRL 6 for all five. The default rule makes it executable, though.'
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: none
+        reasoning: The response meticulously follows the decision-making framework, explicitly linking evidence certainty, assumptions, and swing-weighted criteria to a well-formulated policy commitment.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: The dependency-based rule coherently connects irreversibility, applicable inherited evidence and independently demonstrated alternatives. Implementation requires judgment about sufficient alternative maturity, but explicit evidence requirements, stop triggers and default TRL-6 treatment prevent uncertainty from becoming an unconditional exemption.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: claude-opus-5-5
+winnerScore: 5

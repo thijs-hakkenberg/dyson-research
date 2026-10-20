@@ -1,0 +1,210 @@
+schema: project-dyson/deliberation-provenance@1
+generated: '2026-10-17T22:40:35.280Z'
+orchestrator:
+  git_commit: e8a3f1ae6ee66271faadf7473a88f700a654af6a
+  git_dirty: false
+  node: v26.4.0
+  files:
+    scripts/run-discussion.js: a41a284992d65024fec461e059191535185c67521530b62fd8fdf0c97bc8ad80
+    scripts/lib/llm.js: 066db44310dc28b84f1e7373daf1c6e153b5c4163effaa4d43f3c2726fc1d439
+    scripts/lib/critique.js: 38b3a0b0f73e5f031cdc4e30e4b6c6597f996cb762ec39da98c64edf4b448a56
+    scripts/lib/provenance.js: 54650fffe8624cd92c92b79c08f9ed53ae7b729f7a58aa467115ae9cc9cfb540
+    scripts/lib/yaml-block.js: b020eb423016f55367273868f13a631723e78b941e237742646f1cc20ee30ae5
+    package-lock.json: 6c45370ff2e96c52be7080ecf4c19d014b96b01292ad2b98d873205db607bbf9
+method:
+  framework:
+    path: src/content/methodology/decision-frameworks.md
+    sha: 18f503fe4ec6
+  hiddenWinner: true
+  blindVoting: true
+  priorContext: full
+  config:
+    maxRounds: 5
+    maxResponseWords: 2000
+    allowSelfVoting: true
+    selfVoteWeight: 0.5
+    unanimousTermination: true
+    consecutiveConcludeRounds: 2
+  responseWords: 3000
+  synthesizer: gpt-6-1-sol
+  alternateSynthesizers:
+    - claude-opus-5-5
+models:
+  - key: claude-opus-5-5
+    name: Claude Opus 5.5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+  - key: gemini-3-1-pro
+    name: Gemini 3.1 Pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+  - key: gpt-6-1-sol
+    name: GPT-6.1 Sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+parameters_sent:
+  claude-opus-5-5:
+    max_tokens:
+      - 32000
+      - 16000
+    temperature: not sent (endpoint default)
+  gemini-3-1-pro:
+    max_tokens:
+      - 32000
+      - 16000
+    temperature: not sent (endpoint default)
+  gpt-6-1-sol:
+    temperature: not sent (endpoint default)
+system_prompts:
+  af7f15a0646222bba105aa959797509de694ca36e512b56a008048ae4b7c35d8: You are synthesizing a multi-model discussion into actionable conclusions.
+  3c2b93c18f5f163b6476e4659ab8443a27a91da65c1557c3e50ba71d74d8264a: >-
+    You are a space systems engineering expert participating in a multi-stakeholder discussion about Project Dyson
+    specifications.
+  506604f683a03ca72848b4f5254d8d2cc64da9b2b3e798b8d70f390c171d9339: You are evaluating responses in a structured discussion. Respond only with valid JSON.
+exchanges:
+  - file: >-
+      data/raw-exchanges/discussions/trl6-scale-extrapolation-rule/claude-opus-5-5/conclusion-1792276835163.10a9cc546c6b.raw.json
+    sha256: c612a831549ec848f01c5984976c313546bf306fcc046aac5f3fd3f7dc7597db
+    request_sha256: 10a9cc546c6b6e064abedbadd66debe87cc9b49a509a192a2a181bc1c114b807
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T22:39:14.298Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 9195
+      prompt_tokens: 19457
+      total_tokens: 28652
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/trl6-scale-extrapolation-rule/claude-opus-5-5/round-1-response-1792275615010.7578c4fdd30c.raw.json
+    sha256: 0687094608c12630c05c4c951388b0a9d00cba7e50efd25ad1f37ade9a4dd268
+    request_sha256: 7578c4fdd30cc7ac87f2ee44751ba06ee7c2b3aa819cf60b05ec6110135adbab
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T22:18:14.802Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 11152
+      prompt_tokens: 4183
+      total_tokens: 15335
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/trl6-scale-extrapolation-rule/claude-opus-5-5/round-1-vote-1792275759123.7eea03714b20.raw.json
+    sha256: 8473353c875234a9dd647b719d34788ef8a3328ec62e16ee3c44e47f15f3dbfb
+    request_sha256: 7eea03714b205d1fc404530ab6e4b656befdf81797780656b73d9e1fbc9bc37b
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T22:22:21.080Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 1567
+      prompt_tokens: 17309
+      total_tokens: 18876
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/trl6-scale-extrapolation-rule/gemini-3-1-pro/round-1-response-1792275638816.4b07ef3c74c3.raw.json
+    sha256: 634c81987a9ff2141e4acf540d04e32a8edeb7ed939c5eb3cfe72760c6b2ef3f
+    request_sha256: 4b07ef3c74c339da1e44fc6f0d57d757fdac6a4cb97d65e7d058a2bf0444a9c6
+    model: gemini-3-1-pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+    started: '2026-10-17T22:20:15.017Z'
+    finish: stop
+    usage:
+      prompt_tokens: 2682
+      completion_tokens: 1670
+      total_tokens: 4937
+      reasoning_tokens: 585
+  - file: >-
+      data/raw-exchanges/discussions/trl6-scale-extrapolation-rule/gemini-3-1-pro/round-1-vote-1792275767578.fe5dd7fb7013.raw.json
+    sha256: 03be9e2cb37a20a422c5cd2e0067c97e6f38c96574e54e331f3c157ff18e42c7
+    request_sha256: fe5dd7fb70137a1274d6868f367e4b869a44fc5fe4f4bdaaef5942508aed45c3
+    model: gemini-3-1-pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+    started: '2026-10-17T22:22:39.128Z'
+    finish: stop
+    usage:
+      prompt_tokens: 11034
+      completion_tokens: 292
+      total_tokens: 11732
+      reasoning_tokens: 406
+  - file: >-
+      data/raw-exchanges/discussions/trl6-scale-extrapolation-rule/gpt-6-1-sol/conclusion-1792275847435.5706419c30ab.raw.json
+    sha256: 93809a074cadcad5610c8b8774523f48d6006955ae5dd8cd2347dd8b5b6820a0
+    request_sha256: 5706419c30aba48614cd54843d28dd12229ed4c875ab58a248957367a41b2fe2
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T22:22:59.890Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 11986
+        cached_tokens: 0
+      input_tokens: 11989
+      output_tokens_details:
+        reasoning_tokens: 88
+      total_tokens: 14831
+      output_tokens: 2842
+  - file: >-
+      data/raw-exchanges/discussions/trl6-scale-extrapolation-rule/gpt-6-1-sol/round-1-response-1792275741077.423c664386e1.raw.json
+    sha256: 93c6ffed96776fc270b066ce5f2907ed1480ffe62cbbf51596b6fffde3302121
+    request_sha256: 423c664386e1a8b45db6fd9c823904475a6c01453feb28d8af78f57eff4fb208
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T22:20:38.820Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 2587
+        cached_tokens: 0
+      input_tokens: 2590
+      output_tokens_details:
+        reasoning_tokens: 417
+      total_tokens: 5900
+      output_tokens: 3310
+  - file: >-
+      data/raw-exchanges/discussions/trl6-scale-extrapolation-rule/gpt-6-1-sol/round-1-vote-1792275779766.4f200855aaba.raw.json
+    sha256: 1bedde1b86b42f02f665054789d77f82e7ef75b9630e03074cb6c48676902d6a
+    request_sha256: 4f200855aaba16ccebd8320db4b35fc44c4425c0d7a1b114917f5c78d172977d
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T22:22:47.580Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 10635
+        cached_tokens: 0
+      input_tokens: 10638
+      output_tokens_details:
+        reasoning_tokens: 69
+      total_tokens: 11028
+      output_tokens: 390
+outputs:
+  - file: src/content/research-questions/phase-0/rq-0-71-trl6-scale-extrapolation-rule/conclusion.claude-opus-5-5.md
+    sha256: cc1599ed43f612dcece0cc694928430519e9dc7f20e73d6662b8837e94a3207a
+  - file: src/content/research-questions/phase-0/rq-0-71-trl6-scale-extrapolation-rule/conclusion.md
+    sha256: 33a4abb68a0e0f3c152468f85c3998beb88e6086ce55a71b0d60030d074895e2
+  - file: src/content/research-questions/phase-0/rq-0-71-trl6-scale-extrapolation-rule/discussion.yaml
+    sha256: 30b435fe55488317b3a346f1579d1372d2bc1d9f1c28d40a33a8ccf70befa03c
+  - file: src/content/research-questions/phase-0/rq-0-71-trl6-scale-extrapolation-rule/divergent-views.claude-opus-5-5.yaml
+    sha256: 108414e1360d2334ea77a31dc29611ee166e550a46c213c3563a4dfe983439ee
+  - file: src/content/research-questions/phase-0/rq-0-71-trl6-scale-extrapolation-rule/divergent-views.yaml
+    sha256: d3304b82ae6d392f5e972e4e2273856a2b31a1b8239042df5bc1194b95afdf55
+  - file: src/content/research-questions/phase-0/rq-0-71-trl6-scale-extrapolation-rule/round-1/claude-opus-5-5.md
+    sha256: a7bd210296af785f7bb3f7b7df143125eacecaf4b8f1ba161da665bd2cd0310c
+  - file: src/content/research-questions/phase-0/rq-0-71-trl6-scale-extrapolation-rule/round-1/gemini-3-1-pro.md
+    sha256: 2eaa5cad3e986b20094e37b89a068ef9afbcbf943f8e4c541e4e9d21b3837bb7
+  - file: src/content/research-questions/phase-0/rq-0-71-trl6-scale-extrapolation-rule/round-1/gpt-6-1-sol.md
+    sha256: d2fa751e406dfd147fb683e711639514442653a858eb14d11111ba400f6dedc0
+  - file: src/content/research-questions/phase-0/rq-0-71-trl6-scale-extrapolation-rule/round-1/votes.yaml
+    sha256: 4165e03a98b01df8c11ea0c52845d92a57224bb469ee9ca818540f82e43e49e2

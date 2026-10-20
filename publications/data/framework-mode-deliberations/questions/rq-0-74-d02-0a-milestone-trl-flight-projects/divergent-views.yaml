@@ -1,0 +1,93 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-74
+topics:
+  - id: programme-versus-flight-gates
+    topic: Separate reversible tranche releases from flight authorisation
+    positions:
+      - statement: TRL 4–5 may support reversible 0A funding releases, but separate flight-project readiness gates are required.
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          All three invoke D-02's reversibility principle and distinguish MTR funding from irreversible flight
+          commitments.
+    resolution_status: resolved
+    priority: critical
+  - id: experimental-technology-readiness
+    topic: Readiness requirements for technologies carried as experiments
+    positions:
+      - statement: >-
+          Require TRL 5 at PDR for technologies under test, with documented environments and targeted ground tests
+          before CDR.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Claude distinguishes enabling technologies from experimental subjects, while acknowledging limited direct
+          evidence for the TRL 5 floor.
+      - statement: Require TRL 6 at project PDR for scout and pathfinder flight-critical technologies.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Gemini cites aerospace maturation practice and irreversible hardware commitment; its response provides no
+          separate experimental pathway.
+      - statement: >-
+          Permit experimental technologies below flight-enabling thresholds under an approved, independently reviewed
+          demonstration assurance case.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT requires bounded failure effects, verified interfaces and operations, credible learning outcomes, and
+          explicit acceptance of experiment-failure risk.
+    resolution_status: open
+    priority: critical
+  - id: flight-enabling-gate-timing
+    topic: Timing of flight-enabling maturity requirements
+    positions:
+      - statement: Require TRL 6 for enabling technologies at project PDR.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude cites maturation practice and reported cost and schedule growth associated with immature technologies.
+      - statement: Require TRL 6 for flight-critical technologies at project PDR before irreversible hardware implementation.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini distinguishes programme funding approval from project hardware commitment.
+      - statement: Require TRL 6 by PDR or before an earlier irreversible implementation commitment.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT argues that procurement and other commitments may precede the milestone labelled PDR.
+    resolution_status: partially-resolved
+    priority: high
+  - id: waivers-and-programme-exposure
+    topic: Scout waivers and special pathfinder stringency
+    positions:
+      - statement: >-
+          Allow owner-signed scout enabling-technology waivers and apply no-waiver treatment to enabling technologies at
+          pathfinder PDR above a proposed 25% share of the 0A budget.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Claude invokes cheap experimental opportunities and programme concentration, but labels the numerical
+          threshold an owner value and engineering judgment.
+      - statement: The proposed experimental floor and mandatory 25% threshold need better justification.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT's review identifies these provisions as reasoning weaknesses that could change with further justification.
+    resolution_status: open
+    priority: high
+  - id: decision-text-change
+    topic: Amendment versus interpretation of D-02
+    positions:
+      - statement: Explicitly amend D-02 to remove the ambiguity.
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          Both regard the flight-project and experimental distinctions as materially important additions; GPT would
+          reconsider if binding existing standards already close the gap.
+      - statement: Update D-02's interpretation with programme and project gate text.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini proposes revised interpretation text separating MTR funding from flight-project PDR.
+    resolution_status: partially-resolved
+    priority: medium

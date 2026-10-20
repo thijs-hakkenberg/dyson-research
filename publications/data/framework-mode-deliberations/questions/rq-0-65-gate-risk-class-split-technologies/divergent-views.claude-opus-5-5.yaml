@@ -1,0 +1,152 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-65
+topics:
+  - id: classification-method
+    topic: Generating rule versus per-technology judgement
+    positions:
+      - statement: >-
+          Adopt a generating rule; a function is project-ending unless an independently reviewed fallback dossier or
+          package shows a credible, costed, non-common-cause fallback preserving viable 0B production
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          Claude's ACH finding that the split is mainly scope and definition; auditability and repeatability for new
+          items (T09, T12, T20, T18, T11); D-02 reversibility principle; GPT's argument that failure consequence, not
+          vote counts, sets assurance
+      - statement: Classify each technology by judgement of fallback viability, without a generating rule
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Named fallbacks (smaller arrays, localized power, Earth-based packaging, DSN or commercial comms); appeal to
+          standard space mining and tug architecture studies
+    resolution_status: partially-resolved
+    priority: critical
+  - id: interim-class-t14-t24-t25-t10b
+    topic: Interim class of T14, T24, T25 and T10 productivity autonomy before dossiers exist
+    positions:
+      - statement: >-
+          Architecture-change now, provisional on dossiers (T14 conditional on a storable propellant branch; T24 with
+          life-test campaign; T25 with funded path to TRL 6; T10b on supervised-operations dossier)
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Credible priceable fallbacks (storable or water propellant, redundancy and replacement, Hayabusa2 and
+          OSIRIS-REx single-craft navigation heritage, supervised operations); votes by Claude and GPT note this
+          contradicts CR-1's own default
+      - statement: Project-ending until a fallback package is accepted
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          No admissible fallback is demonstrated in the record; unproven alternatives do not justify lower
+          classification
+      - statement: T10, T14, T24 and T25 are project-ending because they are core to the novel operating environment
+        models:
+          - Gemini 3.1 Pro
+        evidence: Dust and autonomy described as non-degradable risks; failure means the mission cannot occur
+    resolution_status: open
+    priority: critical
+  - id: class-t02-t15-t22
+    topic: Class of T02 MW arrays, T15 site power and T22 product qualification
+    positions:
+      - statement: Project-ending
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          T02 has the largest scale gap beyond ~100 kW-class flight heritage; T15 is common-cause with T02; T22 is
+          required for buyer acceptance; 'smaller arrays' alone is not evidence
+      - statement: Architecture-change
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Fallbacks (smaller arrays, localized power, Earth-based packaging) degrade economics but do not end the
+          project; the economics gate catches overruns
+    resolution_status: open
+    priority: high
+  - id: t26-handling
+    topic: T26 classification and interaction with rq-0-64
+    positions:
+      - statement: >-
+          Keep architecture-change; do not re-rule here; offer CR-1 to rq-0-64 as the test (project-ending if no
+          combination of DSN, ESA and commercial service meets fleet command demand)
+        models:
+          - Claude Opus 5.5
+        evidence: Owner ruling is a must-criterion; T26's TRL spread reflects scope (link versus service)
+      - statement: >-
+          Keep architecture-change until KDP-0A; elevate automatically to project-ending unless survivable substitution
+          or disconnection is demonstrated
+        models:
+          - GPT-6.1 Sol
+        evidence: T26 substitution has low certainty; it depends on service alternatives and evidence on disconnected operations
+      - statement: Architecture-change, with a viable fallback held at high certainty
+        models:
+          - Gemini 3.1 Pro
+        evidence: Owner ruling leans this way; existing deep-space networks as fallback at higher operating cost
+    resolution_status: partially-resolved
+    priority: high
+  - id: economics-gate-role
+    topic: Whether the economics gate can backstop under-classed technologies
+    positions:
+      - statement: >-
+          The economics gate cannot see technical immaturity; fallback inputs must carry TRL evidence and independent
+          review
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          Claude's rejection of option D and its premortem on optimistic productivity inputs; GPT's vote that the
+          economics gate cannot substitute for missing technical evidence
+      - statement: The economics gate at 0B catches cost overruns from architecture-change fallbacks
+        models:
+          - Gemini 3.1 Pro
+        evidence: Stated as backing in Gemini's Toulmin warrant
+    resolution_status: open
+    priority: high
+  - id: project-ending-definition
+    topic: What 'project-ending' ends
+    positions:
+      - statement: Broad reading; 0B production cannot meet the economics gate and signed demand
+        models:
+          - Claude Opus 5.5
+        evidence: D-01 sizes 0B on signed demand; Claude flags this as an owner values question
+      - statement: Ends the 0B production commitment, not the 0A programme; '0A only, Earth supply' is an exit, not a fallback
+        models:
+          - GPT-6.1 Sol
+        evidence: D-01 real-option structure
+      - statement: Mission cannot occur without the technology
+        models:
+          - Gemini 3.1 Pro
+        evidence: Criticality to core autonomous operations criterion
+    resolution_status: open
+    priority: high
+  - id: function-level-splitting
+    topic: Splitting technology IDs by function (T10a/T10b; T02 site into T15)
+    positions:
+      - statement: >-
+          Split T10 into safety-critical (project-ending) and productivity (architecture-change) functions; fold T02
+          site arrays into T15
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          No ground fallback for safe-abort under light time; supervised operations is a throughput fallback the
+          economics gate can price
+      - statement: >-
+          Split requirements where an ID mixes essential and replaceable elements, but T10 is ruled project-ending as a
+          whole
+        models:
+          - GPT-6.1 Sol
+        evidence: A broad label must not hide an unqualified essential function
+    resolution_status: open
+    priority: medium
+  - id: agreed-core-source-control
+    topic: Status of the 'agreed core' project-ending list
+    positions:
+      - statement: >-
+          Treat the list as a proposed gate baseline, not evidence of unanimity, because individual classifications
+          differ
+        models:
+          - GPT-6.1 Sol
+        evidence: For example, T02 is in the agreed core although two of three models classed it architecture-change
+    resolution_status: open
+    priority: medium

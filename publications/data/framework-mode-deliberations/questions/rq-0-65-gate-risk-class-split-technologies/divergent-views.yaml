@@ -1,0 +1,87 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-65
+topics:
+  - id: current-risk-classes
+    topic: Operative classifications for the seven technologies other than T26
+    positions:
+      - statement: >-
+          Classify T02, T10, T14, T15, T22, T24 and T25 as project-ending until an evidenced alternative warrants
+          reclassification.
+        models:
+          - GPT-6.1 Sol
+        evidence: Indispensable production functions and no qualifying fallback packages demonstrated in the supplied record.
+      - statement: >-
+          Keep T02, safety-critical T10, T15 and T22 project-ending; allow conditional or provisional
+          architecture-change for productivity T10, T14, T24 and T25.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Proposed supervised operations, alternative propellants, replaceable mechanisms and cooperative navigation
+          fallbacks; Claude and GPT subsequently flagged inconsistency with Claude's dossier-first rule.
+      - statement: Classify T10, T14, T24 and T25 as project-ending, and T02, T15 and T22 as architecture-change.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Asserted fallback viability through smaller arrays, localised power and Earth-based packaging; Claude and GPT
+          challenged the supporting evidence.
+    resolution_status: open
+    priority: critical
+  - id: fallback-admissibility
+    topic: Evidence required before lowering a risk class
+    positions:
+      - statement: Require an accepted, independently reviewed fallback dossier before lowering a project-ending class.
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          Both proposed architecture-specific performance, cost, schedule and dependency checks; Claude additionally
+          specified maturity and costing thresholds.
+      - statement: Known alternative implementations justify architecture-change, subject to economic viability.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini's classification split relied on asserted alternatives and assumed acceptable Phase 1 economics.
+    resolution_status: partially-resolved
+    priority: critical
+  - id: t26-closure
+    topic: T26 architecture-change ruling and possible elevation
+    positions:
+      - statement: Retain architecture-change and leave possible project-ending elevation within rq-0-64.
+        models:
+          - Claude Opus 5.5
+        evidence: Existing owner ruling and proposed application of the fallback test within that decision.
+      - statement: Retain architecture-change because existing deep-space communications services provide alternatives.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          DSN and commercial service alternatives; GPT challenged whether fleet-level capacity and resilience were
+          demonstrated.
+      - statement: >-
+          Retain architecture-change provisionally, with automatic elevation if substitution or tolerable disconnection
+          is not demonstrated at KDP-0A.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Existing owner ruling, unresolved integrated-service maturity and absence of demonstrated fallback service
+          capacity in the record.
+    resolution_status: partially-resolved
+    priority: high
+  - id: authorised-fallback-outcome
+    topic: Definition of viable continued 0B production
+    positions:
+      - statement: >-
+          Judge fallbacks against owner-approved production and economic boundaries; define acceptable degradation
+          explicitly.
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          Both identified acceptable reduced output, cost and schedule as owner trade-offs rather than settled technical
+          facts.
+      - statement: Accept less efficient alternatives if the economics remain viable.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Gemini explicitly accepted degraded Phase 1 economics as the downside of its architecture-change
+          classifications.
+    resolution_status: open
+    priority: high

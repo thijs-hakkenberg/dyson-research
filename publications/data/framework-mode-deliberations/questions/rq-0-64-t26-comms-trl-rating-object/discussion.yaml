@@ -1,0 +1,741 @@
+questionId: rq-0-64
+questionSlug: t26-comms-trl-rating-object
+questionTitle: What should the TRL rating of deep-space communications and command (T26) assess?
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T21:41:39.962Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # T26 Rating Object: Rate the Integrated Authenticated Service, with Its Parts Shown Underneath
+
+          ## 1. Frame and decision type
+
+          **The decision.** Which object does T26 rate: heritage components, a composite with integration credit, or the integrated service? How is that object reported and gated? The answer sets the rule for the other composite technologies in the WP-A re-baseline.
+
+          **Decision type.** This is a *property decision* in Kruchten's terms: it sets a rule that constrains every later rating and gate. It is not a one-off executive call about T26 alone.
+
+          **Reversibility.** The decision is cheap to reverse on paper. It is expensive to reverse in practice. If T26 drops off the KDP-0B list now, no funded path to TRL 6 gets planned in Phase 0A. Finding the gap at KDP-0B would then cost the remaining Phase 0A schedule.
+
+          **Cynefin domain.** The question is *complicated*, not complex. The facts are mostly agreed. The panel split on what was being rated, not on what is known. That calls for an explicit rule, not more elicitation.
+
+          **What is known, what can be done, what is wanted:**
+          - **Known:** RF links are mature. DTN has been demonstrated in deep space. Conjunction operations are routine. Authenticated fleet command with key lifecycle across outages has no cited deep-space record. Data rates are undefined.
+          - **Can do:** choose the rating object, the reporting format, the risk class and the gate criterion.
+          - **Want:** a gate that asks for the evidence that actually bounds Phase 0B risk, applied the same way across all 26 technologies.
+
+          ## 2. Criteria and swing weights (stated before options)
+
+          | # | Criterion | Swing range considered | Weight | Why this weight fits the range |
+          |---|---|---|---|---|
+          | C1 | **Fidelity to the TRL brief rule**: rate at the scale, environment and duration the architecture requires | From "rates something the architecture doesn't use" to "rates exactly the required configuration" | **0.30** | Widest swing. It is the governing rule of the brief, and it alone moves T26 by 3–4 TRL levels. |
+          | C2 | **Gate usefulness**: does KDP-0B end up demanding the evidence that bounds Phase 0B risk? | From "gate silent on the weakest element" to "gate names and tests it" | **0.25** | Large swing. A wrong object either removes T26 from the gate or gates on the wrong test. |
+          | C3 | **Diagnostic information preserved**: can a reader see where maturity is and isn't? | From one opaque number to a full decomposition | **0.15** | Moderate swing. Information loss is recoverable if the working files survive, but the published baseline is what gets read. |
+          | C4 | **Consistency and portability** across the other composite technologies | From "T26-specific fudge" to "general rule applicable to all 26" | **0.15** | Moderate. Only a handful of the 26 are strongly composite, but inconsistency undermines the whole re-baseline. |
+          | C5 | **Avoiding false alarm**: not inflating risk or cost where heritage really is mature | From "flags mature RF as immature" to "credits heritage correctly" | **0.10** | Real but narrow swing. Everyone agrees the RF links are TRL 9, so any sensible option can show that. |
+          | C6 | **Communicability and process cost** | From "needs a page of caveats" to "one line" | **0.05** | Smallest swing. The gap between one number and one number plus a short table is small. |
+
+          **Must-criteria (Kepner-Tregoe screen), applied before scoring:**
+          - **M1.** The option must not rest on uncited claims. Per the brief: "cite or say unsure."
+          - **M2.** The option must state the configuration being rated, in line with NASA NPR 7123.1 TRL definitions.
+
+          ## 3. Options
+
+          **O0. Null option.** Publish the three panel ratings as a 3–7 range with the synthesis note.
+          - Rejected. It fails M2: there is no stated configuration.
+          - It hands the gate designer an unresolved disagreement and lets the most optimistic reading win by default.
+
+          **O1. Heritage components (Gemini's object).** Headline TRL 6–7.
+          - Rejected. It fails M1. The pivotal "SDLS has flown on multiple missions" claim names no mission. I am not aware of a published deep-space record of CCSDS SDLS (CCSDS 355.0-B) authenticated commanding with on-orbit key management and post-outage key recovery. I am *unsure* whether such a record exists, and that uncertainty is itself the point.
+          - It also fails C1: it rates a configuration the architecture does not fly.
+
+          **O2. Composite with integration credit (Claude's object).** Headline 5–7.
+          - Defensible practice, but the range is too wide to gate on.
+          - Claude's own caveat concedes the upper bound ignores a 2–4× node-count gap and the authentication gap.
+          - Rejected as the headline object. Its evidence base is retained in the sub-ratings.
+
+          **O3. Integrated service only (GPT's object).** Headline TRL 3, with 4 conditional, and no sub-ratings published.
+          - Correct object, but it discards real information (C3, C5).
+          - It invites the reading "deep-space comms is TRL 3", which is false for the links and will be contested by anyone with DSN experience.
+
+          **O4. Integrated service as the headline, plus a mandatory sub-rating table and a weakest-link rule.** Recommended. The rule has three parts:
+          1. **Headline** is the TRL of the integrated service in the required configuration (≥29 nodes, store-and-forward through the longest outage, authenticated command with key lifecycle, no Earth-dependent safety action).
+          2. **Cap:** the headline can never exceed the lowest *critical* sub-rating. It can never exceed the integration TRL either, unless an integrated article has been tested.
+          3. **Sub-ratings** are published with the headline, each with its own configuration, evidence citation and uncertainty. They are never averaged.
+
+          **O5. Split T26 into separate technologies.**
+          - The split: T26a (deep-space RF and DTN relay, TRL 6–7) and T26b (authenticated fleet command and key management, TRL 3–4), with integration handled as a system-level gate item.
+          - This is the strongest rival. It isolates the weak element cleanly.
+          - I reject it narrowly. Fleet scale and outage recovery fall *between* T26a and T26b. Neither child owns "29 nodes through a solar-exclusion outage with keys still valid afterwards." That interface is exactly where the panel says the gap lives.
+
+          ## 4. Assessment matrix (QOC)
+
+          Scores run from 1 (poor) to 5 (best). O0 and O1 fail the must-screen; their scores are shown only for completeness.
+
+          | Criterion (weight) | O0 Null | O1 Heritage | O2 Composite | O3 Integrated only | **O4 Integrated + subs** | O5 Split |
+          |---|---|---|---|---|---|---|
+          | M1 cited / M2 configuration stated | ✗ / ✗ | ✗ / ✓ | ✓ / partial | ✓ / ✓ | ✓ / ✓ | ✓ / ✓ |
+          | C1 Fidelity (0.30) | 2 | 1 | 3 | 5 | 5 | 4 |
+          | C2 Gate usefulness (0.25) | 1 | 1 | 2 | 4 | 5 | 4 |
+          | C3 Diagnostic info (0.15) | 3 | 2 | 3 | 1 | 5 | 4 |
+          | C4 Consistency (0.15) | 1 | 3 | 3 | 4 | 5 | 3 |
+          | C5 No false alarm (0.10) | 3 | 5 | 4 | 2 | 4 | 5 |
+          | C6 Communicability (0.05) | 2 | 5 | 3 | 4 | 3 | 3 |
+          | **Weighted total** | 1.85 | 1.90 | 2.90 | 3.75 | **4.80** | 3.90 |
+
+          **Robustness check.** O4 still leads if C1 drops to 0.15 and C5 rises to 0.25: O4 ≈ 4.5 versus O5 ≈ 4.2. O5 overtakes only if C4 is weighted near zero *and* someone is assigned to own the integration interface. If that ownership is explicit, the remaining gap between O4 and O5 is mostly presentation.
+
+          ## 5. Sensitivity points and trade-off points
+
+          ### Sensitivity points (facts that move one attribute strongly)
+
+          **S1. A cited deep-space SDLS-or-equivalent flight record with key management.**
+          - If it exists, the authentication sub-rating moves from 3–4 toward 6–7.
+          - It would *not* lift the headline above the integration TRL, because no integrated article exists. The headline moves from 3 to about 4, not to 6.
+          - This is the single most valuable piece of evidence to chase.
+
+          **S2. Outage durations for the actual orbits.**
+          - Mars superior conjunction gives roughly two weeks of command moratorium. That has been routine since at least the MER era.
+          - The SEL1 node is the sensitive case. A Sun–Earth L1 asset sits near the Sun line as seen from Earth by definition. Halo and Lissajous orbits are usually chosen with amplitudes that keep them outside the solar-exclusion cone, and some Lissajous geometries pass through it periodically.
+          - Whether the SEL1 node sees repeated exclusion sets the key-validity window, the bundle storage depth and the autonomy duration requirement. It can change the authentication design: for example, key lifetimes have to outlast the longest outage, with pre-positioned rekey material.
+
+          **S3. Traffic budget.**
+          - With no data rates defined, "relevant environment" cannot be bounded quantitatively.
+          - A tight budget makes MSPA-style shared-aperture scheduling credible. A large budget (e.g. site-plant telemetry or imaging) could force dedicated relay assets. That is an architecture change, which supports the risk class below.
+
+          **S4. Node count.** The range 15–29 matters. At 15, the Mars Relay Network plus DSN analogy is roughly 2× short. At 29, it is 4× or more.
+
+          ### Trade-off points (values questions, not facts)
+
+          **T1. Conservatism versus schedule and cost.**
+          - Gating on the integrated service at TRL 6 forces a funded demonstration in Phase 0A, estimated at 3–5 years (GPT) or 2–4 years (Claude).
+          - Accepting heritage credit saves that cost but carries the gap into 0B. This is a risk-appetite choice for the owner, not something analysis settles.
+
+          **T2. Is command security safety-critical or mission-assurance?**
+          - If D-03 makes command security a licence condition for high-energy tug operations, losing trustworthy command stops those operations. That makes it a candidate for project-ending.
+          - If it stays a mission-assurance matter, it is architecture-change. This is a policy and values judgment, partly external to the project.
+
+          **T3. Headline simplicity versus honesty of decomposition.**
+          - One number reads cleanly. A number plus a table is more honest.
+          - O4 deliberately pays a small communicability cost (C6) to protect C3.
+
+          ## 6. Evidence certainty
+
+          Likelihood (how probable the claim is) is kept separate from confidence (how good the evidence is), following IPCC and ICD 203 practice.
+
+          | Claim | Evidence | GRADE certainty | Likelihood / confidence |
+          |---|---|---|---|
+          | Interplanetary RF links via DSN are mature | Decades of DSN operations; MSPA used operationally for Mars assets | High | Virtually certain / high |
+          | DTN demonstrated in deep space | DINET on EPOXI (2008); later DTN operations on ISS | Moderate. The demonstration was small-scale, short-duration and few nodes. | Very likely mature as a protocol; low confidence at 29-node, multi-month store scale |
+          | Conjunction operations are routine | Mars missions through every conjunction since the 2000s | High for Mars-class geometry | Virtually certain; *not* transferable to SEL1 without orbit-specific analysis |
+          | Multi-asset relay at fleet scale | Mars Relay Network (MRO, Odyssey, MAVEN, TGO) serving several landers | Moderate as an analogue; low as a prototype of the required configuration | Likely extensible; medium confidence; node gap 2–4× |
+          | SDLS authenticated commanding with key lifecycle in deep space | CCSDS 355.0-B standard exists; **no flight record cited by any panellist** | Very low | Unknown; I am unsure a qualifying deep-space record exists |
+          | Post-outage key recovery demonstrated | None cited | Very low | Unlikely to have been demonstrated in the required form; low confidence either way |
+          | Integrated service at required scale has precedent | Panel agreement that none exists | Moderate. This is a negative claim, but all three models agree and none could name one. | Very likely no precedent |
+
+          Multi-model agreement is recorded as *agreement*, not as evidence, per the brief.
+
+          ## 7. Key assumptions and what would falsify them
+
+          | # | Assumption | Falsified by |
+          |---|---|---|
+          | A1 | The authentication and key-lifecycle element is the binding constraint | A cited deep-space SDLS (or equivalent) record with on-orbit rekeying, *or* a design showing keys need no on-orbit lifecycle within mission duration (pre-loaded long-life keys accepted by the licensing authority) |
+          | A2 | Integration at fleet scale is non-trivial, so it is not an extrapolation of the Mars Relay Network | A credible scheduling and traffic analysis showing ≥29 nodes fit within existing DSN aperture and relay capacity at the defined data rates, with margin |
+          | A3 | Ground testbeds with real DSN passes plus emulated light time and outages can count as "relevant environment" for TRL 6 | A stricter project ruling that TRL 6 needs a space segment, which would push the timeline toward the 3–5 year upper end and require a hosted payload or pathfinder |
+          | A4 | Failure leads to architecture change (more relays, fewer concurrent assets, restricted tug autonomy), not project end | A D-03 licence condition that makes demonstrated command security a precondition for tug operations, with no degraded-mode alternative |
+          | A5 | Phase 0A is long enough to fund a path to TRL 6 | A Phase 0A duration under about 3 years, which makes T26 schedule-critical and argues for starting the testbed immediately |
+
+          ### Competing hypotheses for the panel divergence (ACH)
+
+          | Hypothesis | Disconfirming evidence | Rank |
+          |---|---|---|
+          | **H1. The panellists rated different objects** | Barely any. All three agree on the facts, and GPT's sub-ratings (RF 9, DTN 7, conjunction 9, auth 3–4) reproduce Claude's and Gemini's component views. | **1st, least disconfirmed** |
+          | **H3. They read "relevant environment" differently** | Partly consistent: Gemini treats "relevant space environments" for the protocols as sufficient. This is a sub-case of H1. | 2nd |
+          | **H2. They disagree on facts** (the SDLS flight record) | Real but narrow. Only Gemini asserts the record, and uncited. Removing that claim leaves Gemini's rating at about 5–6, not 3. Facts alone do not explain the whole spread. | 3rd |
+
+          The synthesis finding stands. Fix the object first. Then resolve H2 by citation, not by deliberation.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Decision
+
+          **Rating object and reporting.** T26 is rated as the **integrated, authenticated deep-space command and communications service in the configuration the architecture requires.** That configuration is:
+          - 15–29 concurrent assets;
+          - store-and-forward through the longest orbit-specific conjunction or exclusion outage;
+          - 1–25 minute light time;
+          - authenticated command with key lifecycle, including post-outage recovery;
+          - no safety-critical action dependent on an Earth response.
+
+          The headline is reported with a mandatory sub-rating table. The headline is capped by the lowest critical sub-rating and by the integration TRL. Sub-ratings are never averaged.
+
+          **Ratings to carry into the baseline:**
+
+          | Element | TRL | Basis |
+          |---|---|---|
+          | **Headline: integrated service** | **3 (4 conditional on a configuration-controlled integrated breadboard)** | No integrated article; capped by the authentication sub-rating |
+          | RF links | 9 | DSN heritage |
+          | DTN store-and-forward | 6–7 | DINET flight; limited scale |
+          | Conjunction operations | 9 for Mars-class; TBD for SEL1 | SEL1 pending exclusion analysis |
+          | Multi-asset relay scheduling | 5–6 | Mars Relay Network and MSPA; node gap |
+          | Authenticated fleet command and key lifecycle | 3–4 | No cited deep-space record |
+
+          **Risk class.** *Architecture-change*, with a **standing flag to escalate to project-ending if D-03 makes command security a licence condition.**
+
+          Given that conditional, I recommend applying the D-02 TRL 6 requirement to T26 at KDP-0B now, rather than waiting for D-03 to resolve. Waiting is the expensive error.
+
+          **KDP-0B criterion.** T26 passes only if all of the following hold:
+          1. **Defined inputs exist.** A defined traffic budget and orbit-specific outage durations, including SEL1, are configuration-controlled. This is an entry condition: no test is valid without them.
+          2. **Integrated TRL 6 demonstration.** It must include:
+             - representative flight-like radios and command processors for at least a subset of nodes, with the rest emulated, totalling ≥29 nodes;
+             - real DSN passes with at least one deep-space-distance link;
+             - injected outages at the maximum required duration;
+             - SDLS-class authentication with rekey and post-outage key recovery;
+             - red-team command-injection and replay attempts;
+             - local safe actions taken without Earth response, verified against predictions.
+          3. **Independent assurance case.** An assurance case (GSN) for command integrity is reviewed independently, and the licensing authority's view is recorded if D-03 is active.
+
+          **Rule for other composites.** Every composite technology in the re-baseline is rated as the integrated article at required configuration, with a published sub-rating table and the same weakest-link cap. Where a composite has no integrated article, the headline cannot exceed TRL 4.
+
+          ### Y-statement
+
+          *In the context of* the Phase 0 TRL re-baseline, where T26 is a composite service whose parts range from TRL 9 to TRL 3–4,
+          *facing* a panel split caused by rating different objects, an uncited authentication claim, and a gate rule (D-02) that only bites if the right object is rated,
+          *we chose* to rate the integrated authenticated service at the required configuration as the headline, with mandatory, non-averaged sub-ratings and a weakest-link cap,
+          *to achieve* a KDP-0B gate that tests the actual gap (fleet scale, outage recovery and command authentication) while still crediting real heritage,
+          *accepting* a low headline (TRL 3) that may be read as unfair to mature RF, a funded Phase 0A demonstration costing several years of effort, and the risk that a later-found SDLS flight record shows we were over-conservative on one sub-element.
+
+          ### Toulmin structure
+
+          - **Claim:** headline T26 is TRL 3 (4 conditional) and is gated at TRL 6 at KDP-0B.
+          - **Grounds:** no integrated article exists; the authentication and key-lifecycle evidence is uncited; the node gap is 2–4×.
+          - **Warrant:** the brief requires rating at the required scale, environment and duration. NASA TRL criteria attach to a stated configuration. A service fails at its weakest critical function, so averaging misrepresents it.
+          - **Backing:** NPR 7123.1 TRL definitions; the brief's "cite or say unsure" rule; the panel's own agreement on where the gap lies.
+          - **Qualifier:** *probably* correct. Moderate confidence on the object choice; low confidence on the precise headline number.
+          - **Rebuttal conditions:**
+            - A cited deep-space key-management record moves the headline to 4.
+            - A ruling that ground testbeds are not a relevant environment moves the TRL 6 path later.
+            - If D-03 is resolved with no licence linkage *and* a degraded command mode exists, the risk class stays architecture-change and the TRL 6 gate could relax to TRL 5 plus a funded plan.
+
+          ## 9. Consequences
+
+          **Decisions this enables:**
+          - The **next WP-A gate-design step** can list T26 explicitly, with a testable criterion rather than an argument about which number to believe.
+          - A **traffic budget work item** becomes mandatory and urgent. It blocks T26 qualification and probably others, such as autonomy and site-plant telemetry.
+          - An **SEL1 solar-exclusion analysis** feeds both T26 and the SEL1 node orbit selection. The halo amplitude may become a comms-driven requirement.
+          - An **evidence hunt** is commissioned: a targeted literature and agency search for flight use of SDLS or equivalent with on-orbit rekeying. It reports "found and cited" or "not found." Gemini's claim either earns a citation or is struck from the record.
+          - A **costed testbed plan** for the integrated demonstration is produced in Phase 0A. If Phase 0A is shorter than about 3 years, T26 joins the critical path.
+
+          **Decisions this constrains:**
+          - **Other composites** (e.g. any autonomy stack, power-and-thermal systems, ISRU chains) must follow the same object rule and cap. Some will drop from their current headline ratings. That is intended.
+          - **Architecture options that assume Earth-in-loop command** for tug high-energy operations are disfavoured until T26 matures, which reinforces the "no Earth-dependent safety action" requirement.
+          - **D-03 negotiation** gets an input: the project can offer the integrated demonstration and the assurance case as the licence evidence package, rather than waiting for the licensing state to define one.
+
+          **Disagreement kept, not averaged.**
+          - Gemini's position, that TRL 6 is met, is recorded as a dissent conditional on an SDLS deep-space citation.
+          - Claude's upper bound of 7 is recorded as valid only under the MRN-as-prototype interpretation, which this decision rejects.
+          - O5, splitting T26, remains a live alternative if the project prefers technology-level granularity, *provided* integration is assigned an owner.
+        wordCount: 3401
+        generatedAt: '2026-10-17T21:43:21.056Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          Here is the decision record for the T26 (deep-space communications and resilient command service) TRL rating object, structured according to the requested Composite Scaffold.
+
+          ### 1. Frame & decision type
+          - **Frame**: We must define the assessed object for T26 to establish the baseline TRL, which dictates the funding and exit criteria for the KDP-0B gate. 
+          - **Decision type**: Executive and property decision (setting the standard for composite technologies). 
+          - **Reversibility**: Two-way door now, but becomes a one-way door once Phase 0A budgets and KDP-0B gate criteria are locked. 
+          - **Cynefin domain**: Complicated (requires expert analysis and systems engineering synthesis).
+
+          ### 2. Criteria and weights
+          *Note: Weights are swing weights, representing the value of moving from the worst available outcome to the best available outcome on that specific criterion.*
+
+          1. **Risk Visibility at KDP-0B (Weight: 45%)**: The ability of the rating to force early retirement of integration and security risks. *Swing justification*: The gap between missing a project-ending architecture flaw (worst) and identifying it in Phase 0A (best) is the highest-impact variable.
+          2. **Alignment with NASA TRL Exit Criteria (Weight: 35%)**: Strict adherence to rating at the scale, environment, and duration required by the architecture. *Swing justification*: Deviating from standard TRL definitions introduces systemic programmatic risk, but is slightly less critical than actual physical/cyber risk visibility.
+          3. **Licensing & Regulatory Viability (Weight: 20%)**: Support for D-03 high-energy tug operations licensing. *Swing justification*: Command security will likely be a strict license condition, but the exact regulatory framework is still forming, making the swing slightly less impactful today than internal gate criteria.
+
+          ### 3. Options
+          - **Null Option: Status Quo (Reject)**. Keep the divergent model ratings and defer the definition. *Argument against*: Fails to set a clear KDP-0B gate requirement, violating D-02.
+          - **Option 1: Rate Heritage Components (TRL 6-7)**. Assess T26 based on the maturity of its constituent parts (DSN, Mars Relay Network, standard CCSDS protocols). *Argument against*: Ignores the 2–4× node-count gap and the unproven key-management lifecycle in deep space.
+          - **Option 2: Rate Integrated Service (TRL 3-4)**. Assess T26 strictly as the integrated, authenticated fleet command service. Headline TRL is 3. 
+          - **Option 3: Rate Integrated Service as Headline, Publish Sub-ratings (TRL 3 / Sub 3-9)**. Assess the integrated service as TRL 3 (conditional 4), classifying it as an architecture-change risk, but explicitly publish the sub-ratings (RF heritage 9, DINET 7, authenticated fleet command 3) alongside it to isolate the funding requirement to the integration and authentication gaps.
+
+          ### 4. Assessment matrix
+
+          | Option | 1. Risk Visibility (45%) | 2. TRL Rules Alignment (35%) | 3. Licensing Viability (20%) | Weighted Score |
+          | :--- | :--- | :--- | :--- | :--- |
+          | **Option 1 (Components)** | Low (Masks integration risk) | Low (Violates scale/environment rule) | Low (Fails to prove security) | 0.15 |
+          | **Option 2 (Integrated)** | High (Forces risk retirement) | High (Strict adherence) | High (Forces security proof) | 0.85 |
+          | **Option 3 (Hybrid)** | High (Forces risk retirement) | High (Strict adherence + nuance) | High (Forces security proof) | **0.95** |
+
+          ### 5. Sensitivity vs trade-off points
+          - **Sensitivity point**: The decision is highly sensitive to the definition of "project-ending" in D-02. If unauthenticated command is deemed acceptable for early phases, Option 1 becomes viable.
+          - **Trade-off point**: We are trading off *Phase 0A cost/friction* (funding a breadboard path to TRL 6 for the integrated service) against *Phase 0B operational risk* (discovering at scale that post-outage key recovery fails). 
+
+          ### 6. Evidence certainty
+          - **Claim**: Interplanetary RF links and conjunction operations are mature. 
+            - *Certainty*: High confidence, virtually certain (IPCC). GRADE: High (extensive flight heritage).
+          - **Claim**: SDLS authenticated commanding with post-outage key recovery has not been demonstrated at the required fleet scale (15-29 assets).
+            - *Certainty*: Medium confidence, likely (IPCC). GRADE: Moderate (absence of cited precedent, though classified precedents may exist).
+
+          ### 7. Key assumptions
+          - **Assumption 1**: No existing mission has flown a fully integrated, multi-node SDLS authenticated command network with deep-space key recovery. 
+            - *Falsification*: A cited deep-space flight record of this exact capability. (ACH: This hypothesis is currently the least disconfirmed).
+          - **Assumption 2**: High-energy tug operations will require cryptographic command assurance for licensing.
+            - *Falsification*: A formal regulatory ruling stating standard unauthenticated CCSDS commands are sufficient for D-03 operations.
+
+          ### 8. Decision, warrant, accepted downside
+          **Y-Statement**: In the context of the Phase 0 architecture re-baseline, facing divergent TRL assessments for deep-space communications (T26), we chose Option 3 (Rate Integrated Service as Headline TRL 3, Publish Sub-ratings), to achieve strict risk visibility at the KDP-0B gate while isolating the specific technology gaps, accepting the increased Phase 0A cost and schedule friction required to build and test an integrated breadboard.
+
+          **Toulmin Warrant**: Because NASA TRL exit criteria require assessment at the scale and environment the architecture demands, and because failure of authenticated command at scale is an architecture-changing (and potentially un-licensable) risk, the headline rating must reflect the lowest maturity of the critical integrated path (key management), not the highest maturity of its physical components.
+
+          ### 9. Consequences
+          - **Constrains**: Phase 0A budget allocation. A funded path to TRL 6 (configuration-controlled integrated breadboard tested against predictions) must now be established for the authentication and integration elements of T26 before KDP-0B.
+          - **Enables**: Clear, targeted procurement for the T26 breadboard; establishes a precedent rule for all other composite technologies in the re-baseline (they must be rated as integrated articles, not by their best components).
+          - **Subsumes**: Resolves the GPT vs. Claude/Gemini divergence by adopting GPT's strict integrated rating object while preserving Claude's component nuance via sub-ratings.
+        wordCount: 930
+        generatedAt: '2026-10-17T21:43:45.829Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **T26 should assess the architecture-required, end-to-end communications and resilient command service—not the maturity of its best-established components.** Publish component maturity alongside it so that an integration gap is not mistaken for immature radio technology.
+
+          The assessed object should be:
+
+          > A configuration-controlled service providing communications, navigation-support interfaces, and authenticated command for the authorized Phase 0 fleet envelope, including disruption recovery and security lifecycle management, while preserving local safety independence from Earth.
+
+          Its boundary includes flight and ground endpoints, transport, scheduling, trust infrastructure, operational procedures, and their critical interfaces. It need not absorb the whole navigation subsystem or local autonomy technology; those interfaces require explicit ownership and evidence.
+
+          This is a **property decision** about the meaning of the baseline rating, coupled to an **executive decision** about Phase 0A funding and KDP-0B evidence. The rating can be revised readily; procurement and gate commitments based on an inflated rating are harder to reverse.
+
+          Apply the same rule to other composite technologies in `reconciliation/phase-0/trl/`: **define the assessed configuration and required environment before assigning maturity.** Split an inventory item when its constituent capabilities have materially different gate obligations.
+
+          ## 2. Criteria and weights
+
+          These are proposed **swing weights**, referring to the actual differences among assessment policies—not probabilities or measures of technical maturity.
+
+          | Criterion | Weight | Swing being valued, and why |
+          |---|---:|---|
+          | **C1. Fidelity to architectural dependence** | 35% | From ignoring an essential integration dependency to explicitly assessing the service whose failure threatens Phase 0. This is the largest consequential difference. |
+          | **C2. Gate and assurance usefulness** | 25% | From no defensible acceptance decision to a traceable demonstration obligation under D-02, with conditional linkage to D-03. |
+          | **C3. Diagnostic and investment value** | 20% | From one opaque number to identifying exactly which integration, security, or capacity gaps require funding. This can prevent expensive redevelopment of mature elements. |
+          | **C4. Assessment burden and schedule** | 10% | From maintaining existing summaries to operating a controlled evidence register and integrated assessment. Important, but cheaper than discovering a command-service gap after commitment. |
+          | **C5. Evidence transparency** | 10% | From conflating heritage, assumptions, and demonstrations to explicitly distinguishing them. This supports reproducibility and future reassessment. |
+
+          **Non-compensable constraints:** an adopted baseline must state its rating object, cite supporting demonstrations, and preserve D-02 obligations. A high weighted score cannot excuse an unsupported TRL claim.
+
+          ## 3. Options
+
+          **A. Null: retain the panel range and unresolved interpretations.**  
+          Argument: avoids premature closure and preserves disagreement.  
+          Reject: leaves the gate authority unable to tell whether T26 needs a funded maturation program.
+
+          **B. Heritage-led headline TRL 6–7.**  
+          Argument: DSN, relay operations, and disruption-tolerant networking provide substantial relevant heritage; reuse should be credited.  
+          Reject: those demonstrations do not, by themselves, establish the specified authenticated fleet service. This option remains useful for component sub-ratings.
+
+          **C. Integrated-service headline only.**  
+          Argument: directly represents architectural dependence and prevents averaging away integration gaps.  
+          Reject as the complete reporting policy: a low headline alone obscures extensive heritage and can drive unnecessary reinvention.
+
+          **D. Sub-ratings only, without a service headline.**  
+          Argument: avoids compressing heterogeneous evidence into one number.  
+          Reject as the baseline policy: decision-makers still need an explicit disposition of the integrated dependency. A dashboard alone can leave that responsibility unowned.
+
+          **E. Integrated-service headline plus evidence-linked sub-ratings and a gate assurance case. — Recommended**  
+          Argument: combines an honest architectural maturity statement with actionable investment information. Its disadvantage is additional configuration and evidence-management work.
+
+          ## 4. Assessment matrix
+
+          Scores are deliberative judgments: **0 = poor, 4 = strong**. Weighted totals are rounded comparison aids, not measured truths.
+
+          | Option | C1: Fidelity 35% | C2: Gate utility 25% | C3: Diagnostic value 20% | C4: Low burden 10% | C5: Transparency 10% | Weighted /100 |
+          |---|---:|---:|---:|---:|---:|---:|
+          | A. Keep unresolved panel range | 0 | 0 | 1 | 4 | 0 | 15 |
+          | B. Heritage-led headline | 1 | 1 | 3 | 4 | 1 | 41 |
+          | C. Integrated headline only | 4 | 4 | 1 | 2 | 3 | 79 |
+          | D. Sub-ratings only | 3 | 2 | 4 | 2 | 3 | 71 |
+          | **E. Integrated headline + sub-ratings** | **4** | **4** | **4** | **2** | **4** | **95** |
+
+          The important result is not “95.” It is that E preserves the architectural dependency **and** distinguishes reuse from new development.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points: facts that could change the implementation or rating
+
+          - **Fleet concurrency:** simultaneous command-critical sessions versus mostly queued traffic changes scheduling, capacity, and recovery requirements.
+          - **Traffic budget:** without command deadlines, telemetry volumes, navigation-support needs, and allocated link capacity, there is no quantitative qualification envelope.
+          - **Orbit-specific outages:** conjunction and solar-exclusion durations determine storage, command validity, key lifecycle, and recovery demands.
+          - **Security architecture:** authenticated transport is insufficient if ground authorization, onboard execution, trust anchors, or recovery procedures create weaker paths.
+          - **Demonstration availability:** an existing representative integrated prototype could materially raise the present rating and shorten Phase 0A work.
+
+          ### Trade-off points: values decisions, not facts to settle
+
+          - **More pre-gate assurance versus earlier commitment and lower near-term expenditure.**
+          - **Maximum initial fleet capability versus a smaller, independently viable initial operating envelope.**
+          - **Stronger compromise containment versus recovery complexity and operational availability.**
+          - **Headline simplicity versus faithful representation of heterogeneous maturity.**
+
+          The recommendation remains preferred under substantial reweighting unless low reporting burden is valued above identifying an architecture-critical gap. No numerical weighting should override D-02.
+
+          ## 6. Evidence certainty
+
+          The following uses **GRADE-style certainty labels adapted to engineering evidence**, not clinical-study grading. Confidence concerns the strength of the conclusion; likelihood concerns whether an event will occur.
+
+          | Key claim | Certainty and confidence | Likelihood statement |
+          |---|---|---|
+          | Interplanetary RF communications have extensive operational heritage. | **High certainty; high confidence.** DSN operations are direct evidence. | Not a forecast. |
+          | DTN has been demonstrated in deep space. | **High certainty; high confidence** for that bounded claim: NASA/JPL reported DINET testing on EPOXI in 2008. This is not evidence of the complete T26 service. | Not a forecast. |
+          | The supplied evidence does not establish the specified integrated authenticated fleet service at TRL 6. | **Moderate certainty; high confidence as an evidence-register finding.** The inventory may be incomplete. | No defensible probability that an undiscovered precedent exists. |
+          | Authentication lifecycle and outage recovery deserve explicit maturation work. | **Moderate certainty; moderate confidence.** Supported by the described gaps, but detailed design and threat analysis are absent. | Failure probability cannot yet be quantified. |
+          | T26 can reach TRL 6 within Phase 0A. | **Low certainty; low confidence** until configuration, facilities, resources, and schedule are defined. | Do not convert the panel’s 1–5-year estimates into a calibrated forecast. |
+          | Command security will be a licence condition under D-03. | **Low certainty.** Jurisdiction and regulator requirements are not established here. | Treat as a conditional constraint, not an assured outcome. |
+
+          **Sources and limits:** NASA’s *Systems Engineering Handbook*, NASA/SP-2016-6105 Rev. 2, supplies the TRL framework; NASA/JPL’s 2008 DINET reporting supplies a specific deep-space demonstration; CCSDS *Space Data Link Security Protocol* and its *Extended Procedures* supply standards, **not proof of deployment on a named mission**. Gemini’s flight-heritage claim therefore remains uncredited until a traceable mission record is supplied.
+
+          One correction matters: under NASA’s conventional definitions, **TRL 4 is laboratory validation; TRL 5 introduces a relevant environment; TRL 6 requires a representative system/subsystem model or prototype demonstrated in a relevant environment.** An integrated laboratory breadboard should not be rejected for TRL 4 solely because it lacks the TRL 5 environment.
+
+          ## 7. Key assumptions
+
+          | Assumption | Evidence that would falsify it |
+          |---|---|
+          | The integrated command service is essential to the authorized Phase 0B mission. | A validated alternative architecture meeting mission and licensing obligations without it. |
+          | Existing components can supply most underlying communications functionality. | Interface, capacity, radiation, timing, or security analysis showing extensive redesign is required. |
+          | A defensible relevant-environment demonstration can combine representative hardware, network emulation, heritage evidence, and operational exercises. | Identification of a critical phenomenon or interface that cannot be represented or bounded without additional flight evidence. |
+          | The required envelope extends to 29 assets unless formally reduced. | An approved architecture and staged operating concept establishing a smaller, sufficient KDP-0B envelope. |
+          | Safety remains locally independent of Earth during outages. | Hazard analysis finding any safety-critical action that requires an Earth response within the stated delay or blackout. |
+
+          **ACH ranking—least disconfirmed explanations of the rating disagreement:**
+
+          1. **Different assessment objects:** strongest fit to the panel’s stated reasoning.
+          2. **Missing evidence for a potentially mature integrated service:** plausible; requires an evidence search.
+          3. **A fundamentally immature communications technology:** weakest fit to the extensive RF and operational heritage.
+
+          This ranking supports a targeted integration program, not wholesale communications research.
+
+          ## 8. Decision, warrant, accepted downside
+
+          Adopt **Option E**.
+
+          ### Baseline entry
+
+          Record:
+
+          - **Assessed object:** the defined integrated service and authorized operating envelope.
+          - **Current disposition:** **provisional TRL 3 working assessment; TRL 4 not yet evidenced for the integrated configuration**, pending evidence audit.
+          - **Qualifier:** missing documentation does not itself prove TRL 3. That level also requires evidence of its applicable exit criteria; if absent, record “not demonstrated/evidence incomplete.”
+          - **Sub-ratings:** retain separate, configuration-specific entries for RF links, transport/DTN, navigation-support interfaces, scheduling/capacity, authenticated command and key management, and disruption recovery.
+
+          Do not average sub-ratings, and do not mechanically take their minimum. The service rating depends on demonstrated integration of the critical functions.
+
+          ### Risk classification
+
+          Use **architecture-change as the primary consequence class**, with explicit branches:
+
+          - **Cost/schedule increase:** adequate service is achievable through additional resources or a slower cadence.
+          - **Architecture change:** authorized fleet scale, operations, or command topology must change.
+          - **Project-ending for the proposed Phase 0B configuration:** no trustworthy command service or acceptable licensing path can be demonstrated.
+
+          Severity is not probability. This classification does not assert that failure is likely.
+
+          ### Accepted downside
+
+          The policy creates extra assurance work and may expose a funding or schedule gap earlier. It also risks conflating overall readiness with technology maturity unless TRL, operational readiness, cybersecurity assurance, and licensing compliance remain separate records.
+
+          ## 9. Consequences
+
+          ### KDP-0B criterion
+
+          For any T26 capability whose absence is project-ending under D-02, require:
+
+          > **TRL 6 evidence for the approved integrated configuration and operating envelope, plus a separately accepted operational/security assurance case and closure of applicable licensing conditions.**
+
+          The demonstration package should include:
+
+          1. **A frozen qualification envelope:** fleet concurrency, traffic, command deadlines, storage, navigation-support interfaces, allocated network access, and target-specific outage cases.
+          2. **A representative prototype:** flight/ground command boundaries, onboard processing, persistent storage, scheduling, and security implementation representative where critical.
+          3. **Delay and disruption testing:** the specified 1–25-minute light time, outages, asymmetric links, corrupted or duplicate messages, interrupted transfers, and simultaneous recovery demand.
+          4. **Command lifecycle testing:** authorization, replay protection, stale-command handling, key rollover, revocation, reboot/state loss, compromised-node containment, and recovery after long disconnection.
+          5. **Measured acceptance results:** delivery latency, backlog clearance, storage margins, command integrity and availability, and behavior outside the qualified envelope.
+          6. **Safety evidence:** hazardous operations remain locally safe without Earth intervention; restoration does not execute obsolete commands or bypass authorization.
+          7. **Independent review:** traceable predictions, results, discrepancies, residual risks, and configuration identity.
+
+          Neither full-scale flight deployment nor encryption alone is a universal TRL-6 prerequisite or sufficient proof. The relevant environment must be justified function by function.
+
+          Assign one service owner, establish a targeted heritage-evidence search, and fund an early integrated breadboard before committing to a costly demonstration campaign. Reserve a smaller fleet envelope as a real option—but accept it only through an approved architecture change showing that Phase 0B remains viable. Published sub-ratings should retain the panel’s unresolved evidence disagreements rather than average them away.
+
+          **Final decision—Y-statement:** In the context of the Phase 0 TRL re-baseline, facing mature communications components but unproven integrated fleet-command assurance, we chose an integrated-service headline with evidence-linked sub-ratings, to achieve an auditable D-02 gate and targeted maturation investment, accepting additional Phase 0A assurance effort and possible schedule pressure.
+
+          **Warrant:** component heritage supports reuse, but does not establish the behavior of their required integration. **Qualifier:** the provisional rating must change when configuration-specific evidence satisfies the relevant exit criteria. This decision enables a funded demonstration plan and constrains KDP-0B approval, fleet-envelope selection, and any D-03 licensing claim.
+        wordCount: 2073
+        generatedAt: '2026-10-17T21:45:06.342Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: reasoning
+            reasoning: A complete chain. The frame and criteria come before the options, which include a null option and a strong split rival (O5), and the robustness check addresses that rival. Evidence is calibrated, falsifiers are explicit and the commitment is concrete. A few weighted totals are slightly off (O1 should be 2.05, O3 3.65), but none of the errors changes the ranking or the decision.
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: The response is comprehensive, strictly follows the requested decision chain, and provides a highly detailed and logically sound evaluation of the TRL rating object.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: The integrated-service object and component reporting are well justified, but absent flight precedent does not establish TRL 3. The mechanical weakest-component cap and blanket TRL 4 ceiling also need justification; they could change the baseline and demonstration obligations.
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: values
+            reasoning: The conclusion is right, but the criteria omit diagnostic or investment value, which is the only feature separating Option 3 from Option 2. Both options score 'High' on every stated criterion, yet receive 0.85 and 0.95 with no derivation. Evidence and assumptions are thin, and no concrete KDP-0B test is specified, so the chosen option is not justified by its own matrix.
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: The response follows the structure well and includes all required elements, but the assessment matrix and reasoning are somewhat brief compared to the depth required for a fully robust decision.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: The reporting recommendation is sound, but identical qualitative matrix scores produce different totals without explanation. Accepting unauthenticated commands would not resolve fleet-scale integration gaps, so the stated sensitivity could incorrectly make the heritage-only option viable.
+        rawScore: 3
+        weightedScore: 2.5
+        approveCount: 0
+        rejectCount: 0
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: 'A well-framed, cited and calibrated response. It covers null, headline-only and sub-ratings-only alternatives, makes the useful TRL 4/5/6 correction and sets a detailed KDP-0B evidence package. The commitment is slightly hedged: it gives a provisional TRL 3 with a conditional risk branch, and it rejects the minimum-cap rule without specifying a replacement aggregation. None of this would change the decision.'
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: values
+            reasoning: The response provides a very strong, well-reasoned decision chain with excellent use of swing weights, clearly defined options including a null, and well-calibrated evidence certainty.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: information
+            reasoning: The remaining evidence gaps are explicitly bounded rather than converted into definitive maturity claims. The response distinguishes service integration, component heritage, security assurance, and licensing, with falsifiable assumptions and configuration-specific gate criteria.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+    winnerId: gpt-6-1-sol
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: 'All three responses converge on the same rating object: an integrated-service headline (TRL 3, 4 conditional) with non-averaged sub-ratings. A and C give rigorous, gate-ready justification and differ only in presentation details, such as the cap rule versus integration-based judgment. Further rounds are unlikely to change the decision.'
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: The responses have converged on a highly detailed and logically sound consensus (Option E/4/3) regarding the rating object and sub-ratings, making further rounds unnecessary.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: 'Response C provides a satisfactory resolution: assess the required integrated service, retain evidence-linked component ratings, and make the precise TRL conditional on demonstrated exit criteria.'
+    shouldTerminate: true
+    completedAt: '2026-10-17T21:45:41.521Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 0
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 1
+  totalVotes: 9
+  approvalRate: 55.55555555555556
+  averageResponseWords: 2135
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T21:45:41.716Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    Claude Opus 5.5, Gemini 3.1 Pro and GPT-6.1 Sol converged on the assessment object: **T26 should rate the architecture-required, integrated communications and authenticated command service—not its best-demonstrated components.** All three recommended an integrated-service headline accompanied by evidence-linked, non-averaged sub-ratings. They attributed the original rating divergence mainly to assessing different objects and recommended preserving communications heritage without treating it as proof of fleet-scale integration.
+
+    All three supported a **provisional TRL 3 headline, with TRL 4 requiring additional evidence**, and an **architecture-change primary risk classification**, potentially escalating to project-ending. GPT qualified the rating more explicitly: missing evidence does not itself establish TRL 3, whose exit criteria must also be evidenced. Claude proposed a mechanical weakest-critical-component cap; GPT rejected mechanical minimum-taking in favour of configuration-specific integration evidence. Gemini supported the integrated critical-path framing without specifying a comparably detailed aggregation rule.
+
+    The panel supported Phase 0A maturation work and a demonstrable KDP-0B acceptance package, but differed on its obligation and implementation. Claude recommended applying a TRL 6 gate now because of possible project-ending consequences; Gemini called for a funded TRL 6 path before KDP-0B; GPT tied the mandatory D-02 requirement specifically to capabilities whose absence is project-ending. Claude also proposed a more prescriptive demonstration than GPT, which favoured justifying the relevant environment function by function.
+
+    ## Decision record
+
+    ### Converged decision
+
+    **Y-statement — Claude, Gemini and GPT:**  
+    *In the context of* the Phase 0 TRL re-baseline, *facing* mature communications components but insufficient evidence for the required integrated fleet-command service, *we chose* an integrated-service headline with configuration-specific, evidence-linked sub-ratings, *to achieve* an auditable gate and targeted maturation investment, *accepting* additional Phase 0A assurance effort and possible cost and schedule pressure.
+
+    - **Warrant — all three:** Component heritage supports reuse but does not establish the required integration at fleet scale, through outages, with authenticated command and key-lifecycle management.
+    - **Qualifier — all three:** Ratings must change when configuration-specific evidence supports different exit criteria. **GPT additionally:** TRL 3 remains a working assessment, not a conclusion established by missing higher-level evidence.
+    - **Accepted downside — all three:** Additional demonstration and evidence-management work. **Claude additionally:** A low headline may be misread as denying mature RF heritage. **GPT additionally:** TRL, operational readiness, security assurance and licensing should remain distinct records.
+
+    ### Unconverged implementation positions
+
+    - **Claude:** *In this composite assessment, facing the possibility that a critical immature function is obscured by mature parts, we chose a weakest-critical-component and integration cap, to prevent an inflated headline, accepting a conservative rating and broader reassessment of other composites.* Claude also proposed that a composite without an integrated article cannot exceed TRL 4.
+    - **GPT:** *In this composite assessment, facing heterogeneous component evidence and integration dependencies, we chose configuration-specific integration assessment rather than mechanically taking the minimum sub-rating, to preserve the meaning of demonstrated service maturity, accepting additional assessment judgment.* GPT challenged Claude’s cap and blanket ceiling as insufficiently justified.
+    - **Gate obligation:** Claude favoured applying TRL 6 at KDP-0B immediately; Gemini supported establishing the funded path before that gate; GPT retained D-02’s explicit project-ending condition. The panel did not resolve these differences into one gate rule.
+
+    ## Decision-quality audit
+
+    ### Round 1
+
+    | Response | Weakest Decision Quality links named in votes | Missing or unsupported Composite Scaffold elements identified by reviewers |
+    |---|---|---|
+    | **Claude** | Claude: **reasoning**; Gemini: **commitment**; GPT: **reasoning** | Claude identified small scoring errors but judged them immaterial to ranking. GPT challenged the inference from absent flight precedent to TRL 3, the mechanical minimum cap and the blanket TRL 4 ceiling. Gemini named no specific missing step and approved the chain. |
+    | **Gemini** | Claude: **values**; Gemini: **reasoning**; GPT: **reasoning** | Claude noted that the criteria omitted the diagnostic value distinguishing the preferred option, while identical qualitative scores produced different totals; Claude also found the evidence, assumptions and gate test insufficiently developed. Gemini considered its own reasoning too brief. GPT challenged both the scoring derivation and the suggestion that accepting unauthenticated command could make heritage-only assessment viable despite remaining integration gaps. |
+    | **GPT** | Claude: **commitment**; Gemini: **values**; GPT: **information** | Claude found the commitment somewhat hedged and noted no explicit replacement aggregation rule after rejecting the minimum cap. Gemini identified no concrete missing step. GPT acknowledged remaining evidence gaps but considered them explicitly bounded rather than converted into definitive maturity claims. |
+
+    **Trade-off points identified by the models:** Claude and GPT distinguished greater pre-gate assurance from lower near-term expenditure and earlier commitment; both identified headline simplicity versus diagnostic detail. GPT additionally identified maximum initial fleet capability versus a smaller viable operating envelope. Claude treated the decision to carry uncertain licensing exposure into the gate now as an owner risk-appetite choice; GPT treated licensing applicability as an unresolved conditional constraint.
+
+    ## Key Points
+
+    - **Assessment boundary — GPT:** Include flight and ground endpoints, scheduling, transport, trust infrastructure, procedures and critical interfaces, including navigation-support interfaces; do not automatically absorb the entire navigation or autonomy subsystem.
+    - **Operating envelope — all three:** Assess fleet scale, delay, outages, recovery and command security. **Claude and GPT:** Use the upper fleet envelope unless a smaller configuration is formally approved.
+    - **Heritage credit — all three:** Preserve mature RF, DTN and conjunction-operations evidence in sub-ratings rather than averaging it into the headline.
+    - **Security evidence — all three:** No qualifying deep-space authenticated-command/key-lifecycle flight record was supplied. **GPT:** Standards are not deployment evidence. **Gemini:** Its revised position did not retain the original uncited flight-heritage claim as sufficient support.
+    - **TRL definitions — GPT:** Laboratory validation belongs to TRL 4; relevant-environment validation enters at TRL 5; TRL 6 requires a representative model or prototype demonstrated in a relevant environment.
+    - **Risk — all three:** Architecture-change is the primary classification, with possible project-ending consequences if trustworthy command or an acceptable licensing path cannot be demonstrated. **GPT:** Severity does not establish failure probability.
+
+    ## Unresolved Questions
+
+    1. **Current rating:** Claude and Gemini favoured TRL 3, conditional 4; GPT asked whether the evidence register actually supports TRL 3 exit criteria.
+    2. **Composite rating rule:** Claude’s weakest-link cap and blanket ceiling remain disputed by GPT; Gemini did not resolve the detailed rule.
+    3. **Gate applicability:** Claude’s immediate TRL 6 gate recommendation and GPT’s conditional D-02 application remain distinct.
+    4. **Demonstration environment:** Claude proposed real DSN passes and a deep-space-distance link; GPT opposed treating full-scale flight deployment as a universal prerequisite and required function-specific justification.
+    5. **Missing inputs:** Claude and GPT called for defined traffic, command-performance and orbit-specific outage envelopes, including SEL1.
+    6. **Licensing:** All three retained a D-03 linkage, but GPT explicitly declined to treat a command-security licence condition as established.
+
+    ## Recommended Actions
+
+    1. **Record the agreed assessment object and dual reporting format — all three:** Publish an integrated-service headline alongside cited, configuration-specific sub-ratings.
+    2. **Audit the provisional rating — GPT:** Verify applicable exit criteria before treating TRL 3 as established; otherwise record evidence incompleteness explicitly.
+    3. **Resolve the assessment rule before extending it — Claude and GPT:** Reconcile Claude’s proposed caps with GPT’s integration-evidence approach before applying the rule across other composites.
+    4. **Freeze the qualification envelope — Claude and GPT:** Define traffic, fleet concurrency, command deadlines, storage, navigation-support interfaces and target-specific outages.
+    5. **Conduct a targeted heritage search — all three:** Seek named, traceable authenticated-command and key-management demonstrations; revise only the capabilities supported by the evidence.
+    6. **Fund an integrated demonstration plan — all three:** Cover delay and disruption recovery, command authentication, key lifecycle and locally independent safety. **Claude and GPT:** Include independent assurance review.
+    7. **Obtain explicit gate and licensing decisions — Claude and GPT:** Settle D-02 applicability, D-03 conditions and any acceptable reduced operating envelope before locking acceptance obligations.
+
+    ```yaml
+    questionId: "rq-0-64"
+    topics:
+      - id: assessment-object
+        topic: Integrated service versus component heritage
+        positions:
+          - statement: Rate the required integrated service and publish non-averaged component sub-ratings.
+            models: ["Claude Opus 5.5", "Gemini 3.1 Pro", "GPT-6.1 Sol"]
+            evidence: "Component demonstrations do not establish the required fleet-scale authenticated service; heritage remains valuable supporting evidence."
+        resolution_status: resolved
+        priority: critical
+      - id: current-headline-rating
+        topic: Evidential status of TRL 3
+        positions:
+          - statement: Carry TRL 3, with TRL 4 conditional on integrated breadboard evidence.
+            models: ["Claude Opus 5.5", "Gemini 3.1 Pro"]
+            evidence: "No qualifying integrated article or sufficient authentication-lifecycle evidence was supplied."
+          - statement: Treat TRL 3 as provisional and verify its own exit criteria.
+            models: ["GPT-6.1 Sol"]
+            evidence: "Missing higher-level evidence does not itself establish a lower TRL."
+        resolution_status: partially-resolved
+        priority: high
+      - id: composite-rating-rule
+        topic: Mechanical caps versus integration-specific assessment
+        positions:
+          - statement: Cap the headline by the lowest critical sub-rating and integration maturity; apply a TRL 4 ceiling without an integrated article.
+            models: ["Claude Opus 5.5"]
+            evidence: "A critical immature function can constrain service capability."
+          - statement: Do not mechanically take the minimum; assess demonstrated integration in the stated configuration.
+            models: ["GPT-6.1 Sol"]
+            evidence: "The proposed minimum cap and blanket ceiling were not sufficiently justified."
+        resolution_status: open
+        priority: high
+      - id: gate-obligation
+        topic: When TRL 6 becomes mandatory
+        positions:
+          - statement: Apply the TRL 6 KDP-0B requirement now because command failure may become project-ending.
+            models: ["Claude Opus 5.5"]
+            evidence: "Waiting for D-03 resolution could leave insufficient Phase 0A maturation time."
+          - statement: Establish a funded path to integrated TRL 6 before KDP-0B.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Integration and security risks require early retirement."
+          - statement: Require TRL 6 under D-02 for capabilities whose absence is project-ending.
+            models: ["GPT-6.1 Sol"]
+            evidence: "Gate obligations depend on the approved configuration and consequence classification."
+        resolution_status: partially-resolved
+        priority: critical
+      - id: demonstration-environment
+        topic: Required form of the TRL 6 demonstration
+        positions:
+          - statement: Include real DSN passes and at least one deep-space-distance link.
+            models: ["Claude Opus 5.5"]
+            evidence: "The proposed test package combines representative hardware, fleet emulation, outages and security exercises."
+          - statement: Justify the relevant environment function by function rather than impose a universal flight prerequisite.
+            models: ["GPT-6.1 Sol"]
+            evidence: "Representative hardware, emulation, heritage and operational exercises may support the required demonstration."
+        resolution_status: open
+        priority: high
+    ```
+  keyPoints:
+    - Assessment boundary — GPT:** Include flight and ground endpoints, scheduling, transport, trust infrastructure, procedures and critical interfaces, including navigation-support interfaces; do not automatically absorb the entire navigation or autonomy subsystem.
+    - Operating envelope — all three:** Assess fleet scale, delay, outages, recovery and command security. **Claude and GPT:** Use the upper fleet envelope unless a smaller configuration is formally approved.
+    - Heritage credit — all three:** Preserve mature RF, DTN and conjunction-operations evidence in sub-ratings rather than averaging it into the headline.
+    - Security evidence — all three:** No qualifying deep-space authenticated-command/key-lifecycle flight record was supplied. **GPT:** Standards are not deployment evidence. **Gemini:** Its revised position did not retain the original uncited flight-heritage claim as sufficient support.
+    - TRL definitions — GPT:** Laboratory validation belongs to TRL 4; relevant-environment validation enters at TRL 5; TRL 6 requires a representative model or prototype demonstrated in a relevant environment.
+    - Risk — all three:** Architecture-change is the primary classification, with possible project-ending consequences if trustworthy command or an acceptable licensing path cannot be demonstrated. **GPT:** Severity does not establish failure probability.
+  unresolvedQuestions:
+    - Current rating:** Claude and Gemini favoured TRL 3, conditional 4; GPT asked whether the evidence register actually supports TRL 3 exit criteria.
+    - Composite rating rule:** Claude’s weakest-link cap and blanket ceiling remain disputed by GPT; Gemini did not resolve the detailed rule.
+    - Gate applicability:** Claude’s immediate TRL 6 gate recommendation and GPT’s conditional D-02 application remain distinct.
+    - Demonstration environment:** Claude proposed real DSN passes and a deep-space-distance link; GPT opposed treating full-scale flight deployment as a universal prerequisite and required function-specific justification.
+    - Missing inputs:** Claude and GPT called for defined traffic, command-performance and orbit-specific outage envelopes, including SEL1.
+    - Licensing:** All three retained a D-03 linkage, but GPT explicitly declined to treat a command-security licence condition as established.
+  recommendedActions:
+    - Record the agreed assessment object and dual reporting format — all three:** Publish an integrated-service headline alongside cited, configuration-specific sub-ratings.
+    - Audit the provisional rating — GPT:** Verify applicable exit criteria before treating TRL 3 as established; otherwise record evidence incompleteness explicitly.
+    - Resolve the assessment rule before extending it — Claude and GPT:** Reconcile Claude’s proposed caps with GPT’s integration-evidence approach before applying the rule across other composites.
+    - Freeze the qualification envelope — Claude and GPT:** Define traffic, fleet concurrency, command deadlines, storage, navigation-support interfaces and target-specific outages.
+    - Conduct a targeted heritage search — all three:** Seek named, traceable authenticated-command and key-management demonstrations; revise only the capabilities supported by the evidence.
+    - Fund an integrated demonstration plan — all three:** Cover delay and disruption recovery, command authentication, key lifecycle and locally independent safety. **Claude and GPT:** Include independent assurance review.
+    - Obtain explicit gate and licensing decisions — Claude and GPT:** Settle D-02 applicability, D-03 conditions and any acceptable reduced operating envelope before locking acceptance obligations.
+    - 'id: assessment-object'
+    - 'statement: Rate the required integrated service and publish non-averaged component sub-ratings.'
+    - 'id: current-headline-rating'
+    - 'statement: Carry TRL 3, with TRL 4 conditional on integrated breadboard evidence.'
+    - 'statement: Treat TRL 3 as provisional and verify its own exit criteria.'
+    - 'id: composite-rating-rule'
+    - 'statement: Cap the headline by the lowest critical sub-rating and integration maturity; apply a TRL 4 ceiling without an integrated article.'
+    - 'statement: Do not mechanically take the minimum; assess demonstrated integration in the stated configuration.'
+    - 'id: gate-obligation'
+    - 'statement: Apply the TRL 6 KDP-0B requirement now because command failure may become project-ending.'
+    - 'statement: Establish a funded path to integrated TRL 6 before KDP-0B.'
+    - 'statement: Require TRL 6 under D-02 for capabilities whose absence is project-ending.'
+    - 'id: demonstration-environment'
+    - 'statement: Include real DSN passes and at least one deep-space-distance link.'
+    - 'statement: Justify the relevant environment function by function rather than impose a universal flight prerequisite.'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T21:46:34.629Z'

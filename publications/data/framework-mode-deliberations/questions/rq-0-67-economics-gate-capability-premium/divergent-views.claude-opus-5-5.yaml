@@ -1,0 +1,131 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-67
+topics:
+  - id: premium-locus
+    topic: Whether a capability premium can pass inside the economics gate or needs a separate owner decision
+    positions:
+      - statement: >-
+          Economics gate tests parity (R = 1); any premium above parity requires a separate, explicit, bounded owner
+          decision and is not an economics pass
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          D-01 states purpose but sets no premium amount or authority; D-02 irreversible-gate discipline; a threshold
+          adjustable at the gate cannot fail; cost dispersion $15.7B BOM vs $22-195B panel
+    resolution_status: resolved
+    priority: critical
+  - id: premium-timing
+    topic: When the premium decision must be taken relative to the 0B cost evidence
+    positions:
+      - statement: >-
+          Premium decision (D-xx) must be taken no later than the 0A mid-term review, frozen, capped in ratio and
+          dollars, default R_max = 1.0; amendments only by recorded owner decision before the KDP-0B package is
+          assembled
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Escalation of commitment (Staw 1976), megaproject overrun literature (Flyvbjerg), NASA 70% JCL practice with
+          thresholds set before confirmation; an R set after the P70 is known makes the gate unable to fail on cost
+      - statement: >-
+          Premium may be authorised at the same KDP-0B meeting provided it is recorded as a separate finding;
+          ordinary-pass funding envelope and downside limits fixed before gate adjudication
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Separate findings with different warrants preserve auditability; avoids sequential delay (A4);
+          decision-structure reasoning rather than Project Dyson outcome data
+      - statement: >-
+          Premium decided at KDP-0B as an explicit executive exception, letting the owner assess value with the latest
+          signed Phase 1 demand
+        models:
+          - Gemini 3.1 Pro
+        evidence: Governance clarity and accountability weighted 45%; explicit sign-off at the gate
+    resolution_status: open
+    priority: critical
+  - id: undercut-threshold
+    topic: Whether 0B must undercut Earth supply
+    positions:
+      - statement: >-
+          Strict undercut is rejected; it double-counts margin (P70 vs P50), adds false precision inside the estimate
+          band, needs a justified margin, and contradicts D-01
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: D-01 "not a cost saving"; P70 vs P50 comparison already conservative; ±30% band noise (Claude)
+    resolution_status: resolved
+    priority: medium
+  - id: rule-exceptions
+    topic: Low-launch-price ratio relaxation, market-backed exemption and late amendments
+    positions:
+      - statement: >-
+          In L-low the ratio may exceed R_max if the dollar cap holds; premiums covered by signed Phase 1 prices above
+          Earth P50 do not count against dC_max; recorded amendments allowed before the KDP-0B package
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Prevents verdict flipping when the denominator collapses; signed above-Earth demand is market evidence for
+          H-capability
+      - statement: >-
+          These exceptions weaken the pre-evidence freeze and the funding safeguards and could change approval; avoid
+          double-counting benefits already in customer payments
+        models:
+          - GPT-6.1 Sol
+        evidence: Vote critique of Claude's response; assumption A3 on double counting
+    resolution_status: open
+    priority: high
+  - id: ratio-vs-absolute-cap
+    topic: Relationship between R and the absolute dollar premium under a moving Earth benchmark
+    positions:
+      - statement: A static R with falling Earth-supply costs could authorise massive absolute subsidies
+        models:
+          - Gemini 3.1 Pro
+        evidence: Arithmetic of relative multipliers on a fluctuating baseline
+      - statement: >-
+          With fixed R and quantity, a lower Earth benchmark reduces the permitted absolute premium; ratio and absolute
+          cap answer different questions, so an absolute cap is required and R is reported only
+        models:
+          - GPT-6.1 Sol
+        evidence: Vote correction of Gemini; rule text item 4 and the reporting guidance
+      - statement: A fixed R implies a moving absolute premium, so the ratio and the dollars must both be capped
+        models:
+          - Claude Opus 5.5
+        evidence: Sensitivity point S1 (launch $/kg roughly $1,500 to $200 to LEO)
+    resolution_status: partially-resolved
+    priority: medium
+  - id: estimate-readiness
+    topic: Estimate-band precondition and NOT READY verdict
+    positions:
+      - statement: >-
+          Require a 0B estimate band of ±30% or better before the gate is evaluable; otherwise verdict NOT READY
+          (distinct from FAIL), routed to the fallback 0A only, Earth supply
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Current dispersion roughly 9x, far beyond ±30%; R values between about 0.8 and 1.3 cannot be told apart inside
+          the band
+      - statement: >-
+          ±30% is not meaningful assurance without a stated confidence level, cost scope and validation method; reported
+          spread is not a probability distribution; reconcile estimates before asserting a calibrated P70
+        models:
+          - GPT-6.1 Sol
+        evidence: Evidence-certainty table; low confidence in current P70 calibration
+    resolution_status: partially-resolved
+    priority: medium
+  - id: comparator-definition
+    topic: Definition and ownership of the Earth-supply counterfactual and scenario set
+    positions:
+      - statement: Owned Earth-supply reference spec with three launch-price scenarios, frozen at the 0A mid-term review
+        models:
+          - Claude Opus 5.5
+        evidence: Assumption A2; the denominator is unowned otherwise
+      - statement: >-
+          Comparator must match material quality, availability and schedule on a common price base and consistent
+          avoidable-cost scope; a non-contingent pass must survive the predeclared core scenarios
+        models:
+          - GPT-6.1 Sol
+        evidence: Sensitivity points 1-5; rule text items 1-2
+    resolution_status: partially-resolved
+    priority: high

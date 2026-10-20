@@ -1,0 +1,735 @@
+questionId: rq-0-74
+questionSlug: d02-0a-milestone-trl-flight-projects
+questionTitle: How should D-02's 'TRL 4–5 for internal 0A milestones' apply to 0A flight projects (scouts, pathfinder)?
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T22:24:08.567Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # D-02 for 0A flight projects: a ruling
+
+          ## 1. Frame & decision type
+
+          **The question.** D-02 sorts gates into two classes. One-way gates (KDP-0B) need TRL 6 in a relevant environment. "Two-way, internal 0A milestones" need TRL 4–5. 0A also contains flight projects (scouts and the pathfinder), and each has its own lifecycle gates: PDR, CDR, and launch readiness. Are those gates "internal 0A milestones" in D-02's sense?
+
+          **Decision type.** This is a *property* decision about the gate regime, in Kruchten's terms, with an *executive* element: does the accepted text change?
+
+          - **Reversibility.** The decision itself is cheap to revise before any 0A project reaches PDR. The cost of a wrong rule shows up later as cost growth or a lost flight, and those cannot be undone.
+          - **Cynefin domain.** Complicated. The relevant practice is well documented, and a defensible answer exists.
+
+          **My framing claim.** D-02's principle ("stringency follows reversibility") is right. Its sentence about categories is a heuristic that misclassifies flight projects.
+
+          - A 0A launch is one-way. The hardware is gone, the slot is spent, and so is the integration cost.
+          - A project PDR is also close to one-way, because it is the point where design and build spending is committed.
+          - The MTR tranche release is genuinely two-way. A tranche can be withheld, re-scoped or re-released.
+
+          So the disagreement is not really about TRL numbers. It is about whether to classify by **who owns the gate** (0A vs 0B) or by **what the gate commits**. D-02's own principle says the second.
+
+          There is a second distinction no panelist drew, and it matters more than the numbers. A flight project carries two kinds of technology:
+
+          - **Enabling technologies.** If these fail, the mission ends with no useful data: bus, power, comms, ADCS, propulsion when it is not the experiment.
+          - **Technologies under test.** The flight exists to raise these from TRL 5–6 to TRL 7.
+
+          Requiring TRL 8 for a technology under test before its own demonstration flight is a contradiction. Requiring only TRL 4–5 for an enabling technology at PDR invites the cost-growth pattern that the evidence below documents.
+
+          ## 2. Criteria and weights (stated before options)
+
+          Swing weights reflect the spread between the best and worst option on each criterion, not its abstract importance.
+
+          | # | Criterion | Swing weight | Why this weight fits the range |
+          |---|---|---|---|
+          | C1 | **Loss avoidance on irreversible commitments.** Avoid cost and schedule growth after PDR, and avoid flights lost without data. | **0.30** | Widest consequence range. At worst, a pathfinder lost to an immature bus, which could consume a large share of 0A funds and credibility. At best, failures are confined to the experiment and still yield data. |
+          | C2 | **Learning yield and tempo.** Protect 0A's purpose as a fast capability programme (D-01). | **0.25** | Wide range. Over-strict gates push scouts right by quarters. Lax gates bring early flights that may teach little. |
+          | C4 | **Unambiguity and auditability.** A reviewer can apply the rule without asking the owner. | **0.20** | The panel split is itself evidence that the current text fails here. The range runs from "three reviewers, three readings" to a mechanical test. |
+          | C3 | **Fidelity to D-02 and minimal governance churn.** | **0.15** | Moderate range. Every option keeps D-02's principle. They differ only in whether the text changes. |
+          | C5 | **Cost of compliance.** Extra ground relevant-environment testing before PDR. | **0.10** | Narrow range. Engineering-model environmental tests are a small fraction of flight-project cost and are partly incurred anyway. |
+
+          These are musts, applied before scoring (Kepner-Tregoe):
+
+          - **M1.** KDP-0B keeps TRL 6 in a relevant environment with no waivers, as accepted.
+          - **M2.** The rule must not require a technology to reach the TRL its own flight is meant to produce.
+
+          ## 3. Options
+
+          **O0 — Null: leave the split.** Each reviewer applies their own reading. Claude enforces TRL 6 at PDR, GPT TRL 8 before launch, Gemini TRL 4–5 at the MTR only.
+
+          - **Rejected.** It fails C4 by construction, and the gate outcome would depend on which reviewer sits on the board.
+          - It also passes the real disagreement to the first scout PDR, the worst time to settle it.
+          - The null option's one virtue is no governance churn. That virtue is not worth the ambiguity.
+
+          **O1 — Literal D-02: TRL 4–5 at every 0A gate, including flight PDR.**
+
+          - **Rejected.** It contradicts D-02's own principle.
+          - It would approve design commitment on enabling technologies at TRL 4, against established NASA practice (TRL 6 by PDR) and DoD practice (TRL 6 at Milestone B).
+          - It is the option most likely to produce the "0A slips and overruns" story that would discredit the 0B real option D-01 depends on.
+
+          **O2 — Claude's panel position: TRL 6 at project PDR for all scout and pathfinder critical technologies; 4–5 only for 0B development milestones.**
+
+          - **Partly adopted.** It is right about enabling technologies.
+          - It is too blunt for technologies under test. If the pathfinder payload (T04, T05, T08, T16, T19, T24) must be fully TRL 6 at PDR, 0A pays for a full ground relevant-environment campaign before design commitment.
+          - The schedule then slips for a flight whose value is to retire environmental uncertainty that ground tests capture poorly (long-duration vacuum, thermal cycling, operational microgravity).
+          - It also misses M2's subtlety: the experiment's *flight* TRL comes from the flight.
+
+          **O3 — GPT's position: TRL 4–5 at MTR as tranche releases; TRL 8 before launch; no PDR technology gate.**
+
+          - **Partly adopted.** It is right that the MTR is a tranche decision, and right that "unmet ⇒ no planned demonstration" is a clean rule.
+          - It fails M2 as written: "TRL 8 before launch" cannot apply to a technology under test. It should be read as "flight system qualified and accepted," which is a qualification statement, not a TRL.
+          - Leaving PDR unguarded is the main defect. Immaturity found at CDR or in qualification costs far more than immaturity found at PDR.
+
+          **O4 — Recommended: classify gates by commitment and technologies by role.**
+
+          | Gate | Requirement |
+          |---|---|
+          | MTR tranche releases (two-way) | TRL 4–5, as GPT and Gemini propose |
+          | Project PDR (one-way for design commitment) | Enabling technologies at TRL 6; technologies under test at TRL 5, with a documented relevant-environment definition and a test plan |
+          | Before CDR or flight-unit build | Technologies under test pass a ground test of the failure modes that would leave the flight yielding no data |
+          | Launch readiness (one-way) | Flight system qualified and accepted (enabling elements effectively TRL 8); technologies under test at TRL 6 for those failure modes |
+
+          D-02 is amended for clarity: the principle is unchanged and the category sentence is replaced by a reversibility test.
+
+          **O5 — Tie TRL to a NASA-style mission risk class (e.g., NPR 8705.4 Class D for scouts).**
+
+          - **Not adopted as the primary rule.** It is absorbed as a waiver path.
+          - Risk class is a useful vocabulary, but it governs assurance processes, not technology maturity.
+          - Using it alone would let "Class D" become a blanket reason to skip maturity gates.
+          - In O4, a scout may waive the TRL 6 enabling-technology requirement only with an owner-signed Class D risk acceptance. This is permitted because the D-02 no-waiver clause binds only KDP-0B.
+
+          ## 4. Assessment matrix (QOC)
+
+          Scores run from 1 (poor) to 5 (best).
+
+          | Option | C1 Loss avoidance (0.30) | C2 Learning tempo (0.25) | C4 Unambiguity (0.20) | C3 D-02 fidelity (0.15) | C5 Compliance cost (0.10) | **Weighted** |
+          |---|---|---|---|---|---|---|
+          | O0 Null split | 2 | 3 | 1 | 3 | 4 | **2.40** |
+          | O1 Literal 4–5 | 1 | 4 | 4 | 2 | 5 | **2.90** |
+          | O2 TRL 6 at PDR, all | 5 | 2 | 4 | 3 | 2 | **3.45** |
+          | O3 MTR 4–5 + TRL 8 launch | 3 | 3 | 3 | 4 | 3 | **3.15** |
+          | **O4 Role × commitment** | **4** | **4** | **4** | **4** | **3** | **3.90** |
+
+          Notes on the scores:
+
+          - **O4's C4 score is 4, not 5.** Classifying a technology as "enabling" or "under test" takes judgment. The mitigation is that each project declares the classification in its Technology Development Plan, and the classification is fixed at SRR.
+          - **O1 scores 2 on fidelity.** It honours D-02's text while violating D-02's principle.
+
+          ## 5. Sensitivity vs trade-off points
+
+          **Sensitivity points.** Each of these is one decision that strongly drives one attribute.
+
+          - **S1 — The enabling vs under-test classification.** This one choice drives C1. If propulsion is labelled "under test" on a scout whose mission fails without it, O4 collapses into O1 for that project. *Mitigation:* a technology counts as enabling if its failure leaves the flight with less than a stated minimum data return. Define that floor in each project's success criteria.
+          - **S2 — The cost-at-risk share of the pathfinder.** If the pathfinder is a large fraction of 0A's budget, its loss changes the programme, not just the project. Its PDR then becomes one-way at programme level. *Rule:* above a threshold (I propose 25 % of 0A budget, an owner value), pathfinder PDR follows the KDP-0B rule with no waivers for enabling technologies.
+          - **S3 — Launch-window rigidity.** A scout with a rare target window, such as an asteroid flyby with a multi-year next opportunity, has a far less reversible launch than a rideshare to low Earth orbit. Window rigidity should raise stringency on that scout.
+
+          **Trade-off points.** These are values questions, not facts to settle.
+
+          - **T1 — Flight-loss risk vs learning tempo (C1 vs C2).** O2 overtakes O4 only if w₁ > 2w₂ + w₃ + w₅.
+            - With w₃ and w₅ held at 0.15 and 0.10, O2 wins at roughly w₁ ≥ 0.5 with w₂ ≤ 0.12.
+            - In words, O2 wins only if the owner weights avoiding loss about four times more than learning tempo.
+            - That would contradict D-01's framing of Phase 0 as a capability programme, but it is the owner's call. I do not claim it is settled by fact.
+          - **T2 — Waivability on scouts (C2 vs C4).** Allowing Class D waivers buys tempo but reintroduces judgment. I accept it because scouts are where D-01's real-option logic most wants cheap shots on goal.
+
+          ## 6. Evidence certainty
+
+          | Claim | Evidence | GRADE certainty | Likelihood (calibrated) |
+          |---|---|---|---|
+          | Projects entering design commitment with critical technologies below TRL 6 show higher cost and schedule growth | GAO's annual *Assessments of Major Projects* for NASA, repeated over many years; DoD Milestone B practice codified in statute (10 U.S.C. §2366b, now §4252) | **Moderate** for large projects: observational, consistent, confounded by project size. **Low** for small scouts: indirect. | *Likely* (≈66–90 %) that it holds for the pathfinder; *about as likely as not* for small scouts |
+          | TRL 6 by PDR is established NASA practice | NPR 7123.1 / NASA SP-2016-6105 Systems Engineering Handbook; ESA ECSS-E-HB-11A TRL guidance | **High**: documented policy and practice | n/a (factual) |
+          | A technology demonstration flight can legitimately carry a technology below TRL 7 | The TRL definitions themselves (Mankins; ECSS): flight demonstration is how TRL 7 is reached | **High** | n/a |
+          | TRL ratings are reproducible to within one level between assessors | Mankins (2009), *Technology readiness and risk assessments*, Acta Astronautica, which proposes AD² precisely because TRL alone is insufficient; general assessor-variance literature | **Low** | *About as likely as not*. This is why I support Claude's AD² ≤ 5 check as a companion. |
+          | Small-satellite missions using immature buses fail more often | Published smallsat reliability surveys exist but mix many causes | **Low** | *Likely* in direction; magnitude uncertain |
+
+          **Overall confidence in the ruling: medium.** The direction is well supported by high-certainty practice and moderate-certainty outcome data. The specific thresholds (TRL 5 at PDR for technologies under test, the 25 % pathfinder threshold) are engineering judgment with low direct evidence.
+
+          ## 7. Key assumptions (with falsifiers) and competing hypotheses
+
+          | # | Assumption | What would falsify it |
+          |---|---|---|
+          | A1 | 0A launches are effectively one-way: non-refundable slots, no rapid reflight | Rideshare contracts with refundable slots *and* a scout unit cost and build time that allow a reflight within about 6–9 months. Then scout launches are near two-way and O1-level stringency becomes defensible for scouts (not the pathfinder). |
+          | A2 | Enabling and under-test technologies can be separated cleanly per project | A project where the payload *is* the bus, for example a propulsion-demonstration scout. That project must then meet TRL 6 at PDR for the thing it demonstrates, in a ground relevant environment. |
+          | A3 | Ground relevant-environment tests for enabling technologies cost little relative to the flight project | Cost estimates in the 0A plan showing these tests above about 15 % of a scout's cost. Then C5's weight should rise and Class D waivers become routine. |
+          | A4 | MTR precedes all 0A flight-project PDRs | A scout PDR scheduled before the MTR. The PDR gate then governs that scout, and the MTR TRL 4–5 criterion is irrelevant to it. |
+
+          **ACH over the three readings**, ranked by least disconfirmed:
+
+          | Hypothesis | Disconfirming evidence | Status |
+          |---|---|---|
+          | **H3 (O4):** reversibility is graded by commitment and by technology role | Nothing material. A2 is a stress, handled by the propulsion-scout rule. | **Least disconfirmed** |
+          | **H1 (Claude):** every 0A flight gate is one-way, so TRL 6 at PDR applies to all critical technologies | M2. Technologies under test would be over-gated before their flight produces TRL 7. | Second |
+          | **H2 (implicit in Gemini and GPT):** 0A flights are cheap and repeatable, so 0A gates are two-way | Non-refundable launch slots, rigid target windows, and pathfinder cost share. Also GPT's own "TRL 8 before launch," which concedes launch is one-way. | **Most disconfirmed** |
+
+          ## 8. Decision, warrant, accepted downside
+
+          **Ruling.** Amend D-02 by clarification. The principle is unchanged. The sentence classifying "internal 0A milestones" as two-way is replaced by a reversibility test, plus a flight-project clause. This is an amendment, not an interpretation: three panelists read the existing text three ways, and an "interpretation" that adds the enabling vs under-test distinction is new rule text whatever it is called.
+
+          **Proposed D-02 text (replacing the second and third sentences):**
+
+          > *Stringency follows reversibility, judged by what a gate commits, not by which phase owns it.*
+          > *(a) One-way programme gates (KDP-0B, and pathfinder PDR where pathfinder cost exceeds 25 % of the 0A budget): TRL 6 in a relevant environment for project-ending technologies, no waivers.*
+          > *(b) Two-way programme milestones (MTR and other tranche releases): TRL 4–5 for the technologies the tranche funds; an unmet criterion withholds that tranche's planned demonstration.*
+          > *(c) 0A flight projects, at project PDR: enabling technologies at TRL 6; technologies under test at TRL 5 with a documented relevant-environment definition. Before CDR: technologies under test pass ground tests of the failure modes that would leave the flight without minimum data return. At launch readiness: flight system qualified and accepted. Each project declares its enabling / under-test classification at SRR. For scouts only, enabling-technology criteria may be waived by owner-signed Class D risk acceptance.*
+
+          **Y-statement.** In the context of Phase 0A, which funds both reversible tranches and irreversible flight projects, and facing a panel split over whether D-02's TRL 4–5 applies to scout and pathfinder gates, we chose to classify gates by what they commit and technologies by their role in the flight. The result is TRL 6 at PDR for enabling technologies, TRL 5 plus targeted ground tests for technologies under test, and TRL 4–5 for MTR tranche releases. We did this to achieve design commitments that do not repeat the documented post-PDR cost-growth pattern, while keeping 0A's learning tempo. We accept a classification judgment at SRR that can be gamed, a modest extra ground-test bill, and an amendment to an already-accepted decision.
+
+          **Toulmin.**
+
+          | Element | Content |
+          |---|---|
+          | Claim | O4 as worded above |
+          | Grounds | NASA and DoD TRL 6 practice at design commitment (high certainty). GAO cost-growth findings (moderate). TRL definitions that place flight demonstration at TRL 7 (high). |
+          | Warrant | D-02's own principle. Irreversibility is a property of the commitment, so the same principle that puts TRL 6 at KDP-0B puts it at any gate committing comparably irreversible resources. Gate stringency should also stop short of requiring the evidence a gate exists to produce. |
+          | Backing | Mankins' TRL and AD² work; ECSS-E-HB-11A |
+          | Qualifier | *Probably right* for the pathfinder (medium confidence). *Plausibly right* for small scouts, where outcome evidence is indirect (low–medium confidence). |
+          | Rebuttal | If A1 fails (cheap, rapid reflight), scout launches become near two-way and clause (c) should relax to TRL 5 at PDR for scouts. |
+
+          **Evidence that would change the ruling:**
+
+          1. **Towards relaxing the scout rule.** Launch contracts with refundable or rebookable slots, a scout unit cost below a small fraction of 0A, and demonstrated build-and-reflight within about 9 months.
+          2. **Towards O2 (TRL 6 at PDR for everything).** The owner sets w₁ at about 0.5 or higher (trade-off T1). Or the pathfinder becomes the sole carrier of a 0B project-ending technology with no ground-test substitute, so that its loss blocks KDP-0B.
+          3. **Towards adding AD² as a hard gate.** A TRL re-assessment showing assessor disagreement of more than one level on any enabling technology.
+
+          ## 9. Consequences
+
+          **Enables:**
+
+          - **§5 MTR criteria reconcile.** Gemini's and GPT's TRL 4 scope stands as the tranche criterion. Claude's "TRL 5 for pathfinder payload at MTR" becomes the PDR criterion for technologies under test, applying at MTR only if pathfinder PDR precedes or coincides with it (A4). GPT's "an unmet item cannot receive its planned demonstration" is adopted verbatim into clause (b).
+          - **`gates-proposal.yaml`.** A `flight_project_gates` block per scout and pathfinder, with `enabling[]` and `under_test[]` technology lists keyed to `trl-baseline.yaml` IDs.
+          - **D-05 (propellant).** Becomes a classification input. If the pathfinder's propulsion is enabling, D-05 must close before pathfinder PDR so that TRL 6 can be shown.
+
+          **Constrains:**
+
+          - **Owner decisions.** The owner must set the pathfinder cost-share threshold (proposed 25 %) and each project's minimum-data-return floor. These are values, not engineering facts.
+          - **Metallurgy down-select.** Routes T06, T17, T07 and T23 remain under the two-way MTR rule (TRL 4 for funded routes). Any route flown on the pathfinder becomes a technology under test, at TRL 5 by pathfinder PDR. This pressures an earlier down-select to at most two routes, in line with Claude's position.
+          - **KDP-0B.** No change. The no-waiver TRL 6 requirement for project-ending technologies stands. Clause (a) only extends it to a programme-scale pathfinder.
+
+          **Kept, not averaged.** Claude's stricter reading (O2) remains the right answer if the owner's values sit at the loss-averse end of T1. GPT's "TRL 8 before launch" is retained in substance as "qualified and accepted" for the flight system, and rejected for technologies under test.
+        wordCount: 3213
+        generatedAt: '2026-10-17T22:26:03.558Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          Here is the resolution for the application of D-02 to 0A flight projects, structured according to the Composite Scaffold.
+
+          ### 1. Frame & decision type
+          **Frame:** The core conflict is a category error regarding reversibility. D-02 states "stringency follows reversibility." Claude argues a launch is a one-way gate, demanding TRL 6 at Preliminary Design Review (PDR). Gemini and GPT treat the Mid-Term Review (MTR) as a funding tranche release, accepting TRL 4–5. 
+          **Decision type:** Executive and property decision (amending/interpreting an accepted rule). 
+          **Domain:** Complicated (aerospace systems engineering). 
+          **Reversibility:** The policy decision is two-way (can be amended), but the physical act of launching a scout is one-way (irreversible capital expenditure and physical commitment).
+
+          ### 2. Criteria and weights
+          Weights are assigned based on swing weight methodology (referencing the actual range of impact each criterion has on Phase 0A outcomes):
+          *   **C1: Programmatic Risk Alignment (Weight: High, 40%)** – The range spans from losing a scout vehicle due to immature tech (high cost/delay) to safely bounding risk. 
+          *   **C2: Schedule Velocity (Weight: Medium, 30%)** – The range spans from stalling early pathfinder flights while waiting for TRL 6, to rapid iterative testing.
+          *   **C3: Policy Consistency (Weight: High, 30%)** – The range spans from contradicting D-02's "stringency follows reversibility" to perfectly aligning program and project gates.
+
+          ### 3. Options
+          *   **Option A: The Null / Tranche Approach (Gemini/GPT)** – Apply TRL 4–5 at the MTR for all 0A items. Flight readiness (TRL 8) is handled right before launch, but PDRs do not strictly require TRL 6. *Argument against: Ignores the irreversible nature of hardware commitment in flight projects.*
+          *   **Option B: Strict Flight Exemption (Claude)** – Scout and pathfinder critical technologies must be at TRL 6 at their own PDR. TRL 4–5 applies *only* to 0B development milestones. *Argument against: Over-constrains early agile scouts, treating them like flagship 0B missions.*
+          *   **Option C: Gate Stratification (Recommended)** – Distinguish between *Program* gates and *Project* gates. The 0A MTR (Program gate) requires TRL 4–5 to release the next tranche of funding. However, the specific Scout/Pathfinder PDR (Project gate) requires TRL 6 for its *own* flight-critical technologies before bending metal. 
+
+          ### 4. Assessment matrix
+
+          | Option | C1: Risk Alignment | C2: Schedule Velocity | C3: Policy Consistency |
+          | :--- | :--- | :--- | :--- |
+          | **A (Null/Tranche)** | Low (Risks bending metal on TRL 4) | High (Fastest MTR pass) | Low (Violates reversibility principle for flights) |
+          | **B (Strict Exemption)** | High (Safest for flight hardware) | Low (Delays 0A flights significantly) | Medium (Creates a carve-out in D-02) |
+          | **C (Gate Stratification)**| High (Protects flight hardware) | Medium (Allows funding flow, paces hardware) | High (Resolves the paradox perfectly) |
+
+          ### 5. Sensitivity vs trade-off points
+          *   **Sensitivity point:** C2 (Schedule Velocity) is highly sensitive to Option B. Forcing TRL 6 at the program MTR for flight projects could stall the entire 0A phase.
+          *   **Trade-off point:** We are trading off the administrative simplicity of a single MTR standard (Option A) against the physical reality of irreversible launch commitments (Option B/C). 
+
+          ### 6. Evidence certainty
+          *   *Claim:* Launches are irreversible one-way doors requiring TRL 6 at PDR. 
+              *   *Certainty (GRADE):* High. Standard NASA/ESA systems engineering practice (NPR 7123.1C) dictates TRL 6 by PDR for flight articles to bound cost/schedule risk.
+              *   *Likelihood/Confidence (ICD 203):* Almost certain; High confidence.
+
+          ### 7. Key assumptions
+          *   **Assumption 1:** Scout and pathfinder missions are funded out of the 0A budget tranches. 
+              *   *Falsification:* If scouts are funded via a completely separate mechanism, the MTR criteria do not apply to them. (Least disconfirmed hypothesis: They are part of 0A).
+          *   **Assumption 2:** A scout failure is not a "project-ending" event for the *entire* Project Dyson, just for that specific scout.
+
+          ### 8. Decision, warrant, accepted downside
+          **Y-Statement:** In the context of the Phase 0 TRL re-baseline, facing a conflict between program funding gates and flight project physics, we chose Option C (Gate Stratification), to achieve rapid funding release while preventing premature hardware fabrication, accepting the added administrative overhead of tracking project PDRs separately from the program MTR.
+
+          **Warrant (Toulmin):** Because "stringency follows reversibility" (D-02), and bending metal for a launch is irreversible, flight projects must hit TRL 6 at their specific PDRs; however, because the MTR is a two-way funding gate for the *program*, TRL 4–5 is sufficient at the MTR to authorize the work *toward* that PDR.
+
+          ### 9. Consequences
+          *   **Enables:** The MTR can proceed without waiting for scouts to reach TRL 6.
+          *   **Constrains:** Scout projects cannot pass their own PDRs or begin final fabrication until their specific critical technologies reach TRL 6 in a relevant environment.
+          *   **Rule Text Update:** Amend D-02 interpretation to read: *"Two-way, internal 0A milestones (like MTR): TRL 4–5 is enough to release funding. However, any sub-project committing to irreversible flight hardware (scouts/pathfinders) must independently demonstrate TRL 6 at its own PDR."*
+        wordCount: 818
+        generatedAt: '2026-10-17T22:26:26.870Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **Recommended ruling: retain TRL 4–5 for reversible 0A funding decisions, but explicitly exclude flight authorisation. Adopt a narrow amendment to D-02 that distinguishes flight-enabling technologies from technologies carried as experiments.**
+
+          A 0A launch is a one-way commitment of the spacecraft, launch expenditure, and associated external risks. It does **not**, however, make the downstream 0B investment irreversible. These are different decisions and need different assurance cases.
+
+          This is a **property and executive decision**: it defines readiness requirements and who may authorise commitments. The engineering problem is largely complicated; the performance of novel extraction and processing technologies remains experimental.
+
+          The relevant unit is therefore **the authorised activity and its consequences**, not whether a milestone happens to sit inside Phase 0A.
+
+          ## 2. Criteria and weights
+
+          ### Non-compensable requirements
+
+          No weighted benefit may override:
+
+          - Flight safety, licensing, launch-provider requirements, or protection of other spacecraft.
+          - Accepted D-02’s **TRL 6 in a relevant environment, without waivers, for project-ending technologies at KDP-0B**.
+          - An explicit readiness decision before irreversible flight commitments; passing the MTR alone cannot authorise launch.
+
+          ### Weighted preferences
+
+          Weights below are proposed **swing weights**, not empirical measurements. Each refers to improvement across the stated range.
+
+          | Criterion | Range being valued | Weight | Why this swing matters |
+          |---|---|---:|---|
+          | **C1. Assurance proportional to consequence** | A phase-wide threshold that misses irreversible risks → decision-specific evidence that controls them | 35% | Largest swing: an otherwise economical rule is unacceptable if it permits poorly understood mission-loss or external hazards. |
+          | **C2. Learning and option preservation** | Require maturity before the experiment that creates it → enable bounded experiments while retaining cancellation options | 30% | D-01 funds a capability programme; suppressing useful learning can defeat 0A’s purpose. |
+          | **C3. Cost and schedule proportionality** | Blanket maturation and testing → targeted work on consequential uncertainties | 20% | Premature qualification can consume the budget meant to resolve feasibility. |
+          | **C4. Auditability and implementability** | Ambiguous milestone labels and discretionary exceptions → clear classifications, evidence and decision rights | 15% | The rule must survive delivery pressure and differing interpretations across projects. |
+
+          ## 3. Options
+
+          **A. Null: leave D-02 and the panel split unchanged.**  
+          Argument: avoids reopening an accepted decision; project reviews could resolve details.  
+          **Reject:** the ambiguity concerns spending and launch authority, not merely terminology. Different projects could legitimately implement incompatible rules.
+
+          **B. Blanket flight-project thresholds.**  
+          Require every critical scout/pathfinder technology to reach TRL 6 at its PDR and TRL 8 before launch; restrict 4–5 to downstream 0B development.  
+          Argument: clear and conservative for operational flight functions.  
+          **Reject as a blanket rule:** it can require an experimental payload to demonstrate the maturity that its flight is intended to establish. It also unnecessarily excludes reversible development of 0A flight technologies from the 4–5 tranche framework.
+
+          **C. Programme-level interpretation only.**  
+          Apply TRL 4–5 at the MTR and leave flight readiness entirely to existing project processes.  
+          Argument: minimal amendment and no duplication of standard reviews.  
+          **Reject on current evidence:** the supplied record does not establish that binding, adequate flight-project standards already cover the gap. This could become acceptable if those standards are produced.
+
+          **D. Activity- and function-specific amendment — recommended.**  
+          Keep 4–5 for reversible development releases; impose distinct flight-project maturity requirements; permit explicitly bounded experimental technologies below those flight-enabling thresholds.
+
+          The experiment provision is **not** a waiver of KDP-0B’s no-waiver requirement.
+
+          ## 4. Assessment matrix
+
+          Scores: 1 = poor, 5 = strong. These are transparent judgments for discussion, not measured performance.
+
+          | Option | C1: Assurance 35% | C2: Learning 30% | C3: Proportionality 20% | C4: Auditability 15% | Weighted score |
+          |---|---:|---:|---:|---:|---:|
+          | A. Null | 2 | 3 | 3 | 1 | **2.35** |
+          | B. Blanket flight thresholds | 4 | 1 | 1 | 4 | **2.50** |
+          | C. Programme interpretation only | 3 | 4 | 4 | 2 | **3.35** |
+          | D. Function-specific amendment | 5 | 4 | 4 | 4 | **4.35** |
+
+          A high score cannot cure failure of a non-compensable requirement. Option C’s eligibility depends on evidence of the existing flight-governance regime.
+
+          D’s principal weakness is classification overhead and the possibility of relabelling essential functions as “experiments.” Its advantage disappears unless that boundary is independently reviewed.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points — factual matters that could change implementation
+
+          1. **Payload–spacecraft coupling.** Can experimental failure compromise attitude control, power, communications, containment or disposal? If yes, more of the payload belongs within flight-enabling assurance.
+          2. **Minimum useful mission return.** Is a scout collecting operationally essential target data, or testing uncertain instruments? Losing the former may invalidate the mission even without creating a safety hazard.
+          3. **What “PDR” authorises.** If irreversible procurement occurs earlier, the relevant readiness decision must also occur earlier.
+          4. **Existing mandatory standards.** A binding project assurance plan could make a D-02 clarification sufficient instead of a substantive amendment.
+
+          ### Trade-off points — owner value judgments
+
+          - **Learning versus mission-success assurance:** how much probability of an inconclusive pathfinder is acceptable for a lower-cost, earlier experiment?
+          - **Schedule versus ground maturation:** when does another ground test cost more option value than it buys in risk reduction?
+          - **Programme concentration versus diversification:** is one high-assurance pathfinder preferable to several cheaper, explicitly riskier experiments?
+
+          TRL cannot settle these values questions. In particular, **a TRL number is not a probability of mission success**.
+
+          ## 6. Evidence certainty
+
+          GRADE labels below describe confidence in the evidence base, adapted to this engineering-policy decision.
+
+          | Key claim | Evidence and certainty | Likelihood versus confidence |
+          |---|---|---|
+          | D-01 and D-02 establish capability funding and consequence-sensitive stringency | **High**, for the decision text supplied in the question; underlying repository files were not independently inspected | High confidence in this interpretation; no probabilistic claim needed. |
+          | TRL alone does not establish flight readiness | **High**: NASA’s *Systems Engineering Handbook*, NASA/SP-2016-6105 Rev 2, distinguishes technology maturity from broader verification, validation and technical reviews | High confidence; numerical failure likelihood cannot be inferred from TRL. |
+          | A blanket TRL 8-before-launch rule can obstruct technology-demonstration missions | **Moderate**: established TRL definitions distinguish qualification from operational demonstration, but suitability depends on the technology and demonstration design | High confidence that the conflict can occur; frequency in Dyson is unknown. |
+          | TRL 6 by PDR is a sound default for flight-enabling critical technologies | **Moderate** as an engineering policy recommendation; not asserted as a universal requirement for every flight project | Moderate confidence in applicability; no Dyson-specific schedule or reliability estimate available. |
+          | The recommended split will reduce unnecessary cost relative to blanket thresholds | **Low**: plausible engineering-economic judgment without project work breakdowns or test costs | Direction is plausible; magnitude and likelihood are unquantified. |
+
+          The published panel disagreement is evidence of unresolved governance, not evidence that any particular maturity threshold guarantees success.
+
+          ## 7. Key assumptions
+
+          | Assumption | Evidence that would falsify it | Effect on ruling |
+          |---|---|---|
+          | Some experimental functions can fail without threatening the host or external parties | Hazard analysis, interface testing or common-cause analysis shows uncontained failure effects | Reclassify affected functions as flight-enabling; require isolation, redesign or maturation. |
+          | Useful learning can survive experimental underperformance | Test design shows failure produces no discriminating data or recoverable diagnostics | Reject or redesign that demonstration; low maturity is not itself a justification to fly. |
+          | MTR releases can remain bounded | Contract terms show approval commits most lifecycle expenditure or unavoidable flight obligations | Treat that release as an irreversible commitment and move assurance earlier. |
+          | An independent reviewer can police the experimental boundary | Governance assigns classification solely to the delivery team, without review authority | Do not permit the experimental provision until governance is corrected. |
+
+          **ACH ranking, least disconfirmed first:**
+
+          1. **Function-specific readiness:** best fits both D-02’s reversibility principle and the purpose of demonstration missions.
+          2. **Existing flight standards already close the gap:** plausible, but not established by the supplied record.
+          3. **All 0A flight-critical technologies require identical maturity:** weakened by the distinction between experimental success and safe spacecraft operation.
+          4. **An internal 0A label makes every milestone reversible:** contradicted by launch and irreversible procurement commitments.
+
+          Evidence that would change my recommendation includes a binding flight standard already incorporated into D-02, a pathfinder architecture with no separable experimental functions, or contract evidence that the supposed reversible tranches are effectively whole-mission commitments.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Proposed D-02 amendment
+
+          > **TRL 4–5 applies to bounded, reversible 0A development and funding milestones; it does not constitute flight authorisation.**
+          >
+          > Each scout and pathfinder shall identify:
+          > 1. flight-enabling critical technologies whose failure defeats the approved minimum mission or creates unacceptable external consequences; and
+          > 2. experimental technologies whose uncertain performance is the purpose of the demonstration.
+          >
+          > Flight-enabling critical technologies shall demonstrate TRL 6 in their documented relevant environments by project PDR, or before an earlier irreversible implementation commitment. Flight hardware shall complete applicable qualification, acceptance, integration and operational-readiness requirements before launch; TRL 8 is the target maturity for the completed flight-enabling system.
+          >
+          > Experimental technologies may fly below those maturity levels only under an approved demonstration assurance case that bounds failure effects, establishes useful learning outcomes, verifies safe interfaces and operations, and explicitly accepts experiment failure risk. This provision does not relax launch safety or licensing requirements.
+          >
+          > At KDP-0B, every project-ending technology remains subject to TRL 6 in a relevant environment, without waivers. A 0A flight or launch approval does not itself establish this maturity.
+
+          This preserves Claude’s concern about flight-project discipline, while retaining Gemini/GPT’s interpretation of the MTR as a tranche decision. It rejects both a programme-wide flight-readiness shortcut and a universal requirement that experimental subjects be mature before their demonstration.
+
+          **Accepted downside:** additional classification and assurance work, possible PDR delays, and the possibility that an approved experimental mission returns less learning than planned. Those costs are preferable to either hidden flight risk or unnecessary pre-flight maturation.
+
+          ## 9. Consequences
+
+          1. **Amend D-02 explicitly.** Record the change in `decisions.md` and align the gate proposal and baseline. An interpretation alone would leave a materially important exception implicit.
+          2. **Separate the MTR from flight authorisation.** The MTR may fund development toward a maturity target; it may not substitute for PDR, qualification or launch-readiness decisions.
+          3. **Use a technology–function–gate register.** For each retained technology, record criticality, environment, current evidence, next authorised activity, expenditure exposure and failure disposition. Do not assign identical requirements solely from a technology identifier.
+          4. **Do not make TRL 5 circular.** A demonstration intended to establish TRL 5 cannot universally require TRL 5 beforehand. Require sufficient readiness for that test’s hazards and objectives.
+          5. **Keep route evidence separate.** Funded metallurgy routes must each meet their applicable continuation criterion; maturity is not averaged across routes.
+          6. **Preserve D-01’s option.** A successful scout can inform target selection without authorising 0B. An unsuccessful experiment can justify redesign, termination or the accepted **“0A only, Earth supply”** fallback.
+
+          **Final decision — Y-statement:** In the context of D-01’s capability programme and D-02’s consequence-sensitive gates, facing ambiguous treatment of 0A flight projects, we chose a function-specific amendment separating reversible development releases, flight-enabling readiness and bounded experiments, to achieve useful learning without weakening irreversible-commitment assurance, accepting additional governance and explicit experiment-failure risk. **Warrant:** readiness must match the consequences of the authorised action, not its phase label. **Qualifier:** this holds only where experimental failure is demonstrably bounded and the learning case is credible. It enables tailored scout/pathfinder tranches, constrains flight authorisation, and leaves KDP-0B’s no-waiver requirement intact.
+        wordCount: 1935
+        generatedAt: '2026-10-17T22:27:42.306Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: information
+            reasoning: 'The decision chain is complete. Criteria and musts come before options, a real null option is included, and the weighted arithmetic checks out. The sensitivity analysis gives an explicit tipping condition (w1 > 2w2 + w3 + w5), evidence certainty is calibrated per claim, and every assumption has a falsifier. The enabling vs under-test distinction resolves the circularity of requiring TRL before the flight that produces it. The weakest link is information: the 25% pathfinder threshold and the TRL 5 figure for technologies under test are engineering judgment. The response admits this, and it would not change the direction of the ruling.'
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: Excellent breakdown of the decision chain. The distinction between enabling technologies and technologies under test elegantly resolves the paradox. The evidence, assumptions, and proposed text are highly rigorous.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: The role-and-commitment distinction is useful, but rejecting TRL 6 at PDR as circular does not follow when the flight is intended to establish TRL 7. The proposed TRL 5 exception and mandatory 25% budget threshold could therefore change with better justification.
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: 'There is no genuine null option: Option A is the Gemini/GPT position relabelled. The matrix is qualitative and unweighted. The response states ''Almost certain; high confidence'' that launches require TRL 6 at PDR, which is uncalibrated and conflates launch irreversibility with PDR policy. Assumption 2 has no falsifier. The sensitivity point confuses the MTR with the PDR. Blanket TRL 6 at PDR is applied to technologies whose flight is meant to raise their TRL, a circularity the response does not address.'
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: information
+            reasoning: Generally sound, but the evidence and assumptions sections are underdeveloped. The 'Null' option presented is actually one of the active arguments rather than a true null (do nothing/leave ambiguous), and the falsification conditions are weak.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: It labels the inference from launch irreversibility to mandatory TRL 6 at PDR as almost certain without establishing universal applicability. It also omits the experimental-technology distinction, which could materially change the blanket requirement.
+        rawScore: 1
+        weightedScore: 0.5
+        approveCount: 0
+        rejectCount: 2
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: reasoning
+            reasoning: 'Non-compensable requirements and swing weights are set before options. The null option is considered and rejected, the weighted scores are arithmetically correct, and claims carry calibrated GRADE and likelihood labels. Assumptions have falsifiers with stated effects on the ruling. The amendment cleanly separates the MTR from flight authorisation and flight-enabling technologies from experimental ones. The weakest link is reasoning: there is no quantified tipping point, and the experimental pathway relies on a discretionary assurance case rather than a stated TRL floor. Independent review of that boundary mitigates the gap, so it is unlikely to change the decision.'
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: alternatives
+            reasoning: Strong, well-reasoned response that correctly identifies the need to separate flight-enabling tech from experimental payloads. The criteria and assumptions are well-calibrated, though the options could be slightly more distinct from one another.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: The recommendation connects consequence-based criteria, genuine alternatives, calibrated evidence and falsifiable assumptions to an actionable amendment. It preserves reversible funding, independently gates flight-enabling functions, and permits experiments only with bounded failure effects and credible learning outcomes.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+    winnerId: gpt-6-1-sol
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: A and C independently reach the same ruling. Both keep TRL 4–5 for reversible MTR tranche releases and require TRL 6 at PDR for enabling or flight-enabling technologies. Both give a bounded, gated pathway for technologies under test and leave KDP-0B unchanged. The remaining differences are drafting details, such as A's 25% pathfinder threshold and Class D waiver path, which the owner can settle when finalising the D-02 amendment.
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: Responses A and C both provide excellent, highly detailed, and actionable resolutions that address the core paradox using the same logical mechanism (separating enabling tech from experimental tech). Further discussion is unlikely to yield a better framework.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: Response C provides a satisfactory resolution while making the remaining project-specific assurance and classification decisions explicit.
+    shouldTerminate: true
+    completedAt: '2026-10-17T22:28:21.890Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 0
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 1
+  totalVotes: 9
+  approvalRate: 55.55555555555556
+  averageResponseWords: 1989
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T22:28:22.029Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    Claude Opus 5.5, Gemini 3.1 Pro and GPT-6.1 Sol converged on the central distinction: **TRL 4–5 at a reversible 0A funding milestone does not authorise a scout or pathfinder flight.** All three recommended separating programme tranche decisions from flight-project readiness decisions and preserving KDP-0B’s accepted requirement of TRL 6 in a relevant environment for project-ending technologies, without waivers. All three rejected leaving the present ambiguity unresolved, although reviewers criticised Gemini’s response for treating an active policy option as the null option.
+
+    The panel did **not** converge on the complete flight-project rule. Gemini proposed TRL 6 at each scout/pathfinder PDR for its flight-critical technologies. Claude and GPT distinguished flight-enabling functions from technologies carried as experiments, but proposed different experimental pathways: Claude specified TRL 5 at PDR plus targeted ground tests; GPT proposed an approved demonstration assurance case without a universal experimental TRL floor. Claude additionally proposed scout waivers and a programme-scale pathfinder threshold; those provisions did not gain panel-wide endorsement.
+
+    Claude and GPT explicitly recommended amending D-02 rather than relying on interpretation alone. Gemini proposed revised “interpretation” text. The shared actionable conclusion is therefore narrower than any complete draft: **clarify that gate stringency follows the commitment being authorised, not the Phase 0A label, while retaining an explicit owner decision on experimental technologies and exceptions.**
+
+    ## Decision record
+
+    ### Shared conclusion—not a fully agreed rule
+
+    **Models: Claude, Gemini and GPT.**
+
+    > In the context of D-01’s capability programme and D-02’s reversibility principle, facing ambiguity between 0A tranche releases and flight-project commitments, we chose to separate reversible funding milestones from flight-project readiness gates, to preserve development funding without treating MTR approval as flight authorisation, accepting additional project-level review and possible delays before irreversible commitments.
+
+    - **Warrant:** All three argued that the authorised commitment, rather than its phase label, determines the appropriate stringency.
+    - **Qualifier:** Their detailed definitions of flight-critical technologies and permissible exceptions differ.
+    - **Accepted downside:** Claude and GPT identified added assurance and classification work; Gemini identified the overhead of tracking programme and project gates separately.
+
+    ### Position 1: Role-specific thresholds and explicit exceptions
+
+    **Model: Claude.**
+
+    > In the context of 0A funding both reversible development and irreversible flights, facing the need to protect missions without pre-empting experimental learning, we chose TRL 4–5 for tranche releases, TRL 6 at PDR for enabling technologies, and TRL 5 at PDR plus targeted tests for technologies under test, to protect minimum mission return while preserving learning tempo, accepting classification judgment and additional ground-testing cost.
+
+    - **Warrant:** Claude cited established technology-maturation practice, reported associations between immaturity and cost growth, and the distinction between enabling technologies and experimental subjects.
+    - **Qualifier:** Claude described the experimental TRL 5 floor and proposed 25% pathfinder budget threshold as engineering judgments with limited direct evidence.
+    - **Additional provisions:** Claude proposed owner-signed scout risk waivers and no waivers for enabling technologies at pathfinder PDR when the pathfinder exceeds the proposed programme-cost threshold.
+    - **Accepted downside:** Classification could be gamed; additional tests could cost time and money.
+
+    ### Position 2: Programme/project gate stratification
+
+    **Model: Gemini.**
+
+    > In the context of programme funding decisions and flight-project commitments, facing conflicting interpretations of D-02, we chose TRL 4–5 at the MTR to fund development and TRL 6 at each scout/pathfinder PDR for its flight-critical technologies, to maintain funding flow while preventing premature hardware commitment, accepting separate programme and project gate administration.
+
+    - **Warrant:** Gemini argued that irreversible hardware commitments require greater maturity than reversible funding releases.
+    - **Qualifier:** Gemini did not articulate a separate pathway for experimental technologies.
+    - **Accepted downside:** Gemini accepted additional administration and pacing of flight hardware development.
+
+    ### Position 3: Function-specific assurance without a universal experimental floor
+
+    **Model: GPT.**
+
+    > In the context of consequence-sensitive gates and a capability programme, facing ambiguity over 0A flight readiness, we chose reversible development releases, separate flight-enabling readiness requirements, and an independently reviewed experimental assurance pathway, to enable useful learning without weakening irreversible-commitment assurance, accepting governance overhead and explicit experiment-failure risk.
+
+    - **Warrant:** GPT argued that readiness must match the consequences of the authorised activity, not its phase label.
+    - **Qualifier:** Experimental failure must be bounded, interfaces and operations verified, and the learning case credible. Safety, licensing and KDP-0B requirements remain non-compensable.
+    - **Gate rule:** GPT proposed TRL 6 for flight-enabling critical technologies by PDR—or before an earlier irreversible implementation commitment—and applicable qualification, acceptance, integration and operational-readiness requirements before launch.
+    - **Accepted downside:** Added assurance work, possible PDR delays, and the possibility of less learning than planned.
+
+    ## Decision-quality audit
+
+    ### Round 1 — Claude response
+
+    - **Weakest links named in votes:** Claude named **information**; Gemini named **commitment**; GPT named **reasoning**.
+    - **Scaffold assessment:** Claude’s self-review and GPT’s review credited the criteria-first structure, genuine null option, explicit sensitivity analysis, calibrated evidence and falsifiable assumptions.
+    - **Unsupported or contested elements:** Claude acknowledged weak direct evidence for the experimental TRL 5 floor and 25% pathfinder threshold. GPT challenged Claude’s argument that requiring TRL 6 before a flight intended to establish TRL 7 is circular.
+    - **Values trade-offs identified by Claude:** Loss avoidance versus learning tempo; scout waiver flexibility versus auditability; and programme exposure sufficient to trigger stricter pathfinder treatment.
+    - **Voting outcome:** Claude and Gemini approved; GPT was neutral.
+
+    ### Round 1 — Gemini response
+
+    - **Weakest links named in votes:** All three reviewers named **information**.
+    - **Missing or unsupported scaffold steps:** Claude and Gemini identified the absence of a genuine do-nothing/null option. Claude criticised the qualitative, unweighted assessment matrix, an assumption without a falsifier, and a sensitivity discussion that confused MTR and PDR. Claude and GPT challenged Gemini’s high-confidence inference from launch irreversibility to a universal TRL 6-at-PDR requirement.
+    - **Material omission identified by Claude and GPT:** Gemini did not distinguish experimental technologies from flight-enabling functions.
+    - **Values trade-off identified by Gemini:** Administrative simplicity and schedule velocity versus assurance before irreversible hardware commitments.
+    - **Voting outcome:** Claude and GPT rejected; Gemini was neutral.
+
+    ### Round 1 — GPT response
+
+    - **Weakest links named in votes:** Claude named **reasoning**; Gemini named **alternatives**; GPT named **commitment**.
+    - **Scaffold assessment:** Claude and GPT credited the non-compensable requirements, genuine alternatives, calibrated evidence and assumptions with falsifiers.
+    - **Missing or unsupported elements:** Claude noted the absence of a quantified tipping point and reliance on a discretionary experimental assurance case rather than a numerical maturity floor. Gemini considered the alternatives insufficiently distinct.
+    - **Values trade-offs identified by GPT:** Learning versus mission-success assurance; additional ground maturation versus schedule; and one high-assurance pathfinder versus several cheaper experiments.
+    - **Voting outcome:** All three approved GPT’s response. This approval did not establish agreement on every proposed clause, given the substantive reservations and differing rules retained elsewhere.
+
+    ## Key Points
+
+    - **MTR approval is not flight approval.** All three models supported this separation.
+    - **TRL 4–5 can apply to development of 0A flight technologies.** Claude’s revised position and GPT’s response did not restrict reversible tranche criteria solely to downstream 0B development; Gemini likewise allowed MTR funding toward flight-project PDR.
+    - **PDR readiness is a separate requirement.** All three supported TRL 6 at PDR for at least flight-enabling or flight-critical technologies; GPT would move that requirement earlier if irreversible implementation occurs earlier.
+    - **The experimental boundary is unresolved.** Claude and GPT supported distinguishing experiments from enabling functions; Gemini’s proposed rule did not make that distinction.
+    - **TRL 8 is not an agreed blanket pre-launch requirement.** Claude and GPT favoured qualification and acceptance language for the flight system rather than applying TRL 8 indiscriminately to experimental subjects.
+    - **KDP-0B remains unchanged.** All three retained TRL 6 in a relevant environment, without waivers, for project-ending technologies.
+    - **No shared numerical pathfinder exposure threshold emerged.** The 25% proposal came from Claude; GPT specifically questioned its justification.
+
+    ## Unresolved Questions
+
+    1. **Which experimental readiness rule should govern?** Claude proposed TRL 5 at PDR plus tests; GPT proposed an assurance case without a universal floor; Gemini proposed TRL 6 for flight-critical technologies.
+    2. **How should dual-role technologies be classified?** Claude and GPT both warned against labelling mission-essential functions “experiments” to avoid assurance requirements.
+    3. **Are scout enabling-technology waivers permitted?** Claude proposed them; GPT’s drafted enabling-technology requirement contained no equivalent waiver; Gemini did not specify one.
+    4. **Does pathfinder programme exposure justify a special no-waiver gate?** Claude proposed a 25% budget trigger, but the panel did not endorse that threshold.
+    5. **Is an amendment necessary, or can binding existing standards support clarification?** Claude favoured amendment; GPT allowed that adequate existing standards could change that judgment; Gemini framed its update as interpretation.
+    6. **Which technologies need TRL 4 versus TRL 5 at the MTR?** The models’ shared gate separation does not settle the technology-by-technology scope in the background table.
+
+    ## Recommended Actions
+
+    1. **Record the shared rule first.** Following all three models, state that reversible 0A tranche approval does not authorise irreversible flight implementation or launch.
+    2. **Draft an explicit D-02 update with unresolved clauses marked.** Following Claude and GPT, separate programme funding, flight-enabling readiness and experimental assurance; retain Gemini’s programme/project gate distinction without presenting the experimental rule as settled.
+    3. **Create a project-level technology–function–gate register.** Claude and GPT proposed recording technology roles, relevant environments and evidence; GPT additionally proposed recording the next authorised activity, expenditure exposure and failure disposition.
+    4. **Obtain an owner decision on the experimental pathway and exceptions.** The alternatives are Claude’s numerical floor and scout waiver provisions, Gemini’s flight-critical PDR threshold, and GPT’s bounded assurance-case pathway. Do not silently combine them into an agreed rule.
+    5. **Collect evidence that could change the ruling:**
+       - **Claude:** rebooking/refund terms, demonstrated cheap and rapid reflight, ground-test costs, pathfinder budget concentration, and launch-window rigidity.
+       - **GPT:** binding flight standards, procurement commitments, hazard and interface analyses, minimum useful mission return, and evidence that experimental failure still yields discriminating learning.
+       - **Gemini:** confirmation of scout/pathfinder funding arrangements and the programme consequences of losing an individual scout.
+    6. **Update the decision and gate artefacts after owner resolution.** Claude and GPT proposed aligning `decisions.md`, the gate proposal and the TRL baseline; Claude additionally proposed project-specific flight-gate blocks.
+
+    ```yaml
+    questionId: "rq-0-74"
+    topics:
+      - id: programme-versus-flight-gates
+        topic: Separate reversible tranche releases from flight authorisation
+        positions:
+          - statement: "TRL 4–5 may support reversible 0A funding releases, but separate flight-project readiness gates are required."
+            models: ["Claude Opus 5.5", "Gemini 3.1 Pro", "GPT-6.1 Sol"]
+            evidence: "All three invoke D-02's reversibility principle and distinguish MTR funding from irreversible flight commitments."
+        resolution_status: resolved
+        priority: critical
+      - id: experimental-technology-readiness
+        topic: Readiness requirements for technologies carried as experiments
+        positions:
+          - statement: "Require TRL 5 at PDR for technologies under test, with documented environments and targeted ground tests before CDR."
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude distinguishes enabling technologies from experimental subjects, while acknowledging limited direct evidence for the TRL 5 floor."
+          - statement: "Require TRL 6 at project PDR for scout and pathfinder flight-critical technologies."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini cites aerospace maturation practice and irreversible hardware commitment; its response provides no separate experimental pathway."
+          - statement: "Permit experimental technologies below flight-enabling thresholds under an approved, independently reviewed demonstration assurance case."
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT requires bounded failure effects, verified interfaces and operations, credible learning outcomes, and explicit acceptance of experiment-failure risk."
+        resolution_status: open
+        priority: critical
+      - id: flight-enabling-gate-timing
+        topic: Timing of flight-enabling maturity requirements
+        positions:
+          - statement: "Require TRL 6 for enabling technologies at project PDR."
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude cites maturation practice and reported cost and schedule growth associated with immature technologies."
+          - statement: "Require TRL 6 for flight-critical technologies at project PDR before irreversible hardware implementation."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini distinguishes programme funding approval from project hardware commitment."
+          - statement: "Require TRL 6 by PDR or before an earlier irreversible implementation commitment."
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT argues that procurement and other commitments may precede the milestone labelled PDR."
+        resolution_status: partially-resolved
+        priority: high
+      - id: waivers-and-programme-exposure
+        topic: Scout waivers and special pathfinder stringency
+        positions:
+          - statement: "Allow owner-signed scout enabling-technology waivers and apply no-waiver treatment to enabling technologies at pathfinder PDR above a proposed 25% share of the 0A budget."
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude invokes cheap experimental opportunities and programme concentration, but labels the numerical threshold an owner value and engineering judgment."
+          - statement: "The proposed experimental floor and mandatory 25% threshold need better justification."
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT's review identifies these provisions as reasoning weaknesses that could change with further justification."
+        resolution_status: open
+        priority: high
+      - id: decision-text-change
+        topic: Amendment versus interpretation of D-02
+        positions:
+          - statement: "Explicitly amend D-02 to remove the ambiguity."
+            models: ["Claude Opus 5.5", "GPT-6.1 Sol"]
+            evidence: "Both regard the flight-project and experimental distinctions as materially important additions; GPT would reconsider if binding existing standards already close the gap."
+          - statement: "Update D-02's interpretation with programme and project gate text."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini proposes revised interpretation text separating MTR funding from flight-project PDR."
+        resolution_status: partially-resolved
+        priority: medium
+    ```
+  keyPoints:
+    - MTR approval is not flight approval.** All three models supported this separation.
+    - TRL 4–5 can apply to development of 0A flight technologies.** Claude’s revised position and GPT’s response did not restrict reversible tranche criteria solely to downstream 0B development; Gemini likewise allowed MTR funding toward flight-project PDR.
+    - PDR readiness is a separate requirement.** All three supported TRL 6 at PDR for at least flight-enabling or flight-critical technologies; GPT would move that requirement earlier if irreversible implementation occurs earlier.
+    - The experimental boundary is unresolved.** Claude and GPT supported distinguishing experiments from enabling functions; Gemini’s proposed rule did not make that distinction.
+    - TRL 8 is not an agreed blanket pre-launch requirement.** Claude and GPT favoured qualification and acceptance language for the flight system rather than applying TRL 8 indiscriminately to experimental subjects.
+    - KDP-0B remains unchanged.** All three retained TRL 6 in a relevant environment, without waivers, for project-ending technologies.
+    - No shared numerical pathfinder exposure threshold emerged.** The 25% proposal came from Claude; GPT specifically questioned its justification.
+  unresolvedQuestions:
+    - Which experimental readiness rule should govern?** Claude proposed TRL 5 at PDR plus tests; GPT proposed an assurance case without a universal floor; Gemini proposed TRL 6 for flight-critical technologies.
+    - How should dual-role technologies be classified?** Claude and GPT both warned against labelling mission-essential functions “experiments” to avoid assurance requirements.
+    - Are scout enabling-technology waivers permitted?** Claude proposed them; GPT’s drafted enabling-technology requirement contained no equivalent waiver; Gemini did not specify one.
+    - Does pathfinder programme exposure justify a special no-waiver gate?** Claude proposed a 25% budget trigger, but the panel did not endorse that threshold.
+    - Is an amendment necessary, or can binding existing standards support clarification?** Claude favoured amendment; GPT allowed that adequate existing standards could change that judgment; Gemini framed its update as interpretation.
+    - Which technologies need TRL 4 versus TRL 5 at the MTR?** The models’ shared gate separation does not settle the technology-by-technology scope in the background table.
+  recommendedActions:
+    - Record the shared rule first.** Following all three models, state that reversible 0A tranche approval does not authorise irreversible flight implementation or launch.
+    - Draft an explicit D-02 update with unresolved clauses marked.** Following Claude and GPT, separate programme funding, flight-enabling readiness and experimental assurance; retain Gemini’s programme/project gate distinction without presenting the experimental rule as settled.
+    - Create a project-level technology–function–gate register.** Claude and GPT proposed recording technology roles, relevant environments and evidence; GPT additionally proposed recording the next authorised activity, expenditure exposure and failure disposition.
+    - Obtain an owner decision on the experimental pathway and exceptions.** The alternatives are Claude’s numerical floor and scout waiver provisions, Gemini’s flight-critical PDR threshold, and GPT’s bounded assurance-case pathway. Do not silently combine them into an agreed rule.
+    - Collect evidence that could change the ruling:**
+    - Claude:** rebooking/refund terms, demonstrated cheap and rapid reflight, ground-test costs, pathfinder budget concentration, and launch-window rigidity.
+    - GPT:** binding flight standards, procurement commitments, hazard and interface analyses, minimum useful mission return, and evidence that experimental failure still yields discriminating learning.
+    - Gemini:** confirmation of scout/pathfinder funding arrangements and the programme consequences of losing an individual scout.
+    - Update the decision and gate artefacts after owner resolution.** Claude and GPT proposed aligning `decisions.md`, the gate proposal and the TRL baseline; Claude additionally proposed project-specific flight-gate blocks.
+    - 'id: programme-versus-flight-gates'
+    - 'statement: "TRL 4–5 may support reversible 0A funding releases, but separate flight-project readiness gates are required."'
+    - 'id: experimental-technology-readiness'
+    - 'statement: "Require TRL 5 at PDR for technologies under test, with documented environments and targeted ground tests before CDR."'
+    - 'statement: "Require TRL 6 at project PDR for scout and pathfinder flight-critical technologies."'
+    - 'statement: "Permit experimental technologies below flight-enabling thresholds under an approved, independently reviewed demonstration assurance case."'
+    - 'id: flight-enabling-gate-timing'
+    - 'statement: "Require TRL 6 for enabling technologies at project PDR."'
+    - 'statement: "Require TRL 6 for flight-critical technologies at project PDR before irreversible hardware implementation."'
+    - 'statement: "Require TRL 6 by PDR or before an earlier irreversible implementation commitment."'
+    - 'id: waivers-and-programme-exposure'
+    - 'statement: "Allow owner-signed scout enabling-technology waivers and apply no-waiver treatment to enabling technologies at pathfinder PDR above a proposed 25% share of the 0A budget."'
+    - 'statement: "The proposed experimental floor and mandatory 25% threshold need better justification."'
+    - 'id: decision-text-change'
+    - 'statement: "Explicitly amend D-02 to remove the ambiguity."'
+    - 'statement: "Update D-02''s interpretation with programme and project gate text."'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T22:29:42.506Z'
+alternateSyntheses:
+  - synthesizer: claude-opus-5-5
+    generatedAt: '2026-10-17T22:41:57.228Z'
+    file: conclusion.claude-opus-5-5.md

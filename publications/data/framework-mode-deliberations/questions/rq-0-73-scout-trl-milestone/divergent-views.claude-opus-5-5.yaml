@@ -1,0 +1,155 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-73
+topics:
+  - id: trl-8-prior-flight-definition
+    topic: Whether TRL 8 can be reached before first flight
+    positions:
+      - statement: >-
+          TRL 8 (flight-qualified through test and demonstration) does not require a prior operational mission and is a
+          legitimate pre-launch criterion
+        models:
+          - GPT-6.1 Sol
+        evidence: NASA/SP-2016-6105 Rev 2 TRL descriptions; flight qualification distinct from mission operation
+      - statement: >-
+          Under ISO 16290 TRL 7-8 are ground-achievable, but strict NASA wording makes pre-launch TRL 8 incoherent for
+          first-of-kind T18; declaring ISO dissolves the conflict (Claude's vote separately states both NASA and ISO
+          treat TRL 8 as ground-test qualification)
+        models:
+          - Claude Opus 5.5
+        evidence: NPR 7123.1 TRL 7 operational-environment wording; ISO 16290 'accepted for flight'
+      - statement: TRL 8 cannot be achieved before first launch of a novel system
+        models:
+          - Gemini 3.1 Pro
+        evidence: Standard NASA/DoD definitions, asserted at High certainty
+    resolution_status: open
+    priority: critical
+  - id: launch-release-criterion
+    topic: Readiness criterion at scout launch release
+    positions:
+      - statement: >-
+          Scout 1 flight-qualified (ISO TRL 8 via qualification or protoflight); later scouts acceptance-tested to
+          qualified design plus anomaly closure
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Environmental-test escapes as classic cause of small-spacecraft first-unit loss; D-02 proportionality with
+          multi-scout fleet
+      - statement: >-
+          Each scout's actual integrated spacecraft and payload flight-qualified at TRL 8, proportionate to mission
+          class, plus mission-assurance closures
+        models:
+          - GPT-6.1 Sol
+        evidence: TRL 6 alone does not establish launch readiness; distinct assurance claims
+      - statement: No pre-launch TRL 8 requirement; first launch acts as TRL 7 technology demonstration
+        models:
+          - Gemini 3.1 Pro
+        evidence: Premise that TRL 8 requires spaceflight
+    resolution_status: partially-resolved
+    priority: high
+  - id: target-gate-criterion
+    topic: Pass criterion for the target gate
+    positions:
+      - statement: Key to a predeclared sampled-data specification; TRL 7 recorded as a consequence, not a criterion
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          A scout can reach TRL 7 yet return non-decision-grade data; sampling representativeness can dominate
+          instrument performance
+      - statement: Target gate passes only when T18 achieves TRL 7 via in-situ operational demonstration
+        models:
+          - Gemini 3.1 Pro
+        evidence: Ties gate to demonstrated in-space function
+    resolution_status: partially-resolved
+    priority: high
+  - id: kdp-0b-t18-requirement
+    topic: T18 maturity required at KDP-0B
+    positions:
+      - statement: >-
+          T18 demonstrated in the operational environment (in-situ sampling and assay on at least one target), no
+          waiver; otherwise fallback or deferral
+        models:
+          - Claude Opus 5.5
+        evidence: T18 project-ending; D-02 no waiver at one-way gate; ground cannot reproduce low-g regolith interaction
+      - statement: KDP-0B not triggered until T18 reaches TRL 7 in situ
+        models:
+          - Gemini 3.1 Pro
+        evidence: Operational demonstration needed for rigorous KDP-0B evidence
+      - statement: >-
+          All project-ending technologies meet D-02 TRL 6 in relevant environment, no waiver; scout success confers no
+          maturity on extraction technologies
+        models:
+          - GPT-6.1 Sol
+        evidence: D-02 as accepted
+    resolution_status: open
+    priority: critical
+  - id: trl-scale-declaration
+    topic: Which TRL scale governs the gates
+    positions:
+      - statement: Declare ISO 16290 / ECSS-E-HB-11A with NASA crosswalk
+        models:
+          - Claude Opus 5.5
+        evidence: Scale ambiguity is a disguised waiver under D-02
+      - statement: Use the programme's adopted definition, citing NASA SP-2016-6105
+        models:
+          - GPT-6.1 Sol
+        evidence: NASA TRL descriptions
+      - statement: Strict NASA/DoD definitions
+        models:
+          - Gemini 3.1 Pro
+        evidence: Avoid semantic drift
+    resolution_status: open
+    priority: high
+  - id: pdr-trl-level
+    topic: TRL required at scout PDR
+    positions:
+      - statement: TRL 6 in a documented relevant environment for T11 and T18 at PDR
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          NASA practice of TRL 6 by PDR; GPT notes PDR placement is least robust element and TRL 5 path could be
+          justified
+    resolution_status: resolved
+    priority: medium
+  - id: fleet-size-dependence
+    topic: Dependence of the ruling on number of scouts
+    positions:
+      - statement: >-
+          Ruling assumes two or more scouts with launches staggered by six months or more; a single scout requires a
+          stricter pre-launch T18 campaign
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+        evidence: Launch is two-way at programme level only with multiple units
+      - statement: Not modelled as a separate variant; required sequence depends on predeclared evidence sufficiency plan
+        models:
+          - GPT-6.1 Sol
+        evidence: Do not require every scout to launch before target gate
+    resolution_status: open
+    priority: high
+  - id: precursor-demo
+    topic: Whether a precursor T18 flight demo is needed
+    positions:
+      - statement: >-
+          Rejected; scouts are the pathfinder; adds 18-36 months and an estimated $50-150M (not costed); competitive
+          only if no ground analogue exists and a cheap rideshare does
+        models:
+          - Claude Opus 5.5
+        evidence: Demo environment still not target regolith
+      - statement: May be necessary if ground testing cannot reproduce coupled low-g effects
+        models:
+          - GPT-6.1 Sol
+        evidence: Relevant-environment fidelity sensitivity point
+    resolution_status: open
+    priority: medium
+  - id: srr-trl-level
+    topic: TRL at scout SRR
+    positions:
+      - statement: TRL 5 at SRR with the T18 relevant-environment envelope defined
+        models:
+          - Claude Opus 5.5
+        evidence: D-02 TRL 4-5 for two-way 0A milestones
+    resolution_status: open
+    priority: low

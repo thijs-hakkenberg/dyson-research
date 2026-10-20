@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: reasoning
+    reasoning: A states its frame and decision type and declares the TRL scale explicitly. Swing weights are set before the options, which include a null option. Probabilities are calibrated and the falsifiers are concrete. The winning margin over O1 is thin and sensitive to the C3 weight, but A says so itself, and both options share the same skeleton, so the ruling would not flip.
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: 'B asserts with ''High'' certainty that TRL 8 cannot be reached before first flight. That is contestable: both the NASA and ISO definitions treat TRL 8 as flight qualification through ground test, so the certainty is uncalibrated. The main argument against GPT''s position rests on this claim. B also sets no launch-release criterion, keys the target gate to a TRL label rather than data quality, gives a qualitative matrix with no scores, and offers no precursor option.'
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: alternatives
+    reasoning: 'C separates technology maturity, flight qualification and investment evidence into three distinct claims. It also adds strong non-compensable requirements and predeclared target-evidence thresholds. The weak spot is the option set: there is no precursor or single-scout variant, and options B and C are partly straw men, so the matrix margin overstates D. The sensitivity section still covers the precursor case, so the decision holds. Leaving T18 at TRL 6 for KDP-0B is weaker than A''s position but compliant with D-02.'
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: alternatives
+    reasoning: Comprehensive decision chain with strong framing, well-defined alternatives, rigorous information assessment (GRADE/ACH), and a clear commitment. Minor flaw in rejecting options before the matrix, but still scores them.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: alternatives
+    reasoning: Follows the structure but is somewhat brief. Rejects options in the text before the matrix, which weakens the objective evaluation process. The synthesis option is well-reasoned but lacks broader alternatives.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: alternatives
+    reasoning: Strong application of the decision framework. Explicitly separates the milestones and provides a robust layered rule. Like the others, it pre-judges options before the matrix, but the reasoning and commitment are highly rigorous.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: information
+    reasoning: The milestone ladder and data-based target gate are sound, but the claim that NASA TRL 8 necessarily requires prior operational flight is not established. This claimed NASA–ISO incompatibility materially shapes the alternatives and scale selection.
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: The analysis confidently but incorrectly treats flight qualification as requiring previous spaceflight. That premise drives rejection of pre-launch TRL 8 and leaves launch qualification inadequately specified. TRL 7 demonstration also does not by itself establish decision-grade resource evidence.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: The response distinguishes technology maturity, flight qualification and target evidence; evaluates alternatives including the null; and states falsifiable assumptions and rebaselining conditions. Detailed test envelopes and evidence thresholds remain implementation tasks explicitly required before the relevant commitments.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: 'A and C converge on the same layered rule: TRL 6 at PDR, flight-qualified (TRL 8) at launch release, and a target gate keyed to data rather than TRL. Two differences remain. The first is whether KDP-0B requires T18 to be demonstrated in flight or only at TRL 6. The second is whether the TRL scale must be explicitly declared. Both are explicit owner choices to record, not issues that need another round of analysis.'
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: Multiple responses (A and C) provide high-quality, actionable, and rigorously justified rulings that resolve the panel split effectively.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'Response C provides a satisfactory resolution: TRL 6 for critical novel technologies at PDR, flight-qualified actual systems at each launch, and validated sampling evidence at the target gate, with schedule changes governed by demonstrated readiness.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: reasoning
+        reasoning: A states its frame and decision type and declares the TRL scale explicitly. Swing weights are set before the options, which include a null option. Probabilities are calibrated and the falsifiers are concrete. The winning margin over O1 is thin and sensitive to the C3 weight, but A says so itself, and both options share the same skeleton, so the ruling would not flip.
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: alternatives
+        reasoning: Comprehensive decision chain with strong framing, well-defined alternatives, rigorous information assessment (GRADE/ACH), and a clear commitment. Minor flaw in rejecting options before the matrix, but still scores them.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: information
+        reasoning: The milestone ladder and data-based target gate are sound, but the claim that NASA TRL 8 necessarily requires prior operational flight is not established. This claimed NASA–ISO incompatibility materially shapes the alternatives and scale selection.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: 'B asserts with ''High'' certainty that TRL 8 cannot be reached before first flight. That is contestable: both the NASA and ISO definitions treat TRL 8 as flight qualification through ground test, so the certainty is uncalibrated. The main argument against GPT''s position rests on this claim. B also sets no launch-release criterion, keys the target gate to a TRL label rather than data quality, gives a qualitative matrix with no scores, and offers no precursor option.'
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: alternatives
+        reasoning: Follows the structure but is somewhat brief. Rejects options in the text before the matrix, which weakens the objective evaluation process. The synthesis option is well-reasoned but lacks broader alternatives.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: The analysis confidently but incorrectly treats flight qualification as requiring previous spaceflight. That premise drives rejection of pre-launch TRL 8 and leaves launch qualification inadequately specified. TRL 7 demonstration also does not by itself establish decision-grade resource evidence.
+    rawScore: 1
+    weightedScore: 0.5
+    approveCount: 0
+    rejectCount: 2
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: alternatives
+        reasoning: 'C separates technology maturity, flight qualification and investment evidence into three distinct claims. It also adds strong non-compensable requirements and predeclared target-evidence thresholds. The weak spot is the option set: there is no precursor or single-scout variant, and options B and C are partly straw men, so the matrix margin overstates D. The sensitivity section still covers the precursor case, so the decision holds. Leaving T18 at TRL 6 for KDP-0B is weaker than A''s position but compliant with D-02.'
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: alternatives
+        reasoning: Strong application of the decision framework. Explicitly separates the milestones and provides a robust layered rule. Like the others, it pre-judges options before the matrix, but the reasoning and commitment are highly rigorous.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: The response distinguishes technology maturity, flight qualification and target evidence; evaluates alternatives including the null; and states falsifiable assumptions and rebaselining conditions. Detailed test envelopes and evidence thresholds remain implementation tasks explicitly required before the relevant commitments.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: gpt-6-1-sol
+winnerScore: 5

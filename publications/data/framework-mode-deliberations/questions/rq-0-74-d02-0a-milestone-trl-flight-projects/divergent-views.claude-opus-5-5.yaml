@@ -1,0 +1,145 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-74
+topics:
+  - id: gate-classification-basis
+    topic: Classify D-02 gates by what they commit rather than by phase label
+    positions:
+      - statement: >-
+          Reversibility is judged by what a gate commits. MTR tranche releases are two-way (TRL 4-5). Flight PDR and
+          launch are one-way for the flight project and need stricter criteria. MTR passage does not authorise flight.
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          D-02's own principle; NASA NPR 7123.1 / SP-2016-6105 TRL 6 by PDR practice; GPT's panel 'TRL 8 before launch'
+          read as conceding launch is one-way
+    resolution_status: resolved
+    priority: critical
+  - id: amendment-vs-interpretation
+    topic: Whether D-02 needs an explicit amendment or only an interpretation
+    positions:
+      - statement: >-
+          Amend D-02 explicitly. The panel's three readings show the text is ambiguous, and adding the enabling vs
+          under-test distinction is new rule text.
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: Panel split as evidence the text fails auditability; materiality of spending and launch authority
+      - statement: >-
+          Amend the D-02 interpretation, adding that sub-projects committing flight hardware need TRL 6 at their own
+          PDR.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gate stratification resolves the paradox without changing the principle
+    resolution_status: partially-resolved
+    priority: high
+  - id: under-test-technology-criteria
+    topic: Maturity criteria for technologies whose flight is meant to mature them
+    positions:
+      - statement: >-
+          TRL 5 at PDR with a documented relevant environment; ground tests of no-data failure modes before CDR; TRL 6
+          for those failure modes at launch readiness.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          TRL definitions place flight demonstration at TRL 7; over-gating would force full ground campaigns before
+          design commitment
+      - statement: >-
+          No fixed TRL floor. Experimental technologies may fly below flight-enabling levels under an approved
+          demonstration assurance case that bounds failure effects, establishes learning outcomes and verifies safe
+          interfaces. The case is independently reviewed.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          NASA SP-2016-6105 distinguishes technology maturity from verification and validation; a TRL number is not a
+          probability of mission success; avoid circular TRL 5 requirements
+      - statement: >-
+          All flight-critical technologies of a project need TRL 6 in a relevant environment at its PDR, with no role
+          distinction.
+        models:
+          - Gemini 3.1 Pro
+        evidence: NPR 7123.1C TRL 6 by PDR for flight articles
+    resolution_status: open
+    priority: critical
+  - id: pdr-trl6-circularity
+    topic: Whether TRL 6 at PDR is circular for a demonstration flight
+    positions:
+      - statement: >-
+          Requiring full TRL 6 at PDR for technologies under test over-gates them before their flight produces TRL 7,
+          and conflicts with the must that a technology need not reach the TRL its own flight produces.
+        models:
+          - Claude Opus 5.5
+        evidence: TRL definitions (Mankins; ECSS); cost and schedule of ground relevant-environment campaigns
+      - statement: >-
+          Rejecting TRL 6 at PDR as circular does not follow when the flight is intended to establish TRL 7, so the TRL
+          5 exception needs better justification.
+        models:
+          - GPT-6.1 Sol
+        evidence: Vote critique of Claude's response
+    resolution_status: open
+    priority: high
+  - id: pathfinder-cost-share-trigger
+    topic: Pathfinder PDR treated as a programme-level one-way gate above a cost threshold
+    positions:
+      - statement: >-
+          If pathfinder cost exceeds an owner-set share of the 0A budget (proposed 25 %), its PDR follows the KDP-0B
+          rule with no waivers for enabling technologies.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Loss of a large-share pathfinder changes the programme, not just the project; the threshold is engineering
+          judgment with low direct evidence
+    resolution_status: open
+    priority: medium
+  - id: scout-waivers
+    topic: Waivers of enabling-technology criteria for scouts
+    positions:
+      - statement: >-
+          Scouts may waive the TRL 6 enabling-technology requirement by owner-signed Class D risk acceptance. This is
+          permitted because the no-waiver clause binds only KDP-0B.
+        models:
+          - Claude Opus 5.5
+        evidence: D-01 real-option logic favours cheap shots on goal; NPR 8705.4 risk-class vocabulary
+      - statement: >-
+          No waiver of flight-enabling criteria. Only the bounded-experiment pathway, under an assurance case, allows
+          flight below maturity levels.
+        models:
+          - GPT-6.1 Sol
+        evidence: Non-compensable assurance requirements; risk of relabelling essential functions
+    resolution_status: open
+    priority: medium
+  - id: classification-governance
+    topic: Who classifies technologies as enabling or under test, and when
+    positions:
+      - statement: >-
+          Each project declares the classification in its Technology Development Plan, fixed at SRR. A technology is
+          enabling if its failure leaves less than a stated minimum data return.
+        models:
+          - Claude Opus 5.5
+        evidence: Mitigates sensitivity point S1
+      - statement: >-
+          An independent reviewer with authority must police the experimental boundary. The provision is not permitted
+          if classification rests solely with the delivery team.
+        models:
+          - GPT-6.1 Sol
+        evidence: Assumption 4 falsifier; relabelling risk
+    resolution_status: open
+    priority: high
+  - id: launch-readiness-criterion
+    topic: What replaces 'TRL 8 before launch'
+    positions:
+      - statement: >-
+          The flight system is qualified and accepted, with enabling elements effectively at TRL 8. TRL 8 is rejected
+          for technologies under test.
+        models:
+          - Claude Opus 5.5
+        evidence: Must M2; TRL definitions
+      - statement: >-
+          Flight hardware completes qualification, acceptance, integration and operational readiness, with TRL 8 as the
+          target for the completed flight-enabling system.
+        models:
+          - GPT-6.1 Sol
+        evidence: NASA SP-2016-6105 distinction between maturity and verification
+    resolution_status: partially-resolved
+    priority: medium

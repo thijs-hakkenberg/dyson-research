@@ -1,0 +1,122 @@
+votes:
+  - voterId: claude-opus-5-5
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: reasoning
+    reasoning: 'Criteria and musts are stated before the options, and a null option is included. Calibration keeps likelihood and confidence separate. The gate text is concrete, with a counterfactual test for ''signed'', a separate timing clause, an η-bound cap, and explicit falsifiers. Two weighted totals are slightly off: O1 should be 2.95 and O5 should be 2.30. Neither changes the ranking.'
+  - voterId: claude-opus-5-5
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: The matrix is qualitative and does not apply its weights, so C and D are barely distinguished. The chosen 3× ceiling sits uneasily with the 'prevent overbuilding' criterion it weights at 40%. The 'high confidence' claim about routinely stranded assets is uncalibrated. Circularity is only partly addressed, since no independent signatory is required. The epoch and delivery window are deferred.
+  - voterId: claude-opus-5-5
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: information
+    reasoning: Swing weights and musts come before the options, a null option is included, and the weighted scores are arithmetically correct. 'Signed' gets a resource-backed test with an independent budget authority. Coverage is cleanly separated from sizing, using a smallest-feasible-configuration rule. Assumptions are falsifiable and the source limitation is acknowledged. The delivery-window bound is left unquantified, but that does not change the decision.
+  - voterId: gemini-3-1-pro
+    targetId: claude-opus-5-5
+    vote: APPROVE
+    weakestLink: none
+    reasoning: The response provides a complete and rigorous decision chain, effectively utilizing all requested frameworks (KT, QOC, GRADE, ACH, Toulmin, Y-statement) without any missing or weak links.
+  - voterId: gemini-3-1-pro
+    targetId: gemini-3-1-pro
+    vote: NEUTRAL
+    weakestLink: information
+    reasoning: While generally sound, the evidence certainty (GRADE) and hypothesis testing (ACH) sections are underdeveloped compared to the required standard, making the information link weaker.
+  - voterId: gemini-3-1-pro
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: none
+    reasoning: Excellent application of the decision frameworks, providing a clear, well-reasoned, and fully structured response that addresses all constraints.
+  - voterId: gpt-6-1-sol
+    targetId: claude-opus-5-5
+    vote: NEUTRAL
+    weakestLink: reasoning
+    reasoning: The quantity interpretation and independent-demand test are well developed, but the three-year window, 24-month deadline and eta-based sizing cap lack sufficient justification. These choices can change gate outcomes, and the claimed sensitivity of the option ranking is not demonstrated.
+  - voterId: gpt-6-1-sol
+    targetId: gemini-3-1-pro
+    vote: REJECT
+    weakestLink: information
+    reasoning: The response assigns high confidence to broad historical claims without supporting evidence and treats a distinct funded internal line item as sufficient to break circularity. It also leaves the demand period undefined while claiming an objectively auditable gate.
+  - voterId: gpt-6-1-sol
+    targetId: gpt-6-1-sol
+    vote: APPROVE
+    weakestLink: commitment
+    reasoning: It separates quantity coverage, credible commitments, delivery compatibility and investment sizing; considers the null and external-only alternatives; and calibrates uncertainty. Remaining window and authority choices are explicitly reserved for controlled approval before any gate pass.
+terminationVotes:
+  - modelId: claude-opus-5-5
+    vote: CONCLUDE
+    reasoning: A and C converge on the substance. Both read 3× as a quantity ratio, require a resource-backed 'signed' instrument from an independent authority, and keep a separate sizing constraint and timing clause. The remaining differences, such as 3× with η versus smallest-feasible sizing and the exact timing bound, are explicitly framed as owner value choices.
+  - modelId: gemini-3-1-pro
+    vote: CONCLUDE
+    reasoning: Multiple responses provide high-quality, fully structured decision chains that resolve the prompt's core questions effectively.
+  - modelId: gpt-6-1-sol
+    vote: CONCLUDE
+    reasoning: 'Response C provides a satisfactory resolution: interpret 3× as quantity coverage and signed as an authorised, resource-backed commitment, with separate scheduling and sizing controls. Remaining implementation choices are identified rather than silently assumed.'
+voteResults:
+  - targetId: claude-opus-5-5
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: reasoning
+        reasoning: 'Criteria and musts are stated before the options, and a null option is included. Calibration keeps likelihood and confidence separate. The gate text is concrete, with a counterfactual test for ''signed'', a separate timing clause, an η-bound cap, and explicit falsifiers. Two weighted totals are slightly off: O1 should be 2.95 and O5 should be 2.30. Neither changes the ranking.'
+      - voterId: gemini-3-1-pro
+        targetId: claude-opus-5-5
+        vote: APPROVE
+        weakestLink: none
+        reasoning: The response provides a complete and rigorous decision chain, effectively utilizing all requested frameworks (KT, QOC, GRADE, ACH, Toulmin, Y-statement) without any missing or weak links.
+      - voterId: gpt-6-1-sol
+        targetId: claude-opus-5-5
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: The quantity interpretation and independent-demand test are well developed, but the three-year window, 24-month deadline and eta-based sizing cap lack sufficient justification. These choices can change gate outcomes, and the claimed sensitivity of the option ranking is not demonstrated.
+    rawScore: 5
+    weightedScore: 4
+    approveCount: 2
+    rejectCount: 0
+  - targetId: gemini-3-1-pro
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: reasoning
+        reasoning: The matrix is qualitative and does not apply its weights, so C and D are barely distinguished. The chosen 3× ceiling sits uneasily with the 'prevent overbuilding' criterion it weights at 40%. The 'high confidence' claim about routinely stranded assets is uncalibrated. Circularity is only partly addressed, since no independent signatory is required. The epoch and delivery window are deferred.
+      - voterId: gemini-3-1-pro
+        targetId: gemini-3-1-pro
+        vote: NEUTRAL
+        weakestLink: information
+        reasoning: While generally sound, the evidence certainty (GRADE) and hypothesis testing (ACH) sections are underdeveloped compared to the required standard, making the information link weaker.
+      - voterId: gpt-6-1-sol
+        targetId: gemini-3-1-pro
+        vote: REJECT
+        weakestLink: information
+        reasoning: The response assigns high confidence to broad historical claims without supporting evidence and treats a distinct funded internal line item as sufficient to break circularity. It also leaves the demand period undefined while claiming an objectively auditable gate.
+    rawScore: 2
+    weightedScore: 1.5
+    approveCount: 0
+    rejectCount: 1
+  - targetId: gpt-6-1-sol
+    votes:
+      - voterId: claude-opus-5-5
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: information
+        reasoning: Swing weights and musts come before the options, a null option is included, and the weighted scores are arithmetically correct. 'Signed' gets a resource-backed test with an independent budget authority. Coverage is cleanly separated from sizing, using a smallest-feasible-configuration rule. Assumptions are falsifiable and the source limitation is acknowledged. The delivery-window bound is left unquantified, but that does not change the decision.
+      - voterId: gemini-3-1-pro
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: none
+        reasoning: Excellent application of the decision frameworks, providing a clear, well-reasoned, and fully structured response that addresses all constraints.
+      - voterId: gpt-6-1-sol
+        targetId: gpt-6-1-sol
+        vote: APPROVE
+        weakestLink: commitment
+        reasoning: It separates quantity coverage, credible commitments, delivery compatibility and investment sizing; considers the null and external-only alternatives; and calibrates uncertainty. Remaining window and authority choices are explicitly reserved for controlled approval before any gate pass.
+    rawScore: 6
+    weightedScore: 5
+    approveCount: 3
+    rejectCount: 0
+winnerId: gpt-6-1-sol
+winnerScore: 5

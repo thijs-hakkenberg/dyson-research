@@ -1,0 +1,94 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-69
+topics:
+  - id: sunset-default
+    topic: Automatic consequence at M180
+    positions:
+      - statement: >-
+          M180 should automatically expire existing 0B authority and make fallback the default, rather than merely
+          prompt a review.
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: Both argued that a review without an expiry default leaves continuation through inaction unresolved.
+      - statement: M180 should automatically execute the fallback.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini prioritised pre-committed termination against sunk-cost drift.
+    resolution_status: partially-resolved
+    priority: critical
+  - id: continuation-authority
+    topic: Exceptions and post-sunset continuation
+    positions:
+      - statement: Prohibit in-place extension and require a new owner decision for re-entry.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Claude argued that continuation should be priced and approved as a new commitment; GPT identified inconsistent
+          re-entry criteria in the proposed text.
+      - statement: >-
+          Allow explicit bounded replacement authority for preservation or corrective work without treating it as KDP-0B
+          approval.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT proposed scope, funding cap, expiry, deliverables, stop conditions and cumulative expenditure controls.
+      - statement: Permit an extraordinary owner-level clock pause for catastrophic external shocks.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini qualified its hard sunset with an exception for events such as a global launch stand-down.
+    resolution_status: open
+    priority: critical
+  - id: schedule-and-buffer
+    topic: Validation of M180 and the planning allowance
+    positions:
+      - statement: Plan KDP-0B at least 24 months before M180, subject to rq-0-63 evidence.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude proposed a slip allowance but rated its evidential basis very low.
+      - statement: >-
+          Keep M180 provisional and derive transition and review timing from rq-0-63 without imposing an unsupported
+          24-month buffer.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT said the supplied gate windows do not validate critical-path feasibility and challenged Claude's buffer.
+      - statement: Treat fifteen years as sufficient margin and schedule backwards from a hard deadline.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini cited Apollo and ISS analogies; Claude and GPT rejected the resulting confidence claim as unsupported.
+    resolution_status: open
+    priority: high
+  - id: fallback-and-procurement
+    topic: Whether fallback creates a binding supply commitment
+    positions:
+      - statement: Default Earth-supply planning does not itself authorise long-term Earth-supply procurement.
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          Both separated removal of 0B authority from supply contracting and called for attention to contractual
+          irreversibility.
+      - statement: Automatic fallback is a highly irreversible commitment to a fifteen-year Earth-supply paradigm.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini used this framing in its decision assessment; Claude and GPT challenged it.
+    resolution_status: open
+    priority: high
+  - id: option-preservation
+    topic: Scope and cost of keeping the option alive
+    positions:
+      - statement: >-
+          Use a capped preservation allowance before sunset and stop discretionary 0B spending at sunset, with narrowly
+          defined residual activities.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Claude proposed permitted and excluded activities plus owner-set caps, while acknowledging unestimated restart
+          costs.
+      - statement: Require separately justified, time-limited preservation authority with no evergreen allowance.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT identified preservation economics as uncertain and required explicit scope, costs, expiry and stop
+          conditions.
+    resolution_status: partially-resolved
+    priority: high

@@ -1,0 +1,1045 @@
+{
+  "schema": "project-dyson/framework-mode-summary@1",
+  "generated": "2026-10-20",
+  "source": "thijs-hakkenberg/dyson @ 1dd770f (main after PR #12)",
+  "questions": [
+    {
+      "questionId": "rq-0-64",
+      "slug": "t26-comms-trl-rating-object",
+      "title": "What should the TRL rating of deep-space communications and command (T26) assess?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T21:41:39.962Z",
+      "concludedAt": "2026-10-17T21:45:41.716Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 0,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 1
+        },
+        "totalVotes": 9,
+        "approvalRate": 55.55555555555556,
+        "averageResponseWords": 2135
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "gpt-6-1-sol",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 0,
+              "rawScore": 3,
+              "weightedScore": 2.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [],
+      "convergenceVerdict": "n/a: single synthesis; owner ruling recorded in rq-0-64"
+    },
+    {
+      "questionId": "rq-0-65",
+      "slug": "gate-risk-class-split-technologies",
+      "title": "Which risk class should apply to the eight technologies the panel split on (T02, T10, T14, T15, T22, T24, T25, T26)?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:12:29.551Z",
+      "concludedAt": "2026-10-17T22:17:06.239Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 0,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 1
+        },
+        "totalVotes": 9,
+        "approvalRate": 44.44444444444444,
+        "averageResponseWords": 1937
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "gpt-6-1-sol",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 1,
+              "rejectCount": 0,
+              "rawScore": 4,
+              "weightedScore": 3.5
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 2,
+              "rawScore": 1,
+              "weightedScore": 0.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:39:18.696Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "not-converged (primary: three positions; alternate: Claude-GPT core on method)"
+    },
+    {
+      "questionId": "rq-0-66",
+      "slug": "kdp-0b-trl6-scope-secondary-technologies",
+      "title": "Must T11, T18, T09, T12 and T20 be at TRL 6 at KDP-0B?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:12:29.553Z",
+      "concludedAt": "2026-10-17T22:18:53.150Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 1,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 0
+        },
+        "totalVotes": 9,
+        "approvalRate": 66.66666666666666,
+        "averageResponseWords": 2141
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "claude-opus-5-5",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 0,
+              "rawScore": 3,
+              "weightedScore": 2.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:39:12.976Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "not-converged"
+    },
+    {
+      "questionId": "rq-0-67",
+      "slug": "economics-gate-capability-premium",
+      "title": "May the economics gate pass 0B at a cost above Earth supply (a capability premium R), or does any premium need a separate owner decision?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:12:29.542Z",
+      "concludedAt": "2026-10-17T22:16:36.520Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 0,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 1
+        },
+        "totalVotes": 9,
+        "approvalRate": 55.55555555555556,
+        "averageResponseWords": 2028
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "gpt-6-1-sol",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 0,
+              "rawScore": 3,
+              "weightedScore": 2.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:39:03.065Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "disputed: alternate overstated convergence; primary accurate"
+    },
+    {
+      "questionId": "rq-0-68",
+      "slug": "demand-gate-definitions",
+      "title": "What do 'within 3\u00d7' and 'signed' mean in the demand gate?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:12:29.540Z",
+      "concludedAt": "2026-10-17T22:16:56.659Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 0,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 1
+        },
+        "totalVotes": 9,
+        "approvalRate": 55.55555555555556,
+        "averageResponseWords": 1946
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "gpt-6-1-sol",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 1,
+              "rawScore": 2,
+              "weightedScore": 1.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:39:08.992Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "converged core (both syntheses + round-1 check)"
+    },
+    {
+      "questionId": "rq-0-69",
+      "slug": "phase-0-sunset-rule",
+      "title": "Should the month-180 sunset trigger the fallback automatically, or be a planning boundary?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:17:52.061Z",
+      "concludedAt": "2026-10-17T22:22:55.045Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 0,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 1
+        },
+        "totalVotes": 9,
+        "approvalRate": 55.55555555555556,
+        "averageResponseWords": 2137
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "gpt-6-1-sol",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 2,
+              "rawScore": 1,
+              "weightedScore": 0.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:40:42.238Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "direction shared; details open"
+    },
+    {
+      "questionId": "rq-0-70",
+      "slug": "licence-gate-redesign-reapply",
+      "title": "After a failed licence gate, may 0B be redesigned and reapplied, or does failure end 0B?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:18:11.616Z",
+      "concludedAt": "2026-10-17T22:22:34.109Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 0,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 1
+        },
+        "totalVotes": 9,
+        "approvalRate": 55.55555555555556,
+        "averageResponseWords": 2033
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "gpt-6-1-sol",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 1,
+              "rawScore": 2,
+              "weightedScore": 1.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:40:36.532Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "converged core (both syntheses + round-1 check)"
+    },
+    {
+      "questionId": "rq-0-71",
+      "slug": "trl6-scale-extrapolation-rule",
+      "title": "Should TRL 6 demonstrations carry a fixed scale-extrapolation limit (e.g. \u2264 10\u00d7) or none fixed in advance?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:18:14.800Z",
+      "concludedAt": "2026-10-17T22:22:59.890Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 0,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 1
+        },
+        "totalVotes": 9,
+        "approvalRate": 55.55555555555556,
+        "averageResponseWords": 2285
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "gpt-6-1-sol",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 3,
+              "rawScore": 0,
+              "weightedScore": 0
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:40:35.170Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "not-converged"
+    },
+    {
+      "questionId": "rq-0-72",
+      "slug": "composite-technology-trl-rule",
+      "title": "How should the headline TRL of a composite technology be set: capped by its weakest critical part, or assessed on the integration?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:19:59.913Z",
+      "concludedAt": "2026-10-17T22:24:04.357Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 1,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 0
+        },
+        "totalVotes": 9,
+        "approvalRate": 55.55555555555556,
+        "averageResponseWords": 1930
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "claude-opus-5-5",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 1,
+              "rawScore": 2,
+              "weightedScore": 1.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:44:48.403Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "disputed: primary overstated convergence; alternate accurate"
+    },
+    {
+      "questionId": "rq-0-73",
+      "slug": "scout-trl-milestone",
+      "title": "What TRL milestone should the rendezvous scouts and their sampling payload meet, and when?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:23:49.965Z",
+      "concludedAt": "2026-10-17T22:28:24.603Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 0,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 1
+        },
+        "totalVotes": 9,
+        "approvalRate": 55.55555555555556,
+        "averageResponseWords": 1992
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "gpt-6-1-sol",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 2,
+              "rawScore": 1,
+              "weightedScore": 0.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:41:12.107Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "direction shared; details open"
+    },
+    {
+      "questionId": "rq-0-74",
+      "slug": "d02-0a-milestone-trl-flight-projects",
+      "title": "How should D-02's 'TRL 4\u20135 for internal 0A milestones' apply to 0A flight projects (scouts, pathfinder)?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:24:08.567Z",
+      "concludedAt": "2026-10-17T22:28:22.029Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 0,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 1
+        },
+        "totalVotes": 9,
+        "approvalRate": 55.55555555555556,
+        "averageResponseWords": 1989
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "gpt-6-1-sol",
+          "winnerScore": 5,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 2,
+              "rawScore": 1,
+              "weightedScore": 0.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 3,
+              "rejectCount": 0,
+              "rawScore": 6,
+              "weightedScore": 5
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:41:57.228Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "converged core (both syntheses + round-1 check)"
+    },
+    {
+      "questionId": "rq-0-75",
+      "slug": "t01-mw-sep-trl6-test-path",
+      "title": "Which path should take the MW-class SEP cluster (T01) to TRL 6: ground modules plus a cluster model, or a flight subset?",
+      "method": {
+        "framework": "18f503fe4ec6",
+        "blindVoting": true,
+        "priorContext": "full",
+        "hiddenWinner": true
+      },
+      "config": {
+        "maxRounds": 5,
+        "maxResponseWords": 2000,
+        "allowSelfVoting": true,
+        "selfVoteWeight": 0.5,
+        "unanimousTermination": true,
+        "consecutiveConcludeRounds": 2
+      },
+      "startedAt": "2026-10-17T22:24:10.945Z",
+      "concludedAt": "2026-10-17T22:29:07.165Z",
+      "terminationReason": "unanimous-conclude",
+      "stats": {
+        "totalRounds": 1,
+        "roundWinners": {
+          "claude-opus-5-5": 1,
+          "gemini-3-1-pro": 0,
+          "gpt-6-1-sol": 0
+        },
+        "totalVotes": 9,
+        "approvalRate": 44.44444444444444,
+        "averageResponseWords": 2126
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "winner": "claude-opus-5-5",
+          "winnerScore": 4,
+          "scores": [
+            {
+              "targetId": "claude-opus-5-5",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            },
+            {
+              "targetId": "gemini-3-1-pro",
+              "approveCount": 0,
+              "rejectCount": 1,
+              "rawScore": 2,
+              "weightedScore": 1.5
+            },
+            {
+              "targetId": "gpt-6-1-sol",
+              "approveCount": 2,
+              "rejectCount": 0,
+              "rawScore": 5,
+              "weightedScore": 4
+            }
+          ],
+          "terminationVotes": [
+            {
+              "modelId": "claude-opus-5-5",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gemini-3-1-pro",
+              "vote": "CONCLUDE"
+            },
+            {
+              "modelId": "gpt-6-1-sol",
+              "vote": "CONCLUDE"
+            }
+          ],
+          "terminationReason": "unanimous-conclude"
+        }
+      ],
+      "primarySynthesizer": "gpt-6-1-sol",
+      "alternateSyntheses": [
+        {
+          "synthesizer": "claude-opus-5-5",
+          "generatedAt": "2026-10-17T22:42:03.611Z",
+          "file": "conclusion.claude-opus-5-5.md"
+        }
+      ],
+      "convergenceVerdict": "not-converged"
+    }
+  ]
+}

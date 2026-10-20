@@ -1,0 +1,85 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-73
+topics:
+  - id: pdr-readiness
+    topic: Scout and payload readiness at PDR
+    positions:
+      - statement: Require TRL 6 for T11 and T18 critical technologies at scout PDR.
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: All three Round 1 proposals specify relevant-environment demonstration by PDR.
+    resolution_status: resolved
+    priority: high
+  - id: launch-qualification-and-scale
+    topic: Pre-launch qualification and governing TRL definition
+    positions:
+      - statement: Require flight qualification before launch, expressed as ISO TRL 8 with a recorded NASA crosswalk.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude's ladder separates qualification of the design from acceptance of later units.
+      - statement: >-
+          Require TRL 8 for each actual integrated flight system; prior successful operational flight is not inherently
+          required.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT cites NASA TRL descriptions and distinguishes flight qualification from mission operation.
+      - statement: Reject pre-launch TRL 8 because it requires prior spaceflight.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini's definition-based argument; Claude and GPT challenged its premise in their votes.
+    resolution_status: partially-resolved
+    priority: high
+  - id: target-gate-criterion
+    topic: Target-gate evidence versus TRL label
+    positions:
+      - statement: >-
+          Require validated target-specific sampled-data thresholds; TRL is supporting evidence, not a sufficient pass
+          criterion.
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: Both distinguish successful operation from adequate uncertainty, coverage and resource representativeness.
+      - statement: Require T18 TRL 7 through successful in-situ sampling and assay before the target gate.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini's proposed rule makes operational demonstration the target-gate threshold.
+    resolution_status: partially-resolved
+    priority: critical
+  - id: kdp-0b-t18-requirement
+    topic: Explicit T18 requirement at KDP-0B
+    positions:
+      - statement: Require operationally demonstrated T18; TRL 6 alone is insufficient.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude identifies T18 as project-ending and explicitly requires in-situ sampling and assay.
+      - statement: Retain D-02's no-waiver TRL-6 floor alongside the separate validated target-evidence requirement.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT preserves D-02 and prevents scout success from conferring maturity on production technologies.
+      - statement: Do not progress to KDP-0B until T18 achieves TRL 7 on the target.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini's rule ties progression to successful operational demonstration.
+    resolution_status: partially-resolved
+    priority: critical
+  - id: schedule-and-risk-posture
+    topic: Calendar commitment and first-scout risk
+    positions:
+      - statement: Use a conditional PDR window and a multiple-scout strategy; strengthen testing if only one scout is funded.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Claude conditions its proposal on analogue fidelity and staggered scouts; its target-gate date range is
+          judgement.
+      - statement: Accept first-flight demonstration risk, conditional on funding failure recovery.
+        models:
+          - Gemini 3.1 Pro
+        evidence: Gemini assumes the 0A budget can absorb failure and reflight.
+      - statement: Rebaseline dates from test evidence and schedule the target gate after validated mission results.
+        models:
+          - GPT-6.1 Sol
+        evidence: GPT treats month 12–24 as a planning window and identifies data validation as a timing dependency.
+    resolution_status: open
+    priority: high

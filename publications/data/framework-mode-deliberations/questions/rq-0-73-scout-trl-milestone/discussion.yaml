@@ -1,0 +1,726 @@
+questionId: rq-0-73
+questionSlug: scout-trl-milestone
+questionTitle: What TRL milestone should the rendezvous scouts and their sampling payload meet, and when?
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T22:23:49.965Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # Scout and Sampling-Payload TRL Milestones: Ruling Proposal (Round 1)
+
+          ## 1. Frame & decision type
+
+          **What is being decided.** This is a *property decision* in Kruchten's terms. It sets the readiness rule attached to the 0A scout flight project, which covers T11 (rendezvous scout spacecraft) and T18 (subsurface sampling and in-situ bulk grade assay). It also sets how that rule connects to the target gate and KDP-0B.
+
+          **The panel split is mostly about milestones, not levels.** The three positions sit at three different milestones:
+
+          | Panel member | Level | Milestone |
+          |---|---|---|
+          | Claude | TRL 6 | PDR |
+          | GPT | TRL 8 | each launch |
+          | Gemini | TRL 7 | target gate |
+
+          Laid on one timeline, they are close to a monotone ladder: 6 at PDR, 8 at launch, 7 at the target gate. They are not three competing thresholds. The real disagreements are two:
+
+          1. **Which TRL scale applies?** NASA's definition (NPR 7123.1) and ISO 16290 / ESA differ on TRL 7–8.
+          2. **Should a TRL label appear at the target gate at all?** That gate consumes *data*, not technology.
+
+          **Reversibility.**
+          - PDR is two-way. Under D-02, TRL 4–5 is the norm for internal 0A milestones, but PDR on flight hardware is the conventional TRL 6 point.
+          - Launch release is one-way *for that unit* but two-way *for the programme*, provided the fleet has more than one scout.
+          - The target gate feeds KDP-0B, which is one-way.
+
+          **Cynefin domain.**
+          - T11, the bus, is mostly *complicated*. Small-body rendezvous buses have flight heritage and the analysis is knowable.
+          - T18, sampling plus assay, is partly *complex*. Anchoring, penetration and assay behaviour in unknown low-gravity regolith cannot be fully reproduced on the ground.
+
+          That asymmetry should drive the rule.
+
+          ## 2. Criteria and weights (swing weights, stated before options)
+
+          | # | Criterion | Swing weight | Why the weight fits the range |
+          |---|---|---|---|
+          | C1 | **Probability that scout #1 returns gate-grade sampled data** | 30 | Across the options the range is large, from about 0.3 (fly immature payload) to about 0.7 (qualified bus and payload). This is the evidence the target gate exists to consume. |
+          | C2 | **Time to target gate (cost of delay)** | 25 | Options range from adding nothing to adding 18–36 months (a precursor demo flight). KDP-0B and the D-01 real option both wait on this gate. |
+          | C3 | **Definitional coherence and auditability** | 15 | The range runs from "same words mean different things at different gates" to one declared scale with milestone-specific meaning. It matters because D-02 forbids waivers at KDP-0B, and an ambiguous criterion is a waiver in disguise. It ranks below C1 and C2 because it is cheap to fix once chosen. |
+          | C4 | **0A cost** | 15 | Options range from about +0 to about +$50–150M (a precursor mission). Under D-01, 0A is funded and 0B is sized at the gate, so 0A cost is real but not decisive. |
+          | C5 | **Consistency with D-02 (stringency follows reversibility)** | 15 | Options range from "TRL 8 on a two-way programme step" to "matched to door type". It is an accepted owner principle, so departures need a reason. |
+
+          Two criteria were considered and dropped:
+          - **Industrial base and supplier maturity.** It does not discriminate between the options.
+          - **Safety.** It is not relevant: no crew and no planetary-protection category concern for NEA sampling without return.
+
+          ## 3. Options
+
+          **O0. Null: leave the split as is.** The three positions are recorded and the owner does not pick.
+          - *Argument for:* zero effort, and each reviewer can apply their own reading.
+          - *Argument against:* the scout PDR, launch review and target gate would each lack an agreed criterion. The panel already showed that "TRL 7–8 for scouts" was read three ways. A future gate review would then relitigate the scale, which is the kind of disguised waiver D-02 excludes.
+          - **Rejected.**
+
+          **O1. Claude's position: TRL 6 at PDR; 7–8 are mission outcomes only.**
+          - *For:* matches NASA practice (TRL 6 by PDR) and avoids an impossible pre-flight "operational environment" requirement.
+          - *Against:* it is silent on flight qualification at launch release. That leaves the riskiest commitment, spending a scout, without a stated entry criterion.
+
+          **O2. GPT's position: TRL 6 technology before KDP-0B; TRL 8 actual system before each launch.**
+          - *For:* TRL 8 in NASA's own wording ("actual system completed and flight qualified through test and demonstration") and in ISO 16290 ("accepted for flight") is reachable on the ground. It is ordinary flight-project discipline.
+          - *Against:* "TRL 6 before KDP-0B" for T18 is too weak if the scouts have flown, and moot if they have not. For a first-of-kind T18, strict NASA TRL 8 presupposes TRL 7, which needs the operational environment. That is the conflation Claude flagged.
+
+          **O3. Gemini's position: T11 and T18 at TRL 7 within the target-gate criterion.**
+          - *For:* it ties gate evidence to demonstrated in-space function.
+          - *Against:* it makes the gate's pass criterion a technology label when it should be a data-quality specification. A scout could "reach TRL 7" and still return non-decision-grade grade data, or the reverse.
+
+          **O4. Laddered composite (proposed).** One declared scale (ISO 16290 / ECSS-E-HB-11A, cross-walked to NASA), with milestone-specific criteria:
+          - TRL 5 at scout SRR, consistent with D-02 for two-way steps.
+          - TRL 6 at scout PDR for T11 and T18. For T18, the relevant environment is a defined ground and analogue test envelope.
+          - Flight-qualified, ISO TRL 8, at launch release. Qualification happens once, by protoflight or qualification model; later units need acceptance only.
+          - In-situ T18 performance (NASA TRL 7) is a recorded mission outcome. It is not an entry criterion.
+          - The target gate is keyed to a sampled-data specification, not to TRL.
+          - KDP-0B requires T18 at TRL 7 demonstrated in flight, because the technology is project-ending with no waiver, *or* the gate takes the pre-committed fallback "0A only, Earth supply".
+
+          **O5. Precursor pathfinder: TRL 7 flight demo of T18 before any scout launch.** Examples: a rideshare impactor-anchoring demo, or a lunar or Phobos-analogue test.
+          - *Against:* adds 18–36 months and an estimated $50–150M (judgement, not costed). The demo environment is still not the target's regolith, so it buys less TRL 7 than it appears to.
+          - **Rejected.** The scouts *are* the pathfinder.
+
+          **O6. GAO-style TRL 7 at CDR.**
+          - *Against:* for T18 this is infeasible pre-flight under the NASA definition. Under the ISO definition it collapses into O4.
+          - **Rejected.**
+
+          ## 4. Assessment matrix (QOC; 1 = poor, 5 = best)
+
+          | Option | C1 data success (30) | C2 time (25) | C3 coherence (15) | C4 cost (15) | C5 D-02 fit (15) | Weighted |
+          |---|---|---|---|---|---|---|
+          | O0 Null | 2 | 3 | 1 | 4 | 2 | 2.40 |
+          | O1 Claude | 3 | 5 | 3 | 5 | 4 | **4.00** |
+          | O2 GPT | 4 | 4 | 2 | 3 | 3 | 3.40 |
+          | O3 Gemini | 3 | 3 | 2 | 4 | 3 | 3.00 |
+          | **O4 Ladder** | 4 | 4 | 5 | 4 | 5 | **4.30** |
+          | O5 Precursor | 5 | 1 | 4 | 1 | 2 | 2.80 |
+          | O6 TRL 7 at CDR | 4 | 2 | 2 | 2 | 2 | 2.70 |
+
+          How the key cells were scored:
+          - **C1 for O1 vs O4.** O4 adds an explicit qualification gate at launch release. Without one, environmental-test escapes (thermal-vacuum, vibration, sampler mechanism life) are the classic cause of small-spacecraft first-unit loss.
+          - **C2 for O2 vs O4.** O4 is about equal to O2 because qualification testing happens in either. The difference is that O4 does not demand "TRL 8" in a sense that implies a prior flight.
+          - **C3 for O2.** The low score comes from the scale ambiguity, not the content.
+
+          O1 and O4 are close. The margin is the launch-release criterion and the coherence gain. **This ranking is sensitive to C3's weight**: drop it to 5 and O1 and O4 roughly tie.
+
+          ## 5. Sensitivity points vs trade-off points
+
+          **Sensitivity points** (facts that move the answer):
+          - **S1: which TRL scale is declared.**
+            - Under ISO 16290, TRL 7 and 8 are ground-achievable. GPT's "TRL 8 before launch" is then just a flight-qualification requirement and is fully compatible with Claude.
+            - Under strict NASA wording, TRL 7 needs the operational environment. "TRL 8 before launch" is then incoherent for first-of-kind T18. Declaring the scale dissolves most of the panel disagreement.
+          - **S2: scout fleet size.**
+            - With two or more scouts on staggered launches, each launch is a two-way door at programme level, and qualify-once-then-accept is proportionate.
+            - With a single scout, launch release becomes effectively one-way for the target gate. That would justify a stricter T18 ground campaign, closer to O5's rigour without the flight.
+          - **S3: fidelity of a low-gravity regolith analogue for T18.** Candidates are drop towers, parabolic flight, vacuum chambers with cohesive simulant, and reduced-gravity rigs. If credible analogues exist, TRL 6 at PDR is meaningful. If not, TRL 6 at PDR is a label on TRL 5 evidence.
+
+          **Trade-off points** (values, not facts):
+          - **T1: first-scout risk vs time to target gate.** O4 accepts roughly a 30–40% chance (my judgement, low confidence) that scout #1 fails to return decision-grade grade data. In exchange it avoids an 18–36-month precursor. This is an owner risk-appetite call, and D-01's "capability programme" framing points towards accepting it.
+          - **T2: label vs data at the target gate.** Keying the gate to data specification rather than TRL trades familiar vocabulary for discriminating power. I value discrimination. Someone who values a uniform TRL vocabulary across all gates would side with Gemini, and that is a legitimate values difference.
+
+          ## 6. Evidence certainty
+
+          | Claim | Certainty (GRADE-style) | Likelihood / confidence |
+          |---|---|---|
+          | NASA practice expects TRL 6 for critical technologies by PDR (NPR 7123.1 / 7120.5 context) | High | — |
+          | ISO 16290 defines TRL 7–8 so they are achievable through ground qualification and flight acceptance | High | — |
+          | The NASA definition of TRL 7 requires demonstration in an operational environment | High | — |
+          | A small-body sampling interaction (anchoring, penetration, assay in low-g regolith) cannot be fully reproduced on the ground | Moderate. Hayabusa2 and OSIRIS-REx surface responses diverged notably from pre-flight regolith expectations. | Very likely; high confidence |
+          | T11 bus can reach TRL 6 by month 12–24 from TRL 3–4 | Low–moderate. Depends on heritage reuse, and the panel's baseline is TRL 2–4. | Likely (about 65%); medium confidence |
+          | T18 can reach TRL 6 by PDR in month 12–24 | Low. The panel baseline is TRL 2–4, and the assay part (bulk grade in situ) has thin precedent. | About as likely as not; low confidence |
+          | Probability that scout #1 returns decision-grade sample data under O4 | Very low (elicited judgement only) | 0.6–0.7; low confidence |
+
+          The weak link is the T18 maturation schedule. Every option inherits it.
+
+          ## 7. Key assumptions, falsifiers, and competing hypotheses
+
+          **Assumptions and what would falsify them.**
+
+          | # | Assumption | What would falsify it |
+          |---|---|---|
+          | A1 | The fleet has at least two scouts with launch stagger of 6 months or more. | A budget or manifest decision fixing a single scout. Then move to the S2 single-scout variant: full qualification model plus an extended analogue test campaign before launch. |
+          | A2 | A credible ground and analogue relevant environment for T18 can be defined by about month 9. | A test-facility survey finding no reduced-gravity regolith rig with adequate duration and scale. Then TRL 6 at PDR for T18 is unattainable and PDR should be re-planned, not waived. |
+          | A3 | T11 can reuse heritage small-body bus elements: propulsion, GNC, relative navigation. | The AD² (Advancement Degree of Difficulty) rating stays at 6 after the 0A architecture study. That signals heavy new development, and the PDR window slips. |
+          | A4 | The target gate's information need can be written as a data specification (sample count, depth, assay accuracy, spatial coverage). | The economics gate (g-economics) cannot state a required grade uncertainty. Then the target gate is undefined regardless of TRL, which is a separate and bigger problem. |
+
+          **ACH on why the panel disagrees** (ranked by least disconfirmed):
+          1. **H1, milestone and vocabulary difference.** Least disconfirmed. The positions are consistent when mapped to a timeline, and GPT already separates "technology TRL 6" from "system TRL 8".
+          2. **H3, scale definition difference** (NASA vs ISO). Partly confirmed. Claude's "TRL 7–8 is a result of the mission" is true under NASA wording and false under ISO wording.
+          3. **H2, genuine risk-appetite difference.** Weakly supported. GPT's per-launch TRL 8 implies lower risk tolerance, but nothing in the record shows GPT would refuse a protoflight approach.
+
+          If H2 turns out to be true, T1 becomes a live owner choice rather than a drafting fix.
+
+          ## 8. Decision, warrant, accepted downside
+
+          **Ruling: adopt O4, the laddered composite.**
+
+          **Rule text proposed for `gates-proposal.yaml`:**
+
+          > **R-SCOUT-TRL.** Scale: ISO 16290 / ECSS-E-HB-11A, with the NASA NPR 7123.1 crosswalk recorded in `trl-baseline.yaml`. Each relevant environment is defined per technology in a signed test-envelope document before the milestone that relies on it.
+          >
+          > 1. *Scout SRR (0A internal, two-way):* T11 and T18 at TRL 5 or above, with the T18 relevant-environment envelope defined.
+          > 2. *Scout PDR (month 12–24):* T11 and T18 at TRL 6 or above against that envelope. No waiver. If not met, PDR is replanned, and any slip beyond 6 months is reported to the 0A mid-term review.
+          > 3. *Launch release, scout n:*
+          >    - Scout 1: the flight system, including the sampling payload, is flight-qualified (ISO TRL 8: qualification or protoflight campaign complete, with no open qualification nonconformances against mission-critical functions).
+          >    - Scouts 2 and later: acceptance testing to the qualified design, plus closure of any anomaly from earlier scouts that affects sampling or assay.
+          > 4. *Target gate (g-target):* the pass criterion is the sampled-data specification. That means N samples or more at stated depth, bulk-grade assay uncertainty no worse than the value derived from g-economics, and stated spatial coverage. In-situ T18 operation is recorded as TRL 7 (NASA sense) when achieved. That record is a consequence, not a separate criterion.
+          > 5. *KDP-0B:* T18 is project-ending. KDP-0B requires T18 demonstrated in the operational environment (in-situ sampling and assay on at least one target), with no waiver. If no scout has done so by KDP-0B, the pre-committed fallback "0A only, Earth supply" applies, or KDP-0B is deferred under D-01's real-option terms. TRL 6 alone does not clear T18 at KDP-0B.
+
+          **Evidence that would change the ruling:**
+          - A single-scout manifest (A1 fails) moves the ruling towards a stricter pre-launch T18 campaign.
+          - No credible reduced-gravity regolith analogue (A2 fails) means PDR TRL 6 for T18 must be redefined or the schedule replanned. O5 could then become competitive if a cheap rideshare demo exists.
+          - If the owner states low risk appetite for scout #1 (T1), the ruling moves towards O5.
+          - If g-economics shows grade uncertainty barely matters, the target gate weakens and T18 might drop from project-ending to architecture-change.
+
+          **Y-statement.**
+          - *In the context of* the 0A scouts being the first flight hardware and the sole source of sampled-grade evidence for the target gate,
+          - *facing* a panel split that is mostly about milestones and TRL-scale wording, and a T18 whose decisive behaviour only space can reveal,
+          - *we chose* a declared ISO 16290 ladder: TRL 5 at SRR, TRL 6 at PDR, flight-qualified (TRL 8) at launch release, a data-specification target gate, and flight-demonstrated T18 at KDP-0B,
+          - *to achieve* stringency that tracks reversibility, a launch-release criterion that prevents avoidable losses, and a target gate that discriminates on what it actually needs,
+          - *accepting* that scout #1 may fail in situ (roughly 30–40%, low confidence), which would delay the target gate and possibly trigger the Earth-supply fallback.
+
+          **Warrant (Toulmin).** Gate criteria should test the decision the gate actually makes. PDR decides whether to commit to a design, so it needs technology maturity. Launch release decides whether to spend a unit, so it needs qualification. The target gate decides whether the asteroid is worth pursuing, so it needs data. KDP-0B is a one-way commitment, so it needs the project-ending technology proven where it must work.
+
+          **Backing:** NASA and ESA flight-project practice, D-02.
+
+          **Qualifier:** presumably right, if A1 and A2 hold.
+
+          **Rebuttal:** fails if the fleet is a single scout or if no T18 analogue exists.
+
+          ## 9. Consequences
+
+          **Target-gate timing.**
+          - The gate cannot precede first successful sampling. A plausible chain is: PDR month 12–24, CDR about 6–9 months later, qualification and launch around month 30–42, cruise and proximity operations 6–24 months depending on target.
+          - That puts the earliest target gate at roughly month 36–66 (judgement, medium confidence on the range, low on the point value).
+          - KDP-0B sits behind it. This should be stated in `decisions.md` now, so that a later slip is not read as a failure.
+
+          **Decisions enabled:**
+          - The scout qualification strategy: protoflight vs dedicated qualification model, a cost trade that is now well-posed.
+          - A T18 test-facility budget line for months 0–12.
+          - Writing the g-target data specification jointly with g-economics.
+
+          **Decisions constrained:**
+          - The fleet size decision. Two or more scouts are now load-bearing for the ruling's proportionality.
+          - The launch stagger, which must leave time for anomaly closure between scouts 1 and 2.
+          - KDP-0B scheduling, which can no longer be calendar-fixed.
+
+          **Conflicts:**
+          - With any reading of D-02 that treats all of 0A as TRL 4–5. Launch release is explicitly carved out as qualification-gated.
+
+          **Disagreement kept.**
+          - Against Claude's prior position: TRL 7–8 is *not* wholly a mission result. ISO TRL 8, meaning flight qualification, is a legitimate pre-launch entry criterion.
+          - Against Gemini: TRL should not be the target-gate pass criterion.
+          - Against GPT: TRL 6 is insufficient for T18 at KDP-0B.
+
+          These are recorded as positions, not averaged.
+        wordCount: 3042
+        generatedAt: '2026-10-17T22:25:36.183Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          Here is the decision analysis for the rendezvous scouts and sampling payload TRL milestone, structured according to the Composite Scaffold.
+
+          ### 1. Frame & decision type
+          **Frame:** This is an executive and property decision within a complicated domain (Cynefin). We must define the Technology Readiness Level (TRL) and schedule milestone for the rendezvous scouts (T11) and their subsurface sampling payloads (T18) during Phase 0A. 
+          **Reversibility:** Low (One-way door). Setting this gate dictates the schedule, funding profile, and launch cadence for Phase 0A. 
+
+          ### 2. Criteria and weights
+          *Value-Focused Thinking applied via swing weights.*
+          *   **C1: Epistemic Rigor of the Target Gate (Weight: 40%)** - The degree to which the scout's data can be trusted to trigger KDP-0B. *Swing rationale:* The range goes from "unverified data" to "fully validated in-situ assay." High weight because the entire purpose of Phase 0A is to buy down risk for Phase 1.
+          *   **C2: Alignment with Standard Aerospace TRL Definitions (Weight: 35%)** - *Swing rationale:* Ranges from "redefining TRLs to fit our schedule" to "strict adherence to NASA/ESA definitions." High weight to prevent semantic drift where TRL 8 is demanded before a system has ever flown.
+          *   **C3: Schedule Feasibility (Weight: 25%)** - *Swing rationale:* Ranges from "impossible to meet without a time machine" to "achievable within 0A timelines." Moderate weight; we cannot mandate a schedule that physics or procurement prohibits.
+
+          ### 3. Options
+          *   **O1: Null Option (Leave the panel split).** *Rejected.* Leaves the project without a verifiable gate for its most critical early hardware.
+          *   **O2: Claude's Position (TRL 6 at PDR).** Treats TRL 7-8 as the *result* of the scout mission. *Rejected as incomplete.* While accurate for the spacecraft build phase, it fails to define the requirement for the *Target Gate* itself.
+          *   **O3: GPT's Position (TRL 8 before launch, TRL 6 at KDP-0B).** *Rejected.* Demanding TRL 8 (flight qualified through test and demonstration) *before* the first scout launch conflates qualification with flight provenance. 
+          *   **O4: Synthesis Position (TRL 6 at Scout PDR; TRL 7 at Target Gate).** The scouts must reach TRL 6 (system/subsystem model or prototype demonstration in a relevant environment) to pass PDR and authorize flight build. To pass the *Target Gate* and trigger KDP-0B, the sampling payload (T18) must achieve TRL 7 (system prototype demonstration in an operational space environment) by successfully assaying the target.
+
+          ### 4. Assessment matrix
+
+          | Option | C1: Epistemic Rigor | C2: TRL Alignment | C3: Schedule Feasibility |
+          | :--- | :--- | :--- | :--- |
+          | **O1 (Null)** | Low | Low | High |
+          | **O2 (Claude)** | Low (at Target Gate) | High | High |
+          | **O3 (GPT)** | High | Low (Misuses TRL 8) | Low |
+          | **O4 (Synthesis)** | High | High | Medium |
+
+          ### 5. Sensitivity vs trade-off points
+          *   **Sensitivity point:** The definition of "relevant environment" for T18 (sampling) at TRL 6. If Earth-based vacuum/regolith chambers cannot adequately simulate the target asteroid's microgravity, C1 (Epistemic Rigor) drops sharply.
+          *   **Trade-off point:** We are trading early schedule velocity (allowing the scout to launch at TRL 6/7) against the risk of in-flight failure, to avoid the impossible standard of achieving TRL 8 before the first flight.
+
+          ### 6. Evidence certainty
+          *   *Claim:* TRL 7 requires demonstration in an operational space environment. *Certainty:* High (Standard NASA/DoD definitions).
+          *   *Claim:* TRL 8 cannot be achieved prior to the first launch of a novel system. *Certainty:* High. TRL 8 requires actual flight qualification.
+
+          ### 7. Key assumptions
+          *   **Assumption 1:** The target gate *requires* in-situ sampled grade evidence, not just remote sensing.
+              *   *Falsification:* If remote sensing instruments are upgraded to provide bulk grade assay with high confidence, T18 physical sampling may not be project-ending.
+          *   **Assumption 2:** Phase 0A budget can absorb a scout failure and re-flight if the first scout fails to achieve TRL 7 in orbit.
+              *   *Falsification:* If 0A only funds a single scout, the risk posture must shift to demand heavier Earth-based qualification (TRL 6+).
+
+          ### 8. Decision, warrant, accepted downside
+          **Y-Statement:** In the context of Phase 0A target validation, facing a panel split on scout readiness levels, we chose **Option 4 (TRL 6 at PDR, TRL 7 at Target Gate)**, to achieve strict adherence to aerospace standards while ensuring rigorous evidence for KDP-0B, accepting the risk that the first scout launch acts as a TRL 7 technology demonstration rather than a fully mature operational asset.
+
+          **Warrant:** TRL definitions dictate that a system cannot reach TRL 7 or 8 without spaceflight. Therefore, demanding TRL 8 prior to launch (GPT) is impossible, but allowing the target gate to pass without operational demonstration (Claude's omission) is too risky. The scout *mission itself* bridges TRL 6 to TRL 7.
+
+          **Rule Text:** *"T11 (Rendezvous Scout) and T18 (Sampling Payload) must achieve TRL 6 (relevant environment demonstration) no later than Scout PDR. The Target Gate shall not be passed, nor KDP-0B triggered, until T18 achieves TRL 7 via successful in-situ operational demonstration on the target body."*
+
+          ### 9. Consequences
+          *   **Constrains:** The Target Gate cannot occur until *after* the first scout has successfully landed, sampled, and assayed the target (achieving TRL 7).
+          *   **Enables:** Allows the scout engineering team to proceed to PDR with Earth-based vacuum/thermal testing (TRL 6), unblocking Phase 0A hardware development.
+        wordCount: 878
+        generatedAt: '2026-10-17T22:25:58.032Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **Recommendation: adopt a three-milestone rule, rather than choose one TRL number for all purposes.**
+
+          - **Scout PDR:** TRL 6 for mission-critical novel technologies, including the sampling/assay chain.
+          - **Each scout launch release:** the actual integrated spacecraft and sampling payload completed and flight-qualified—**TRL 8** under the adopted definition.
+          - **Target gate:** successful, validated target-specific sampling and assay evidence. Neither launch readiness nor a TRL label substitutes for that evidence.
+
+          Retain D-02 separately: **every project-ending technology must reach TRL 6 in a relevant environment before KDP-0B, without waiver.**
+
+          This is a **property and executive decision**: it sets maturity requirements and authorises expenditure at successive milestones. The engineering is complicated; the asteroid interaction and representativeness of sampled grade retain substantial uncertainty.
+
+          The critical distinction is between:
+
+          1. technology maturity;
+          2. qualification of an actual flight article; and
+          3. adequacy of mission results for an investment decision.
+
+          The panel’s positions partly address different questions. They should not be averaged into a single intermediate TRL.
+
+          ## 2. Criteria and weights
+
+          The following are **swing weights**, assigned before considering options. Scores assess improvement across the stated ranges, not abstract importance.
+
+          | Criterion | Range being valued | Weight | Why this weight fits the range |
+          |---|---|---:|---|
+          | **C1. Target-decision validity** | From accepting readiness as a proxy for grade to requiring validated, decision-relevant target evidence | **30%** | The scouts exist principally to resolve target uncertainty. Failure here can invalidate the entire resource case. |
+          | **C2. Flight-loss risk control** | From unspecified launch acceptance to explicit qualification of spacecraft, payload and interfaces | **25%** | Losing a scout destroys hardware and delays the evidence needed for subsequent decisions. |
+          | **C3. Proportionate cost and schedule** | From requiring a precursor flight merely to establish readiness to using justified ground qualification and existing evidence | **20%** | D-01 funds capability development, not unlimited qualification or an unnecessary extra mission generation. |
+          | **C4. Verifiability and accountability** | From inconsistent labels and milestones to auditable, configuration-specific acceptance evidence | **15%** | Ambiguity creates both accidental relaxation and unnecessary requalification. |
+          | **C5. Preservation of programme options** | From committing before uncertainty is resolved to preserving the gated 0B option and Earth-supply fallback | **10%** | Important, but substantially protected already by D-01 and D-02. |
+
+          **Non-compensable requirements:** compliance with D-02; applicable safety and licensing obligations; and no target-gate pass without adequate target evidence. A weighted score cannot override these.
+
+          ## 3. Options
+
+          **A. Null: retain the split.**  
+          Argument for: avoids reopening agreement and lets project reviews resolve detail.  
+          **Reject:** leaves PDR, launch and target-gate requirements conflated. Different stakeholders could reasonably believe they approved different obligations.
+
+          **B. PDR-centred rule: TRL 6 at PDR; higher readiness emerges from the mission.**  
+          Argument for: correctly recognises that some operational evidence can only come from flight.  
+          **Reject as a complete rule:** TRL 6 does not itself establish that the actual spacecraft and payload are qualified for launch. Claude’s position can be sufficient only if separate flight-acceptance requirements are supplied.
+
+          **C. Target-centred rule: require T11 and T18 at TRL 7 at the target gate.**  
+          Argument for: demands demonstration in the operational environment.  
+          **Reject as a complete rule:** does not specify launch acceptance, and a successful demonstration may still produce insufficient or unrepresentative grade evidence. Gemini’s criterion is useful supporting evidence, not a sufficient target-gate condition.
+
+          **D. Layered rule: TRL 6 at PDR, actual system TRL 8 before each launch, validated results at the target gate.**  
+          Argument for: combines the useful elements of the positions without confusing their milestones.  
+          **Recommend**, subject to the qualification and evidence definitions below.
+
+          None of these rejections implies that the panel members intended to omit normal flight-project controls; the issue is what the decision record explicitly guarantees.
+
+          ## 4. Assessment matrix
+
+          Scores: **1 = poor, 5 = strong**. These are structured judgments, not measured probabilities. Options B and C are assessed as written, without silently adding missing controls.
+
+          | Option | C1 Target validity 30% | C2 Flight risk 25% | C3 Cost/schedule 20% | C4 Auditability 15% | C5 Options 10% | Weighted score |
+          |---|---:|---:|---:|---:|---:|---:|
+          | A. Retain split | 2 | 2 | 3 | 1 | 2 | **2.05** |
+          | B. TRL 6 at PDR alone | 2 | 2 | 4 | 3 | 3 | **2.65** |
+          | C. TRL 7 at target alone | 3 | 2 | 3 | 3 | 3 | **2.75** |
+          | D. Layered rule | 5 | 5 | 3 | 5 | 5 | **4.60** |
+
+          The decision is not primarily the numerical margin. D supplies three distinct assurance claims that the other formulations leave incomplete.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points — factual questions
+
+          - **Relevant-environment fidelity:** Can ground testing reproduce the coupled effects of low gravity, anchoring/contact dynamics, uncertain regolith, contamination and assay operation sufficiently for TRL 6? If not, a precursor demonstration may be necessary.
+          - **Qualification inheritance:** How much spacecraft, avionics and payload evidence is genuinely reusable? Configuration changes can invalidate heritage.
+          - **Evidence latency:** Cruise, target operations, downlink and independent analysis—not launch—determine the earliest target-gate date.
+          - **Sampling representativeness:** A working sampler can return a precise measurement of an unrepresentative location. Sampling design may dominate instrument performance.
+
+          ### Trade-off points — owner values, not facts
+
+          - **PDR maturity versus early design flexibility:** Requiring TRL 6 by PDR spends earlier to reduce redesign risk. Accepting TRL 5 at PDR preserves flexibility but requires an explicitly managed closure plan before design commitment.
+          - **Qualification expenditure versus tolerated scout loss:** A lean mission-class assurance programme can accept greater residual risk, but that is not permission to describe unfinished qualification as TRL 8.
+          - **More reconnaissance versus delayed 0B:** Additional samples can improve confidence while deferring the real option’s exercise.
+
+          **Sensitivity conclusion:** The layered structure survives reasonable changes in weights. Its exact **PDR placement** is less robust than its launch and target-gate requirements. Strong evidence of a lower-cost, controlled TRL-5-at-PDR development path could change that milestone without changing the overall ruling.
+
+          ## 6. Evidence certainty
+
+          GRADE labels below are **adapted to engineering evidence**, not presented as clinical evidence ratings. Likelihood and confidence are kept separate.
+
+          | Key claim | Evidence certainty | Confidence and likelihood |
+          |---|---|---|
+          | TRL 6, 7 and 8 address different maturity states; TRL 8 concerns an actual system completed and flight-qualified through test and demonstration | **High** for the definitions | **High confidence**; this is definitional, not a probabilistic forecast. |
+          | TRL 8 does not inherently require a previous successful operational mission by that flight article | **High** under the NASA definition | **High confidence**. Flight qualification and successful mission operation are distinct. |
+          | TRL 6 alone is insufficient to establish launch readiness | **High** | **High confidence**; no numerical failure probability follows from the TRL. |
+          | The proposed scouts can achieve the required relevant-environment demonstration entirely on the ground | **Low** on the supplied information | **Low confidence**; likelihood cannot responsibly be quantified without the test architecture. |
+          | Successful sampling alone establishes exploitable bulk grade | **Low** support for that proposition | **High confidence that it is insufficient as a general rule**; actual adequacy depends on heterogeneity and sampling design. |
+          | The layered rule will reduce total programme cost | **Low** | **Moderate confidence in reduced ambiguity**, but net savings and schedule effects remain unquantified. |
+
+          Definition source: **NASA Systems Engineering Handbook, NASA/SP-2016-6105 Rev 2**, TRL descriptions. Programme constraints are those supplied from D-01, D-02 and the Phase 0 re-baseline; no additional repository contents are assumed.
+
+          ## 7. Key assumptions
+
+          | Assumption | Evidence that would falsify it | Resulting change |
+          |---|---|---|
+          | A credible relevant-environment test campaign can precede scout PDR | A test-gap assessment shows essential coupled behaviour cannot be demonstrated without flight | Add a precursor or rephase PDR; do not relabel an inadequate demonstration as TRL 6. |
+          | The actual flight system can be qualified without a prior mission of the same design | Qualification review identifies an essential acceptance claim that only prior operational flight can establish | Fund that demonstration, change the design or stop. |
+          | Scout measurements can constrain the resource model at the scale relevant to extraction | Heterogeneity analysis shows feasible sampling cannot bound the resource decision | Expand sampling, narrow the target claim or fail the target gate. |
+          | The proposed month 12–24 PDR window is compatible with the required work | A resource-loaded schedule and test plan show otherwise | Rebaseline dates explicitly; do not trade away evidence to protect a planning date. |
+
+          **ACH ranking, by least disconfirmed explanation of the panel split:**
+
+          1. **Different milestones and objects of assessment** — least disconfirmed; the supplied positions explicitly refer to PDR, launch and the target gate.
+          2. **Different assumptions about what qualifies as relevant-environment or flight-qualification evidence** — plausible, but requires test-plan comparison.
+          3. **A fundamental disagreement about acceptable scout risk** — possible, but not established by the excerpts.
+
+          The first hypothesis warrants clarifying the decision before treating the disagreement as irreconcilable risk preferences.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Proposed rule text
+
+          > **Scout technology readiness.** Before scout PDR, mission-critical novel technologies in T11 and T18, including the integrated sampling-to-assay chain, shall demonstrate TRL 6 in documented relevant environments. Readiness claims shall identify the configuration, functions, environments, test evidence and remaining uncertainties. Existing qualification or heritage evidence may be credited where applicability is demonstrated.
+          >
+          > **Launch release.** Before each operational scout launch, the actual integrated spacecraft and its sampling/assay payload shall be completed and flight-qualified through test and demonstration, meeting TRL 8 under the programme’s adopted definition. Launch acceptance shall additionally close required mission-assurance, safety, software, calibration and interface verifications. Qualification scope shall be proportionate to mission class; the TRL label alone is not launch authorisation.
+          >
+          > **Target gate.** The gate shall not pass on readiness labels alone. It shall require validated target-specific subsurface sampling and assay results, with predeclared acceptance thresholds covering measurement uncertainty, contamination and calibration, spatial/depth coverage, geological representativeness and relevance to the proposed extraction process. Operational demonstration shall support the applicable TRL assessment, but shall not substitute for resource evidence.
+          >
+          > **KDP-0B.** All project-ending technologies shall meet D-02’s TRL-6 relevant-environment requirement without waiver. Successful scout operation does not confer maturity on undemonstrated extraction or production technologies.
+
+          The required degree of subsurface coverage and representativeness must be set **before flight**, against the proposed mining decision—not negotiated after seeing favourable samples.
+
+          **Warrant:** technology demonstration, flight qualification and investment evidence answer different failure questions. Requiring all three prevents substitution between them.
+
+          **Accepted downside:** greater early test expenditure, potentially later PDR, and the possibility that a technically successful scout mission still fails the target gate. That is an intended outcome of honest discrimination, not a programme anomaly.
+
+          ## 9. Consequences
+
+          - Treat **month 12–24 as a planning window**, not evidence that TRL 6 will necessarily be achieved then.
+          - Schedule the target gate **after the necessary mission data are returned, validated and independently reviewed**. It cannot be brought forward by declaring the spacecraft TRL 8.
+          - Do not require every scout to launch before the target gate: the required sequence depends on the predeclared evidence sufficiency plan.
+          - Maintain an evidence register linking each maturity claim to its configuration and relevant environment.
+          - Budget sampling representativeness and assay validation alongside spacecraft qualification.
+          - Preserve the four separate target, demand, economics and licence gates. A target pass does not authorise 0B by itself.
+          - If required evidence cannot be obtained within the authorised envelope, apply the pre-committed failure outcome: **0A only, Earth supply**.
+
+          **Decision Y-statement:** In the context of D-01’s gated 0B option and D-02’s reversibility-based assurance policy, facing conflicting scout TRL requirements attached to different milestones, we chose TRL 6 for critical novel technologies at scout PDR, TRL 8 for each actual flight system before launch, and validated sampling evidence for the target gate, to achieve credible flight readiness and an evidence-based resource decision, accepting additional early qualification effort and potentially later gate passage. **The warrant** is that these are distinct assurance claims; **the qualifier** is that PDR timing remains revisable on a documented test-and-cost case, while launch qualification and target evidence do not. This enables scout development and gate scheduling, and constrains KDP-0B against premature commitment.
+        wordCount: 2055
+        generatedAt: '2026-10-17T22:27:42.951Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: reasoning
+            reasoning: A states its frame and decision type and declares the TRL scale explicitly. Swing weights are set before the options, which include a null option. Probabilities are calibrated and the falsifiers are concrete. The winning margin over O1 is thin and sensitive to the C3 weight, but A says so itself, and both options share the same skeleton, so the ruling would not flip.
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: alternatives
+            reasoning: Comprehensive decision chain with strong framing, well-defined alternatives, rigorous information assessment (GRADE/ACH), and a clear commitment. Minor flaw in rejecting options before the matrix, but still scores them.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: information
+            reasoning: The milestone ladder and data-based target gate are sound, but the claim that NASA TRL 8 necessarily requires prior operational flight is not established. This claimed NASA–ISO incompatibility materially shapes the alternatives and scale selection.
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: 'B asserts with ''High'' certainty that TRL 8 cannot be reached before first flight. That is contestable: both the NASA and ISO definitions treat TRL 8 as flight qualification through ground test, so the certainty is uncalibrated. The main argument against GPT''s position rests on this claim. B also sets no launch-release criterion, keys the target gate to a TRL label rather than data quality, gives a qualitative matrix with no scores, and offers no precursor option.'
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: alternatives
+            reasoning: Follows the structure but is somewhat brief. Rejects options in the text before the matrix, which weakens the objective evaluation process. The synthesis option is well-reasoned but lacks broader alternatives.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: The analysis confidently but incorrectly treats flight qualification as requiring previous spaceflight. That premise drives rejection of pre-launch TRL 8 and leaves launch qualification inadequately specified. TRL 7 demonstration also does not by itself establish decision-grade resource evidence.
+        rawScore: 1
+        weightedScore: 0.5
+        approveCount: 0
+        rejectCount: 2
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: alternatives
+            reasoning: 'C separates technology maturity, flight qualification and investment evidence into three distinct claims. It also adds strong non-compensable requirements and predeclared target-evidence thresholds. The weak spot is the option set: there is no precursor or single-scout variant, and options B and C are partly straw men, so the matrix margin overstates D. The sensitivity section still covers the precursor case, so the decision holds. Leaving T18 at TRL 6 for KDP-0B is weaker than A''s position but compliant with D-02.'
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: alternatives
+            reasoning: Strong application of the decision framework. Explicitly separates the milestones and provides a robust layered rule. Like the others, it pre-judges options before the matrix, but the reasoning and commitment are highly rigorous.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: The response distinguishes technology maturity, flight qualification and target evidence; evaluates alternatives including the null; and states falsifiable assumptions and rebaselining conditions. Detailed test envelopes and evidence thresholds remain implementation tasks explicitly required before the relevant commitments.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+    winnerId: gpt-6-1-sol
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: 'A and C converge on the same layered rule: TRL 6 at PDR, flight-qualified (TRL 8) at launch release, and a target gate keyed to data rather than TRL. Two differences remain. The first is whether KDP-0B requires T18 to be demonstrated in flight or only at TRL 6. The second is whether the TRL scale must be explicitly declared. Both are explicit owner choices to record, not issues that need another round of analysis.'
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: Multiple responses (A and C) provide high-quality, actionable, and rigorously justified rulings that resolve the panel split effectively.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: 'Response C provides a satisfactory resolution: TRL 6 for critical novel technologies at PDR, flight-qualified actual systems at each launch, and validated sampling evidence at the target gate, with schedule changes governed by demonstrated readiness.'
+    shouldTerminate: true
+    completedAt: '2026-10-17T22:28:24.452Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 0
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 1
+  totalVotes: 9
+  approvalRate: 55.55555555555556
+  averageResponseWords: 1992
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T22:28:24.603Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    Claude, Gemini and GPT converged on **TRL 6 for T11 and T18 at scout PDR**, followed by successful in-situ sampling and assay before the target decision can pass. Claude and GPT additionally converged on an explicit **pre-launch qualification requirement** and a **target gate governed by decision-grade data, not a TRL label alone**. All three rejected leaving the original panel split unresolved.
+
+    The panel did **not** converge on the complete rule. Gemini retained TRL 7 as the target-gate criterion and argued that pre-launch TRL 8 was impossible; Claude and GPT challenged that premise in their votes. Claude proposed an ISO-based ladder and an explicit flight-demonstrated T18 requirement at KDP-0B; GPT retained D-02’s general TRL-6 floor while separately requiring validated scout results before the target gate. Claude alone added TRL 5 at SRR. Accordingly, the discussion supports a shared milestone structure, but not an unqualified adoption of any one response.
+
+    ## Decision record
+
+    ### Claude’s position
+
+    **Y-statement:** In the context of the scouts supplying sampled-grade evidence for the target gate, facing different milestones and TRL interpretations, **Claude chose** TRL 5 at SRR, TRL 6 at PDR, ISO TRL 8 flight qualification at launch release, a data-based target gate, and operationally demonstrated T18 before KDP-0B, to achieve milestone-specific assurance, accepting first-scout failure risk and possible delay or Earth-supply fallback.
+
+    - **Warrant — Claude:** PDR assesses technology maturity; launch release assesses qualification; the target gate assesses resource evidence; KDP-0B requires project-ending technology demonstrated where it must work.
+    - **Qualifier — Claude:** The proposal assumes a credible T18 analogue test environment and at least two staggered scouts.
+    - **Accepted downside — Claude:** Greater qualification effort, possible target-gate delay and residual in-situ failure risk. Claude labelled its numerical failure estimate low-confidence judgement.
+
+    ### Gemini’s position
+
+    **Y-statement:** In the context of Phase 0A target validation, facing conflicting readiness requirements, **Gemini chose** TRL 6 at scout PDR and TRL 7 through successful target sampling and assay before the target gate and KDP-0B, to achieve operationally demonstrated evidence, accepting that the first scout is itself the technology demonstration.
+
+    - **Warrant — Gemini:** Operational demonstration is necessary before the target decision; Gemini also argued that TRL 8 could not precede first flight.
+    - **Qualifier — Gemini:** The proposal assumes sampled-grade evidence is necessary and that 0A can absorb failure and reflight.
+    - **Accepted downside — Gemini:** First-flight demonstration risk and a target gate that must wait for successful target operations.
+    - **Recorded challenge — Claude and GPT:** Both rejected Gemini’s claim that flight qualification necessarily requires prior spaceflight.
+
+    ### GPT’s position
+
+    **Y-statement:** In the context of D-01’s gated option and D-02’s assurance policy, facing requirements attached to different milestones, **GPT chose** TRL 6 for critical novel technologies at PDR, TRL 8 for each actual integrated flight system before launch, and validated sampling evidence at the target gate, to achieve credible flight readiness and an evidence-based resource decision, accepting additional early qualification expenditure and potentially later gate passage.
+
+    - **Warrant — GPT:** Technology maturity, flight qualification and investment evidence are distinct assurance claims.
+    - **Qualifier — GPT:** PDR timing can be revised on a documented test-and-cost case; launch qualification and target evidence remain required.
+    - **Accepted downside — GPT:** A technically successful mission may still fail the target gate because its measurements are insufficient or unrepresentative.
+    - **KDP-0B rule — GPT:** Retain D-02’s no-waiver TRL-6 requirement for all project-ending technologies; successful scout operations do not mature undemonstrated production technologies.
+
+    ## Decision-quality audit
+
+    All three Round 1 responses addressed the nine Composite Scaffold headings. The voting criticism concerned support, completeness and commitment rather than wholesale omission.
+
+    | Round 1 response | Weakest links named in votes | Missing or unsupported elements identified by reviewers |
+    |---|---|---|
+    | **Claude** | Claude: **reasoning**; Gemini: **alternatives**; GPT: **information** | Claude acknowledged that the scoring margin was sensitive to the coherence weight. Gemini criticised rejecting alternatives before completing their assessment. GPT challenged the claimed NASA–ISO incompatibility and the suggestion that NASA TRL 8 necessarily presupposes operational flight. |
+    | **Gemini** | Claude: **information**; Gemini: **alternatives**; GPT: **information** | Claude and GPT challenged the high-certainty claim that TRL 8 cannot precede first flight. Claude identified no explicit launch-release criterion, a TRL-labelled rather than data-quality target gate, an unscored qualitative matrix and no precursor alternative. Gemini’s self-review noted limited alternatives and premature rejection of options. |
+    | **GPT** | Claude: **alternatives**; Gemini: **alternatives**; GPT: **commitment** | Claude identified no explicit precursor or single-scout option and considered some alternatives incomplete representations of competing positions. Gemini criticised pre-judging alternatives. GPT acknowledged that detailed test envelopes and target-evidence thresholds remained implementation tasks. Claude considered GPT’s KDP-0B wording weaker than its own, while compliant with D-02. |
+
+    ### Trade-off points, rather than facts to settle
+
+    - **First-flight risk versus delay:** Claude explicitly treated avoiding a precursor mission in exchange for residual scout risk as an owner risk-appetite choice. Gemini likewise accepted first-flight demonstration risk.
+    - **Qualification spending versus tolerated loss:** GPT identified this as a mission-assurance trade-off; Claude proposed stricter testing if only one scout is funded.
+    - **Early maturity versus design flexibility:** GPT treated TRL 6 at PDR versus a controlled TRL-5 development path as a cost-and-risk trade-off.
+    - **Additional evidence versus exercising 0B sooner:** GPT identified the value of more reconnaissance against delayed commitment.
+    - **TRL vocabulary versus data-specific criteria:** Claude described this partly as a values difference; Claude and GPT nevertheless argued that a TRL label alone cannot establish resource-evidence sufficiency.
+
+    ## Key Points
+
+    - **Shared PDR threshold:** All three proposed TRL 6 at scout PDR. Claude and GPT treated month 12–24 as conditional on demonstrated readiness rather than a guaranteed achievement date.
+    - **Explicit launch assurance:** Claude and GPT required flight qualification before launch. Claude proposed qualifying the design and accepting subsequent units; GPT required configuration-specific qualification and acceptance evidence for every actual integrated flight system.
+    - **Target evidence:** Claude and GPT required predeclared sampled-data thresholds. Gemini required successful in-situ sampling and assay, expressed as TRL 7.
+    - **Timing consequence:** All three placed the target gate after successful target operations. GPT explicitly included data return, validation and independent review.
+    - **No agreed calendar date:** Claude supplied an illustrative month 36–66 target-gate range as judgement; the other responses did not endorse that range.
+    - **KDP-0B distinction:** Claude explicitly strengthened T18’s requirement to operational demonstration. GPT preserved D-02’s general TRL-6 floor alongside the separate target-evidence prerequisite. Gemini prohibited progression until T18’s target demonstration.
+    - **TRL-definition dispute:** Claude and GPT’s votes challenged Gemini’s pre-launch impossibility claim; GPT also challenged Claude’s claimed NASA–ISO incompatibility. The votes did not establish a jointly accepted scale interpretation.
+
+    ## Unresolved Questions
+
+    1. **Which standard and crosswalk govern?** Claude proposed ISO/ECSS with a NASA crosswalk; GPT required an adopted definition but disputed the asserted incompatibility; Gemini relied on its NASA/DoD interpretation.
+    2. **How should T18’s KDP-0B requirement be written?** Claude proposed an explicit operational-demonstration requirement; GPT retained the general D-02 floor plus target-gate evidence; Gemini used TRL 7 before progression.
+    3. **What constitutes sufficient target evidence?** Claude and GPT required thresholds for uncertainty, coverage and representativeness, but neither supplied final values.
+    4. **Can T18 credibly reach TRL 6 within the proposed PDR window?** All three identified relevant-environment fidelity as a material uncertainty.
+    5. **How many scouts are funded, and with what cadence?** Claude’s proportionality argument assumed multiple staggered scouts; Gemini also identified single-scout funding as a reason for stronger ground qualification.
+    6. **Should TRL 5 at SRR become mandatory?** Claude proposed it; Gemini and GPT did not adopt that additional milestone.
+
+    ## Recommended Actions
+
+    - **Record the shared PDR requirement:** Following all three responses, specify TRL 6 for T11/T18 critical functions at PDR, subject to documented relevant-environment evidence.
+    - **Resolve definitions before approving final rule text:** Following Claude’s scale-declaration proposal and GPT’s critique, document the governing TRL definition and crosswalk; do not rely on the contested prior-flight premise.
+    - **Specify launch-release evidence separately:** Following Claude and GPT, define qualification, configuration applicability, unit acceptance and anomaly-closure requirements.
+    - **Write the target-data specification before flight:** Following Claude and GPT, connect sampling coverage, assay uncertainty, calibration and representativeness to the resource and economics decision.
+    - **Resolve the explicit T18 KDP-0B wording:** Compare Claude’s operational-demonstration requirement with GPT’s general floor plus separate target gate and Gemini’s TRL-7 condition.
+    - **Rebaseline against evidence:** Following all three responses, assess analogue-test fidelity and single-scout risk before fixing dates. Claude and GPT recommended replanning rather than relabelling inadequate evidence.
+    - **Preserve the agreed programme fallback:** Claude and GPT reiterated “0A only, Earth supply” if required evidence cannot support progression within the authorised programme terms.
+
+    ```yaml
+    questionId: "rq-0-73"
+    topics:
+      - id: pdr-readiness
+        topic: Scout and payload readiness at PDR
+        positions:
+          - statement: Require TRL 6 for T11 and T18 critical technologies at scout PDR.
+            models: ["Claude Opus 5.5", "Gemini 3.1 Pro", "GPT-6.1 Sol"]
+            evidence: "All three Round 1 proposals specify relevant-environment demonstration by PDR."
+        resolution_status: resolved
+        priority: high
+
+      - id: launch-qualification-and-scale
+        topic: Pre-launch qualification and governing TRL definition
+        positions:
+          - statement: Require flight qualification before launch, expressed as ISO TRL 8 with a recorded NASA crosswalk.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude's ladder separates qualification of the design from acceptance of later units."
+          - statement: Require TRL 8 for each actual integrated flight system; prior successful operational flight is not inherently required.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT cites NASA TRL descriptions and distinguishes flight qualification from mission operation."
+          - statement: Reject pre-launch TRL 8 because it requires prior spaceflight.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini's definition-based argument; Claude and GPT challenged its premise in their votes."
+        resolution_status: partially-resolved
+        priority: high
+
+      - id: target-gate-criterion
+        topic: Target-gate evidence versus TRL label
+        positions:
+          - statement: Require validated target-specific sampled-data thresholds; TRL is supporting evidence, not a sufficient pass criterion.
+            models: ["Claude Opus 5.5", "GPT-6.1 Sol"]
+            evidence: "Both distinguish successful operation from adequate uncertainty, coverage and resource representativeness."
+          - statement: Require T18 TRL 7 through successful in-situ sampling and assay before the target gate.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini's proposed rule makes operational demonstration the target-gate threshold."
+        resolution_status: partially-resolved
+        priority: critical
+
+      - id: kdp-0b-t18-requirement
+        topic: Explicit T18 requirement at KDP-0B
+        positions:
+          - statement: Require operationally demonstrated T18; TRL 6 alone is insufficient.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude identifies T18 as project-ending and explicitly requires in-situ sampling and assay."
+          - statement: Retain D-02's no-waiver TRL-6 floor alongside the separate validated target-evidence requirement.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT preserves D-02 and prevents scout success from conferring maturity on production technologies."
+          - statement: Do not progress to KDP-0B until T18 achieves TRL 7 on the target.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini's rule ties progression to successful operational demonstration."
+        resolution_status: partially-resolved
+        priority: critical
+
+      - id: schedule-and-risk-posture
+        topic: Calendar commitment and first-scout risk
+        positions:
+          - statement: Use a conditional PDR window and a multiple-scout strategy; strengthen testing if only one scout is funded.
+            models: ["Claude Opus 5.5"]
+            evidence: "Claude conditions its proposal on analogue fidelity and staggered scouts; its target-gate date range is judgement."
+          - statement: Accept first-flight demonstration risk, conditional on funding failure recovery.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini assumes the 0A budget can absorb failure and reflight."
+          - statement: Rebaseline dates from test evidence and schedule the target gate after validated mission results.
+            models: ["GPT-6.1 Sol"]
+            evidence: "GPT treats month 12–24 as a planning window and identifies data validation as a timing dependency."
+        resolution_status: open
+        priority: high
+    ```
+  keyPoints:
+    - Shared PDR threshold:** All three proposed TRL 6 at scout PDR. Claude and GPT treated month 12–24 as conditional on demonstrated readiness rather than a guaranteed achievement date.
+    - Explicit launch assurance:** Claude and GPT required flight qualification before launch. Claude proposed qualifying the design and accepting subsequent units; GPT required configuration-specific qualification and acceptance evidence for every actual integrated flight system.
+    - Target evidence:** Claude and GPT required predeclared sampled-data thresholds. Gemini required successful in-situ sampling and assay, expressed as TRL 7.
+    - Timing consequence:** All three placed the target gate after successful target operations. GPT explicitly included data return, validation and independent review.
+    - No agreed calendar date:** Claude supplied an illustrative month 36–66 target-gate range as judgement; the other responses did not endorse that range.
+    - KDP-0B distinction:** Claude explicitly strengthened T18’s requirement to operational demonstration. GPT preserved D-02’s general TRL-6 floor alongside the separate target-evidence prerequisite. Gemini prohibited progression until T18’s target demonstration.
+    - TRL-definition dispute:** Claude and GPT’s votes challenged Gemini’s pre-launch impossibility claim; GPT also challenged Claude’s claimed NASA–ISO incompatibility. The votes did not establish a jointly accepted scale interpretation.
+  unresolvedQuestions:
+    - Which standard and crosswalk govern?** Claude proposed ISO/ECSS with a NASA crosswalk; GPT required an adopted definition but disputed the asserted incompatibility; Gemini relied on its NASA/DoD interpretation.
+    - How should T18’s KDP-0B requirement be written?** Claude proposed an explicit operational-demonstration requirement; GPT retained the general D-02 floor plus target-gate evidence; Gemini used TRL 7 before progression.
+    - What constitutes sufficient target evidence?** Claude and GPT required thresholds for uncertainty, coverage and representativeness, but neither supplied final values.
+    - Can T18 credibly reach TRL 6 within the proposed PDR window?** All three identified relevant-environment fidelity as a material uncertainty.
+    - How many scouts are funded, and with what cadence?** Claude’s proportionality argument assumed multiple staggered scouts; Gemini also identified single-scout funding as a reason for stronger ground qualification.
+    - Should TRL 5 at SRR become mandatory?** Claude proposed it; Gemini and GPT did not adopt that additional milestone.
+  recommendedActions:
+    - Record the shared PDR requirement:** Following all three responses, specify TRL 6 for T11/T18 critical functions at PDR, subject to documented relevant-environment evidence.
+    - Resolve definitions before approving final rule text:** Following Claude’s scale-declaration proposal and GPT’s critique, document the governing TRL definition and crosswalk; do not rely on the contested prior-flight premise.
+    - Specify launch-release evidence separately:** Following Claude and GPT, define qualification, configuration applicability, unit acceptance and anomaly-closure requirements.
+    - Write the target-data specification before flight:** Following Claude and GPT, connect sampling coverage, assay uncertainty, calibration and representativeness to the resource and economics decision.
+    - Resolve the explicit T18 KDP-0B wording:** Compare Claude’s operational-demonstration requirement with GPT’s general floor plus separate target gate and Gemini’s TRL-7 condition.
+    - Rebaseline against evidence:** Following all three responses, assess analogue-test fidelity and single-scout risk before fixing dates. Claude and GPT recommended replanning rather than relabelling inadequate evidence.
+    - Preserve the agreed programme fallback:** Claude and GPT reiterated “0A only, Earth supply” if required evidence cannot support progression within the authorised programme terms.
+    - 'id: pdr-readiness'
+    - 'statement: Require TRL 6 for T11 and T18 critical technologies at scout PDR.'
+    - 'id: launch-qualification-and-scale'
+    - 'statement: Require flight qualification before launch, expressed as ISO TRL 8 with a recorded NASA crosswalk.'
+    - 'statement: Require TRL 8 for each actual integrated flight system; prior successful operational flight is not inherently required.'
+    - 'statement: Reject pre-launch TRL 8 because it requires prior spaceflight.'
+    - 'id: target-gate-criterion'
+    - 'statement: Require validated target-specific sampled-data thresholds; TRL is supporting evidence, not a sufficient pass criterion.'
+    - 'statement: Require T18 TRL 7 through successful in-situ sampling and assay before the target gate.'
+    - 'id: kdp-0b-t18-requirement'
+    - 'statement: Require operationally demonstrated T18; TRL 6 alone is insufficient.'
+    - 'statement: Retain D-02''s no-waiver TRL-6 floor alongside the separate validated target-evidence requirement.'
+    - 'statement: Do not progress to KDP-0B until T18 achieves TRL 7 on the target.'
+    - 'id: schedule-and-risk-posture'
+    - 'statement: Use a conditional PDR window and a multiple-scout strategy; strengthen testing if only one scout is funded.'
+    - 'statement: Accept first-flight demonstration risk, conditional on funding failure recovery.'
+    - 'statement: Rebaseline dates from test evidence and schedule the target gate after validated mission results.'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T22:29:40.248Z'
+alternateSyntheses:
+  - synthesizer: claude-opus-5-5
+    generatedAt: '2026-10-17T22:41:12.107Z'
+    file: conclusion.claude-opus-5-5.md

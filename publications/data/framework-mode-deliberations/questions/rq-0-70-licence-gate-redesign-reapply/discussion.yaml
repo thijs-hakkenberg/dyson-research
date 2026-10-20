@@ -1,0 +1,750 @@
+questionId: rq-0-70
+questionSlug: licence-gate-redesign-reapply
+questionTitle: After a failed licence gate, may 0B be redesigned and reapplied, or does failure end 0B?
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T22:18:11.616Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # g-licence failure: may 0B be redesigned and reapplied?
+
+          **Recommendation in one line:** allow **one** bounded reapplication, but only for failures pre-classified as recoverable. Every other failure class ends 0B and leaves 0A only, Earth supply. The gate criterion itself is never relaxed.
+
+          ---
+
+          ## 1. Frame & decision type
+
+          **What is being decided.** This sets the failure clause of g-licence. It is a property of the KDP-0B gate, not a new gate.
+
+          **Reversibility.** The rule is cheap to write and hard to change once pathfinder data exist. After a failure, any amendment looks like moving the goalposts. So the rule must be fixed **before** pathfinder design freeze.
+
+          **Cynefin domain.** The physics of tailings escape is *complicated*. Regulator behaviour and the binding limit are *complex*. Only the binding limit is unknown, because rq-0-41 is open and D-03 is unsigned. The rule therefore has to work for a limit nobody yet knows.
+
+          **The question hides a category error.** "Failure" covers at least six different events:
+
+          | Class | What happened |
+          |---|---|
+          | F1 | Measurement was inconclusive |
+          | F2 | Measured escape was modestly above the limit |
+          | F3 | Measured escape was grossly above the limit, or a credible abnormal event was uncontained |
+          | F4 | The regulator refused, or set a limit below what is physically achievable |
+          | F5 | ITU or national frequency coordination was incomplete |
+          | F6 | No binding limit existed at the gate |
+
+          A single answer of "final" or "reapply" for all six is wrong in both directions.
+
+          **How the D-02 "no waiver" principle applies.** A waiver means passing KDP-0B without meeting the criterion. A reapplication means meeting the same criterion later with a different design. These are different things. The real risk of reapplication is not that it waives the criterion. The risks are:
+          - escalation of commitment;
+          - erosion of the one-way door by repeated extensions;
+          - forum-shopping for a more lenient licensing state.
+
+          ## 2. Criteria and weights (stated before options)
+
+          Swing weights are set by how much each criterion varies **across the plausible options**, not by how important it sounds in the abstract.
+
+          | # | Criterion | Swing range across options | Weight |
+          |---|---|---|---|
+          | C1 | **Gate integrity / pre-commitment.** Resistance to sunk-cost relitigation and to drift of the one-way door. | From "renegotiated in the room under pressure" to "mechanically pre-committed". This is the widest swing and goes to the core of D-02. | **30** |
+          | C2 | **Option value preserved.** Does the rule avoid killing a 0B whose failure was fixable? | From "every fixable defect is fatal" to "every fixable defect gets a chance". Large, because the first-article probability of meeting a ~99.99% retention target is modest (§6). | **25** |
+          | C3 | **Environmental harm and regulator credibility.** | Narrower than it looks. No option permits production above the limit, so on-orbit harm barely differs between options. What differs is pathfinder repeat-testing exposure and how the regulator reads our seriousness. | **15** |
+          | C4 | **Cost of delay and disruption to 0A.** | From "0A unaffected" to "0A starved by an open-ended 0B rescue". Moderate, provided the extension is funded from a ring-fenced line. | **15** |
+          | C5 | **Decision clarity / auditability.** Can a third party tell, from the record, which branch applies? | From "owner discretion" to "classification rule plus independent classifier". | **15** |
+
+          C3 is weighted below C1 and C2 for one reason: every option, including the strictest, keeps the emission limit absolute. If an option allowed even interim production above the limit, C3 would dominate and that option would be screened out as a Kepner-Tregoe *must*.
+
+          **Musts (binary screens):**
+          - No 0B production above the binding limit.
+          - No change of licensing state used to obtain a looser limit.
+          - TRL 6 in a relevant environment is re-demonstrated for any changed project-ending element, with no TRL waivers.
+
+          ## 3. Options
+
+          | Option | Description | Disposition |
+          |---|---|---|
+          | **O0 – Null** | Leave the panel split as recorded and let the owner decide at the gate. | **Rejected.** This is the worst choice for C1 and C5. The decision would be made after the data, by the people with the most sunk cost. It turns D-02's pre-committed failure outcomes into a negotiation. |
+          | **O1 – Terminal** (Claude/Gemini) | Any g-licence failure → 0A only. | **Rejected as stated.** It treats an inconclusive measurement (F1) or a missing frequency filing (F5) like a factor-of-50 exceedance. That destroys option value for administrative or metrological reasons. It is also unenforceable in practice: an owner facing a 0.1 t/yr miss caused by a gasket will find a way round a rule that cannot tell a gasket from physics. |
+          | **O2 – Open reapplication** | Redesign and reapply as often as needed. | **Rejected.** It fails the integrity *must*. It is the textbook setting for escalation of commitment (Staw, "Knee-deep in the big muddy", 1976). |
+          | **O3 – Single bounded reapplication, all failures** (GPT as written) | One redesign within a time and cost box, regardless of cause. | **Partially adopted.** It is better than O1 and O2, but it grants an extension to unrecoverable classes (F3, F4). That spends 0A reserve on rescues that cannot succeed. |
+          | **O4 – Classified failure, single bounded reapplication for recoverable classes** | Failure class is fixed by a pre-committed rule and an independent classifier. F1/F2 get one bounded reapplication. F5 gets an administrative cure inside the same box. F3/F4 are terminal. F6 is "not ready", not "failed". | **Recommended.** |
+          | **O5 – Terminal for 0B, re-entry only as a new programme** | 0B ends. Any successor needs a fresh baseline and a full new KDP. | **Retained as the terminal branch of O4**, not as a standalone. It is honest, because nothing can stop a future programme decision. It is wasteful as the *only* path for F1/F2. |
+
+          ## 4. Assessment matrix (QOC; 1 = poor, 5 = best)
+
+          | Criterion (weight) | O0 Null | O1 Terminal | O2 Open | O3 Bounded-all | O4 Classified |
+          |---|---|---|---|---|---|
+          | C1 Integrity (30) | 1 | 5 | 1 | 3 | 4 |
+          | C2 Option value (25) | 3 | 1 | 5 | 4 | 4 |
+          | C3 Harm/credibility (15) | 2 | 5 | 2 | 3 | 4 |
+          | C4 Delay/0A (15) | 2 | 5 | 1 | 3 | 4 |
+          | C5 Clarity (15) | 1 | 4 | 2 | 4 | 4 |
+          | **Weighted (/500)** | **180** | **395** | **260** | **345** | **400** |
+
+          **Reading the matrix:**
+          - O4 and O1 are effectively tied on the arithmetic. As Roy warns, MCDA structures a debate rather than computing a truth.
+          - The tie breaks on C2's real magnitude. If F1 or F2 is a likely first-article outcome, O1 throws away the most probable recoverable path.
+          - O4 scores 4 rather than 5 on C1 because classification is itself a judgement that can be gamed. The mitigation is an independent classifier and thresholds fixed in advance.
+          - O3 loses to O4 because funding F3/F4 rescues costs 0A reserve and credibility for no option value.
+
+          ## 5. Sensitivity vs trade-off points
+
+          **Sensitivity points** (fact-dependent; the ruling moves if the fact moves):
+
+          - **S1 – Probability that first-article failure is recoverable (F1/F2 vs F3).**
+            - If pathfinder or ground data show the containment architecture is within roughly a factor of 3 of the limit, O4 dominates.
+            - If gross exceedance is the likely mode, O4 collapses to O1 in practice. The extension is rarely granted, and the only cost of keeping it is drafting.
+          - **S2 – Time-box length.**
+            - Too short and redesigning containment to TRL 6 cannot fit, so O4 becomes O1.
+            - Too long and 0A is disrupted, so O4 drifts toward O2.
+            - I propose **≤ 18 months** from failure classification to resubmission.
+            - The basis is that one hardware iteration of a containment module plus a repeat T08 relevant-environment campaign is plausibly 12–18 months. This is an engineering estimate at low confidence; the owner can tune it.
+          - **S3 – Whether the binding limit exists at KDP-0B (F6).**
+            - If rq-0-41 has not produced a binding limit, the gate cannot be failed. It can only be not-ready.
+            - This rule then hands over to D-01's option-expiry logic. Conflating the two would let an unresolved regulator question consume the single reapplication.
+          - **S4 – The F2/F3 threshold.** I propose **> 10× the binding limit** (central estimate) as F3. The reasoning is that a tenfold retention improvement within one iteration is not credible without architecture change, and architecture change is a restart.
+            - With a 1 t/yr limit, 10 t/yr means retention falling from about 99.99% to about 99.9%. Those are different design classes.
+            - For scale: GPT's 99.992–99.998% retention figure implies a tailings throughput of about 12.5–50 kt/yr at the 1 t/yr limit.
+
+          **Trade-off point** (a values question; the owner decides, evidence cannot settle it):
+
+          - **T1 – Option value vs pre-commitment discipline.** How much recoverable 0B value is the owner willing to forgo to make the one-way door unarguable? Claude's earlier "no waiver, final" position puts infinite weight on discipline. GPT's position puts more on option value. O4 is my judgement of the balance, not a derivation.
+            - If the owner's revealed preference is that any post-failure deliberation is corrosive, O1 is legitimate.
+            - That disagreement should be **recorded, not averaged**.
+
+          **Second trade-off point:**
+
+          - **T2 – Throughput reduction as a cure.** Lowering throughput can bring escape under the limit. It also moves g-economics and g-demand in the wrong direction.
+            - Allowing it is a values choice: how small a 0B is still worth doing.
+            - The rule should allow it only if both gates are re-run and still pass. It should not pre-judge the answer.
+
+          ## 6. Evidence certainty (GRADE certainty; likelihood kept separate)
+
+          | Claim | Likelihood (IPCC terms) | Confidence / GRADE | Basis |
+          |---|---|---|---|
+          | First-article pathfinder meets a ~1 t/yr escape limit with detection limit ≤ 10% of limit | About as likely as not | **Very low** | No flight heritage for vacuum or low-g regolith tailings containment at 99.99%. Terrestrial baghouse and filter efficiencies (≥ 99.9%) transfer poorly. |
+          | If it fails, failure is F1/F2 rather than F3 | Likely | **Low** | Engineering judgement: designs targeted at a limit tend to miss by small factors unless an unmodelled mode exists. Credible abnormal events (GPT's inclusion) widen the tail. |
+          | Bounded, pre-committed extensions curb escalation of commitment better than discretionary ones | Likely | **Moderate** | Escalation-of-commitment literature (Staw 1976 and successors). Transfer to space programme gates is inferential. |
+          | Licensing states will issue numeric annualised escape limits for mining tailings by KDP-0B | About as likely as not | **Very low** | No existing licensing framework for this activity class. Debris mitigation regimes target spacecraft and mission-related objects. For context: Outer Space Treaty Arts VI/IX (authorisation, due regard); IADC Space Debris Mitigation Guidelines; ISO 24113. |
+          | Frequency coordination for 15–29 assets fits within 18 months if begun early | Likely if filed during 0A, unlikely if filed at the gate | **Low–moderate** | ITU Radio Regulations advance-publication and coordination timelines are typically multi-year for non-geostationary systems. This is why F5 must be filed during 0A, not cured afterwards. |
+
+          ## 7. Key assumptions (with falsifiers) and competing hypotheses
+
+          | Assumption | Falsified by |
+          |---|---|
+          | **A1** – Failure classes can be assigned objectively from pathfinder data. | A dry run on synthetic or ground data in which two independent reviewers disagree on class in more than 1 in 5 cases → thresholds must be sharpened, or default to O1. |
+          | **A2** – One hardware iteration fits in about 18 months. | 0A containment-module schedule data showing build-test cycles longer than 18 months → lengthen the box (≤ 24 months) or accept O4 ≈ O1. |
+          | **A3** – The 0A reserve can fund one rescue without breaching D-01. | A 0A budget showing reserve below the cost of a repeat T08 campaign → the extension is unfundable, so choose O1 honestly rather than an unfunded O4. |
+          | **A4** – Regulators treat a reapplication with an improved design as legitimate, not as evidence of unreliability. | rq-0-41 engagement shows the licensing state penalises resubmission → F2 effectively becomes F4. |
+          | **A5** – Changing containment does not change project-ending technologies beyond T04/T08/T19. | Design analysis showing containment changes propagate into process chemistry or thermal architecture → restart, not reapplication. |
+
+          **ACH on why g-licence would fail** (hypotheses ranked by least disconfirmed today; none is yet disconfirmed):
+
+          1. **H-meas – metrology immaturity.** Detection at ≤ 0.1 t/yr is unproven. *Least disconfirmed and most likely to be the first failure.*
+          2. **H-eng – fixable engineering defect** (seals, transfer interfaces, venting).
+          3. **H-reg – limit set tighter than the design point.**
+          4. **H-phys – architectural escape floor above the limit.**
+
+          Because the two highest-ranked hypotheses (H-meas, H-eng) are the recoverable ones, a purely terminal rule is weakly supported. **The ACH ranking is what tips the matrix tie toward O4.** Ground tests showing an escape floor would promote H-phys, and that would justify O1.
+
+          ## 8. Decision, warrant, accepted downside
+
+          **Y-statement.** *In the context of* a one-way KDP-0B gate under D-02, with an interim, unsigned ≤ 1 t/yr limit (D-03) and an open rq-0-41, *facing* a panel split between terminal failure and open-ended redesign, *we chose* a classified-failure rule with at most one bounded reapplication for recoverable classes only, *to achieve* pre-committed, auditable gate integrity without forfeiting a 0B whose shortfall is metrological or a modest engineering miss, *accepting* up to 18 months' delay to the 0B decision, a ring-fenced 0A reserve draw, and residual risk that classification is contested.
+
+          **Warrant (Toulmin).** D-02 ties stringency to reversibility. What must be irreversible is the *criterion* and the *outcome of exhausting the rule*, not the first attempt. One pre-committed, capped retry does not lower the criterion, so it is not a waiver. Unbounded or discretionary retries do lower it in practice, and are excluded.
+
+          **Qualifier.** This holds presumably, given A1–A3.
+
+          **Rebuttal.** If the owner rules T1 toward absolute discipline, or A1 fails in the dry run, adopt O1. That disagreement with the Claude/Gemini position should be preserved in `decisions.md`.
+
+          **Proposed rule text (g-licence, failure clause):**
+
+          > **G-LIC-F.1 Basis.** g-licence is assessed against the *binding* limit set by the licensing state per rq-0-41 (limit, particle/velocity classes, confidence level, averaging interval, abnormal-event limits). If no binding limit exists at KDP-0B, the gate status is **NOT READY**, not FAILED. NOT READY is governed by D-01 option expiry and does not consume a reapplication.
+          >
+          > **G-LIC-F.2 Pass.** Pass requires the uncertainty-bounded annualised escape, including credible failures, to lie below the binding limit at the stated confidence. The detection limit must be ≤ 10% of the limit. T04, T08 and T19 must be at TRL 6 in a relevant environment. ITU and national frequency filings must be accepted.
+          >
+          > **G-LIC-F.3 Classification.** On non-pass, an independent review board **not funded by 0B** classifies the result using thresholds frozen at pathfinder PDR:
+          > - **F1** — central estimate below the limit, upper bound above it.
+          > - **F2** — central estimate between 1× and 10× the limit.
+          > - **F3** — central estimate above 10× the limit, or an uncontained credible abnormal event.
+          > - **F4** — the licensing state refuses, or sets a limit the board judges unachievable by the demonstrated architecture class.
+          > - **F5** — the only shortfall is frequency coordination.
+          >
+          > **G-LIC-F.4 Outcomes.**
+          > - **F3, F4: terminal.** No 0B production. Programme proceeds as 0A only, Earth supply. Any successor is a new programme decision with a full new KDP.
+          > - **F1, F2, F5:** **one** reapplication. Resubmission within **18 months** of classification. Cost capped at a ring-fenced line set at KDP-0B entry. No 0B long-lead commitments during the extension. 0A milestones are unaffected.
+          > - A second non-pass of any class is **terminal**.
+          >
+          > **G-LIC-F.5 Permitted changes without restarting KDP-0B:**
+          > - containment hardware;
+          > - operating procedures and duty cycle;
+          > - measurement instrumentation and campaign length;
+          > - throughput *reduction*, provided g-economics and g-demand are re-run and pass on the reduced case.
+          >
+          > Every changed project-ending element must re-demonstrate TRL 6 in a relevant environment. No TRL waivers.
+          >
+          > **G-LIC-F.6 Changes that require a full new KDP-0B** (and do not count as reapplication):
+          > - change of target body or site (re-opens g-target);
+          > - change of processing architecture or chemistry;
+          > - addition of a project-ending technology;
+          > - throughput increase;
+          > - change of licensing state.
+          >
+          > Under any new state, the applicable limit is no looser than the stricter of the original binding limit and the D-03 ALARP value. This is the anti-forum-shopping clause.
+          >
+          > **G-LIC-F.7** The binding limit is never relaxed by the programme to produce a pass.
+
+          **Accepted downside.** We accept a possible 18-month slip, one reserve draw, and the chance that a modest F2 consumes the retry and then fails anyway. We also accept that F4 ends 0B even when the regulator, not the engineering, is the obstacle. That is intended: a project that only works under a lenient state is not licensable in the sense D-02 means.
+
+          ## 9. Consequences (Kruchten relations)
+
+          **Constrains:**
+          - **D-03** must be signed, and the F1–F5 thresholds frozen, **before pathfinder PDR**. Otherwise G-LIC-F.3 is set after the data and O4 degrades to O0.
+          - **rq-0-41** becomes schedule-critical. Its output defines the averaging interval and confidence level that F1/F2 depend on.
+          - **Frequency filings** move into 0A. F5 can only be cured within 18 months if filing began years earlier.
+          - **0A budget** must carry a named g-licence reapplication reserve, or the rule defaults to O1 (A3).
+          - **Pathfinder design** should target a central estimate below 0.3× the limit, so that F1 rather than F2 is the likely miss mode.
+
+          **Enables:**
+          - an auditable KDP-0B record;
+          - a containment trade study that is explicitly allowed to iterate once;
+          - a clean hand-off of the "no binding limit yet" case to D-01's expiry logic rather than to this gate.
+
+          **Conflicts with:**
+          - the Claude/Gemini terminal position (preserved as the T1 alternative);
+          - any reading of D-02 in which "no waiver" means "no second attempt".
+
+          **Evidence that would change this ruling:**
+          1. A classification dry run with poor inter-rater agreement (→ O1).
+          2. Ground or vacuum-chamber data showing an architectural escape floor near or above the limit, i.e. H-phys promoted (→ O1).
+          3. 0A schedule data showing containment iteration longer than 24 months (→ O1, or a longer box with owner sign-off).
+          4. rq-0-41 showing that the licensing state treats resubmission neutrally and publishes a numeric limit early (→ strengthens O4; could justify allowing F2 up to 10× with confidence).
+          5. Evidence that the owner's own governance cannot resist discretionary extension (→ O1, because the rule is only as strong as its enforcement).
+        wordCount: 3194
+        generatedAt: '2026-10-17T22:20:04.994Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          Here is the decision regarding the procedural consequence of failing the KDP-0B licensing gate for Project Dyson, structured according to the Composite Scaffold framework.
+
+          ### 1. Frame & decision type
+          - **Frame:** Determining the procedural consequence of failing the KDP-0B licensing gate. Specifically, whether failure results in immediate termination of 0B (reverting to 0A only) or if a bounded redesign and reapplication is permitted.
+          - **Decision Type:** Executive and procedural decision.
+          - **Reversibility:** One-way door. Establishing the rules for a major gate (KDP-0B) dictates the contractual and scheduling architecture for Phase 0 and Phase 1.
+          - **Cynefin Domain:** Complicated. Requires expert systems engineering and programmatic judgment to balance schedule risk against capability option value.
+
+          ### 2. Criteria and weights
+          *Note: Weights are evaluated based on their swing—the difference between the worst and best possible outcomes for that criterion in this specific context.*
+
+          1.  **Schedule Predictability (Weight: 80/100):** The ability to size Phase 1 demand at the gate (per accepted decision D-01) requires a firm timeline. The swing weight is high because an unbounded redesign loop destroys the "gated real option" value, whereas a strict cutoff preserves it.
+          2.  **Regulatory Rigour (Weight: 90/100):** Strict adherence to rq-0-41 and the licensing state's limits. The swing weight is very high because a failure here is an external, legal hard constraint, not just an internal technical preference.
+          3.  **Option Value Preservation (Weight: 60/100):** The ability to salvage the 0B capability if the initial licensing failure is marginal or procedural. The swing weight is medium; preserving the investment in 0B is valuable, but not at the expense of the entire programme's schedule.
+
+          ### 3. Options
+          - **Option 1: Null Option (Leave panel split).** *Rejected.* Leaving ambiguity at a one-way gate is unacceptable for programme management and violates the requirement for clear KDP criteria.
+          - **Option 2: Hard Fail (Claude/Gemini).** No waiver, no redesign. Failure at KDP-0B means immediate reversion to 0A only (Earth supply).
+          - **Option 3: Bounded Extension (GPT).** Allow redesign and reapplication within a strictly bounded extension (e.g., one attempt, maximum 6-month delay, limited to throughput/containment scaling, not fundamental technology changes). If the reapplication fails, revert to 0A only.
+          - **Option 4: Unbounded Redesign.** Allow continuous redesign until a licence is granted. *Rejected.* Violates D-01 (gated real option sized by signed Phase 1 demand) and destroys Schedule Predictability.
+
+          ### 4. Assessment matrix (QOC)
+
+          | Option | Schedule Predictability | Regulatory Rigour | Option Value Preservation |
+          | :--- | :--- | :--- | :--- |
+          | **Option 2 (Hard Fail)** | Excellent (Immediate clarity) | Excellent (Strict enforcement) | Poor (Marginal failures kill 0B) |
+          | **Option 3 (Bounded Ext.)** | Good (Delay is capped) | Excellent (Must still pass rq-0-41) | Excellent (Allows minor corrections) |
+
+          ### 5. Sensitivity vs trade-off points
+          - **Sensitivity Point:** The definition of "bounded extension" in Option 3. If the extension duration is too long (e.g., >12 months) or allows fundamental technology swaps, Option 3's score on Schedule Predictability plummets, making Option 2 the clear winner.
+          - **Trade-off Point:** Option Value Preservation vs. Schedule Predictability. Option 2 maximizes schedule certainty by cutting losses immediately; Option 3 trades a strictly defined amount of schedule certainty to preserve the capability option of 0B.
+
+          ### 6. Evidence certainty
+          - **Claim:** The licensing state sets the binding limit (rq-0-41), not internal targets.
+            - *Certainty:* High (GRADE); High confidence, virtually certain likelihood (ICD 203). External regulatory sovereignty is absolute.
+          - **Claim:** A bounded extension allows for the correction of marginal failures (e.g., measurement uncertainty adjustments) without violating TRL 6 requirements.
+            - *Certainty:* Moderate (GRADE); Moderate confidence, likely (ICD 203). Depends heavily on the specific nature of the licensing rejection.
+
+          ### 7. Key assumptions
+          - **Assumption 1:** The licensing state's regulatory framework allows for a rapid reapplication following an initial rejection.
+            - *Falsification:* State regulations mandate a statutory cooling-off period (e.g., 12-24 months) after a rejected environmental/escape licence application.
+          - **Assumption 2:** A redesign capable of changing the licensing outcome can be completed within the bounded timeframe without violating the "no waivers for TRL 6" rule.
+            - *Falsification:* Engineering analysis demonstrates that any meaningful reduction in escape rates requires a fundamental technology change, effectively resetting the technology to TRL 4.
+          - **ACH Ranking of Failure Hypotheses (Least to Most Disconfirmed):**
+            1. *H1: Failure is due to measurement uncertainty / statistical confidence bounds.* (Least disconfirmed; highly plausible at TRL 6, fixable via bounded redesign of telemetry/averaging intervals).
+            2. *H2: Failure is due to fundamental containment technology inadequacy.* (Most disconfirmed; if the technology was fundamentally inadequate, it should not have reached TRL 6 in a relevant environment prior to the gate).
+
+          ### 8. Decision, warrant, accepted downside
+          **Y-Statement:** In the context of the Phase 0 TRL re-baseline, facing a split panel on KDP-0B failure conditions, we chose Option 3 (Bounded Extension), to achieve maximum option value for 0B without sacrificing overall programme predictability, accepting the downside of a potential, strictly capped schedule delay.
+
+          **Toulmin Argument:**
+          - **Claim:** KDP-0B should allow one bounded redesign and reapplication cycle.
+          - **Grounds:** D-01 establishes 0B as a gated real option; TRL 6 is required for project-ending technologies.
+          - **Warrant:** Because TRL 6 is already achieved, any licensing failure is likely to be marginal (e.g., throughput scaling, measurement confidence) rather than fundamental, meaning a short, time-boxed redesign can salvage the real option without violating the strictness of the gate.
+          - **Qualifier:** Provided the licensing state permits rapid reapplication.
+          - **Rebuttal:** If the failure requires a fundamental technology change, the bounded extension is voided and 0B is terminated.
+
+          ### 9. Consequences
+          - **Constrains:** The Phase 0 schedule and budget must now formally include a risk buffer specifically sized for the "bounded extension" (e.g., 6 months of holding costs).
+          - **Enables:** The definition of acceptable "redesign parameters." Systems engineering must now draft the rule text specifying exactly what may change during the extension (e.g., site adjustments, throughput throttling, containment sensor upgrades) versus what triggers an immediate hard fail (e.g., changing the core particle retention mechanism).
+          - **Follow-on Decision:** The exact duration of the bounded extension and the maximum allowable throughput reduction must be quantified and approved by the owner.
+        wordCount: 1017
+        generatedAt: '2026-10-17T22:20:36.112Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **Recommendation: a failed licence gate stops 0B authorisation immediately, but permits one tightly bounded redesign and reapplication—not a waiver.** If that reapplication fails, exceeds its budget or misses its deadline, the existing 0B option closes. The programme continues as **“0A only, Earth supply.”**
+
+          This is an **executive/property decision** governing the real option accepted in D-01. It separates:
+
+          - **Reversible learning:** redesign, analysis and authorised testing.
+          - **Irreversible commitment:** authorising 0B production at KDP-0B.
+
+          D-02 requires stringent evidence before the second; it does not necessarily require abandoning the first after one unsuccessful assessment.
+
+          The question is therefore not whether production may proceed after failure—it may not—but whether additional evidence can justify a subsequent decision.
+
+          Source basis: the supplied extracts from `gates.md`, `gates-proposal.yaml`, `trl-baseline.yaml` and `decisions.md`. I have not independently inspected those files.
+
+          ## 2. Criteria and weights
+
+          ### Non-compensable musts
+
+          No weighted benefit may override these conditions:
+
+          1. **No 0B production without the applicable regulatory authorisation and a passed KDP-0B.**
+          2. **No waiver of D-02:** project-ending technologies must achieve TRL 6 in the relevant environment.
+          3. **The binding licence basis governs:** D-03’s interim ≤1 t/yr figure is neither a licence nor a substitute for rq-0-41.
+          4. **0A remains deliverable:** remediation must not consume resources necessary to meet the accepted 0A baseline.
+
+          ### Swing-weighted preferences
+
+          These weights compare the stated *worst-to-best swings*, not abstract importance.
+
+          | Criterion | Swing being valued | Weight | Reason |
+          |---|---|---:|---|
+          | **C1: Assurance and decision integrity** | Ambiguous failure handling → explicit stop, independent review and controlled reconsideration | **35%** | The largest discretionary concern is preventing a failed gate becoming a negotiated pass. Legal compliance itself remains a must, not a weighted preference. |
+          | **C2: Recoverable option value** | Discarding a potentially remediable 0B → preserving one credible recovery opportunity | **30%** | D-01 explicitly retains 0B as a real option; premature abandonment can destroy its value. |
+          | **C3: Bounded exposure** | Open-ended delay and spending → finite, protected funding and schedule | **25%** | Repeated “almost compliant” redesigns can consume the capability programme. |
+          | **C4: Executability and clarity** | Unresolved authority and scope → auditable triggers, responsibilities and closure | **10%** | Important, but less consequential than assurance, option loss or resource exposure. |
+
+          These are proposed owner value judgments, not empirically estimated weights.
+
+          ## 3. Options
+
+          **A. Null: retain the panel’s split.**  
+          Argument: avoids premature procedural detail while D-03 and rq-0-41 remain unsettled.  
+          **Reject:** it leaves the consequence of failure negotiable precisely when sunk-cost pressure will be greatest.
+
+          **B. First failure permanently ends the existing 0B option.**  
+          Argument: strongest simplicity and expenditure discipline; consistent with the Claude/Gemini fallback.  
+          **Reject as the default:** it treats a fixable containment or throughput shortfall like an intrinsically unlicensable concept. It remains appropriate where the failure is demonstrably non-remediable.
+
+          **C. One bounded redesign and reapplication; otherwise close 0B. — Recommended**  
+          Argument: preserves reversible learning while holding the production gate unchanged. Its acceptability depends on enforceable caps and full reassessment.
+
+          **D. Repeated or discretionary extensions.**  
+          Argument: maximises opportunities to accommodate technical learning and regulatory evolution.  
+          **Reject:** without an independently justified stopping rule, it converts a gated option into an enduring programme obligation.
+
+          ## 4. Assessment matrix
+
+          Scores are **ordinal policy judgments**, from 1 = poor to 5 = strong. They are not probabilities or measured performance. All options remain subject to the non-compensable musts.
+
+          | Option | C1 Assurance 35% | C2 Option value 30% | C3 Exposure 25% | C4 Clarity 10% | Weighted score |
+          |---|---:|---:|---:|---:|---:|
+          | A. Retain split | 1 | 3 | 1 | 1 | **1.60** |
+          | B. End after first failure | 5 | 1 | 5 | 5 | **3.80** |
+          | C. One bounded reapplication | 4 | 4 | 4 | 4 | **4.00** |
+          | D. Repeated extensions | 2 | 5 | 1 | 2 | **2.65** |
+
+          The narrow C–B margin matters: bounded reapplication is preferable **only if its bounds are credible**. If C’s assurance and exposure scores each fall from 4 to 3, its score falls to 3.40 and immediate closure wins.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points—facts that could change the choice
+
+          - **Remediation feasibility:** can a specific change remove the failure mechanism?
+          - **Evidence timescale:** can representative testing and regulatory review fit the permitted window?
+          - **Measurement adequacy:** can escape and uncertainty be bounded sufficiently below the applicable limit?
+          - **Economic sensitivity to throughput:** does compliant derating leave a viable demand/economics case?
+          - **Regulatory position:** is refusal configuration-specific, evidence-related, or fundamental to the proposed activity?
+
+          ### Trade-off points—owner values, not facts to “resolve”
+
+          - **Option preservation versus expenditure discipline:** how much additional money should preserve an uncertain future capability?
+          - **Finality versus adaptability:** how much procedural complexity is acceptable to avoid a premature termination?
+          - **Schedule certainty versus opportunity:** should a technically promising option expire because authorisation arrives too late?
+
+          My proposed default is **one resubmission within 12 months of recorded failure**, with a hard expenditure cap fixed before KDP-0B. Twelve months is a governance proposal, not an evidence-derived optimum. If credible review and testing schedules cannot fit it, the owner must set a different bounded window **before the initial gate**, not improvise an extension after failure.
+
+          ## 6. Evidence certainty
+
+          GRADE terms below are adapted to this engineering-policy decision; they are not clinical evidence ratings.
+
+          | Key claim | Evidence and certainty | Likelihood, kept separate |
+          |---|---|---|
+          | D-01 retains a gated 0B option; D-02 prohibits technology waivers at the irreversible gate | **High**, relative to the supplied accepted-decision record | Established premises in this discussion, not probabilistic forecasts |
+          | An unsuccessful licence case could be corrected by containment changes or derating | **Low**: technically plausible, but no failure diagnosis or redesign results supplied | Probability of successful correction **not estimable** |
+          | A retry can be separated from permission to produce | **Moderate**: clear governance distinction; enforceability depends on funding and approval controls | No numerical likelihood assigned |
+          | One retry will produce positive net programme value | **Very low**: no remediation cost, success probability, delay cost or updated demand case supplied | No claim that recovery is “likely” |
+          | The interim ≤1 t/yr value cannot establish licensability by itself | **High**, based on the supplied gate discussion and stated licensing-state role | No probabilistic claim |
+          | Twelve months is sufficient | **Very low**: no regulator or test-facility schedule supplied | Sufficiency is **unknown** |
+
+          The weakest information link is **the absence of a regulator-informed recovery schedule and costed remediation case**. The recommendation is therefore conditional, not a prediction of recovery.
+
+          ## 7. Key assumptions
+
+          | Assumption | Evidence that would falsify it | Consequence |
+          |---|---|---|
+          | At least some licence failures are configuration- or evidence-specific | Written regulatory determination that no configuration in the authorised scope is acceptable | Close 0B without a retry |
+          | Remediation can remain financially separate from protected 0A delivery | Integrated resource plan shows critical 0A funding, staff or facilities must be diverted | Do not authorise remediation |
+          | One bounded attempt can discriminate between recoverable and persistent failure | Test plan cannot resolve the dominant uncertainty within the cap and deadline | Close or require a separately authorised future programme |
+          | Demand and economics can survive the compliant design | Updated signed demand and economic analysis fail the relevant gates | Do not retain 0B solely because the licence issue is fixable |
+
+          **ACH—provisional ranking by least disconfirmed:**
+
+          1. **H1: Recoverability is failure-specific; one controlled attempt may be justified.** Least contradicted by the supplied record, but not positively demonstrated.
+          2. **H2: Every first failure should terminate 0B.** Strong on governance, but no supplied evidence establishes universal technical irrecoverability.
+          3. **H3: Multiple retries are necessary and worthwhile.** No supplied cost, schedule or regulatory evidence supports this.
+
+          This ranks compatibility with present evidence, not probabilities.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Proposed gate rule
+
+          > **Failure of g-licence shall prohibit authorisation of 0B production. No waiver is permitted.**
+          >
+          > The owner may authorise **one** bounded remediation and reapplication cycle only where:
+          >
+          > 1. A documented failure diagnosis identifies a credible corrective action and an applicable regulatory pathway.
+          > 2. A regulator-informed evidence plan identifies the binding limits, particle and velocity classes, confidence requirements, averaging interval and abnormal-event requirements under rq-0-41.
+          > 3. Remediation has a fixed expenditure cap, protected from the committed 0A baseline, and a deadline established before the initial KDP-0B. The proposed default deadline is 12 months after failure.
+          > 4. The revised configuration returns to **KDP-0B for reassessment**, including all affected technology, target, demand, economics and licence evidence.
+          >
+          > A second failure, exhausted cap, missed deadline, or determination of non-remediability closes the existing 0B option. The programme proceeds as **0A only, Earth supply**. No automatic extension applies.
+
+          If no cap and deadline have been approved before the initial gate, **failure defaults to closure**, not discretionary continuation.
+
+          ### Redesign scope
+
+          - **Containment changes or throughput reduction:** may remain within the same programme baseline if independently shown to remain within the approved site, operating and hazard envelope. All affected evidence must be renewed.
+          - **Material site change, new process, increased throughput, new hazard class or changed licence jurisdiction:** requires owner-level rebaselining and reconsideration of affected upstream decisions. It is not a minor correction.
+          - **Every resubmission returns to KDP-0B.** What may be reused is demonstrably unaffected evidence—not the failed authorisation.
+
+          An incomplete licensing basis is **“not ready,” not “passed.”** It blocks KDP-0B and requires an explicit hold with a sunset; it must not become an unlimited waiting category.
+
+          **Warrant:** preserving reversible investigation is consistent with D-01 and D-02 when it neither authorises irreversible activity nor relaxes the acceptance standard.
+
+          **Accepted downside:** one unsuccessful recovery attempt can consume money and delay closure. A hard sunset can also discard a design that might eventually become licensable.
+
+          ## 9. Consequences
+
+          - Record an explicit owner decision resolving the panel split.
+          - Make rq-0-41 and the licensing state’s requirements authoritative; do not freeze the interim D-03 figure into a presumed entitlement.
+          - Require the escape assurance case to address normal operation, credible failures, measurement uncertainty and the applicable statistical basis. Claude’s proposed detection limit of ≤10% is useful instrumentation discipline, but insufficient by itself to demonstrate compliance.
+          - Use the proposed **T04/T08/T19** evidence set where those technologies are project-ending for the revised licence case; apply D-02’s TRL 6 requirement accordingly.
+          - Revalidate signed Phase 1 demand and economics after derating or other material changes. Licence compliance cannot rescue an economically failed design.
+          - Close the *existing* 0B option after exhaustion. Any later revival requires a fresh owner investment decision, not another “extension.”
+
+          **Final decision — Y-statement:** In the context of D-01’s gated 0B real option and D-02’s no-waiver irreversible gate, facing a failed licence assessment, we choose one pre-bounded redesign and reapplication opportunity to preserve recoverable capability without permitting unlicensed production, accepting finite additional expenditure and the possibility of closure despite eventual technical promise.
+
+          **Warrant and qualifier:** reversible learning need not be prohibited merely because irreversible commitment is blocked—**provided a credible, affordable regulatory recovery path exists**. This enables one controlled remediation decision and a fresh KDP-0B assessment; it constrains production, material redesign and any subsequent revival to their respective explicit approvals.
+        wordCount: 1889
+        generatedAt: '2026-10-17T22:21:57.200Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: reasoning
+            reasoning: 'Strong chain. Criteria come before options, there is a null option, and musts are separated. The failure classification is pre-committed with an independent classifier. Assumptions carry falsifiers. Ready-to-adopt rule text includes an anti-forum-shopping clause. The matrix arithmetic is wrong: O1 = 385 not 395, O2 = 230 not 260, O3 = 340 not 345. Correcting it widens O4''s lead, so the decision does not change. Scoring O1 at 5 on C3 slightly contradicts the claim that harm barely differs between options.'
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: Excellent use of the framework. The classification of failure types adds significant clarity and prevents a one-size-fits-all approach. The reasoning is robust and well-supported by evidence and assumptions.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: information
+            reasoning: The bounded, independently classified retry is well structured, but the 10× terminal threshold and ranking of recoverable failures lack supporting evidence. These assumptions determine eligibility for reapplication and could change the decision.
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: 'It has the right structure (null option, criteria first, a time box). The central warrant is circular, though: it assumes that because TRL 6 is achieved, any failure is marginal, which is exactly what is in question. Certainty is uncalibrated (''virtually certain'', ''absolute''). Scores are qualitative only, and two options are dropped before assessment. The 6-month box is unjustified. It lists site adjustments as minor changes, which conflicts with licensing scope. Any of these could change the decision.'
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: alternatives
+            reasoning: Good structure, but the options are slightly less nuanced than A or C (lacking the classification of failure types). The assumption that TRL 6 implies only marginal failures might be overly optimistic.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: reasoning
+            reasoning: The central warrant incorrectly treats TRL 6 as evidence that licensing failures are likely marginal. Relevant-environment technology demonstration does not establish compliance with an independently specified regulatory limit, so the claimed basis for a short recovery window is unsupported.
+        rawScore: 2
+        weightedScore: 1.5
+        approveCount: 0
+        rejectCount: 1
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: information
+            reasoning: Musts are kept outside the weighted scoring and weights are swing-based. The arithmetic is correct, and a sensitivity check shows how B would win. Certainty is calibrated honestly, with 'not estimable' where data are absent. Default-to-closure applies if bounds are not pre-approved. It lacks A's objective failure-class thresholds, relying on owner-authorised diagnosis, but the explicit caps and sunset limit the room for discretion.
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: information
+            reasoning: Strong alignment with the framework. The distinction between reversible learning and irreversible commitment is a highly effective framing. The proposed rule is clear and auditable.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: information
+            reasoning: Recovery cost, feasibility and timing remain unknown, but the recommendation explicitly conditions remediation on a credible regulatory pathway, protected funding and precommitted limits. It distinguishes learning from production authorisation and specifies reassessment and terminal outcomes without assuming recovery is likely.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+    winnerId: gpt-6-1-sol
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: 'A and C converge independently on the same answer: no waiver, one pre-committed bounded reapplication, and terminal closure to 0A-only otherwise. The remaining differences are parameters for the owner to set (12 vs 18 months, classification thresholds). The values disagreement (T1) is explicitly recorded for the owner rather than left open for further debate.'
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: Responses A and C provide highly mature, compatible recommendations for a single, strictly bounded reapplication with clear rules. The discussion has reached a strong, actionable conclusion.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: 'Response C provides a satisfactory conditional resolution: failure blocks production, one pre-bounded recovery attempt may be authorised on demonstrated feasibility, and exhaustion closes the existing 0B option. Remaining numerical limits require programme evidence rather than another conceptual round.'
+    shouldTerminate: true
+    completedAt: '2026-10-17T22:22:33.968Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 0
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 1
+  totalVotes: 9
+  approvalRate: 55.55555555555556
+  averageResponseWords: 2033
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T22:22:34.109Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    Claude Opus 5.5, Gemini 3.1 Pro and GPT-6.1 Sol converged in Round 1 on **allowing one bounded redesign and reapplication opportunity, rather than treating every first licence-gate failure as terminal**. All three distinguished reapplication from a waiver: 0B production remains prohibited until the gate is passed, and D-02’s TRL 6 requirement remains unchanged. All three rejected leaving the original panel split unresolved and rejected open-ended retries. This supersedes Claude’s and Gemini’s earlier terminal-failure positions in the supplied background.
+
+    The convergence is conditional, not a complete implementation agreement. Claude proposed pre-classified recoverable failures and an 18-month window; Gemini proposed a short extension, exemplified by six months; GPT proposed a 12-month default conditional on a credible regulatory recovery plan. Claude’s numerical failure thresholds, the permitted redesign envelope, and the treatment of regulatory refusal remain unsettled. GPT challenged the evidence supporting Claude’s thresholds, while Claude and GPT challenged Gemini’s assumption that TRL 6 makes licensing failure likely to be marginal.
+
+    All three retained **“0A only, Earth supply”** as the terminal fallback. Claude and GPT explicitly distinguished an absent binding licensing basis from a failed assessment: it is **not ready**, blocks authorisation, and must remain subject to an expiry or sunset rule rather than indefinite waiting.
+
+    ## Decision record
+
+    ### Converged decision
+
+    **Models: Claude Opus 5.5, Gemini 3.1 Pro, GPT-6.1 Sol**
+
+    > **In the context of** D-01’s gated 0B real option and D-02’s stringent, no-waiver KDP-0B, **facing** an unsuccessful licence assessment, **we chose** to permit at most one bounded redesign and reapplication opportunity for a remediable failure, **to achieve** preservation of recoverable 0B capability without authorising non-compliant production, **accepting** finite additional expenditure and delay, and closure to “0A only, Earth supply” if recovery is unsuccessful or exceeds its bounds.
+
+    - **Warrant:** Claude and GPT argued that preserving reversible learning does not waive the requirements governing irreversible production authorisation. Gemini likewise judged a strictly bounded correction compatible with regulatory rigour.
+    - **Qualifier:** All three conditioned recovery on limited scope and unchanged acceptance requirements. Claude required independently classified recoverability; Gemini required rapid regulatory reapplication and no fundamental technology change; GPT required a credible, affordable regulatory pathway and protected 0A resources.
+    - **Accepted downside:** All three accepted bounded delay and expenditure. GPT additionally made explicit that a hard sunset may discard a design that could eventually become licensable.
+
+    ### Implementation positions—not yet converged
+
+    | Position | Models | Proposed implementation |
+    |---|---|---|
+    | Classified recovery | Claude | One reapplication within 18 months for measurement uncertainty, a bounded exceedance, or frequency-coordination shortfalls; gross exceedance, uncontained credible abnormal events and specified regulatory failures are terminal. Independent classification and thresholds are fixed in advance. |
+    | Short correction window | Gemini | One short extension, exemplified by six months, for limited throughput or containment changes; fundamental technology change voids the extension. Gemini identified extensions beyond 12 months as damaging schedule predictability. |
+    | Evidence-conditioned recovery | GPT | One reapplication, with a proposed 12-month default and a pre-approved expenditure cap; eligibility depends on diagnosed corrective action and a regulator-informed evidence plan. Without pre-approved bounds, failure defaults to closure. |
+
+    ## Decision-quality audit
+
+    ### Round 1 — Claude Opus 5.5 response
+
+    - **Weakest links named by votes:** Claude named **reasoning**; Gemini named **commitment**; GPT named **information**.
+    - **Scaffold assessment:** Claude and Gemini approved the criteria-first structure, null option, failure classification and actionable rule text. GPT found the proposed **10× terminal threshold** and ranking of recoverable failure hypotheses unsupported by supplied evidence. Claude’s self-review corrected matrix totals to O1 = 385, O2 = 230 and O3 = 340, while reporting that the recommendation remained unchanged.
+    - **Unsupported rather than missing:** Claude labelled the 18-month hardware-iteration estimate low-confidence. GPT’s review left the eligibility thresholds unresolved rather than endorsing them as objective evidence.
+    - **Values trade-off:** Claude explicitly identified option preservation versus absolute pre-commitment discipline, and whether reduced-throughput 0B remains worth pursuing, as owner value judgments.
+
+    ### Round 1 — Gemini 3.1 Pro response
+
+    - **Weakest links named by votes:** Claude and GPT named **reasoning**; Gemini named **alternatives**.
+    - **Scaffold assessment:** Claude acknowledged the null option, criteria-first structure and time box, but identified unsupported timing, incomplete comparative assessment and uncalibrated certainty language. Gemini’s self-review found the failure alternatives less nuanced than Claude’s or GPT’s.
+    - **Central unsupported warrant:** Claude and GPT rejected the inference that achieving TRL 6 makes licensing failure likely to be marginal. GPT stated that relevant-environment technology demonstration does not establish compliance with an independently specified regulatory limit.
+    - **Scope concern:** Claude challenged Gemini’s inclusion of site adjustments among potentially minor corrections.
+    - **Values trade-off:** Gemini framed schedule predictability versus preserved option value as the principal owner choice.
+
+    ### Round 1 — GPT-6.1 Sol response
+
+    - **Weakest link named by all three votes:** **Information**.
+    - **Scaffold assessment:** Claude and Gemini approved the separation of reversible learning from production authorisation. Claude approved the non-compensable musts, correct matrix arithmetic, sensitivity check and default-to-closure rule.
+    - **Remaining unsupported inputs:** GPT acknowledged that recovery cost, success probability and regulatory/test timing were unknown, and that 12 months was a governance proposal rather than an evidence-derived optimum.
+    - **Eligibility concern:** Claude noted that GPT relied on owner-authorised diagnosis rather than Claude’s proposed failure-class thresholds.
+    - **Values trade-off:** GPT identified option preservation versus expenditure discipline, finality versus adaptability, and schedule certainty versus opportunity as owner choices.
+
+    ## Key Points
+
+    - **A retry is not a pass.** Claude, Gemini and GPT all prohibited 0B production following failure until successful reassessment; none proposed relaxing D-02.
+    - **The interim figure is not the licence.** All three treated the licensing state and rq-0-41 as authoritative. Claude and GPT explicitly cautioned against treating D-03’s unsigned ≤1 t/yr figure as the binding licensing basis.
+    - **Recovery must end.** All three supported one attempt only and terminal fallback after unsuccessful recovery. GPT explicitly added exhausted budget and missed deadline as closure triggers.
+    - **Affected gates cannot be bypassed.** Claude and GPT required renewed demand and economics evidence after throughput reduction. GPT required the revised configuration to return to KDP-0B, reusing only demonstrably unaffected evidence.
+    - **TRL 6 does not settle recoverability.** Claude’s and GPT’s reviews rejected Gemini’s use of TRL 6 as evidence that a licensing failure would probably be minor.
+    - **Failure magnitude alone remains disputed.** Claude proposed numerical classification; GPT considered its evidential basis insufficient.
+
+    ## Unresolved Questions
+
+    1. **How long is the extension?** Claude proposed 18 months, Gemini exemplified six months, and GPT proposed 12 months. None supplied a validated integrated regulatory and test schedule.
+    2. **What determines eligibility?** Claude favoured precommitted failure classes and independent classification; GPT favoured a diagnosed, credible recovery pathway. Gemini did not supply an equally detailed classification rule.
+    3. **Which changes remain within the existing option?** Claude required a new full KDP for site, architecture, throughput-increase or licensing-state changes. GPT required owner-level rebaselining for material changes. Gemini’s treatment of site adjustments was challenged by Claude.
+    4. **When is regulatory refusal terminal?** Claude specified terminal regulatory-failure classes; GPT distinguished configuration-specific refusals from fundamental unacceptability.
+    5. **How is “not ready” bounded?** Claude referred to D-01 option expiry; GPT required an explicit sunset. Neither supplied the final expiry terms.
+    6. **What evidence would change the ruling?** Claude identified poor classification agreement, an architectural escape floor, inadequate resources or unenforceable governance as reasons to favour immediate closure. Gemini identified mandatory regulatory delays or fundamental redesign needs. GPT identified no credible corrective path, diversion of protected 0A resources, or failed revised demand/economics as reasons not to authorise recovery.
+
+    ## Recommended Actions
+
+    1. **Record the common rule before the initial gate.** Following all three models, specify one bounded recovery opportunity, no production authorisation during recovery, unchanged acceptance standards and terminal fallback.
+    2. **Approve a cap and deadline before failure occurs.** Claude and GPT explicitly required precommitment; Gemini also required a strict time box. Use the regulator-informed schedule requested by GPT to resolve the competing duration proposals.
+    3. **Resolve eligibility before pathfinder results are available.** Claude proposed independent classification and a classification dry run. GPT’s objection requires substantiating or revising the proposed numerical thresholds rather than adopting them as established facts.
+    4. **Define the redesign boundary.** Following Claude and GPT, distinguish containment, instrumentation and throughput reductions from material site, process, hazard or jurisdiction changes; identify which evidence and upstream decisions must reopen.
+    5. **Close the licensing-basis dependency.** Following all three, obtain rq-0-41 requirements; following Claude and GPT, document how D-03, measurement uncertainty, credible failures and licensing-state requirements enter the assurance case.
+    6. **Demonstrate that recovery does not undermine 0A.** Claude and GPT required protected resources; GPT additionally required revalidation of signed demand and economics for the revised configuration.
+    7. **Specify closure and later revival separately.** Claude and GPT treated exhaustion of the existing option as terminal, with any later revival requiring a fresh owner/programme decision rather than another extension.
+
+    ```yaml
+    questionId: "rq-0-70"
+    topics:
+      - id: bounded-reapplication
+        topic: Whether first licence-gate failure ends 0B
+        positions:
+          - statement: Permit at most one bounded recovery opportunity for a remediable failure, without production authorisation or relaxation of gate requirements.
+            models: ["Claude Opus 5.5", "Gemini 3.1 Pro", "GPT-6.1 Sol"]
+            evidence: "All Round 1 responses selected bounded reapplication, rejected unresolved failure handling and open-ended retries, and retained the 0A-only fallback."
+        resolution_status: resolved
+        priority: critical
+      - id: extension-duration
+        topic: Duration of the recovery window
+        positions:
+          - statement: Allow up to 18 months.
+            models: ["Claude Opus 5.5"]
+            evidence: "Low-confidence estimate of one containment iteration and repeat relevant-environment campaign."
+          - statement: Use a short extension, exemplified by six months; extensions beyond 12 months undermine schedule predictability.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Schedule-predictability preference; no validated recovery schedule supplied."
+          - statement: Use a proposed 12-month default, with any alternative fixed before the initial gate.
+            models: ["GPT-6.1 Sol"]
+            evidence: "Explicit governance proposal, conditional on regulator-informed testing and review schedules."
+        resolution_status: open
+        priority: high
+      - id: recovery-eligibility
+        topic: Which failures qualify for reapplication
+        positions:
+          - statement: Use independently assigned, precommitted failure classes, including a proposed 10-times-limit terminal threshold.
+            models: ["Claude Opus 5.5"]
+            evidence: "Distinction between metrological, engineering, architectural, administrative and regulatory failures; GPT challenged the numerical threshold's evidence."
+          - statement: Allow limited corrections but terminate recovery if fundamental technology change is required.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Conditional bounded-extension proposal; Claude and GPT rejected its inference that TRL 6 makes licensing failure likely marginal."
+          - statement: Require a documented corrective action and credible regulatory pathway within protected budget and schedule bounds.
+            models: ["GPT-6.1 Sol"]
+            evidence: "Failure-specific recovery feasibility remains unknown; no supplied basis establishes a universal numerical eligibility threshold."
+        resolution_status: partially-resolved
+        priority: critical
+      - id: redesign-scope
+        topic: Changes permitted within the existing 0B option
+        positions:
+          - statement: Permit limited containment, instrumentation, operational and throughput-reduction changes; require a full new KDP for specified site, architecture, throughput-increase or licensing-state changes.
+            models: ["Claude Opus 5.5"]
+            evidence: "Proposed rule distinguishes corrective iteration from reopening target, technology and licensing assumptions."
+          - statement: Define minor changes to include limited scaling and potentially site adjustments, excluding fundamental technology changes.
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Examples in the proposed follow-on scope decision; Claude challenged site adjustments as minor changes."
+          - statement: Return every resubmission to KDP-0B and require owner-level rebaselining for material site, process, throughput, hazard or jurisdiction changes.
+            models: ["GPT-6.1 Sol"]
+            evidence: "Only demonstrably unaffected evidence may be reused; affected demand, economics and other gate evidence must be reassessed."
+        resolution_status: partially-resolved
+        priority: high
+      - id: absent-licensing-basis
+        topic: Treatment of an unresolved binding licence basis
+        positions:
+          - statement: Classify the gate as not ready rather than failed, subject to D-01 option expiry.
+            models: ["Claude Opus 5.5"]
+            evidence: "An absent binding limit cannot support the proposed failure classification and should not consume the retry."
+          - statement: Block authorisation as not ready and impose an explicit hold sunset.
+            models: ["GPT-6.1 Sol"]
+            evidence: "An incomplete licensing basis is not a pass and must not create unlimited waiting."
+        resolution_status: partially-resolved
+        priority: high
+    ```
+  keyPoints:
+    - A retry is not a pass.** Claude, Gemini and GPT all prohibited 0B production following failure until successful reassessment; none proposed relaxing D-02.
+    - The interim figure is not the licence.** All three treated the licensing state and rq-0-41 as authoritative. Claude and GPT explicitly cautioned against treating D-03’s unsigned ≤1 t/yr figure as the binding licensing basis.
+    - Recovery must end.** All three supported one attempt only and terminal fallback after unsuccessful recovery. GPT explicitly added exhausted budget and missed deadline as closure triggers.
+    - Affected gates cannot be bypassed.** Claude and GPT required renewed demand and economics evidence after throughput reduction. GPT required the revised configuration to return to KDP-0B, reusing only demonstrably unaffected evidence.
+    - TRL 6 does not settle recoverability.** Claude’s and GPT’s reviews rejected Gemini’s use of TRL 6 as evidence that a licensing failure would probably be minor.
+    - Failure magnitude alone remains disputed.** Claude proposed numerical classification; GPT considered its evidential basis insufficient.
+  unresolvedQuestions:
+    - How long is the extension?** Claude proposed 18 months, Gemini exemplified six months, and GPT proposed 12 months. None supplied a validated integrated regulatory and test schedule.
+    - What determines eligibility?** Claude favoured precommitted failure classes and independent classification; GPT favoured a diagnosed, credible recovery pathway. Gemini did not supply an equally detailed classification rule.
+    - Which changes remain within the existing option?** Claude required a new full KDP for site, architecture, throughput-increase or licensing-state changes. GPT required owner-level rebaselining for material changes. Gemini’s treatment of site adjustments was challenged by Claude.
+    - When is regulatory refusal terminal?** Claude specified terminal regulatory-failure classes; GPT distinguished configuration-specific refusals from fundamental unacceptability.
+    - How is “not ready” bounded?** Claude referred to D-01 option expiry; GPT required an explicit sunset. Neither supplied the final expiry terms.
+    - What evidence would change the ruling?** Claude identified poor classification agreement, an architectural escape floor, inadequate resources or unenforceable governance as reasons to favour immediate closure. Gemini identified mandatory regulatory delays or fundamental redesign needs. GPT identified no credible corrective path, diversion of protected 0A resources, or failed revised demand/economics as reasons not to authorise recovery.
+  recommendedActions:
+    - Record the common rule before the initial gate.** Following all three models, specify one bounded recovery opportunity, no production authorisation during recovery, unchanged acceptance standards and terminal fallback.
+    - Approve a cap and deadline before failure occurs.** Claude and GPT explicitly required precommitment; Gemini also required a strict time box. Use the regulator-informed schedule requested by GPT to resolve the competing duration proposals.
+    - Resolve eligibility before pathfinder results are available.** Claude proposed independent classification and a classification dry run. GPT’s objection requires substantiating or revising the proposed numerical thresholds rather than adopting them as established facts.
+    - Define the redesign boundary.** Following Claude and GPT, distinguish containment, instrumentation and throughput reductions from material site, process, hazard or jurisdiction changes; identify which evidence and upstream decisions must reopen.
+    - Close the licensing-basis dependency.** Following all three, obtain rq-0-41 requirements; following Claude and GPT, document how D-03, measurement uncertainty, credible failures and licensing-state requirements enter the assurance case.
+    - Demonstrate that recovery does not undermine 0A.** Claude and GPT required protected resources; GPT additionally required revalidation of signed demand and economics for the revised configuration.
+    - Specify closure and later revival separately.** Claude and GPT treated exhaustion of the existing option as terminal, with any later revival requiring a fresh owner/programme decision rather than another extension.
+    - 'id: bounded-reapplication'
+    - 'statement: Permit at most one bounded recovery opportunity for a remediable failure, without production authorisation or relaxation of gate requirements.'
+    - 'id: extension-duration'
+    - 'statement: Allow up to 18 months.'
+    - 'statement: Use a short extension, exemplified by six months; extensions beyond 12 months undermine schedule predictability.'
+    - 'statement: Use a proposed 12-month default, with any alternative fixed before the initial gate.'
+    - 'id: recovery-eligibility'
+    - 'statement: Use independently assigned, precommitted failure classes, including a proposed 10-times-limit terminal threshold.'
+    - 'statement: Allow limited corrections but terminate recovery if fundamental technology change is required.'
+    - 'statement: Require a documented corrective action and credible regulatory pathway within protected budget and schedule bounds.'
+    - 'id: redesign-scope'
+    - 'statement: Permit limited containment, instrumentation, operational and throughput-reduction changes; require a full new KDP for specified site, architecture, throughput-increase or licensing-state changes.'
+    - 'statement: Define minor changes to include limited scaling and potentially site adjustments, excluding fundamental technology changes.'
+    - 'statement: Return every resubmission to KDP-0B and require owner-level rebaselining for material site, process, throughput, hazard or jurisdiction changes.'
+    - 'id: absent-licensing-basis'
+    - 'statement: Classify the gate as not ready rather than failed, subject to D-01 option expiry.'
+    - 'statement: Block authorisation as not ready and impose an explicit hold sunset.'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T22:23:48.672Z'
+alternateSyntheses:
+  - synthesizer: claude-opus-5-5
+    generatedAt: '2026-10-17T22:40:36.532Z'
+    file: conclusion.claude-opus-5-5.md

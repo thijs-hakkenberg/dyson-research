@@ -1,0 +1,84 @@
+# Extracted by gpt-6-1-sol from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-75
+topics:
+  - id: evidence-path
+    topic: Baseline route to T01 TRL 6
+    positions:
+      - statement: Use ground modules and a validated cluster model with a small flight anchor, escalating if validation fails.
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Claude cited facility pumping limits, pressure-sensitive behaviour, ground endurance needs and pre-registered
+          predictive validation.
+      - statement: Use ground modules plus a validated cluster model without planned flight.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Gemini cited anticipated flight cost and schedule burdens and conditional acceptance of modelling for cluster
+          integration.
+      - statement: >-
+          Baseline ground qualification plus a representative flight subset, allowing independently approved ground-only
+          substitution.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT cited unresolved cluster scaling and facility effects, and the absence of a demonstrated ground-only
+          assurance case.
+    resolution_status: open
+    priority: critical
+  - id: demonstration-scale
+    topic: Required flight scale and extrapolation limits
+    positions:
+      - statement: A small representative flight anchor can support model validation, subject to bounded scaling and escalation.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude proposed two to four modules and a maximum fivefold power extrapolation, conditional on validation.
+      - statement: Size the subset by interaction coverage rather than fixed module counts or power percentages.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT argued that a small anchor does not itself bound full-cluster behaviour and challenged the requirements
+          basis of Claude's numerical limits.
+    resolution_status: open
+    priority: critical
+  - id: ground-only-acceptance
+    topic: Conditions for accepting ground evidence without flight
+    positions:
+      - statement: Full-power single-module testing and a peer-reviewed cluster model can constitute the gate evidence.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Gemini proposed module operation at no more than 5e-5 Torr and modelled thermal, electromagnetic and plasma
+          interaction margins.
+      - statement: The proposed single-module and modelling rule does not establish cluster-level closure.
+        models:
+          - Claude Opus 5.5
+          - GPT-6.1 Sol
+        evidence: >-
+          Claude challenged the pressure criterion and missing cluster demonstration; GPT required independent cluster
+          validation and an equivalent-evidence case.
+    resolution_status: open
+    priority: critical
+  - id: feasibility-basis
+    topic: Facility and programme feasibility assumptions
+    positions:
+      - statement: >-
+          A substantial full-scale pumping gap supports a flight anchor, with route reassessment after propellant
+          selection.
+        models:
+          - Claude Opus 5.5
+        evidence: Claude supplied xenon flow and pumping estimates and identified propellant-dependent facility effects.
+      - statement: Full-scale pumping is constrained and flight is likely outside programme cost and schedule limits.
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Gemini cited general facility capacity and historical demonstrator experience, without a supplied programme
+          budget baseline.
+      - statement: Neither universal ground infeasibility nor flight unaffordability is established by the supplied record.
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          GPT requested a configuration-specific facility comparison and a credible host, budget and schedule
+          assessment.
+    resolution_status: open
+    priority: high

@@ -1,0 +1,733 @@
+questionId: rq-0-65
+questionSlug: gate-risk-class-split-technologies
+questionTitle: Which risk class should apply to the eight technologies the panel split on (T02, T10, T14, T15, T22, T24, T25, T26)?
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T22:12:29.551Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # Risk class for T02, T10, T14, T15, T22, T24, T25 and T26
+
+          **Recommendation in brief:** adopt a rule that generates the classes, rather than voting technology by technology. Under the rule, a function is project-ending unless an accepted fallback dossier shows a credible, costed fallback that keeps 0B production above the economics gate.
+
+          ## 1. Frame and decision type
+
+          **Decision type.** This is a property decision about technology class, but it behaves like an executive decision.
+
+          - The class determines what KDP-0B demands.
+          - KDP-0B is the one-way door under D-02.
+          - The class assignment itself is two-way until KDP-0B: we can re-class at KDP-0A or at the 0A mid-term review.
+
+          That asymmetry should drive the answer. Erring toward project-ending now is cheap to reverse. Erring toward a lower class at KDP-0B is not.
+
+          **Cynefin domain.** The question is complicated, not complex, for most items. The facts that settle each class are knowable within 0A: fallback performance, cost and economics-model elasticity. T10 and T24 lean complex, because their long-duration behaviour can only be learned by operating.
+
+          **What the split actually is.** The panel headline used a "max" rule: if any model says project-ending, the item is project-ending. That is why T02 is headlined project-ending although two of three models said architecture-change.
+
+          The disagreement is also partly not technical. An ACH check on why the panel split (section 7) suggests most of it is definitional and about scope:
+
+          - What does "project-ending" end: the programme, 0B production, or the business case?
+          - Where are the boundaries: tug versus site arrays, one spacecraft versus a fleet?
+
+          Claude's own entries are inconsistent on T25: architecture-change in the class table, project-ending in the disputed list. Any ruling that does not fix definition and scope will reproduce the split.
+
+          ## 2. Criteria and weights
+
+          **Must.** Any option must comply with D-02: no waiver for project-ending items at KDP-0B, and stringency follows reversibility. It must also not overturn the owner's rq-0-64 ruling on T26 outside rq-0-64.
+
+          **Wants,** with swing weights. Each weight reflects how much the options differ on that criterion, not its abstract importance.
+
+          | # | Criterion | Weight | Why this weight fits the range |
+          |---|---|---|---|
+          | C1 | Protection against 0B committing on an unproven function | 40 | Widest consequence range across options. At one end, 0B sinks capital into a fleet that cannot produce. At the other, a hold costs some months. |
+          | C2 | 0A length and cost (penalty for over-classing) | 25 | Taking one MW-class array or a cryogenic store to TRL 6 in a relevant environment is a multi-year, flight-class effort. So each wrongly held item costs real schedule. The range is roughly 0–3 items over-held. |
+          | C3 | Auditability and repeatability | 20 | A rule can be re-applied when evidence arrives, and new technologies such as T09, T12, T20, T18 and T11 can be classed without another panel. A vote cannot. The range is large: from "three LLMs disagreed" to a testable criterion. |
+          | C4 | Responsiveness to evidence | 15 | All options can be revisited at KDP-0A. They differ mainly in whether they say *what* evidence moves an item, so the range is moderate. |
+
+          ## 3. Options
+
+          **A. Null: keep the panel headline (max rule).**
+          - Seven of the eight are project-ending; T26 stays architecture-change per the owner's ruling.
+          - *For:* safe, consistent with Claude's interim hold.
+          - *Against:* it is not a rule, just the union of three opinions.
+            - It probably over-holds T24 and T25, and possibly T14.
+            - It gives no exit criterion, so items stay at TRL 6 and no waiver by inertia.
+
+          **B. Majority vote per technology.**
+          - Result: T02, T14 and T25 architecture-change; T10, T15, T22 and T24 project-ending; T26 cost-increase.
+          - *Rejected.* T26 cost-increase conflicts with the owner's ruling (fails the must).
+          - Agreement among three models of correlated origin is not evidence.
+          - It under-classes T02, the item with the largest scale gap.
+
+          **C. Generating rule (fallback test), applied at function level, defaulting to project-ending.** This is the recommended option.
+          - A function is project-ending unless an accepted fallback dossier shows a credible, costed fallback that keeps 0B production above the economics gate.
+          - Technologies whose functions differ in consequence are split, for example T10.
+
+          **D. Everything below project-ending; the economics gate is the backstop.**
+          - *Rejected.* It treats the economics gate as if it could see technical immaturity. It cannot.
+          - A model fed a TRL 3 fallback's cost estimate gives a precise-looking wrong answer.
+          - It violates the spirit of D-02 for the one-way gate.
+
+          **E. Defer everything to KDP-0A and formalise the interim hold.**
+          - *Partly adopted inside C* as the default state.
+          - On its own it is rejected: deferring without a rule means KDP-0A faces the same split with no criterion.
+
+          ## 4. Assessment matrix (QOC)
+
+          Scores run from 1 (poor) to 5 (good).
+
+          | Option | C1 (40) | C2 (25) | C3 (20) | C4 (15) | Weighted | Must |
+          |---|---|---|---|---|---|---|
+          | A Null / max rule | 5 | 2 | 2 | 2 | 3.30 | pass |
+          | B Majority | 2 | 4 | 1 | 2 | 2.30 | **fail** (T26) |
+          | C Fallback rule, function level, default PE | 4.5 | 4 | 5 | 5 | **4.55** | pass |
+          | D All lower class + economics backstop | 1 | 5 | 3 | 3 | 2.70 | **fail** (spirit of D-02) |
+          | E Defer only | 5 | 2 | 1 | 2 | 3.10 | pass |
+
+          **Why C scores 4.5 on C1, not 5.** The rule depends on dossier quality. An optimistic fallback costing could let an item drop class. Section 8 covers the mitigation.
+
+          ## 5. Sensitivity points and trade-off points
+
+          **Sensitivity points** are facts that strongly drive a single class.
+
+          - **T02 and T15:** how sensitive the economics model is to available power (how throughput and cost per kilogram fall as power drops). If halving power roughly halves throughput and the economics gate still passes, a modular-array fallback is credible. If there is a threshold below which processing or tug transit time does not close, it is not.
+          - **T14:** the propellant choice.
+            - If a storable or water-based propellant is an acceptable fallback, T14 is architecture-change.
+            - If the architecture is cryogenic-only, it is project-ending.
+          - **T24:** the spares and replacement mass fraction versus mean time between failures. This is where redundancy stops paying.
+          - **T10:** the round-trip light time to the selected target, which is set by the target gate. Small light times make supervised operations a credible fallback. Tens of minutes do not.
+          - **T25:** whether the SEL1 node operates as a cooperative target (beacons, retro-reflectors). That makes the rendezvous problem close to existing practice.
+
+          **Trade-off points** are values questions, not facts to settle.
+
+          1. **Which way the burden of proof runs.** Defaulting to project-ending buys protection on C1 at the cost of C2 (0A length). This is the owner's appetite for 0A delay versus 0B regret. I recommend the project-ending default because the class is reversible until KDP-0B, but this is a value judgement.
+          2. **What "project-ending" ends.** Read as "0B production cannot meet the economics gate", the class is broader than "the programme physically cannot proceed". I recommend the broader reading: D-01 sizes 0B on signed demand, so a 0B that cannot meet that demand at viable cost has failed. A narrower reading would be defensible.
+          3. **Whether a degraded-throughput 0B counts as a fallback.** This is a values question about what counts as success, and it links to D-01's demand sizing.
+
+          ## 6. Evidence certainty
+
+          GRADE certainty is listed separately from likelihood, per IPCC and ICD 203.
+
+          | Claim | Certainty (GRADE) | Likelihood / confidence |
+          |---|---|---|
+          | Flown space power systems are at most ~100 kW-class (ISS). MW-class deployable arrays are an order of magnitude or more beyond flight heritage. | High | Very likely, high confidence, that T02 at MW scale is ≤ TRL 4. |
+          | In-space storage and transfer of hundreds of tonnes of cryogenic propellant, over long durations, has not been demonstrated. | High | Very likely, high confidence. |
+          | Single-spacecraft target-local navigation at small bodies is flight-proven (Hayabusa2, OSIRIS-REx). Repeated cargo operations and SEL1 node operations are not. | High for heritage; low for the fleet extension | Likely (~70%), medium confidence, that a ground-in-the-loop fallback is credible for T25. |
+          | Dust degraded Apollo mechanisms and seals. Long-life behaviour of asteroid regolith in microgravity is poorly characterised. | Moderate (lunar); very low (asteroid) | About as likely as not that seal life meets requirements without redundancy. Likely, medium confidence, that redundancy plus replacement is a credible fallback. |
+          | Deep-space network capacity is contended. Point-to-point links are TRL 9; an integrated fleet command *service* is not. | Moderate | The T26 TRL 3–7 spread is mostly scope, high confidence. |
+          | Panel TRL estimates for these eight items | Very low (2-level spreads, no test data) | Do not use them to set classes. Use the fallback test. |
+          | Economics-model power and throughput sensitivity | Very low (not yet run with fallback branches) | Unknown. This is the single most valuable 0A analysis for this question. |
+
+          ## 7. Key assumptions and competing hypotheses
+
+          **Why did the panel split?** Three hypotheses, ranked by least disconfirmed (ACH).
+
+          1. **H-scope: the models drew different technology boundaries.** Least disconfirmed.
+             - T26's TRL 3 versus 7 is only explicable as "link" versus "service".
+             - T02 carries a "tug; site per Gemini and GPT" annotation.
+             - T10 spans mining, processing and proximity operations, which carry different consequences.
+          2. **H-definition: the models meant different things by "project-ending".** Second.
+             - Claude's own T25 inconsistency fits this.
+             - So does Gemini's project-ending for T24 at a higher TRL than the others gave.
+          3. **H-technical: genuine disagreement about fallback credibility.** Present but most disconfirmed as the main driver.
+             - Where the models scoped the same thing (T15, T22), they mostly agreed.
+
+          The implication is that function-level splitting and a fixed definition will resolve most of the split. That is why option C beats any vote.
+
+          **Key assumptions and what would falsify them:**
+
+          | Assumption | Falsified by |
+          |---|---|
+          | A1. The economics gate can evaluate a fallback branch if the fallback's cost and performance are given at ≥ TRL 5. | A model audit at KDP-0A showing outputs dominated by unconstrained parameters, e.g. ±50% swings from fallback inputs alone. |
+          | A2. T02 and T15 failures are common-cause. Site power has no non-array fallback that keeps 0B production. | A costed nuclear-fission or beamed-power site option at TRL ≥ 5 that does not depend on T02. Space fission reactors are not at TRL 5 at this scale, so I do not expect this. |
+          | A3. A storable or water-based propulsion fallback exists for the tug fleet. | A propulsion trade showing the economics gate fails with storable propellants at any feasible fleet size. |
+          | A4. Redundancy and replacement can carry dust-induced wear within the mass budget. | Accelerated life tests in vacuum with representative regolith simulant showing failure rates that need spares above the mass-fraction threshold the economics gate tolerates. |
+          | A5. The selected target's light time allows supervised fallback for productivity autonomy, but not for safety-critical proximity aborts. | A target-gate selection with light times short enough for real-time abort, which would drop T10a. |
+
+          **Premortem.** "0B was committed and failed in year three." The most plausible story is that a fallback dossier assumed productivity numbers from a nominal concept of operations, and the economics gate passed on them.
+
+          The mitigation is that fallback performance inputs to the economics gate must carry the same TRL evidence as the fallback itself. They are reviewed independently of the team that owns the primary technology.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Rule text (proposed for `gates-proposal.yaml`)
+
+          > **Class rule CR-1.** A technology *function* is **project-ending** for KDP-0B unless the owner has accepted a **fallback dossier** demonstrating all of the following:
+          >
+          > - (a) the fallback is at TRL ≥ 5 in a relevant environment;
+          > - (b) the fallback is costed at estimate class ≤ 4;
+          > - (c) the economics gate passes with the fallback substituted, using fallback performance evidenced at the same TRL;
+          > - (d) the fallback is not common-cause with failure of the primary or of another project-ending function;
+          > - (e) the schedule impact is within the 0B commitment tolerance.
+          >
+          > Functions with an accepted dossier are **architecture-change**: TRL ≥ 5 at KDP-0B, waiverable, with a funded path to TRL 6 before the dependent 0B milestone. Until a dossier is accepted, the function is project-ending (TRL 6 in a relevant environment, no waiver). Dossiers are reviewed independently of the technology owner. Classes are confirmed at KDP-0A and may be revised at the 0A mid-term review.
+
+          ### Per-technology application
+
+          | Tech | Ruling now | Basis | Moves if… |
+          |---|---|---|---|
+          | **T02** (tug function; site arrays fold into T15) | **Project-ending** | Largest scale gap. The modular-array fallback is not yet shown to pass economics. | A dossier shows a cluster of ~100–300 kW-class arrays passes the economics gate at the resulting power level. Then architecture-change. |
+          | **T10** → split | **T10a** safety-critical autonomy (fault protection, proximity safe-abort under light time): **project-ending**. **T10b** productivity autonomy (mining and processing scheduling): **architecture-change**, provisional on dossier. | No ground fallback for aborts at minutes of light time. Supervised operations is a throughput fallback that the economics gate can price. | T10b reverts to project-ending if the supervised-operations dossier fails (c). T10a drops only under A5's falsifier. |
+          | **T14** | **Architecture-change, conditional** | Credible if the propellant trade carries a storable or water fallback. | It becomes project-ending if the KDP-0A propellant selection is cryogenic-only with no storable branch (A3 falsified). |
+          | **T15** | **Project-ending** | Common-cause with T02. No independent site-power fallback keeps 0B production. | An independent power path at TRL ≥ 5 (A2 falsified). |
+          | **T22** | **Project-ending** | No qualified product means no demand gate. Agreed in substance by two of three. | TRL 6 is assessed against the **signed buyer product specification** from the demand gate, not a generic standard. It would move only if buyers sign for raw or minimally processed product. |
+          | **T24** | **Architecture-change** (TRL ≥ 5 plus a life-test campaign) | Redundancy and replacement is a credible, priceable fallback. Wear is a cost and mass question the economics gate can see. | It becomes project-ending if life tests falsify A4. |
+          | **T25** | **Architecture-change** (TRL ≥ 5, funded path to 6) | Strong single-craft heritage. A cooperative SEL1 node plus ground-in-the-loop navigation is a credible fallback. This resolves Claude's internal inconsistency in GPT's direction. | It becomes project-ending if fleet traffic density makes ground-in-the-loop navigation infeasible. |
+          | **T26** | **No change: architecture-change per owner ruling.** The "possibly project-ending" question stays in rq-0-64. | Not re-ruled here; it is the must. | CR-1 is offered to rq-0-64 as the test: project-ending if no combination of DSN, ESA tracking and commercial ground service meets fleet command demand. |
+
+          **Net effect versus the null option.** T14, T24, T25 and T10b drop to architecture-change, provisional on dossiers. T02, T10a, T15 and T22 remain project-ending.
+
+          ### Y-statement
+
+          *In the context of* Phase 0's TRL re-baseline under D-01 and D-02, with a one-way KDP-0B gate,
+
+          *facing* a three-model split on eight technologies, driven mostly by inconsistent scope and definitions rather than technical disagreement,
+
+          *we chose* a generating rule (CR-1: project-ending unless a credible, costed, non-common-cause fallback keeps 0B production above the economics gate), applied at function level and defaulting to project-ending,
+
+          *to achieve* protection against an irreversible commitment on an unproven function while not lengthening 0A for functions with real fallbacks,
+
+          *accepting* that T02 and possibly T10b will be held at TRL 6 longer than may prove necessary, and that the rule's safety depends on the quality of independent review of fallback dossiers.
+
+          ### Toulmin structure
+
+          - **Grounds:** the ACH result that the split is mainly scope and definition, plus the heritage evidence in section 6.
+          - **Warrant:** D-02's principle that stringency follows reversibility. A class is reversible until KDP-0B, so the burden of proof belongs on the lower class, and the test should ask the question that defines "project-ending" (is there a fallback that keeps 0B viable?) rather than counting opinions.
+          - **Backing:** standard technology-readiness practice treats criticality, not maturity alone, as the driver of gate stringency.
+          - **Qualifier:** probably right for T02, T15, T22 and T10a. Provisional for T14, T24 and T25 until their dossiers exist.
+          - **Rebuttal:** if the economics model cannot discriminate fallback branches (A1 falsified), CR-1 collapses toward option A. In that case the owner should take the null option, with its longer 0A, rather than option D.
+
+          ## 9. Consequences
+
+          **Enables:**
+          - KDP-0A scoping. Fallback dossiers for T02, T10b, T14, T24 and T25 become named 0A deliverables, each with a defined pass criterion.
+          - Classing the remaining disputed items (T09, T12, T20, T18, T11) under the same rule without reconvening the panel.
+          - A concrete test to hand to rq-0-64.
+
+          **Constrains:**
+          - `trl-baseline.yaml` must split T10 into T10a and T10b, and move T02 site arrays under T15.
+          - The economics model must carry fallback branches with TRL-tagged inputs.
+          - The propellant selection must be made by KDP-0A. That is now on T14's critical path.
+          - T22's TRL 6 definition is coupled to the demand gate's signed specification.
+
+          **Subsumes:** Claude's interim "hold at TRL 6, no waiver" becomes the formal default state under CR-1.
+
+          **Conflicts to watch:**
+          - If the 0A mid-term review shows the T02 dossier is unlikely to pass, T02 and T15 together become the pacing items for KDP-0B.
+          - That strengthens the case for the panel-agreed fallback ("0A only, Earth supply"). The owner should expect to decide this explicitly at the mid-term review rather than at KDP-0B.
+
+          **Evidence that would change this ruling overall:**
+          1. An economics-model audit showing it cannot price fallbacks. Revert to option A.
+          2. Evidence that the three models' scope differences were not the driver: for example, re-elicitation with fixed scope still splits. Then the disagreement is technical and per-item expert elicitation (Cooke or SHELF) should replace the rule-based inference.
+          3. Owner rejection of the broad reading of "project-ending" (trade-off point 2). T02 and T14 would then likely move to architecture-change.
+        wordCount: 3091
+        generatedAt: '2026-10-17T22:14:31.358Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          Here is the decision regarding the risk classification of the eight disputed technologies (T02, T10, T14, T15, T22, T24, T25, T26) for Project Dyson, structured according to the Composite Scaffold.
+
+          ### 1. Frame & decision type
+          **Frame:** Executive and property decision. We must determine the gate stringency (Project-ending vs. Architecture-change) for eight disputed technologies at KDP-0B. 
+          **Reversibility:** Low (One-way door). Under-classing a technology allows KDP-0B to pass with unproven critical functions, risking catastrophic Phase 1 failure. Over-classing artificially lengthens Phase 0A.
+          **Domain:** Complicated (Cynefin), requiring expert systems engineering judgment to assess fallback viability.
+
+          ### 2. Criteria and weights
+          *   **C1: Criticality to Core Autonomous Operations (Swing Weight: High).** The range spans from "mission fails entirely without it" to "mission degrades gracefully." High weight because Project Dyson's economics rely on remote/autonomous viability.
+          *   **C2: Viability of Fallbacks (Swing Weight: High).** The range spans from "no physical alternative exists" to "Earth-supply or standard COTS alternatives exist." High weight because the definition of "Architecture-change" requires a credible, costed fallback.
+          *   **C3: Phase 0A Schedule/Cost Impact (Swing Weight: Medium).** The range spans from "adds years to 0A" to "easily tested in 0A." Medium weight; schedule is important but secondary to avoiding unrecoverable KDP-0B commitments.
+
+          ### 3. Options
+          *   **Option 1: The Null Option (Claude's Default).** Classify all 8 as *Project-ending*. Require TRL 6 in a relevant environment with no waivers at KDP-0B.
+          *   **Option 2: Split by Fallback Viability.** 
+              *   *Project-ending:* T10 (Long-duration autonomy), T14 (Massive propellant storage), T24 (Dust-tolerant mechanisms), T25 (Target-local navigation). Argument: These are core to the novel operating environment; failure here means the mission cannot occur.
+              *   *Architecture-change:* T02 (MW solar arrays), T15 (Site power), T22 (Product packaging), T26 (Deep-space comms). Argument: Fallbacks exist (smaller arrays, localized power, Earth-based packaging, standard DSN/commercial comms) that degrade economics but do not end the project.
+          *   **Option 3: All Architecture-Change (Rejected).** Argument for rejection: Pushes unacceptable technical risk past KDP-0B, violating the accepted D-02 principle that one-way gates need TRL 6 for project-ending tech.
+
+          ### 4. Assessment matrix
+
+          | Option | C1: Core Criticality Risk | C2: Fallback Viability | C3: 0A Schedule Impact |
+          | :--- | :--- | :--- | :--- |
+          | **O1: Null (All Project-Ending)** | Lowest risk (forces proof) | Ignores viable fallbacks | Highest impact (lengthens 0A) |
+          | **O2: Split by Fallback** | Balanced risk | Accurately maps fallbacks | Moderate impact |
+          | **O3: All Arch-Change (Rejected)**| Unacceptable risk at 0B | Assumes fallbacks for all | Lowest impact (fast 0A) |
+
+          ### 5. Sensitivity vs trade-off points
+          *   **Sensitivity point:** The viability of the fallback for T14 (Propellant storage). If hundreds of tonnes cannot be stored, the tug architecture fails. This is highly sensitive to C1.
+          *   **Trade-off point:** We are trading Phase 0A schedule velocity (which favors Architecture-change) against KDP-0B confidence (which favors Project-ending). 
+
+          ### 6. Evidence certainty
+          *   **Claim:** T10, T14, T24, and T25 lack economically viable fallbacks. *Certainty: Moderate.* (Based on standard space mining/tug architectural studies; dust and autonomy are notoriously non-degradable risks).
+          *   **Claim:** T26 (Comms) has a viable fallback. *Certainty: High.* (Owner ruling rq-0-64 already leans this way; existing deep space networks can serve as a fallback, albeit at higher operational cost).
+
+          ### 7. Key assumptions
+          *   **Assumption 1:** The fallbacks for T02, T15, T22, and T26 will not violate the economics required to pass the KDP-0B demand gate. *Falsification:* Phase 1 economic modeling shows that using standard solar arrays (T02 fallback) or Earth-packaging (T22 fallback) pushes the cost above the signed demand threshold.
+          *   **Assumption 2:** TRL 6 for T10 (Autonomy) and T24 (Dust) can be achieved in a "relevant environment" on Earth/LEO during Phase 0A. *Falsification:* Engineering teams prove that only lunar/asteroid surface testing can validate these, forcing a re-evaluation of 0A scope.
+
+          ### 8. Decision, warrant, accepted downside
+          **Y-Statement:** In the context of the KDP-0B gate definition, facing a panel split on eight technologies, we chose Option 2 (Split by Fallback), to achieve a balanced Phase 0A schedule while protecting the one-way 0B gate, accepting the risk that fallbacks for the four Architecture-change technologies might degrade Phase 1 economics.
+
+          **Warrant (Toulmin):** Because Project-ending classification should be reserved for technologies without viable functional fallbacks (Grounds), and T02, T15, T22, and T26 have known, albeit less efficient, alternatives (Warrant), they can be safely classed as Architecture-change, provided the economic gate at 0B catches any cost overruns (Backing).
+
+          ### 9. Consequences
+          *   **Enables:** Finalization of the WP-A TRL baseline and the KDP-0A review schedule.
+          *   **Constrains:** Phase 0A budget must now heavily prioritize reaching TRL 6 for T10, T14, T24, and T25, as they cannot be waived at KDP-0B.
+          *   **Follow-on decision:** The specific funded paths to TRL 6 for the four Architecture-change technologies (T02, T15, T22, T26) must be defined and costed before KDP-0A.
+        wordCount: 796
+        generatedAt: '2026-10-17T22:14:54.870Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **Recommendation:** classify **T02, T10, T14, T15, T22, T24 and T25 as project-ending for the selected 0B production architecture**. Retain **T26 as architecture-change under rq-0-64**, but require a bounded closure test at KDP-0A; absent evidence that its loss is survivable, elevate it to project-ending.
+
+          The governing question is not “Could another engineering solution exist?” It is:
+
+          > **If this technology fails its qualification, is there an evidenced alternative that preserves an authorised 0B production capability before irreversible commitment?**
+
+          “Project-ending” here means ending the proposed **0B production commitment**, not cancelling the funded 0A capability programme. “0A only, Earth supply” is the programme’s safe exit under D-01—not a fallback that justifies admitting an immature 0B production architecture.
+
+          This is a **property and executive decision**: classification remains revisable during 0A, but determines assurance requirements at the one-way KDP-0B gate.
+
+          There is also a source-control issue. The supplied “agreed core” includes technologies whose individual panel classifications differ. I would treat that list as a proposed gate baseline, **not evidence of unanimous agreement**. The owner’s ruling must resolve this explicitly.
+
+          ## 2. Criteria and weights
+
+          **Non-compensable requirements**
+
+          - Respect D-02: project-ending technologies require TRL 6 in a relevant environment at KDP-0B, without waiver.
+          - Preserve D-01: 0B remains a demand-sized real option; classification cannot create an obligation to proceed.
+          - Do not count an unverified replacement, or retreat to Earth supply, as proof of continued 0B production.
+
+          For options passing those requirements, use these **swing weights**:
+
+          | Criterion | Weight | Range being valued and justification |
+          |---|---:|---|
+          | **C1. Avoid unsupported irreversible commitment** | **45%** | From committing with an unproven indispensable function to requiring demonstrated capability or a qualified substitute. This is the largest swing because failure can invalidate the entire 0B investment. |
+          | **C2. Avoid unnecessary qualification cost and delay** | **25%** | From forcing every implementation to TRL 6 regardless of replaceability to qualifying only what the selected production architecture actually needs. This materially affects the cost and duration of 0A. |
+          | **C3. Auditability and enforceability** | **20%** | From unresolved labels and discretionary exceptions to a reproducible dependency-and-evidence test. A gate rule has little value if it can be reinterpreted at commitment. |
+          | **C4. Preserve useful architecture options** | **10%** | From locking one implementation prematurely to allowing demonstrated substitutes without weakening functional assurance. Important, but subordinate to protecting the irreversible decision. |
+
+          These are proposed owner value judgments, not empirically measured constants.
+
+          ## 3. Options
+
+          **A. Null: retain the split and current interim holds.**  
+          Argument for: avoids premature classification and preserves the existing conservative TRL 6 holds.  
+          **Reject:** the split remains unresolved, T26 remains ambiguous, and development teams cannot reliably plan qualification scope.
+
+          **B. Permanently classify all eight as project-ending.**  
+          Argument for: simple, conservative, and resistant to optimistic fallback claims.  
+          **Reject:** confuses essential functions with replaceable implementations, especially for T26, and may impose avoidable bespoke qualification.
+
+          **C. Evidence-conditioned classification, with seven project-ending and bounded T26 closure. — Recommended.**  
+          Argument for: protects indispensable capabilities while making declassification depend on demonstrated, affordable alternatives rather than opinion.
+
+          **D. Classify all eight as architecture-change unless impossibility of substitution is proven.**  
+          Argument for: maximises flexibility and initially reduces qualification burden.  
+          **Reject:** reverses the burden of proof. Proving that no imaginable alternative exists is infeasible; the relevant question is whether a usable alternative has actually been established.
+
+          ## 4. Assessment matrix
+
+          Scores are **ordinal judgments**, 1 = poor and 5 = strong. Weighted totals structure the debate; they are not probabilities or measured benefits.
+
+          | Option | C1: Commitment protection 45% | C2: Cost/delay 25% | C3: Auditability 20% | C4: Options 10% | Weighted score / 5 |
+          |---|---:|---:|---:|---:|---:|
+          | A. Retain split | 3 | 2 | 1 | 3 | **2.35** |
+          | B. All eight permanently project-ending | 5 | 1 | 4 | 1 | **3.55** |
+          | **C. Evidence-conditioned ruling** | **5** | **3** | **4** | **5** | **4.30** |
+          | D. All architecture-change | 1 | 4 | 2 | 5 | **2.40** |
+
+          ### Recommended technology rulings
+
+          | Technology | Ruling | Reason; evidence that could change it |
+          |---|---|---|
+          | **T02: MW-scale deployable arrays** | **Project-ending** | Selected tug/site power architecture depends on power at scale. Declassify only after an alternative closes power, deployment, mass, thermal and transport budgets at accepted production throughput. “Use smaller arrays” alone is not evidence. |
+          | **T10: Long-duration autonomy** | **Project-ending** | Intermittently supervised operations must sustain production and manage hazardous states. A less autonomous alternative must demonstrate workload, latency tolerance, safe recovery and communications dependence—not merely nominal teleoperation. |
+          | **T14: Large-scale propellant storage/feed** | **Project-ending** | Propellant delivery is integral to tug performance. Alternate propellant, tanking or mission staging must close feed behaviour, storage losses as applicable, mass, transfer cadence and delivered-cargo performance. |
+          | **T15: Site power generation/transfer** | **Project-ending** | Mining and processing require an integrated power service. Reclassification requires demonstrated operating power, duty cycle, distribution and fault recovery for the selected site—not source nameplate power alone. |
+          | **T22: Product consolidation, packaging, qualification** | **Project-ending** | Producing material is insufficient if it cannot be accepted, transported and used. A simpler product form could change the ruling, but requires an agreed acceptance specification and qualified handling/transport chain. |
+          | **T24: Dust-tolerant mechanisms/seals** | **Project-ending** | Common environmental failures could disable multiple production functions. Demonstrated dust exclusion, reduced mechanism dependence, or replaceable short-life modules could justify reclassification if logistics and maintenance close. |
+          | **T25: Local/node navigation and control** | **Project-ending** | Safe acquisition, approach and cargo exchange are indispensable to the selected logistics chain. Alternate nodes, cooperative aids or supervised operations must demonstrate capture margins, abort behaviour, traffic capacity and outage tolerance. |
+          | **T26: Communications/resilient command** | **Architecture-change, bounded by rq-0-64 closure** | Retain the existing owner ruling provisionally. By KDP-0A, demonstrate that loss of the proposed implementation permits a qualified alternative service and tolerable disconnected operation. Otherwise automatically elevate to **project-ending**. |
+
+          A technology ID may contain both essential and replaceable elements. Split the requirement where necessary; do not let a broad label hide an unqualified essential function.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points—facts that can change the ruling
+
+          - **Minimum authorised production:** lower throughput may make smaller power systems, batch processing or slower logistics viable.
+          - **Disconnected endurance:** affects T10, T25 and T26 together.
+          - **Maintenance concept:** replaceable modules could reduce T24 life requirements, but increase spares and transport demand.
+          - **Product acceptance requirements:** directly determine T22’s qualification burden.
+          - **Common-cause independence:** a backup sharing the same software, power system or geometry may not provide meaningful substitution.
+
+          ### Trade-off points—owner values, not facts to discover
+
+          - How much production reduction is acceptable to preserve 0B?
+          - How much additional 0A cost and delay is worth reducing irreversible exposure?
+          - How much staffing and recurring communications expenditure is acceptable in exchange for reduced autonomy?
+
+          **Recommendation sensitivity:** Option C’s advantage over B depends on its evidence process being enforceable. If the programme cannot independently review fallback claims or control requirements changes, B becomes the safer operational policy.
+
+          ## 6. Evidence certainty
+
+          These are **adapted GRADE judgments**, not formal clinical-style evidence reviews. The available record is the supplied synthesis of `gates.md`, `gates-proposal.yaml`, `trl-baseline.yaml` and `decisions.md`; no supporting test reports or costed fallback studies were provided.
+
+          | Key claim | Evidence certainty | Analytic confidence; likelihood |
+          |---|---|---|
+          | D-01/D-02 establish the stated real-option and no-waiver principles | **High within the supplied decision record** | High confidence in the policy interpretation; not a probabilistic claim. |
+          | The seven proposed project-ending technologies support indispensable production functions | **Moderate** | Moderate confidence from functional dependencies; architecture-specific substitution remains unresolved. |
+          | No admissible fallback has yet been established for those seven | **Low** | High confidence that none is demonstrated **in this record**; low confidence about whether undisclosed work exists. |
+          | T26 can remain architecture-change without weakening 0B assurance | **Low** | Conditional judgment only; depends on service alternatives and disconnected operations evidence. |
+          | Evidence-conditioned classification will reduce unnecessary qualification spending | **Low** | Plausible benefit, but magnitude and likelihood cannot be estimated from the supplied material. |
+
+          The panel’s TRL spreads are not probability distributions. In particular, T26’s competing maturity assessments require a common **unit of assessment**: component, link, or integrated command service.
+
+          ## 7. Key assumptions
+
+          | Assumption | Evidence that would falsify it |
+          |---|---|
+          | 0B production requires the functions represented by the seven project-ending technologies | A controlled production architecture that removes a function while satisfying authorised output, safety, licence and economics constraints. |
+          | No currently evidenced fallback warrants lower classification | An independently reviewed fallback package with relevant demonstrations, resources, interfaces and executable transition plan. |
+          | T26’s implementation can potentially be substituted without losing the production mission | Evidence of unavoidable command dependence, inadequate communications alternatives, or failure of safe disconnected operation. This would trigger elevation. |
+          | TRL demonstrations can be scoped meaningfully to the selected architecture | Findings that interactions, duration or scale effects are not represented by the proposed demonstration; the verification scope must then expand. |
+
+          **ACH ranking, least disconfirmed first:**
+
+          1. **Essential functions with potentially replaceable implementations**—best fits the functional dependencies and classification disagreements.
+          2. **Every listed implementation is indispensable**—possible, but too strong without architecture-level fallback analysis.
+          3. **All eight have readily usable alternatives**—least supported; no qualifying fallback packages are presented.
+
+          This ranks hypotheses by current contradiction, not numerical probability.
+
+          ## 8. Decision, warrant, accepted downside
+
+          Adopt Option C and insert this rule into the gate proposal:
+
+          > **A technology is project-ending where failure of its required capability leaves no evidenced alternative preserving authorised 0B production within approved safety, licence, performance, schedule and cost limits. Unproven alternatives do not justify lower classification. Project-ending technologies shall achieve TRL 6 in the relevant environment before KDP-0B, without waiver.**
+          >
+          > **Reclassification requires owner approval of an independently reviewed fallback package identifying the replacement, qualification evidence, integrated budgets, transition resources, dependencies and common-cause vulnerabilities. A fallback requiring an unqualified project-ending technology is inadmissible.**
+          >
+          > **T26 retains rq-0-64’s architecture-change ruling until KDP-0A. Failure to demonstrate survivable substitution or disconnection by that review automatically makes the affected capability project-ending.**
+
+          **Warrant:** failure consequences and reversibility—not panel vote counts, current TRL or generic technological familiarity—determine required assurance.
+
+          **Accepted downside:** additional 0A analysis and testing, and potentially a delayed or rejected 0B commitment. This is preferable to discovering after commitment that an “architecture change” is actually a new production programme.
+
+          ## 9. Consequences
+
+          - **Owner:** approve the classifications and define acceptable fallback performance/cost boundaries at KDP-0A.
+          - **Technology leads:** produce function-specific qualification plans and bounded fallback packages.
+          - **Systems engineering:** maintain dependency and common-cause analyses, especially across power, autonomy, navigation and communications.
+          - **Gate authority:** assess the selected integrated service, not merely mature components; architecture-change status is not blanket permission for immature critical functions.
+          - **Programme control:** preserve “0A only, Earth supply” as the exit if KDP-0B fails. Target, demand, economics and licence gates remain independent.
+
+          **Y-statement:** *In the context of a funded 0A capability programme and optional 0B production commitment, facing unresolved classifications and unevidenced fallbacks, we chose seven project-ending classifications and a time-bounded architecture-change ruling for T26, to protect irreversible investment while permitting demonstrated substitution, accepting additional 0A qualification effort.*
+
+          **Warrant and qualifier:** indispensable production functions require demonstrated capability before commitment; these classifications remain revisable only when architecture-specific evidence establishes a credible alternative. This enables qualification planning and rq-0-64 closure, while constraining KDP-0B from proceeding on optimistic substitution claims.
+        wordCount: 1923
+        generatedAt: '2026-10-17T22:16:21.641Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: 'This is the strongest analysis overall: a generating rule (CR-1), function-level splitting, ACH on why the panel split, and good sensitivity points and falsifiers. However, the per-technology table contradicts its own rule. CR-1 makes a function project-ending until a dossier is accepted, yet T14, T24, T25 and T10b are ruled architecture-change now, ''provisional on dossiers'' that do not yet exist. This changes the operative decision. There are also minor arithmetic slips: option A should be 3.2, not 3.30, and option E should be 3.0, not 3.10.'
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: none
+            reasoning: Excellent decision chain with a strong generative rule, rigorous ACH, and clear commitment.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: commitment
+            reasoning: 'The fallback rule is explicit and testable, but the current rulings contradict it: T14, T24, T25 and T10b receive architecture-change status before the required dossiers are accepted. Applying the stated default would change those classifications.'
+        rawScore: 4
+        weightedScore: 3.5
+        approveCount: 1
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: The criteria weights are only 'High/Medium', the matrix is qualitative, and the certainty claims are thin and appeal to unnamed 'standard studies'. The per-technology split is weakly evidenced, for example MW arrays are made architecture-change on a bare 'smaller arrays' fallback. The warrant also leans on the economics gate to catch problems, which conflicts with D-02. The decision could easily flip.
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: information
+            reasoning: Sound in part, but the information section lacks a structured Analysis of Competing Hypotheses (ACH) to explain the panel split, weakening the evidence base.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: The decisive fallback claims are asserted without architecture-specific evidence, and high confidence in T26 substitution is not calibrated to demonstrated service capacity. Smaller arrays, localized power and Earth-based packaging are not shown to preserve viable 0B production; the economics gate cannot substitute for that missing technical evidence.
+        rawScore: 1
+        weightedScore: 0.5
+        approveCount: 0
+        rejectCount: 2
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: alternatives
+            reasoning: The ruling is coherent and internally consistent. It applies a default project-ending rule with an explicit reclassification test and a time-bounded, self-elevating T26 ruling that respects rq-0-64. It handles common-cause failures, allows splitting a technology by function, and calibrates its evidence. Weaknesses are minor arithmetic slips (option B should be 3.4, option D 2.35) and options B and C differing mainly by the reclassification path. Neither would change the decision.
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: none
+            reasoning: Thorough and well-reasoned response that effectively uses an evidence-conditioned rule and respects the decision framework.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: information
+            reasoning: The response acknowledges the limited evidence rather than treating hypothetical substitutes as established fallbacks. Its conservative interim classifications, explicit alternatives, owner-value trade-offs, falsifiable assumptions and independently reviewed reclassification process form a consistent decision chain.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+    winnerId: gpt-6-1-sol
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: 'A and C converge on the same structure: project-ending by default unless an independently reviewed fallback preserves 0B production, with function splitting and T26 left under rq-0-64. C''s current rulings are the consistent application of that rule, and the remaining differences are dossier work for 0A.'
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: Responses A and C provide highly robust, actionable rules that resolve the core issue. Further discussion is unlikely to yield a better framework.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: 'Response C provides a satisfactory evidence-conditioned resolution: retain conservative classifications, preserve T26''s existing ruling pending bounded closure, and permit changes only after independently reviewed fallback evidence.'
+    shouldTerminate: true
+    completedAt: '2026-10-17T22:17:06.115Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 0
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 1
+  totalVotes: 9
+  approvalRate: 44.44444444444444
+  averageResponseWords: 1937
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T22:17:06.239Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    Claude Opus 5.5 and GPT-6.1 Sol converged on an **evidence-conditioned rule**: classify a function as project-ending unless an independently reviewed fallback preserves viable, authorised 0B production. Gemini 3.1 Pro also favoured classification by fallback viability, but considered several alternatives sufficiently credible to justify architecture-change immediately. Thus, the panel shared a governing principle but **did not converge on all eight classifications or on the evidence needed before lowering a class**.
+
+    GPT recommended project-ending for **T02, T10, T14, T15, T22, T24 and T25**, retaining T26 as architecture-change subject to a KDP-0A closure test. Claude recommended project-ending for T02, safety-critical T10 and T15/T22, while proposing conditional or provisional architecture-change treatment for productivity T10, T14, T24 and T25. Gemini recommended project-ending for T10, T14, T24 and T25, and architecture-change for T02, T15, T22 and T26. All three retained T26’s existing architecture-change classification; GPT additionally proposed automatic elevation if its closure test failed.
+
+    The votes exposed the main unresolved issue: **Claude and GPT both identified a contradiction between Claude’s project-ending default and its immediate lowering of classes before fallback dossiers were accepted**. Claude and GPT also rejected Gemini’s lower classifications as resting on unevidenced fallback assumptions. GPT’s response received approval from all three models, but those approvals did not establish an explicit revised classification agreement from the other two respondents.
+
+    ## Decision record
+
+    ### Claude Opus 5.5: function-level classification with conditional lower classes
+
+    **Y-statement:** In the context of D-01/D-02 and a one-way KDP-0B commitment, facing disagreements Claude attributed mainly to inconsistent scope and definitions, Claude chose a function-level fallback rule, to protect 0B while avoiding unnecessary qualification, accepting additional 0A work and dependence on independent dossier review.
+
+    - **Warrant:** Claude argued that consequences and fallback viability—not model votes—should determine class.
+    - **Proposed classifications:**
+      - **Project-ending:** T02; T10a, safety-critical autonomy; T15; T22.
+      - **Architecture-change, conditional or provisional:** T10b, productivity autonomy; T14; T24; T25.
+      - **T26:** retain architecture-change under rq-0-64; leave possible elevation to that decision.
+    - **Qualifier:** Claude’s written rule made project-ending the default until an accepted fallback dossier existed.
+    - **Accepted downside:** Claude accepted potentially longer TRL 6 holds and the risk of optimistic fallback costing.
+    - **Recorded inconsistency:** Claude’s self-review and GPT’s vote both said the conditional lower classifications contradicted that default.
+
+    ### Gemini 3.1 Pro: split according to asserted fallback viability
+
+    **Y-statement:** In the context of the KDP-0B gate, facing disputed classifications, Gemini chose to distinguish core operating technologies from technologies with alternative implementations, to balance 0A schedule with commitment protection, accepting that the alternatives might degrade Phase 1 economics.
+
+    - **Warrant:** Gemini argued that project-ending should be reserved for technologies without viable functional fallbacks.
+    - **Proposed classifications:**
+      - **Project-ending:** T10, T14, T24, T25.
+      - **Architecture-change:** T02, T15, T22, T26.
+    - **Qualifier:** Gemini assumed smaller arrays, localised power, Earth-based packaging and existing communications services would preserve acceptable economics.
+    - **Accepted downside:** Gemini accepted economic degradation from those alternatives.
+    - **Recorded challenge:** Claude and GPT rejected the decisive fallback claims as insufficiently evidenced.
+
+    ### GPT-6.1 Sol: conservative current classes with an evidence-based exit
+
+    **Y-statement:** In the context of funded 0A and optional 0B production, facing unresolved classifications and unevidenced fallbacks, GPT chose seven project-ending classifications and a time-bounded architecture-change ruling for T26, to protect irreversible investment while permitting demonstrated substitution, accepting additional qualification effort and possible delay or rejection of 0B.
+
+    - **Warrant:** GPT argued that indispensable production functions require demonstrated capability or an evidenced substitute before commitment.
+    - **Proposed classifications:**
+      - **Project-ending:** T02, T10, T14, T15, T22, T24, T25.
+      - **T26:** architecture-change under rq-0-64, with a proposed KDP-0A test; failure would elevate the affected capability to project-ending.
+    - **Qualifier:** GPT allowed reclassification following owner acceptance of an independently reviewed, architecture-specific fallback package.
+    - **Accepted downside:** GPT accepted additional 0A analysis, testing and possible delay.
+    - **Voting outcome:** Claude, Gemini and GPT approved this response; neither Claude nor Gemini supplied a revised classification table explicitly adopting it.
+
+    ## Decision-quality audit
+
+    ### Round 1
+
+    | Response | Weakest links named in votes | Missing or unsupported Composite Scaffold elements |
+    |---|---|---|
+    | **Claude** | Claude: **reasoning**; GPT: **commitment**; Gemini: none | Claude and GPT identified a mismatch between the generating rule and the operative classifications in the decision step. Claude also identified minor assessment-matrix arithmetic errors. Gemini approved the overall decision chain. |
+    | **Gemini** | Claude and GPT: **information**; Gemini: **information** | Claude challenged the qualitative weights and matrix, thin certainty claims, and unsupported fallback evidence. GPT challenged the architecture-specific evidence and calibrated confidence, especially for T26. Gemini’s self-review identified the absence of a structured ACH analysis. |
+    | **GPT** | Claude: **alternatives**; GPT: **information**; Gemini: none | Claude said the all-project-ending and evidence-conditioned options differed mainly in the reclassification path, and noted minor arithmetic errors. GPT acknowledged that the record contained no supporting fallback studies or test reports. All three nevertheless approved the response. |
+
+    ### Trade-off points, rather than facts to settle
+
+    - **Burden of proof:** Claude and GPT explicitly favoured a project-ending default; both framed the balance between extra 0A work and irreversible 0B exposure as an owner value judgment.
+    - **Acceptable degraded production:** Claude and GPT said the owner must define how much throughput, schedule or cost degradation still counts as a successful 0B fallback.
+    - **Meaning of “project-ending”:** Claude recommended a definition tied to viable 0B production; GPT explicitly distinguished ending the proposed 0B commitment from ending the funded 0A programme.
+    - **Schedule versus assurance:** Gemini explicitly prioritised a balance between 0A velocity and KDP-0B confidence.
+    - **Not merely a trade-off:** Claude and GPT treated fallback performance, maturity, cost and independence as evidence questions—not matters that an owner preference alone could settle.
+
+    ## Key Points
+
+    - **Shared principle, disputed application:** All three responses used fallback viability to distinguish classes. Claude and GPT required stronger evidence before lowering them than Gemini supplied.
+    - **The source labels need care:** GPT warned that the background’s “agreed core” was not evidence of unanimous original classifications. Claude likewise identified scope and definition inconsistencies, including its own T25 entries.
+    - **T10 may need functional separation:** Claude proposed separating safety-critical autonomy from productivity autonomy. GPT supported splitting broad technology IDs where necessary, but retained T10 as project-ending in its current table.
+    - **TRL and consequence are different:** Claude and GPT argued that current maturity estimates or familiar components do not establish that a function is replaceable.
+    - **The economics gate is not sufficient by itself:** Claude and GPT rejected using economics modelling to compensate for missing technical evidence about a fallback.
+    - **T26 has a narrower agreement:** All three retained architecture-change. Only GPT proposed automatic elevation at KDP-0A; Claude explicitly kept possible elevation within rq-0-64.
+    - **Earth supply has two different roles in the responses:** GPT treated “0A only, Earth supply” as a programme exit, not continued 0B production. Gemini proposed Earth-based packaging as a T22 fallback, which Claude and GPT considered insufficiently demonstrated.
+
+    ## Unresolved Questions
+
+    1. **Which classifications operate before dossiers are accepted?** Claude’s rule implies project-ending holds, but its table grants several lower classes; Claude and GPT both flagged this contradiction.
+    2. **What constitutes an admissible fallback?** Claude proposed explicit maturity, costing, economics, independence and schedule conditions. GPT proposed an independently reviewed qualification and transition package. Gemini did not establish comparable evidence thresholds.
+    3. **What degraded 0B remains authorised?** Claude and GPT requested owner-defined production, cost and schedule boundaries.
+    4. **Which technology scopes should be controlled?** Claude identified tug versus site power, safety versus productivity autonomy, and communications links versus integrated command service as important distinctions.
+    5. **How should T26 close?** GPT proposed automatic elevation; Claude deferred that question to rq-0-64; Gemini considered existing communications alternatives credible.
+    6. **Can the economics model discriminate fallback branches?** Claude said failure of that capability would undermine its proposed rule and favour conservative holds.
+    7. **What evidence exists beyond this record?** GPT distinguished “not demonstrated in the supplied record” from “no fallback exists.”
+
+    ## Recommended Actions
+
+    The following actions reflect proposals made by the models, rather than a new classification ruling:
+
+    1. **Obtain an explicit owner decision on current classes.** Claude and GPT’s reviews require resolving the contradiction between provisional architecture-change labels and a project-ending-until-evidenced rule.
+    2. **Record the generating rule alongside the classification table.** Claude and GPT proposed independently reviewed fallback evidence; the owner should explicitly accept or modify the required thresholds.
+    3. **Define acceptable fallback outcomes at KDP-0A.** Claude and GPT requested controlled limits for production, economics, safety, licence, schedule and cost.
+    4. **Commission bounded fallback packages.** Claude proposed dossiers for T02, productivity T10, T14, T24 and T25; GPT proposed function-specific qualification and fallback packages across the disputed technologies.
+    5. **Control scopes before revising the baseline.** Claude proposed splitting T10 and separating tug-array scope from site-power scope; GPT supported function-level decomposition where necessary.
+    6. **Close T26 through rq-0-64.** Consider GPT’s proposed KDP-0A substitution/disconnection test explicitly, without presenting its automatic-elevation mechanism as already agreed.
+    7. **Preserve the independent gates and programme exit.** GPT proposed retaining target, demand, economics and licence gates independently, with “0A only, Earth supply” if KDP-0B fails.
+
+    ```yaml
+    questionId: "rq-0-65"
+    topics:
+      - id: current-risk-classes
+        topic: Operative classifications for the seven technologies other than T26
+        positions:
+          - statement: "Classify T02, T10, T14, T15, T22, T24 and T25 as project-ending until an evidenced alternative warrants reclassification."
+            models: ["GPT-6.1 Sol"]
+            evidence: "Indispensable production functions and no qualifying fallback packages demonstrated in the supplied record."
+          - statement: "Keep T02, safety-critical T10, T15 and T22 project-ending; allow conditional or provisional architecture-change for productivity T10, T14, T24 and T25."
+            models: ["Claude Opus 5.5"]
+            evidence: "Proposed supervised operations, alternative propellants, replaceable mechanisms and cooperative navigation fallbacks; Claude and GPT subsequently flagged inconsistency with Claude's dossier-first rule."
+          - statement: "Classify T10, T14, T24 and T25 as project-ending, and T02, T15 and T22 as architecture-change."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Asserted fallback viability through smaller arrays, localised power and Earth-based packaging; Claude and GPT challenged the supporting evidence."
+        resolution_status: open
+        priority: critical
+      - id: fallback-admissibility
+        topic: Evidence required before lowering a risk class
+        positions:
+          - statement: "Require an accepted, independently reviewed fallback dossier before lowering a project-ending class."
+            models: ["Claude Opus 5.5", "GPT-6.1 Sol"]
+            evidence: "Both proposed architecture-specific performance, cost, schedule and dependency checks; Claude additionally specified maturity and costing thresholds."
+          - statement: "Known alternative implementations justify architecture-change, subject to economic viability."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini's classification split relied on asserted alternatives and assumed acceptable Phase 1 economics."
+        resolution_status: partially-resolved
+        priority: critical
+      - id: t26-closure
+        topic: T26 architecture-change ruling and possible elevation
+        positions:
+          - statement: "Retain architecture-change and leave possible project-ending elevation within rq-0-64."
+            models: ["Claude Opus 5.5"]
+            evidence: "Existing owner ruling and proposed application of the fallback test within that decision."
+          - statement: "Retain architecture-change because existing deep-space communications services provide alternatives."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "DSN and commercial service alternatives; GPT challenged whether fleet-level capacity and resilience were demonstrated."
+          - statement: "Retain architecture-change provisionally, with automatic elevation if substitution or tolerable disconnection is not demonstrated at KDP-0A."
+            models: ["GPT-6.1 Sol"]
+            evidence: "Existing owner ruling, unresolved integrated-service maturity and absence of demonstrated fallback service capacity in the record."
+        resolution_status: partially-resolved
+        priority: high
+      - id: authorised-fallback-outcome
+        topic: Definition of viable continued 0B production
+        positions:
+          - statement: "Judge fallbacks against owner-approved production and economic boundaries; define acceptable degradation explicitly."
+            models: ["Claude Opus 5.5", "GPT-6.1 Sol"]
+            evidence: "Both identified acceptable reduced output, cost and schedule as owner trade-offs rather than settled technical facts."
+          - statement: "Accept less efficient alternatives if the economics remain viable."
+            models: ["Gemini 3.1 Pro"]
+            evidence: "Gemini explicitly accepted degraded Phase 1 economics as the downside of its architecture-change classifications."
+        resolution_status: open
+        priority: high
+    ```
+  keyPoints:
+    - Shared principle, disputed application:** All three responses used fallback viability to distinguish classes. Claude and GPT required stronger evidence before lowering them than Gemini supplied.
+    - The source labels need care:** GPT warned that the background’s “agreed core” was not evidence of unanimous original classifications. Claude likewise identified scope and definition inconsistencies, including its own T25 entries.
+    - T10 may need functional separation:** Claude proposed separating safety-critical autonomy from productivity autonomy. GPT supported splitting broad technology IDs where necessary, but retained T10 as project-ending in its current table.
+    - TRL and consequence are different:** Claude and GPT argued that current maturity estimates or familiar components do not establish that a function is replaceable.
+    - The economics gate is not sufficient by itself:** Claude and GPT rejected using economics modelling to compensate for missing technical evidence about a fallback.
+    - T26 has a narrower agreement:** All three retained architecture-change. Only GPT proposed automatic elevation at KDP-0A; Claude explicitly kept possible elevation within rq-0-64.
+    - Earth supply has two different roles in the responses:** GPT treated “0A only, Earth supply” as a programme exit, not continued 0B production. Gemini proposed Earth-based packaging as a T22 fallback, which Claude and GPT considered insufficiently demonstrated.
+  unresolvedQuestions:
+    - Which classifications operate before dossiers are accepted?** Claude’s rule implies project-ending holds, but its table grants several lower classes; Claude and GPT both flagged this contradiction.
+    - What constitutes an admissible fallback?** Claude proposed explicit maturity, costing, economics, independence and schedule conditions. GPT proposed an independently reviewed qualification and transition package. Gemini did not establish comparable evidence thresholds.
+    - What degraded 0B remains authorised?** Claude and GPT requested owner-defined production, cost and schedule boundaries.
+    - Which technology scopes should be controlled?** Claude identified tug versus site power, safety versus productivity autonomy, and communications links versus integrated command service as important distinctions.
+    - How should T26 close?** GPT proposed automatic elevation; Claude deferred that question to rq-0-64; Gemini considered existing communications alternatives credible.
+    - Can the economics model discriminate fallback branches?** Claude said failure of that capability would undermine its proposed rule and favour conservative holds.
+    - What evidence exists beyond this record?** GPT distinguished “not demonstrated in the supplied record” from “no fallback exists.”
+  recommendedActions:
+    - Obtain an explicit owner decision on current classes.** Claude and GPT’s reviews require resolving the contradiction between provisional architecture-change labels and a project-ending-until-evidenced rule.
+    - Record the generating rule alongside the classification table.** Claude and GPT proposed independently reviewed fallback evidence; the owner should explicitly accept or modify the required thresholds.
+    - Define acceptable fallback outcomes at KDP-0A.** Claude and GPT requested controlled limits for production, economics, safety, licence, schedule and cost.
+    - Commission bounded fallback packages.** Claude proposed dossiers for T02, productivity T10, T14, T24 and T25; GPT proposed function-specific qualification and fallback packages across the disputed technologies.
+    - Control scopes before revising the baseline.** Claude proposed splitting T10 and separating tug-array scope from site-power scope; GPT supported function-level decomposition where necessary.
+    - Close T26 through rq-0-64.** Consider GPT’s proposed KDP-0A substitution/disconnection test explicitly, without presenting its automatic-elevation mechanism as already agreed.
+    - Preserve the independent gates and programme exit.** GPT proposed retaining target, demand, economics and licence gates independently, with “0A only, Earth supply” if KDP-0B fails.
+    - 'id: current-risk-classes'
+    - 'statement: "Classify T02, T10, T14, T15, T22, T24 and T25 as project-ending until an evidenced alternative warrants reclassification."'
+    - 'statement: "Keep T02, safety-critical T10, T15 and T22 project-ending; allow conditional or provisional architecture-change for productivity T10, T14, T24 and T25."'
+    - 'statement: "Classify T10, T14, T24 and T25 as project-ending, and T02, T15 and T22 as architecture-change."'
+    - 'id: fallback-admissibility'
+    - 'statement: "Require an accepted, independently reviewed fallback dossier before lowering a project-ending class."'
+    - 'statement: "Known alternative implementations justify architecture-change, subject to economic viability."'
+    - 'id: t26-closure'
+    - 'statement: "Retain architecture-change and leave possible project-ending elevation within rq-0-64."'
+    - 'statement: "Retain architecture-change because existing deep-space communications services provide alternatives."'
+    - 'statement: "Retain architecture-change provisionally, with automatic elevation if substitution or tolerable disconnection is not demonstrated at KDP-0A."'
+    - 'id: authorised-fallback-outcome'
+    - 'statement: "Judge fallbacks against owner-approved production and economic boundaries; define acceptable degradation explicitly."'
+    - 'statement: "Accept less efficient alternatives if the economics remain viable."'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T22:18:13.590Z'
+alternateSyntheses:
+  - synthesizer: claude-opus-5-5
+    generatedAt: '2026-10-17T22:39:18.696Z'
+    file: conclusion.claude-opus-5-5.md

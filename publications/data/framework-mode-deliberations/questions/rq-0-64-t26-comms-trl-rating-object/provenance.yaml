@@ -1,0 +1,188 @@
+schema: project-dyson/deliberation-provenance@1
+generated: '2026-10-17T21:46:34.706Z'
+orchestrator:
+  git_commit: 2f6d4e4bcc1c3a2041f8c123edfcc3b5decd4a75
+  git_dirty: false
+  node: v26.4.0
+  files:
+    scripts/run-discussion.js: 1c8ab6ced379e26d3d75eafc053c58a64fc1677870a3b5972b66287428c48b0e
+    scripts/lib/llm.js: 066db44310dc28b84f1e7373daf1c6e153b5c4163effaa4d43f3c2726fc1d439
+    scripts/lib/critique.js: 38b3a0b0f73e5f031cdc4e30e4b6c6597f996cb762ec39da98c64edf4b448a56
+    scripts/lib/provenance.js: 54650fffe8624cd92c92b79c08f9ed53ae7b729f7a58aa467115ae9cc9cfb540
+    scripts/lib/yaml-block.js: b020eb423016f55367273868f13a631723e78b941e237742646f1cc20ee30ae5
+    package-lock.json: 6c45370ff2e96c52be7080ecf4c19d014b96b01292ad2b98d873205db607bbf9
+method:
+  framework:
+    path: src/content/methodology/decision-frameworks.md
+    sha: 18f503fe4ec6
+  hiddenWinner: true
+  blindVoting: true
+  priorContext: full
+  config:
+    maxRounds: 5
+    maxResponseWords: 2000
+    allowSelfVoting: true
+    selfVoteWeight: 0.5
+    unanimousTermination: true
+    consecutiveConcludeRounds: 2
+  responseWords: 3000
+  synthesizer: gpt-6-1-sol
+models:
+  - key: claude-opus-5-5
+    name: Claude Opus 5.5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+  - key: gemini-3-1-pro
+    name: Gemini 3.1 Pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+  - key: gpt-6-1-sol
+    name: GPT-6.1 Sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+parameters_sent:
+  claude-opus-5-5:
+    max_tokens:
+      - 32000
+      - 16000
+    temperature: not sent (endpoint default)
+  gemini-3-1-pro:
+    max_tokens:
+      - 32000
+      - 16000
+    temperature: not sent (endpoint default)
+  gpt-6-1-sol:
+    temperature: not sent (endpoint default)
+system_prompts:
+  3c2b93c18f5f163b6476e4659ab8443a27a91da65c1557c3e50ba71d74d8264a: >-
+    You are a space systems engineering expert participating in a multi-stakeholder discussion about Project Dyson
+    specifications.
+  506604f683a03ca72848b4f5254d8d2cc64da9b2b3e798b8d70f390c171d9339: You are evaluating responses in a structured discussion. Respond only with valid JSON.
+exchanges:
+  - file: >-
+      data/raw-exchanges/discussions/t26-comms-trl-rating-object/claude-opus-5-5/round-1-response-1792273401051.6bd7e448e87e.raw.json
+    sha256: 600907d83a7341eb322f22c42d2d99da6b264a1aeb36ba246e58a2ea1c566f0c
+    request_sha256: 6bd7e448e87e7d174bcb59704a3ec9dbc6d500599d7e24b956814eacd00a1f8d
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T21:41:39.964Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 9722
+      prompt_tokens: 4864
+      total_tokens: 14586
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/t26-comms-trl-rating-object/claude-opus-5-5/round-1-vote-1792273522487.81db17fca214.raw.json
+    sha256: fad5182868eb3e45e5575b412ff30aa3e1db617c78afa6865cdfd41d0bcd50cd
+    request_sha256: 81db17fca214f357b05857662ebd803be061459b7a3957127f29075a699914da
+    model: claude-opus-5-5
+    endpoint: databricks-claude-opus-5-5
+    transport: gateway-chat
+    started: '2026-10-17T21:45:06.344Z'
+    finish: stop
+    usage:
+      cache_read_input_tokens: 0
+      completion_tokens: 1387
+      prompt_tokens: 15997
+      total_tokens: 17384
+      cache_creation_input_tokens: 0
+  - file: >-
+      data/raw-exchanges/discussions/t26-comms-trl-rating-object/gemini-3-1-pro/round-1-response-1792273425827.7d1068862236.raw.json
+    sha256: 2a086dc6f0f71e71d3b21e80e83d42bd85f3ee774dfbfaf15a1a40259df2d983
+    request_sha256: 7d1068862236d2492e43812cc71e47a90ab7fa389ea49d362aa7cbb27350d717
+    model: gemini-3-1-pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+    started: '2026-10-17T21:43:21.060Z'
+    finish: stop
+    usage:
+      prompt_tokens: 3133
+      completion_tokens: 1505
+      total_tokens: 5680
+      reasoning_tokens: 1042
+  - file: >-
+      data/raw-exchanges/discussions/t26-comms-trl-rating-object/gemini-3-1-pro/round-1-vote-1792273532726.1a08330dae60.raw.json
+    sha256: 89e49e384afd213608c35fae73002af738606932071f98b3073263bbf601a186
+    request_sha256: 1a08330dae6031ba45086ef7a723d077a134e61c5a43cbf8c681d0d201bff989
+    model: gemini-3-1-pro
+    endpoint: databricks-gemini-3-1-pro
+    transport: gateway-chat
+    started: '2026-10-17T21:45:22.489Z'
+    finish: stop
+    usage:
+      prompt_tokens: 10255
+      completion_tokens: 288
+      total_tokens: 11100
+      reasoning_tokens: 557
+  - file: >-
+      data/raw-exchanges/discussions/t26-comms-trl-rating-object/gpt-6-1-sol/conclusion-1792273594627.dc855991301c.raw.json
+    sha256: 099b6c6902e5f264e050ed98e4282f02fd95baacea79ed4ce16305ba843212f1
+    request_sha256: dc855991301c031e4e452c14f786231bd247facdfbd0d7e1ac33407b8f48b9a4
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T21:45:41.717Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 11581
+        cached_tokens: 0
+      input_tokens: 11584
+      output_tokens_details:
+        reasoning_tokens: 63
+      total_tokens: 14142
+      output_tokens: 2558
+  - file: >-
+      data/raw-exchanges/discussions/t26-comms-trl-rating-object/gpt-6-1-sol/round-1-response-1792273506340.761a66c55c9a.raw.json
+    sha256: f52d41b8c8b03b9c9c8cf66f2b4e9ff19af776ca522f8f640f6146bd316fa491
+    request_sha256: 761a66c55c9ae3ade42b49ab85af3c2508d09c0314f35fab6153a543d99e711c
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T21:43:45.830Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 3008
+        cached_tokens: 0
+      input_tokens: 3011
+      output_tokens_details:
+        reasoning_tokens: 437
+      total_tokens: 6408
+      output_tokens: 3397
+  - file: >-
+      data/raw-exchanges/discussions/t26-comms-trl-rating-object/gpt-6-1-sol/round-1-vote-1792273541517.3edfb8581446.raw.json
+    sha256: a3d255fb83e076de76a0abc6e4c4e42bad6cd519f3638528e00b48ee2780babf
+    request_sha256: 3edfb85814465eb99713e7645d5ec598866da193ad4203482156d85e5d7c31d9
+    model: gpt-6-1-sol
+    endpoint: databricks-gpt-6-1-sol
+    transport: gateway-responses
+    started: '2026-10-17T21:45:32.729Z'
+    finish: completed
+    usage:
+      input_tokens_details:
+        cache_write_tokens: 9845
+        cached_tokens: 0
+      input_tokens: 9848
+      output_tokens_details:
+        reasoning_tokens: 68
+      total_tokens: 10220
+      output_tokens: 372
+outputs:
+  - file: src/content/research-questions/phase-0/rq-0-64-t26-comms-trl-rating-object/conclusion.md
+    sha256: 5716793dc21e056a7be824fa73ae85a413e497878a1bcfd70459357d816df0ef
+  - file: src/content/research-questions/phase-0/rq-0-64-t26-comms-trl-rating-object/discussion.yaml
+    sha256: c5fc10ec72030da559c35197df34eca95819b3903858eb9933593942e281284d
+  - file: src/content/research-questions/phase-0/rq-0-64-t26-comms-trl-rating-object/divergent-views.yaml
+    sha256: e14e8453ab1e38cfaefcb9dd30c6a4d43b0984bc2d60ab12670d6ec9fcf44477
+  - file: src/content/research-questions/phase-0/rq-0-64-t26-comms-trl-rating-object/round-1/claude-opus-5-5.md
+    sha256: 9b0f40d4d201fed3b7dcea7fc2f6013bea4bf95e78361852bb14b811b081be43
+  - file: src/content/research-questions/phase-0/rq-0-64-t26-comms-trl-rating-object/round-1/gemini-3-1-pro.md
+    sha256: 2e5f9013ac0dbd499a583def44a84514f563b12ecb87b6d58c77d68cf56c9688
+  - file: src/content/research-questions/phase-0/rq-0-64-t26-comms-trl-rating-object/round-1/gpt-6-1-sol.md
+    sha256: 36bc79591cbf9ad9231c6364bfc4e10349465408b301b967c4cd276447ff03a6
+  - file: src/content/research-questions/phase-0/rq-0-64-t26-comms-trl-rating-object/round-1/votes.yaml
+    sha256: 248fe867148e79ee07b539b210bf45c9124a49ee69fab7005cd058257e9a5a99

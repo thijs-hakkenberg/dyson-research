@@ -1,0 +1,148 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-66
+topics:
+  - id: null-option-and-blanket-trl6
+    topic: Leave the split unresolved or apply blanket TRL 6 to all five
+    positions:
+      - statement: >-
+          Reject the null option; reject blanket TRL 6 as the general rule (GPT keeps TRL 6 as the default where
+          reversibility is unproven)
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          Null leaves the gate drafter-dependent or unexecutable; blanket TRL 6 duplicates 0A evidence and lets T12
+          delay Phase 1
+    resolution_status: resolved
+    priority: high
+  - id: t11-kdp0b-membership
+    topic: Whether T11 belongs on the KDP-0B list
+    positions:
+      - statement: >-
+          Remove from KDP-0B list; govern at scout PDR (TRL 6); re-enter at TRL 6 as architecture-change if Phase 1
+          inherits T11 hardware or software
+        models:
+          - Claude Opus 5.5
+        evidence: Bus maturity has no decision value at 0B; failure is captured by target-gate failure outcome
+      - statement: Assess via 0A mission data, not pre-gate TRL
+        models:
+          - Gemini 3.1 Pro
+        evidence: The 0A flight is the maturation path; pre-gate TRL 6 is circular
+      - statement: Inherit applicable 0A evidence; gate outstanding critical or continuing scout functions at TRL 6
+        models:
+          - GPT-6.1 Sol
+        evidence: Mission completion alone does not establish applicability of configuration, envelope and functions
+    resolution_status: partially-resolved
+    priority: medium
+  - id: t18-criterion
+    topic: KDP-0B criterion for T18 sampling and assay
+    positions:
+      - statement: >-
+          Project-ending; satisfied only by in-situ flight assay at the target (TRL >= 7 by flight); target gate must
+          not pass on remote sensing alone; no waiver
+        models:
+          - Claude Opus 5.5
+        evidence: Ground TRL 6 does not make an unmeasured target investable; current gate text may allow a remote-sensing pass
+      - statement: >-
+          TRL 6 for the relevant sampling and assay capability plus target-specific evidence meeting predeclared
+          uncertainty and representativeness criteria
+        models:
+          - GPT-6.1 Sol
+        evidence: Instrument maturity is distinct from target adequacy
+      - statement: >-
+          Assessed via 0A mission data rather than pre-gate TRL (O3), although its own matrix rated the hybrid O4 (T18
+          at TRL 6) higher on risk containment
+        models:
+          - Gemini 3.1 Pro
+        evidence: T18 is self-proving through the 0A flight; Gemini names T18 classification as its sensitivity point
+    resolution_status: partially-resolved
+    priority: critical
+  - id: t09-t12-t20-waiver-conditions
+    topic: Default criterion and waiver conditions for T09, T12, T20
+    positions:
+      - statement: >-
+          TRL 6 default; waiver to TRL >= 5 only with a TRL 6 fallback, joint-fallback economics pass, penalties in the
+          baseline and independent authority; no fallback means no waiver
+        models:
+          - Claude Opus 5.5
+        evidence: A funded path is a budget line, not evidence; independent waivers stack into an untested joint failure
+      - statement: >-
+          TRL 6 where KDP-0B creates irreversible dependence; TRL >= 5 only with an independently verified, funded,
+          interface-compatible alternative or deferral preserving demand, economics, safety and licence, with owner,
+          latest substitution date and stop trigger
+        models:
+          - GPT-6.1 Sol
+        evidence: Irreversibility, not list membership, sets stringency; substitution evidence currently very low certainty
+      - statement: TRL 6 or TRL 5 with approved waiver, defined fallback architecture and fully funded Phase 1 maturation plan
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Architecture-change failures only degrade efficiency; known fallbacks exist (stated High certainty, challenged
+          by Claude and GPT)
+    resolution_status: partially-resolved
+    priority: critical
+  - id: selected-reference-implementation
+    topic: Meaning of "selected reference implementation"
+    positions:
+      - statement: >-
+          Design (operating point, payload class, chemistry, control scope) in the Phase 1 configuration baseline frozen
+          at KDP-0B; post-0B substitution triggers reclassification and an economics re-run
+        models:
+          - Claude Opus 5.5
+        evidence: Needed for an auditable one-way gate and reusable for T25 and T26
+      - statement: >-
+          Configuration used in the approved architecture, performance model, cost estimate, interfaces and
+          qualification plan, not merely a preferred candidate
+        models:
+          - GPT-6.1 Sol
+        evidence: Criticality follows the committed dependency chain
+    resolution_status: partially-resolved
+    priority: high
+  - id: waiver-authority
+    topic: Who adjudicates waivers or exceptions
+    positions:
+      - statement: Authority independent of the Phase 1 programme office; if not, switch to no-waiver TRL 6
+        models:
+          - Claude Opus 5.5
+        evidence: Protection depends on independent adjudication; one-way gates fail through erosion
+      - statement: Independent review must verify each exception
+        models:
+          - GPT-6.1 Sol
+        evidence: Unreviewed fallback evidence does not earn gate credit
+    resolution_status: partially-resolved
+    priority: high
+  - id: kdp0b-schedule-vs-scout-return
+    topic: Whether KDP-0B must follow scout assay return
+    positions:
+      - statement: KDP-0B scheduled after nominal scout assay return plus analysis margin; accept the slip
+        models:
+          - Claude Opus 5.5
+        evidence: The target gate cannot honestly pass without assay data
+      - statement: If 0A cannot deliver decision-quality assay before 0B, hold 0B, obtain more evidence or change target
+        models:
+          - GPT-6.1 Sol
+        evidence: A TRL label is not a substitute for missing target knowledge
+      - statement: Scout failure to fly before KDP-0B falsifies the T18 exemption
+        models:
+          - Gemini 3.1 Pro
+        evidence: Stated as a falsification condition for its assumption 2
+    resolution_status: partially-resolved
+    priority: high
+  - id: schedule-vs-safety-tradeoff
+    topic: Owner values trade-off between schedule and one-way safety, especially for T12
+    positions:
+      - statement: Accept a costlier fallback Phase 1 rather than wait on T12 TRL 6; explicitly an owner call
+        models:
+          - Claude Opus 5.5
+        evidence: Signed-demand window under D-01 against architecture purity; no evidence settles it
+      - statement: Schedule realism weighted 8/10 against risk containment 10/10; favours waiverable treatment
+        models:
+          - Gemini 3.1 Pro
+        evidence: Avoiding multi-year delay for substitutable systems
+      - statement: Demonstration spend, delay and residual rework risk are owner choices; unproven substitution defaults to TRL 6
+        models:
+          - GPT-6.1 Sol
+        evidence: Testing informs but cannot determine the preferred balance
+    resolution_status: open
+    priority: high

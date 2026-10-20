@@ -8,6 +8,9 @@ aggregatedPapers: 3
 
 # Consolidated Literature Handover for External Researcher
 
+> **2026-10-20:** a second brief covers the gate-ruling evidence questions rq-0-76 … rq-0-83:
+> [`GATE-EVIDENCE-HANDOVER.md`](GATE-EVIDENCE-HANDOVER.md). This document covers the March 2026 set.
+
 ## How to Use This Document
 
 Project Dyson has completed an exhaustive arxiv search across 6 research questions and 3 planned papers. **Arxiv coverage is sparse to nonexistent for most of these engineering topics** — the critical literature lives in NASA TRS, AIAA, IEPC, JBIS, and specialized journals.

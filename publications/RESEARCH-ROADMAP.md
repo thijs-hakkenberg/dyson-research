@@ -2,6 +2,47 @@
 
 **Generated:** 2026-02-22
 **Based on:** Feasibility assessment, 142 research questions (107 open), 12 TRL assessments, 5 decision gates
+**Updated:** 2026-10-20 (see below; the February analysis is kept as written)
+
+---
+
+## Update, 2026-10-20: Phase 0 re-assessment, TRL re-baseline and gate rulings
+
+The Phase 0 re-assessment (dyson repo, `reconciliation/phase-0/`) changed several premises
+this roadmap was built on. Sections below that cite Gates 1–5, the 12 TRL rows or the
+50 kt/yr station describe the February state.
+
+**What changed**
+
+| Topic | February premise | Now |
+|---|---|---|
+| Phase 0 scope | One programme, "pure research" | **D-01 (accepted):** fund 0A (research and pathfinders); hold 0B (production) as a gated real option sized by signed Phase 1 demand |
+| Architecture | Central 50 kt/yr station at Sun–Earth L4, human-tended | Processing co-located at the NEA; Phase 0 uncrewed; cryogenic depot removed from Phase 0 |
+| Transport | 100+ kW SEP rated TRL 6–7 | 1–2.5 MWe tugs, rated TRL 2–4 |
+| Readiness | 12 TRL assessments | **26 critical technologies** re-rated on TRL and AD² by a three-model panel (24 agree, 2 diverge, 1 set by owner ruling) |
+| Gates | Gates 1–5 by month | **D-02 (accepted):** KDP-0A, 0A mid-term review, KDP-0B, plus target, demand, economics and licence gates; stringency follows reversibility; TRL 6 with no waiver for project-ending technologies at KDP-0B |
+| Cost | Phase 0 ≈ $15.7B | Panel range $22–195B; to be re-derived from the revised BOM |
+| Owner decisions pending | — | D-03 debris limit, D-04 delivery node, D-05 tug propellant (proposed, interim positions) |
+
+**New research questions**
+
+- **rq-0-50 … rq-0-63:** from the re-assessment (target class and grade, beneficiation, EP
+  propellant supply, MW-class EP life, no-melt refining, delivered cost, Phase 1 demand, 0B cost
+  vs Earth supply, TRL re-baseline, integrated schedule).
+- **rq-0-64 … rq-0-75:** owner rulings on the gate proposal, deliberated in decision-framework
+  mode. The data is archived in `data/framework-mode-deliberations/`.
+- **rq-0-76 … rq-0-83:** evidence questions for the rulings the deliberation could not settle.
+  Search briefs: `handover/GATE-EVIDENCE-HANDOVER.md`.
+
+**Effect on the paper portfolio**
+
+| Paper | Effect |
+|---|---|
+| 03 Multi-Model AI Consensus | New dataset: 12 framework-mode deliberations with a second, independent synthesis of each. Finding: both synthesizers overstated convergence toward the other model's position. They read APPROVE votes as adoption of a rule, and only 3 of 11 gate questions converged when checked against the transcripts. A second synthesizer is a first, automated reliability check, which bears on the reviewers' request for inter-rater reliability. Human evaluation is still needed. |
+| 04 Microgravity Metallurgy | Its gate (Gate 1, month 36) is retired. Whether gravity is needed at all is contested (rq-0-11 note), and a no-melt carbonyl/H₂ route is now an alternative (rq-0-56). A 100 g ISS experiment cannot retire the risk: the scale gap is 4–6 orders of magnitude. |
+| 05 ISRU Water Extraction | Under D-05 (proposed), water EP stays a desk study until a C-type target is confirmed (rq-0-55). The paper's comparison remains valid as input to that desk study. |
+| 06 Cryogenic Propellant Architecture | Less relevant to Phase 0: the cryogenic depot was removed from the Phase 0 architecture. Still relevant to later phases. |
+| Candidate | The scale-up evidence base (rq-0-78) and the target-grade evidence standard (rq-0-80) are each publishable on their own as literature-plus-analysis papers. |
 
 ---
 

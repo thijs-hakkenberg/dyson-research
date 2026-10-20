@@ -1,0 +1,133 @@
+# Extracted by claude-opus-5-5 from the conclusion (step 1-2 of paper 03's procedure). Human review against the transcripts (step 3) is pending.
+questionId: rq-0-68
+topics:
+  - id: meaning-of-3x
+    topic: Meaning of "within 3×" (quantity vs timing)
+    positions:
+      - statement: 'Quantity ratio: nameplate kt/yr <= 3 x accepted demand kt/yr; timing handled by a separate clause or deferred'
+        models:
+          - Claude Opus 5.5
+          - Gemini 3.1 Pro
+          - GPT-6.1 Sol
+        evidence: >-
+          D-01 says demand sizes 0B and sizing is a quantity; rq-0-58 read as kt/yr against capacity (Claude, Gemini);
+          ACH ranks timing reading most disconfirmed (Claude, GPT); GPT moved from its earlier timing reading but notes
+          rq-0-58 text not seen
+    resolution_status: resolved
+    priority: high
+  - id: sizing-rule
+    topic: Whether 3× is a sizing ceiling or only a coverage test
+    positions:
+      - statement: >-
+          3× is a ceiling bounded by declared yield/availability: nameplate <= min(3 x accepted demand, accepted demand
+          / eta); excess via owner decision logged against g-economics
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          First-of-kind plants run below nameplate during ramp-up; 3× approximates honest overcapacity if eta ~0.3-0.5;
+          sensitivity to eta requires declared basis from 0A data
+      - statement: Maximum 0B nameplate is 3 x signed annual demand
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Moderate confidence that 3× gives margin for testing and scaling without unchecked overproduction; dependent
+          on unvalidated yields
+      - statement: >-
+          3× coverage is necessary not sufficient; authorise the smallest technically feasible configuration meeting
+          accepted demand; unavoidable surplus justified through g-economics against staged and Earth-supply
+          alternatives
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Principal exposure is committing capital beyond credible need; separating coverage from sizing reduces
+          speculative capacity (moderate confidence)
+    resolution_status: open
+    priority: critical
+  - id: signed-independence
+    topic: What makes internal Phase 1 demand "signed" and non-circular
+    positions:
+      - statement: >-
+          Signatory with budget authority independent of the 0B proposer, plus committed funding or a displaced costed
+          Earth-supply line (counterfactual: demand exists if 0B is cancelled); LoIs, MoUs and planning assumptions
+          excluded
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Megaproject optimism bias (Flyvbjerg, by analogy); counterfactual ties gate to the Earth-supply fallback; own
+          evidence certainty for the test rated very low/low
+      - statement: >-
+          Accountable customer authority distinct from the 0B proposer signs a controlled commitment with acceptance
+          criteria, resource backing (funded line item) and change/cancellation terms; technical endorsement
+          insufficient
+        models:
+          - GPT-6.1 Sol
+        evidence: >-
+          Logical distinction between a signature and a resource commitment (high confidence); credibility conditional
+          on real budget authority
+      - statement: >-
+          A funded internal Phase 1 line item or legally binding external contract suffices, with T22 spec, quantities,
+          node and schedule; no independent signatory specified
+        models:
+          - Gemini 3.1 Pro
+        evidence: >-
+          Asserted high confidence that unfunded internal demand leads to stranded assets; challenged by Claude and GPT
+          as uncalibrated and as not fully breaking circularity
+    resolution_status: partially-resolved
+    priority: critical
+  - id: conditionality-on-0b
+    topic: Whether a demand commitment may be conditional on KDP-0B approval
+    positions:
+      - statement: Qualifying instrument must not be conditional on 0B approval
+        models:
+          - Claude Opus 5.5
+        evidence: 'Counterfactual test: demand must exist independently of the decision it justifies'
+      - statement: >-
+          Commitment may be conditional on explicit KDP-0B authorisation and delivery of conforming product, but not on
+          an otherwise unapproved downstream programme; count firm quantity only
+        models:
+          - GPT-6.1 Sol
+        evidence: Distinguishes approved appropriations from unfunded planning allowances; firm vs optional quantity
+    resolution_status: open
+    priority: high
+  - id: timing-window-epoch
+    topic: Epoch, averaging/commitment window and delivery-timing bound
+    positions:
+      - statement: 3-year averaging window from planned first-nameplate date E0; first qualifying delivery due by E0 + 24 months
+        models:
+          - Claude Opus 5.5
+        evidence: >-
+          Annualising over first year vs 3 years changes numerator greatly during ramp-up; values not further justified
+          (GPT critique)
+      - statement: >-
+          Test D_t >= C_t/3 in each predeclared annual period; count only quantities deliverable within buyer windows;
+          freeze windows and commissioning profile before assessment; bound left unquantified
+        models:
+          - GPT-6.1 Sol
+        evidence: Prevents demand shifting between periods; one year of purchases does not establish asset-life utilisation
+      - statement: Owner to define the exact epoch and delivery window
+        models:
+          - Gemini 3.1 Pro
+        evidence: Deferred; criticised by Claude and GPT as undermining auditability
+    resolution_status: open
+    priority: high
+  - id: external-offtake-role
+    topic: Role of external offtake
+    positions:
+      - statement: >-
+          External offtake is a credit reported separately, strengthening g-economics, not required; external-only rule
+          would make the gate likely unpassable
+        models:
+          - Claude Opus 5.5
+        evidence: No kt-scale external market for space-processed material likely by KDP-0B (very likely, low certainty)
+      - statement: >-
+          External demand counts if enforceable with evidence of counterparty ability to perform; external-only rejected
+          as excluding D-01 internal demand
+        models:
+          - GPT-6.1 Sol
+        evidence: External signatures vulnerable to cancellation, counterparty failure and unfunded obligations
+      - statement: Legally binding external offtaker agreement is one qualifying route
+        models:
+          - Gemini 3.1 Pro
+        evidence: External legal/financial commitment breaks self-justification
+    resolution_status: partially-resolved
+    priority: medium

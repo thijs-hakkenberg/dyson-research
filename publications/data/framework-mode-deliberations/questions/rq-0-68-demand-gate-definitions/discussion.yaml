@@ -1,0 +1,804 @@
+questionId: rq-0-68
+questionSlug: demand-gate-definitions
+questionTitle: What do 'within 3×' and 'signed' mean in the demand gate?
+phaseId: phase-0
+config:
+  maxRounds: 5
+  maxResponseWords: 2000
+  allowSelfVoting: true
+  selfVoteWeight: 0.5
+  unanimousTermination: true
+  consecutiveConcludeRounds: 2
+method:
+  framework: 18f503fe4ec6
+  blindVoting: true
+  priorContext: full
+  hiddenWinner: true
+status: concluded
+startedAt: '2026-10-17T22:12:29.540Z'
+rounds:
+  - roundNumber: 1
+    responses:
+      - modelId: claude-opus-5-5
+        content: |-
+          # g-demand: ruling on "within 3×" and "signed"
+
+          ## 1. Frame & decision type
+
+          **Decision type.** This is a property decision about the definition of one gate criterion. The definition then acts as an executive constraint on how 0B is sized, because D-01 sizes 0B "by signed Phase 1 demand". The definition therefore decides 0B scale.
+
+          **Reversibility.**
+          - **The definition itself** is two-way until KDP-0B and costs little to change before then.
+          - **What it governs** is one-way. KDP-0B commits capital to a 0B plant at a chosen nameplate.
+
+          Under D-02, stringency follows reversibility. The definition must be written to the one-way standard now, while changing it is still cheap.
+
+          **Cynefin domain.** The wording question is *complicated*: there is a right answer and analysis finds it. Whether real demand will exist is *complex*, and no definition can settle it. The definition's job is narrower: make the gate objectively passable or failable, and stop the project from certifying its own demand.
+
+          **Problem with the status quo.** GPT is right that, as written, the gate has no numerator, denominator or epoch. A reviewer could pass or fail the same evidence. A gate that cannot be failed is not a gate.
+
+          ## 2. Criteria and weights (stated before options)
+
+          Swing weights reflect how much the options differ on each criterion, not how important the criterion sounds in the abstract.
+
+          | # | Criterion | Weight | Why this weight fits the range |
+          |---|---|---|---|
+          | C1 | **Objective passability.** Two independent reviewers given the same evidence reach the same verdict. | 0.30 | Options range from "unpassable/arbitrary" (null) to fully mechanical. This is the widest swing, and it is the failure GPT identified. |
+          | C2 | **Resistance to circularity and self-certification.** The project cannot manufacture the demand that justifies its own next phase. | 0.25 | Wide swing, from "the 0B team writes its own demand memo" to "only third-party money counts". This is Claude's circularity flag, the most likely way the gate silently fails. |
+          | C3 | **Fidelity to D-01/D-02.** 0B is a real option sized by demand. The fallback "0A only, Earth supply" stays live. | 0.20 | Moderate swing. Most options respect D-01 in spirit. The timing-only and no-gate options do not. |
+          | C4 | **Feasibility / option preservation.** The bar is attainable for a first-of-kind space-resource programme, so 0B is not killed by definition. | 0.15 | Moderate swing. Only the external-offtaker-only option risks making the gate structurally unpassable. |
+          | C5 | **Evidence burden.** The cost of producing and auditing the evidence. | 0.10 | Narrow swing. Every serious option needs a specification, schedule and budget artefact anyway, because T22 needs a product specification regardless. |
+
+          **Musts (Kepner-Tregoe screen) before scoring:**
+          - M1: The criterion names numerator, denominator, units and epoch.
+          - M2: It contains a test for "signed" that a project-internal memo cannot satisfy alone.
+
+          ## 3. Options
+
+          **O0 — Null: leave the panel split as recorded.**
+          - Fails M1. KDP-0B reviewers would choose a reading at the gate, after the evidence is known.
+          - That is the worst time to define a criterion, because the reading can be chosen to fit the result.
+          - *Rejected.*
+
+          **O1 — Quantity reading, "signed" left to the owner later (Claude/Gemini as stated).**
+          - Captures the right meaning: kt/yr against capacity, per rq-0-58.
+          - Fails M2. It defers exactly the hard part.
+          - *Rejected as incomplete. Its quantity core is retained in O3.*
+
+          **O2 — Timing reading (GPT's proposal).** The accepted delivery date span is ≤ 3× the elapsed time from a common epoch.
+          - It is objective.
+          - It answers a question D-01 does not ask. D-01 says demand *sizes* 0B, and sizing is a quantity.
+          - A timing-only gate could pass a 10 t/yr order against a 2 kt/yr plant.
+          - *Rejected as the meaning of "3×". GPT's underlying concern, demand that is real in quantity but arrives too late, is valid. It is retained as a separate timing clause with its own bound, not by overloading "3×".*
+
+          **O3 — Composite definition (recommended).** Four parts:
+          1. Quantity ratio with fully defined terms: nameplate ≤ 3 × accepted demand.
+          2. A separate delivery-window clause.
+          3. A counterfactual test for "signed".
+          4. A sizing cap.
+
+          **O4 — Strict external.** Only binding third-party offtake counts, and 0B is sized exactly to it.
+          - Maximal on C2.
+          - In practice it very likely makes the gate unpassable at KDP-0B, because no external market for kt-scale space-processed material is likely to exist by then.
+          - It collapses D-01's real option into "never".
+          - *Rejected as the rule. Kept as a credit, not a requirement (see O3).*
+
+          **O5 — Delete g-demand and rely on g-economics.**
+          - The economics gate prices demand but does not verify it exists.
+          - Removing the only gate that asks "who takes delivery?" is the classic megaproject failure mode: capacity built ahead of committed use.
+          - *Rejected.*
+
+          ## 4. Assessment matrix (QOC; scores 1–5)
+
+          | Option | C1 Passability (0.30) | C2 Circularity (0.25) | C3 D-01 fidelity (0.20) | C4 Feasibility (0.15) | C5 Burden (0.10) | Weighted | Musts |
+          |---|---|---|---|---|---|---|---|
+          | O0 Null | 1 | 1 | 2 | 4 | 5 | **2.05** | Fails M1, M2 |
+          | O1 Quantity, signed TBD | 3 | 1 | 4 | 4 | 4 | **3.00** | Fails M2 |
+          | O2 Timing only | 4 | 2 | 1 | 3 | 4 | **2.75** | Passes M1 only |
+          | **O3 Composite** | **5** | **4** | **5** | **4** | **3** | **4.40** | **Passes** |
+          | O4 External only | 5 | 5 | 2 | 1 | 4 | **3.70** | Passes |
+          | O5 No gate | 2 | 1 | 1 | 5 | 5 | **2.15** | Fails M1, M2 |
+
+          O3 leads by 0.7 over its nearest rival (O4). The gap closes only if C4 is down-weighted to near zero, that is, if the owner would rather lose 0B than risk circular demand. That is a values question (§5), not an analytical one.
+
+          ## 5. Sensitivity vs trade-off points
+
+          **Sensitivity points** are parameters that strongly move one attribute:
+
+          - **S1 — Planning availability × yield factor (η).** The sizing cap is roughly accepted demand ÷ η, capped at 3× accepted demand.
+            - If first-of-kind ISRU plant η is about 0.3–0.5 (plausible for early operations), the 3× cap binds almost exactly at the honest sizing.
+            - If η turns out to be about 0.8, 3× is generous and invites overbuild.
+            - The ratio's meaning is therefore highly sensitive to η, which is why η must be declared and justified in the 0B plan, not assumed.
+          - **S2 — Averaging window length.** Annualising signed demand over a 3-year window versus the first operating year changes the numerator by a large factor during ramp-up. I recommend a 3-year window starting at the planned first-nameplate date.
+          - **S3 — Which internal demand qualifies.** The counterfactual test (below) is the single strongest lever on C2. Loosen it and C2 collapses.
+
+          **Trade-off points** are values questions, not facts to settle:
+
+          - **T1 — Rigour vs option survival (C2 vs C4).**
+            - Counting internal Phase 1 demand at all is a trade.
+            - Excluding it (O4) makes the gate honest and probably unpassable.
+            - Including it under a counterfactual test accepts some residual self-dealing risk to keep 0B alive.
+            - **The owner must state which way they lean.** I lean to inclusion under the test, because D-01 explicitly names *Phase 1* demand as the sizing basis. The owner already accepted that internal demand counts. The question is only how to make it non-circular.
+          - **T2 — Minimum economic or technical scale vs overproduction (Claude vs GPT on sizing).**
+            - GPT: "3× is not permission to overproduce."
+            - Claude: demand sizes 0B.
+            - Both hold if the 3× is read as a **ceiling** on the nameplate-to-demand ratio, with excess requiring justification. If a pilot plant cannot be built below some minimum scale, that is a real conflict, and it is resolved by an explicit owner waiver recorded against g-economics, not by stretching g-demand.
+            - **I keep this disagreement visible.** GPT's "size only to accepted demand" is stricter than my ruling, which allows up to 3× with a declared η.
+
+          ## 6. Evidence certainty
+
+          Likelihood (how probable) and confidence (how good the evidence is) are kept separate.
+
+          | Claim | Likelihood | Evidence certainty (GRADE) / confidence | Basis |
+          |---|---|---|---|
+          | The drafters meant a quantity ratio, not timing | Likely | Moderate / medium | D-01 "sized by signed Phase 1 demand" is a sizing statement. Claude and Gemini both read rq-0-58 as kt/yr against capacity. GPT's ambiguity point stands, and the text never says so explicitly. |
+          | No binding external offtaker for kt-scale space material will exist by KDP-0B | Very likely | Low / medium | No such market exists today. Extrapolation over the Phase 0 horizon is speculative. |
+          | Project-internal demand estimates are optimistically biased if unpoliced | Likely | Moderate / high | Documented optimism bias and strategic misrepresentation in large infrastructure projects (Flyvbjerg's work on megaproject cost and demand overruns). Transfer to space programmes is by analogy. |
+          | First-of-kind process plants operate well below nameplate during ramp-up | Very likely | Moderate / medium | Well established qualitatively in process-industry ramp-up experience. Magnitude for space ISRU is unknown, hence S1. |
+          | The counterfactual (Earth-supply) test removes most circularity | About as likely as not to fully succeed; likely to remove most of it | Very low / low | This is a design argument, not tested evidence. Residual risk: Phase 1 baselines can themselves be inflated. |
+
+          The weakest evidence sits under my own recommendation (the counterfactual test). That is why §7 gives it an explicit falsifier and §8 an accepted downside.
+
+          ## 7. Key assumptions and falsifiers
+
+          **ACH on what "within 3×" means.**
+
+          | Hypothesis | Disconfirming evidence | Rank |
+          |---|---|---|
+          | H1: quantity ratio (nameplate vs demand) | None in the record. D-01 wording supports it. | **1 — least disconfirmed** |
+          | H3: both quantity and timing intended | Only one multiplier appears. Two dimensions under one number is unusual drafting. | 2 |
+          | H2: timing ratio | D-01 says demand *sizes* 0B, and a timing ratio cannot size anything. | 3 — most disconfirmed |
+
+          **Assumptions:**
+
+          - **A1. Phase 1 has a baseline in which Earth-supplied material meets some need.**
+            - *Falsified if* the Phase 1 architecture has no Earth-supply variant, that is, if the material is useful only when produced in space. Then the counterfactual test cannot be run, and an alternative test is needed, such as a funded Phase 1 line item approved by an authority independent of 0B.
+          - **A2. A signatory distinct from the 0B proposer exists** (Phase 1 programme authority or owner).
+            - *Falsified if* the same team owns both budgets. Then "signed" degenerates and only O4 is honest.
+          - **A3. 3× approximates honest early-operation overcapacity.**
+            - *Falsified if* 0A pilot data show η ≥ 0.7 early, in which case tighten to 2×, or η ≤ 0.25, in which case the plant is not ready for 0B anyway (refer to the TRL gate).
+          - **A4. T22 qualification needs a frozen product specification.**
+            - *Falsified if* T22 is re-scoped to be specification-agnostic. Then the specification requirement could be relaxed, though I would still keep it, because an order without a specification is not demand.
+
+          **Premortem.** Suppose 0B is built and idle three years later. The most likely story: Phase 1 "demand" was a planning line nobody funded, the plant was sized at 3× a soft number, and Earth supply turned out cheaper. Every clause below is aimed at one step of that story.
+
+          ## 8. Decision, warrant, accepted downside
+
+          ### Ruling: adopt O3
+
+          **Proposed gate text** (for `gates-proposal.yaml`, g-demand):
+
+          ```yaml
+          g-demand:
+            applies_at: KDP-0B   # one-way; D-02 stringency
+            definitions:
+              accepted_demand:
+                units: kt/yr
+                computation: >
+                  Sum of qualifying demand instruments, annualised over the
+                  averaging window, counting only quantity deliverable to the
+                  named node within the window.
+                averaging_window: >
+                  3 years starting at planned first-nameplate date (epoch E0),
+                  as baselined in the 0B plan at KDP-0B.
+              nameplate: >
+                0B design output in kt/yr at the delivery node, per rq-0-58.
+              planning_factor_eta: >
+                Declared availability x yield for years 1-3, with basis
+                (0A data where available).
+            qualifying_instrument:   # meaning of "signed"; all must hold
+              - product specification sufficient to qualify T22
+              - quantity, delivery node, dated delivery schedule
+              - signatory with budget authority independent of the 0B proposer
+                (Phase 1 programme authority, the owner, or an external party)
+              - committed funding for the purchase, OR a costed Earth-supply
+                line in the Phase 1 baseline that this demand displaces
+                (counterfactual test: the demand must exist if 0B is cancelled)
+              - not conditional on 0B approval
+              - letters of intent, MoUs and planning assumptions do not qualify
+            pass_criteria:
+              quantity: nameplate <= 3 x accepted_demand
+              timing: first qualifying delivery due no later than E0 + 24 months
+              sizing_cap: >
+                nameplate <= min(3 x accepted_demand, accepted_demand / eta).
+                Any nameplate above accepted_demand requires the eta basis on
+                record. Exceeding the cap requires an owner decision logged
+                against g-economics, not g-demand.
+            credit:
+              external_offtake: >
+                Reported separately; strengthens g-economics; not required.
+            fail_outcome: >
+              Pre-committed: 0A only, Earth supply (per gate fallback),
+              or resize 0B to pass.
+          ```
+
+          **How this resolves each point of disagreement:**
+          - **"Within 3×"** is a quantity ratio: nameplate over accepted demand, in kt/yr, over a defined window from E0.
+          - **GPT's timing concern** becomes its own 24-month clause, not a second meaning of "3×".
+          - **Claude's circularity flag** is answered by the counterfactual test plus an independent signatory. Internal Phase 1 demand counts only if it would exist without 0B. Earth supply is the counterfactual, which ties the gate to the pre-agreed fallback.
+          - **On sizing**, 3× is a ceiling and never a target. GPT's stricter "size only to accepted demand" is recorded as a dissent the owner can adopt by setting the cap to 1×.
+
+          **Y-statement.** In the context of a one-way KDP-0B commitment sized under D-01 by signed Phase 1 demand, facing an undefined ratio and a buyer that is the project itself, we chose a quantity-ratio definition with a separate timing clause, a counterfactual "signed" test and a 3× sizing ceiling, to achieve an objectively passable gate that the project cannot satisfy by self-certification, accepting that internal Phase 1 baselines can still be inflated and that a plant with a high minimum viable scale may fail the gate.
+
+          **Toulmin structure:**
+          - **Grounds:** D-01 wording; rq-0-58 units; GPT's unpassability finding; Claude's circularity flag; megaproject optimism-bias evidence.
+          - **Warrant:** a gate protecting a one-way door must be decidable before the evidence arrives and must test demand that exists independently of the decision it justifies.
+          - **Backing:** D-02's stringency-follows-reversibility principle.
+          - **Qualifier:** likely correct as the intended meaning. Medium confidence that the counterfactual test is sufficient.
+          - **Rebuttal conditions:** A1 or A2 false; 0A η data outside 0.25–0.7.
+
+          **Accepted downside.** The gate may block a 0B that a bolder owner would build on strategic grounds. That is intended. Strategic builds go through an explicit owner decision, not through a loosened demand gate.
+
+          **Evidence that would change the ruling:**
+          1. A Phase 1 architecture with no Earth-supply variant (A1 false). Replace the counterfactual test with an independent-authority funded line item.
+          2. Shared 0B/Phase 1 budget authority (A2 false). Move to O4 for internal demand.
+          3. 0A ramp-up data. Retune the 3× ceiling to the measured η.
+          4. The drafters of rq-0-58 confirming a timing intent. Swap the clause roles, though D-01 would then need amending.
+
+          ## 9. Consequences
+
+          **Enables:**
+          - An objective KDP-0B verdict.
+          - The 0A mid-term review can check *leading indicators*: draft specification, named node, and whether the Phase 1 authority has opened a costed Earth-supply line.
+          - T22 gets a frozen specification target.
+
+          **Constrains:**
+          - 0B nameplate is now bounded by documented demand and η. The economics gate must use the same accepted-demand figure, with no separate optimistic case.
+          - Phase 1 planning must carry an Earth-supply baseline, which is good practice anyway.
+          - The 0B team cannot be the signatory.
+
+          **Follow-on owner decisions unlocked:**
+          - (a) Lean on T1: confirm internal demand counts under the test.
+          - (b) Lean on T2: 3× ceiling (my ruling) or 1× (GPT's dissent).
+          - (c) Accept or adjust the 24-month timing bound and 3-year window.
+          - (d) Name the independent signatory role in `decisions.md`.
+
+          **Kept disagreements:**
+          - GPT's 1× sizing position versus my 3×-with-η ceiling stands unaveraged for the owner.
+          - Gemini's silence on "signed" is recorded as silence, not assent.
+        wordCount: 2780
+        generatedAt: '2026-10-17T22:14:03.295Z'
+      - modelId: gemini-3-1-pro
+        content: |-
+          Here is the decision regarding the definitions of "within 3×" and "signed" for the demand gate (g-demand) at KDP-0B.
+
+          ### 1. Frame & decision type
+          - **Frame:** Defining the specific pass/fail metrics for the 'g-demand' gate at KDP-0B to determine the scale of Phase 0B for Project Dyson.
+          - **Decision type:** Property/Executive decision (Kruchten). 
+          - **Reversibility:** One-way door (highly irreversible). KDP-0B releases significant capital; sizing the build incorrectly based on vague demand leads to stranded assets.
+          - **Cynefin domain:** Complicated. It requires expert systems engineering and programmatic governance to resolve.
+
+          ### 2. Criteria and weights
+          *(Value-Focused Thinking, swing weights)*
+
+          1.  **Objectivity and Verifiability (Swing Weight: High, 40%)**
+              *   *Why this weight fits the range:* The range goes from "subjective panel opinion" to "binary, auditable artifact." Because KDP-0B is a one-way gate for project-ending technologies, the gate must be objectively passable by an independent auditor.
+          2.  **Overproduction Risk Mitigation (Swing Weight: High, 40%)**
+              *   *Why this weight fits the range:* The range goes from "sizing to speculative future demand" to "sizing strictly to committed demand." The primary purpose of D-01 sizing 0B by demand is to prevent overbuilding. 
+          3.  **Resolution of Circularity (Swing Weight: Low, 20%)**
+              *   *Why this weight fits the range:* The range goes from "self-referential project promises" to "external legal/financial commitment." We must resolve Claude's valid flag that an internal project signing its own demand is circular, but this is a structural fix, not the primary economic driver.
+
+          ### 3. Options
+          *(Including the null option and rejected options with arguments)*
+
+          - **Option A: Null / Status Quo (Leave split as is).** 
+              *   *Argument for rejection:* As GPT noted, the gate is "not objectively passable" without defined terms. This guarantees a stalled KDP-0B review.
+          - **Option B: Timing-Only Reading (GPT's proposal).** "3×" means accepted date span ≤ 3× elapsed time from a common epoch. 
+              *   *Argument for rejection:* Fails to constrain physical capacity (Overproduction Risk). Timing is important, but D-01 explicitly states demand *sizes* 0B. Sizing requires a quantity metric.
+          - **Option C: Quantity-Only Reading (Claude's proposal).** "3×" means signed annual demand is at least one third of nameplate output. "Signed" means funded Phase 1 line item or external offtaker.
+          - **Option D: Hybrid Synthesis (Selected).** 
+              *   "3×" is a **Quantity** limit: Phase 0B nameplate capacity cannot exceed 3× the signed annual demand (e.g., if signed demand is 0.2 kt/yr, maximum 0B capacity is 0.6 kt/yr). 
+              *   "Signed" means either a legally binding external offtaker agreement OR an internally funded Phase 1 line item. Both must include a product specification (T22), quantities, delivery node, and dated schedule.
+
+          ### 4. Assessment matrix
+          *(QOC)*
+
+          | Option | Objectivity (40%) | Overproduction Risk Mitigation (40%) | Resolution of Circularity (20%) |
+          | :--- | :--- | :--- | :--- |
+          | **A: Null** | Fails | Fails | Fails |
+          | **B: Timing-Only** | Moderate | Fails | Moderate |
+          | **C: Quantity-Only** | High | High | High |
+          | **D: Hybrid Synthesis** | Very High | High | Very High |
+
+          ### 5. Sensitivity vs trade-off points
+          - **Sensitivity point:** The definition of "signed" strongly affects Objectivity. If "signed" is allowed to mean a non-binding internal memo, Objectivity drops to zero and Overproduction Risk spikes.
+          - **Trade-off point:** Defining "3×" as a quantity multiplier trades away strict schedule bounding (timing) in favor of strict physical scale bounding (capacity). We accept this trade-off because physical capacity drives capital expenditure, which is the primary risk at KDP-0B.
+
+          ### 6. Evidence certainty
+          *(GRADE, ICD 203)*
+          - **Claim:** Internal demand without a separately funded line item creates a circular justification loop that routinely leads to stranded aerospace assets. 
+              *   *Certainty:* High confidence. (Based on standard systems engineering governance and historical major-program baseline failures).
+          - **Claim:** A 3× capacity-to-demand ratio provides sufficient margin for testing and scaling without authorizing unchecked overproduction.
+              *   *Certainty:* Moderate confidence. (Dependent on specific process yields not yet validated at TRL 6).
+
+          ### 7. Key assumptions
+          - **Assumption 1:** It is feasible to secure a funded Phase 1 line item or an external offtaker prior to KDP-0B (which only requires TRL 4-5 for internal milestones). 
+              *   *Falsification:* Market analysis or internal budget cycles demonstrate that off-takers/sponsors require TRL 6+ demonstration *before* committing funds.
+          - **Assumption 2:** The product specification (T22) can be adequately defined at this phase to form a binding contract.
+              *   *Falsification:* The relevant environment testing at TRL 6 alters the fundamental product characteristics, invalidating the signed spec.
+
+          ### 8. Decision, warrant, accepted downside
+          *(Y-statement, Toulmin)*
+
+          **Decision:** In the context of the KDP-0B demand gate for Project Dyson, facing an ambiguous panel split on definitions, we chose Option D (Quantity limit of 3× capacity-to-demand, and "signed" requiring a funded line item/external contract with T22 specs), to achieve an objectively auditable gate that prevents overbuilding, accepting the downside that strict funding requirements may delay KDP-0B if external off-takers hesitate at early TRLs.
+
+          **Warrant:** Because D-01 dictates that demand sizes 0B, the metric must constrain physical capacity (quantity), and because Phase 1 is the same project, only external legal contracts or distinct, formally funded internal line items break the circularity of self-justification.
+
+          ### 9. Consequences
+          - **Constrains:** Phase 0B design teams are now strictly constrained to a maximum nameplate capacity of 3× the explicitly funded/contracted demand. They cannot size the facility for "projected" or "hoped-for" demand.
+          - **Enables:** Allows the audit team to objectively pass or fail g-demand at KDP-0B by checking for two specific artifacts: a financial commitment document and a T22 specification sheet.
+          - **Follow-on decisions:** The project owner must now define the exact epoch and delivery window for the schedule component of the signed agreement.
+        wordCount: 937
+        generatedAt: '2026-10-17T22:14:32.635Z'
+      - modelId: gpt-6-1-sol
+        content: |-
+          ## 1. Frame & decision type
+
+          **Recommendation:** interpret “within 3×” as a **quantity-coverage test**, not a timing tolerance. Define “signed” as an **authorised, resource-backed demand commitment**, with product, quantity, delivery node and schedule specified. Apply a separate sizing rule: **passing the 3× test does not authorise building three times the accepted demand.**
+
+          This is a **property decision** defining the demand gate and an **executive decision** governing commitment authority. The definition is reversible before procurement; the resulting KDP-0B investment may not be. Accordingly, D-02 supports a stringent, auditable rule at KDP-0B without requiring equally mature commitments at every internal 0A review.
+
+          The decision concerns **demand credibility and sizing**, not whether demand alone justifies 0B. Target, economics, licence and the applicable TRL requirements remain independent gates.
+
+          **Source limitation:** I rely on the supplied extracts from `gates.md`, `gates-proposal.yaml`, `trl-baseline.yaml` and `decisions.md`, not an independent inspection of those files.
+
+          ## 2. Criteria and weights
+
+          These are proposed **swing weights**, not measured programme preferences.
+
+          | Criterion | Evaluated swing | Weight | Why this weight fits that range |
+          |---|---|---:|---|
+          | **C1. Objective auditability** | From materially different interpretations to reproducible pass/fail results using frozen definitions | **25%** | An unauditable gate cannot reliably govern an irreversible commitment. |
+          | **C2. Commitment credibility** | From an aspirational internal signature to an authorised, resource-backed buyer obligation | **30%** | Circular internal demand can create the appearance of a market without any actual resource commitment. |
+          | **C3. Capital discipline and D-01 consistency** | From speculative capacity justified by the multiplier to demand-sized investment with explicit treatment of indivisibility | **30%** | The principal financial exposure is committing 0B capital beyond credible need. |
+          | **C4. Feasibility and option preservation** | From excluding legitimate internal demand or forcing premature funding to a practicable gate that preserves staged investment | **15%** | Excessively rigid contracting could destroy a useful real option, but convenience must not dominate credibility. |
+
+          **Musts, before scoring:** the final rule must be objectively testable, accommodate genuinely authorised internal Phase 1 demand, preserve D-01 demand-led sizing, and leave the other gates intact. Weighted scores cannot compensate for failing these conditions.
+
+          ## 3. Options
+
+          **A. Null: retain the split and resolve it at KDP-0B.**  
+          Argument for: avoids premature prescription.  
+          Reject: bidders, designers and reviewers would work against different requirements; later interpretation could determine the outcome retrospectively.
+
+          **B. Quantity interpretation, ordinary signatures.**  
+          Require signed annual demand of at least one-third of nameplate capacity, with specification and dates, but no explicit resource-backing requirement.  
+          Argument for: simple and close to Claude’s and Gemini’s quantity reading.  
+          Reject: a project team can sign its own demand forecast without creating an independently authorised commitment.
+
+          **C. Timing interpretation, strong commitments.**  
+          Require accepted delivery dates to fall within a factor-of-three interval measured from a common epoch, alongside resource-backed orders.  
+          Argument for: addresses schedule compatibility explicitly.  
+          Reject: absent an independently justified epoch and schedule-risk model, the multiplier is arbitrary. It also does not establish adequate quantity coverage.
+
+          **D. Quantity interpretation, resource-backed internal or external demand, separate sizing constraint. — Recommended.**  
+          Argument for: distinguishes three questions: *is there enough demand, is it credible, and what capacity should be authorised?*  
+          Downside: requires more evidence and governance than a signed requirements document.
+
+          **E. Quantity interpretation, external offtake only.**  
+          Argument for: reduces internal circularity.  
+          Reject: unnecessarily excludes the internal Phase 1 demand expressly contemplated by D-01. External signatures also remain vulnerable to cancellation, counterparty failure and unfunded obligations.
+
+          ## 4. Assessment matrix
+
+          Scores: **0 = poor; 4 = strong**. These are decision judgments, not empirical measurements.
+
+          | Option | C1 Auditability 25% | C2 Credibility 30% | C3 Capital discipline 30% | C4 Feasibility 15% | Weighted /4 | Musts |
+          |---|---:|---:|---:|---:|---:|---|
+          | A. Leave split unresolved | 0 | 1 | 1 | 2 | **0.90** | Fail |
+          | B. Quantity + ordinary signature | 3 | 1 | 2 | 4 | **2.25** | Fail |
+          | C. Timing + strong commitment | 2 | 4 | 2 | 2 | **2.60** | Fail as a standalone demand rule |
+          | **D. Quantity + backed commitment + sizing constraint** | **4** | **4** | **4** | **3** | **3.85** | **Pass** |
+          | E. External-only commitments | 4 | 3 | 4 | 1 | **3.25** | Fail internal-demand accommodation |
+
+          ### Proposed rule text
+
+          > **g-demand — KDP-0B**
+          >
+          > **1. Quantity coverage.** For each predeclared annual delivery period in the initial commitment window, accepted firm demand \(D_t\) shall satisfy:
+          >
+          > \[
+          > D_t \ge C_t/3
+          > \]
+          >
+          > Here, \(D_t\) is accepted demand in tonnes/year and \(C_t\) is the proposed commissioned nameplate output in tonnes/year for the same period, product and delivery boundary. Thus “within 3×” means \(C_t/D_t \le 3\), not a permitted delivery-date slip.
+          >
+          > Product conformity, delivery losses, conversion yields and the nameplate reference conditions shall be explicitly reconciled. Unlike products shall not be added as interchangeable tonnes without a validated conversion.
+          >
+          > **2. Delivery compatibility.** Count only quantities that the proposed system can deliver to the specified node within the buyer’s accepted delivery windows. The commitment window, annual periods and commissioning profile shall be frozen before gate assessment. Demand shall not be shifted between periods merely to obtain a pass.
+          >
+          > **3. Accepted commitment.** Demand counts only where an accountable customer authority has signed a controlled commitment specifying product requirements, quantities, delivery node, dated schedule, acceptance criteria, resource backing, and cancellation or change terms.
+          >
+          > For internal Phase 1 demand, resource backing requires an authorised funded line item or equivalent approved budget commitment covering the counted purchases and necessary receiving/use capability. Technical-user endorsement alone is insufficient. The customer budget authority must be distinct from the 0B production proposer.
+          >
+          > For external demand, require an enforceable offtake commitment plus evidence of counterparty ability to perform; a signature or letter of interest alone is insufficient.
+          >
+          > **4. Conditionality.** A commitment may be conditional on the explicit KDP-0B authorisation and successful delivery of conforming product. It shall not count if its funding or need remains contingent on an otherwise unapproved downstream programme. Count the firm committed quantity, not optional upside.
+          >
+          > **5. Sizing.** Passing the coverage test is necessary, not sufficient. Authorise the smallest technically feasible configuration capable of meeting accepted demand and its approved reliability requirements. Do not use the 3× allowance to justify speculative modules, inventory or sales.
+          >
+          > Any unavoidable capacity surplus from minimum module size, redundancy or production-rate constraints shall be quantified and justified through the economics gate against smaller, staged and Earth-supply alternatives.
+          >
+          > **6. Failure outcome.** Without accepted demand and a compliant configuration, do not authorise 0B; retain the agreed “0A only, Earth supply” fallback.
+
+          The cited **0.2–0.8 kt/yr** is therefore illustrative, not a universal threshold. The threshold follows from the actual proposed configuration.
+
+          ## 5. Sensitivity vs trade-off points
+
+          ### Sensitivity points — evidence can change the result
+
+          - **Minimum viable module size:** if even the smallest credible plant exceeds three times firm demand, the quantity gate fails. That is information, not a reason to redefine demand.
+          - **Commitment duration:** one year of purchases does not establish a decade of economic utilisation. The initial window must be specified, while uncontracted asset-life exposure remains visible in the economics gate.
+          - **Delivery-boundary yields:** plant output can materially exceed useful tonnes received. Inconsistent boundaries can create a false pass.
+          - **Budget conditionality:** an approved appropriation, an authorised future commitment and an unfunded planning allowance are not equivalent.
+          - **Product fungibility:** demand for different products or destinations may not support the same production capacity.
+
+          ### Trade-off points — owner values, not facts to discover
+
+          - **Financing flexibility versus commitment credibility:** requiring stronger commitments may delay 0B but reduces unsupported capital exposure.
+          - **Modular efficiency versus strict demand matching:** minimum-size hardware may provide unavoidable headroom; permitting it accepts some underutilisation risk.
+          - **Longer committed horizons versus buyer flexibility:** stronger utilisation assurance can impose costly cancellation exposure on Phase 1.
+
+          The recommendation remains preferred under reasonable weight changes because it performs strongly on the three highest-priority criteria. The unresolved issue is not its ranking but **how stringent the backing and duration requirements should be**.
+
+          ## 6. Evidence certainty
+
+          GRADE labels below are adapted to this engineering decision; they do not imply clinical-quality evidence.
+
+          | Key claim | Evidence certainty | Confidence and likelihood |
+          |---|---|---|
+          | D-01 requires demand-led sizing; D-02 increases stringency for irreversible commitments | **High within the supplied record** | High confidence in that reading; likelihood is not applicable to a recorded decision. |
+          | Quantity is the better-supported interpretation of “3×” | **Moderate** | Moderate confidence: Claude and Gemini support quantity; the exact text of rq-0-58 is not supplied. No probability assigned to original authorial intent. |
+          | A technical signature alone does not establish funded internal demand | **Moderate** | High confidence in the logical distinction; the likelihood of actual unfunded commitment here is unknown. |
+          | Separate coverage and sizing rules reduce the opportunity to justify speculative capacity | **Moderate** | Moderate confidence in the mechanism; no project-specific loss reduction can be quantified. |
+          | One-third coverage is economically sufficient | **Very low / unestablished** | No such claim is warranted. Economic viability must be demonstrated separately. |
+          | Internal demand can be made credible without external sales | **Moderate** | Moderate confidence, conditional on actual budget authority and enforceable programme controls. |
+
+          Agreement by two panel members supports interpretation; it is not independent validation of the threshold’s economics. Gemini’s silence on “signed” supplies no evidence of agreement.
+
+          ## 7. Key assumptions
+
+          | Assumption | Evidence that would falsify it |
+          |---|---|
+          | The multiplier originated as a capacity-to-demand ratio | The controlled rq-0-58 text or its approved rationale explicitly defining a time ratio and epoch |
+          | Internal Phase 1 can make a meaningful resource-backed commitment | Financial/governance evidence that its authority cannot reserve or commit the relevant resources |
+          | Proposed output can be reconciled to usable demand | Demonstrated non-fungibility, unqualified product requirements, or delivery losses that defeat the claimed match |
+          | Staging, throttling or modular selection provides some sizing discretion | A validated design showing a technically indivisible minimum plant |
+          | An initial commitment window can support a defensible investment decision | Lifecycle economics showing that plausible post-window demand loss makes the investment unacceptable |
+
+          **ACH ranking of interpretations, least disconfirmed first:**
+
+          1. **Quantity coverage plus an independent schedule test:** consistent with two stated panel positions and D-01’s sizing purpose.
+          2. **Quantity coverage intended to permit general 3× oversizing:** compatible with the inequality alone, but in tension with demand-led sizing.
+          3. **Timing ratio as the primary demand test:** least supported by the supplied requirement context; neither its epoch nor its engineering basis is established.
+
+          Evidence of timing intent would change the interpretation ruling. It would **not eliminate the need for a separate quantity-and-sizing test**.
+
+          ## 8. Decision, warrant, accepted downside
+
+          Adopt **Option D**.
+
+          The warrant is that **a credible buyer commitment and a feasible delivery obligation justify capacity; signatures and a coverage ratio alone do not**. This implements D-01 without treating an internal buyer as either automatically credible or inherently invalid.
+
+          Accepted downside: stronger commitment evidence may postpone 0B, and indivisible hardware may remain unauthorised despite technical readiness. That is consistent with preserving 0B as a real option rather than making technical success an entitlement to deployment.
+
+          **Qualifier:** this is a recommended owner ruling, not a claim that the unseen controlled requirement already has this wording. No existing gate should be recorded as passed until the definition and evidence package are approved.
+
+          ## 9. Consequences
+
+          - **Update the controlled baseline:** reconcile rq-0-58, the demand-gate text and D-01’s sizing language.
+          - **Assign decision rights:** customer budget authority signs demand; the gate authority accepts it; independent assurance verifies quantities, boundaries and non-duplication.
+          - **Enable T22 qualification planning:** signed product and acceptance requirements become controlled inputs, not substitutes for qualification evidence.
+          - **Constrain 0B architecture:** commission only justified tranches; expansion requires additional accepted demand.
+          - **Expose economic risk:** report firm-demand utilisation separately from forecast utilisation across the asset life.
+          - **Preserve fallback:** a failed demand gate does not undo useful 0A capability work or waive the Earth-supply alternative.
+
+          **Decision record — Y-statement:** *In the context of D-01’s demand-sized 0B real option and D-02’s stringent irreversible gate, facing ambiguous “within 3×” and circular internal signatures, we choose quantity coverage backed by authorised customer commitments and a separate demand-led sizing constraint, to achieve auditable investment discipline, accepting additional commitment burden and possible deployment delay.* **Warrant:** resource-backed, deliverable obligations—not nominal signatures—support capital commitment. **Qualifier:** subject to controlled-requirement verification and independent economics approval. This enables configuration selection and customer-interface baselining, while constraining speculative capacity and unauthorised 0B commitment.
+        wordCount: 2121
+        generatedAt: '2026-10-17T22:16:17.842Z'
+    votes:
+      - targetId: claude-opus-5-5
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: reasoning
+            reasoning: 'Criteria and musts are stated before the options, and a null option is included. Calibration keeps likelihood and confidence separate. The gate text is concrete, with a counterfactual test for ''signed'', a separate timing clause, an η-bound cap, and explicit falsifiers. Two weighted totals are slightly off: O1 should be 2.95 and O5 should be 2.30. Neither changes the ranking.'
+          - voterId: gemini-3-1-pro
+            targetId: claude-opus-5-5
+            vote: APPROVE
+            weakestLink: none
+            reasoning: The response provides a complete and rigorous decision chain, effectively utilizing all requested frameworks (KT, QOC, GRADE, ACH, Toulmin, Y-statement) without any missing or weak links.
+          - voterId: gpt-6-1-sol
+            targetId: claude-opus-5-5
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: The quantity interpretation and independent-demand test are well developed, but the three-year window, 24-month deadline and eta-based sizing cap lack sufficient justification. These choices can change gate outcomes, and the claimed sensitivity of the option ranking is not demonstrated.
+        rawScore: 5
+        weightedScore: 4
+        approveCount: 2
+        rejectCount: 0
+      - targetId: gemini-3-1-pro
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: reasoning
+            reasoning: The matrix is qualitative and does not apply its weights, so C and D are barely distinguished. The chosen 3× ceiling sits uneasily with the 'prevent overbuilding' criterion it weights at 40%. The 'high confidence' claim about routinely stranded assets is uncalibrated. Circularity is only partly addressed, since no independent signatory is required. The epoch and delivery window are deferred.
+          - voterId: gemini-3-1-pro
+            targetId: gemini-3-1-pro
+            vote: NEUTRAL
+            weakestLink: information
+            reasoning: While generally sound, the evidence certainty (GRADE) and hypothesis testing (ACH) sections are underdeveloped compared to the required standard, making the information link weaker.
+          - voterId: gpt-6-1-sol
+            targetId: gemini-3-1-pro
+            vote: REJECT
+            weakestLink: information
+            reasoning: The response assigns high confidence to broad historical claims without supporting evidence and treats a distinct funded internal line item as sufficient to break circularity. It also leaves the demand period undefined while claiming an objectively auditable gate.
+        rawScore: 2
+        weightedScore: 1.5
+        approveCount: 0
+        rejectCount: 1
+      - targetId: gpt-6-1-sol
+        votes:
+          - voterId: claude-opus-5-5
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: information
+            reasoning: Swing weights and musts come before the options, a null option is included, and the weighted scores are arithmetically correct. 'Signed' gets a resource-backed test with an independent budget authority. Coverage is cleanly separated from sizing, using a smallest-feasible-configuration rule. Assumptions are falsifiable and the source limitation is acknowledged. The delivery-window bound is left unquantified, but that does not change the decision.
+          - voterId: gemini-3-1-pro
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: none
+            reasoning: Excellent application of the decision frameworks, providing a clear, well-reasoned, and fully structured response that addresses all constraints.
+          - voterId: gpt-6-1-sol
+            targetId: gpt-6-1-sol
+            vote: APPROVE
+            weakestLink: commitment
+            reasoning: It separates quantity coverage, credible commitments, delivery compatibility and investment sizing; considers the null and external-only alternatives; and calibrates uncertainty. Remaining window and authority choices are explicitly reserved for controlled approval before any gate pass.
+        rawScore: 6
+        weightedScore: 5
+        approveCount: 3
+        rejectCount: 0
+    winnerId: gpt-6-1-sol
+    winnerScore: 5
+    terminationVotes:
+      - modelId: claude-opus-5-5
+        vote: CONCLUDE
+        reasoning: A and C converge on the substance. Both read 3× as a quantity ratio, require a resource-backed 'signed' instrument from an independent authority, and keep a separate sizing constraint and timing clause. The remaining differences, such as 3× with η versus smallest-feasible sizing and the exact timing bound, are explicitly framed as owner value choices.
+      - modelId: gemini-3-1-pro
+        vote: CONCLUDE
+        reasoning: Multiple responses provide high-quality, fully structured decision chains that resolve the prompt's core questions effectively.
+      - modelId: gpt-6-1-sol
+        vote: CONCLUDE
+        reasoning: 'Response C provides a satisfactory resolution: interpret 3× as quantity coverage and signed as an authorised, resource-backed commitment, with separate scheduling and sizing controls. Remaining implementation choices are identified rather than silently assumed.'
+    shouldTerminate: true
+    completedAt: '2026-10-17T22:16:56.502Z'
+    terminationReason: unanimous-conclude
+currentRound: 1
+stats:
+  totalRounds: 1
+  roundWinners:
+    claude-opus-5-5: 0
+    gemini-3-1-pro: 0
+    gpt-6-1-sol: 1
+  totalVotes: 9
+  approvalRate: 55.55555555555556
+  averageResponseWords: 1946
+terminationReason: unanimous-conclude
+concludedAt: '2026-10-17T22:16:56.659Z'
+conclusion:
+  summary: |-
+    ## Summary
+
+    Claude Opus 5.5, Gemini 3.1 Pro and GPT-6.1 Sol converged in Round 1 on interpreting **“within 3×” as a quantity-coverage test, not a timing tolerance**: accepted annual demand must be at least one-third of the corresponding proposed nameplate output. GPT revised its earlier timing interpretation. All three rejected leaving the ambiguity unresolved and required “signed” demand to include product specification, quantity, delivery node, schedule and financial backing—not merely a technical endorsement or forecast.
+
+    The panel did **not** converge on the complete gate rule. Claude and Gemini allow a capacity ceiling of three times accepted demand, with Claude adding an availability-and-yield constraint. GPT separates coverage from investment sizing: the ratio is necessary but does not itself authorise excess capacity. Claude and GPT also differ over whether commitments may depend on KDP-0B approval and whether a costed Earth-supply baseline can substitute for committed purchasing resources.
+
+    The votes identified GPT’s response as having no substantive rejection, but did not establish agreement on its entire rule. Claude and Gemini approved Claude’s response; GPT remained neutral because its three-year window, 24-month deadline and η-based cap lacked sufficient justification. Those parameters therefore remain proposals, not panel decisions.
+
+    ## Decision record
+
+    ### Converged core
+
+    **Models: Claude, Gemini and GPT.**
+
+    > In the context of D-01’s demand-sized 0B real option and D-02’s stringent irreversible gate, facing an ambiguous multiplier and potentially circular internal demand, we chose a quantity interpretation of “within 3×” and financially backed, specified customer commitments, to achieve an auditable demand gate, accepting that stronger commitment requirements may delay or prevent 0B authorisation.
+
+    - **Warrant:** All three argue that demand-led sizing requires a quantity metric, while a signature alone does not establish credible demand.
+    - **Qualifier:** GPT explicitly treats the wording as a recommended owner ruling pending controlled-requirement verification. Claude and Gemini also leave owner choices outstanding.
+    - **Accepted downside:** All three accept that a stricter demand gate may block or delay an otherwise technically promising 0B.
+
+    ### Outstanding position: capacity sizing
+
+    **Claude’s position**
+
+    > In the context of early-operation capacity planning, facing uncertainty in availability and yield, we chose a nameplate cap of `min(3 × accepted demand, accepted demand / η)`, to accommodate justified operating headroom, accepting residual underutilisation risk and possible exclusion of minimum-scale plants.
+
+    Claude’s warrant is that 3× should be a ceiling, not a target, with η justified from operating evidence. Claude qualifies this with a proposed owner decision for exceptions against g-economics.
+
+    **Gemini’s position**
+
+    > In the context of demand-led investment, facing speculative overbuilding, we chose a maximum nameplate of three times explicitly funded or contracted annual demand, to constrain physical scale, accepting that strict commitment requirements may delay investment.
+
+    Gemini treats the quantity ceiling as the capacity constraint; its response does not add Claude’s η cap or GPT’s separate smallest-feasible-configuration rule.
+
+    **GPT’s position**
+
+    > In the context of D-01’s demand-sized investment, facing the risk that a coverage allowance becomes permission to overbuild, we chose a separate smallest-technically-feasible-configuration rule, to meet accepted demand and approved reliability requirements without speculative capacity, accepting that indivisible hardware may remain unauthorised.
+
+    GPT’s warrant is that coverage and investment sizing answer different questions. GPT allows unavoidable surplus to be assessed through g-economics, while retaining the quantity gate.
+
+    ### Outstanding position: internal commitment credibility
+
+    - **Claude:** Count independently authorised demand backed by committed purchasing funding **or** a costed Earth-supply baseline that it displaces; demand must exist if 0B is cancelled and must not be conditional on 0B approval. Claude acknowledges that the counterfactual test is unvalidated and internal baselines may still be inflated.
+    - **Gemini:** Count a legally binding external offtake agreement or a distinct, formally funded internal Phase 1 line item. Gemini does not specify an independent customer signatory or resolve approval conditionality.
+    - **GPT:** Require an independent customer budget authority and an authorised funded line item or equivalent approved budget commitment. Explicit KDP-0B and conforming-delivery conditions may be allowed; dependence on an otherwise unapproved downstream programme may not.
+
+    ## Decision-quality audit
+
+    ### Round 1 — Claude response
+
+    - **Weakest link named by votes:** Claude and GPT named **reasoning**; Gemini named none.
+    - **Missing or unsupported scaffold elements:** GPT found insufficient justification for the three-year averaging window, 24-month delivery deadline and η-based cap, and found the claimed ranking sensitivity undemonstrated. Claude identified two arithmetic errors in its own assessment matrix, neither changing its ranking.
+    - **Trade-off rather than factual dispute:** Claude explicitly identifies internal-demand inclusion versus protection from self-certification, and operating headroom versus strict demand matching, as owner value choices.
+    - **Vote outcome:** Claude and Gemini approved; GPT was neutral.
+
+    ### Round 1 — Gemini response
+
+    - **Weakest link named by votes:** Claude named **reasoning**; Gemini and GPT named **information**.
+    - **Missing or unsupported scaffold elements:** Claude noted that the qualitative matrix did not apply its weights or clearly distinguish its leading options. Gemini’s self-review identified underdeveloped evidence-certainty and hypothesis-testing sections. GPT challenged unsupported high-confidence historical claims, the sufficiency of a funded internal line item to break circularity, and the undefined demand period.
+    - **Trade-off rather than factual dispute:** Gemini explicitly prioritises physical-capacity constraint over interpreting 3× as schedule tolerance. Claude questions whether Gemini’s three-times ceiling adequately serves its heavily weighted overproduction criterion.
+    - **Vote outcome:** Claude and Gemini were neutral; GPT rejected.
+
+    ### Round 1 — GPT response
+
+    - **Weakest link named by votes:** Claude named **information**; GPT named **commitment**; Gemini named none.
+    - **Missing or unsupported scaffold elements:** Claude noted that the delivery-window bound remained unquantified. GPT’s self-review acknowledged that the window and authority choices still require controlled approval before any gate pass.
+    - **Trade-off rather than factual dispute:** GPT explicitly identifies stronger financial backing versus financing flexibility, minimum module efficiency versus strict demand matching, and longer commitments versus buyer flexibility.
+    - **Vote outcome:** All three approved the response. Claude’s separate gate proposal nevertheless retained a different sizing rule.
+
+    ## Key Points
+
+    - **Meaning of 3×:** All three now support a quantity ratio. Claude and Gemini state `nameplate ≤ 3 × accepted annual demand`; GPT applies the equivalent inequality to each predeclared annual delivery period.
+    - **Specification:** All three require a product specification linked to T22. GPT additionally requires acceptance criteria and reconciliation of product and delivery boundaries.
+    - **Internal demand:** All three allow internal Phase 1 demand in principle. Claude and GPT explicitly require customer budget authority distinct from the 0B proposer.
+    - **External demand:** All three reject external-offtake-only as the general rule. GPT additionally requires evidence of counterparty ability to perform.
+    - **Schedule:** All three require dated deliveries. Claude proposes fixed timing parameters; Gemini defers the epoch and window; GPT requires them to be frozen before assessment.
+    - **Fallback:** Claude and GPT explicitly retain “0A only, Earth supply” if a compliant 0B cannot be authorised. GPT emphasises that passing demand does not replace the other gates.
+    - **Threshold economics:** GPT states that one-third coverage has not been shown to be economically sufficient; Claude likewise retains an independent economics assessment.
+
+    ## Unresolved Questions
+
+    1. **Sizing:** Should the owner adopt Gemini’s 3× ceiling, Claude’s 3×-and-η cap, or GPT’s separate smallest-feasible-configuration rule?
+    2. **Financial backing:** Is Claude’s costed Earth-supply counterfactual sufficient, or must counted demand have the committed resources GPT requires?
+    3. **Conditionality:** Should Claude’s prohibition on KDP-0B-conditional demand apply, or GPT’s narrower allowance?
+    4. **Measurement period:** Should Claude’s three-year averaging window apply, or GPT’s period-by-period coverage test? Gemini leaves the window unspecified.
+    5. **Timing bound:** What evidence supports Claude’s proposed 24-month deadline, or an alternative?
+    6. **Decision authority:** Which customer budget authority signs, and which authority accepts the evidence? Claude and GPT require these roles to be specified.
+    7. **Exceptions:** Can an owner decision against g-economics permit excess nameplate, as Claude proposes, or must the configuration continue to satisfy GPT’s demand constraint?
+
+    ## Recommended Actions
+
+    - **Record the shared interpretation:** Following all three responses, replace the ambiguous phrase with an explicit quantity inequality and a separate delivery-compatibility requirement.
+    - **Resolve sizing before recording a pass:** Put Claude’s, Gemini’s and GPT’s distinct capacity rules to the owner without treating them as equivalent.
+    - **Approve the commitment standard:** Resolve Claude’s counterfactual option against GPT’s resource-backed standard, including independent authority and approval conditionality.
+    - **Freeze the measurement rules:** Following Claude’s and GPT’s auditability requirements, approve the delivery boundary, epoch, periods and commitment window before gate assessment; do not treat Claude’s numerical timing proposals as agreed.
+    - **Check evidence that could change the ruling:** Claude and GPT identify the controlled rq-0-58 wording or drafting rationale as potentially decisive on original timing intent. Claude identifies 0A availability/yield data; GPT identifies validated minimum module size, budget authority and lifecycle economics as relevant to the remaining rules.
+    - **Update controlled records:** Following GPT’s recommendation, reconcile rq-0-58, the gate text and D-01 sizing language; following Claude’s recommendation, name the independent signatory role in the decision record.
+
+    ```yaml
+    questionId: "rq-0-68"
+    topics:
+      - id: multiplier-meaning
+        topic: Meaning of within 3×
+        positions:
+          - statement: Interpret 3× as quantity coverage, not a timing tolerance.
+            models: ["Claude Opus 5.5", "Gemini 3.1 Pro", "GPT-6.1 Sol"]
+            evidence: All three Round 1 responses connect the quantity interpretation to D-01 demand-led sizing; GPT revises its earlier timing position.
+        resolution_status: resolved
+        priority: high
+
+      - id: capacity-sizing
+        topic: Capacity authorised after passing coverage
+        positions:
+          - statement: Cap nameplate at the smaller of three times accepted demand and accepted demand divided by justified availability times yield.
+            models: ["Claude Opus 5.5"]
+            evidence: Claude proposes an eta-based cap and requires justification for nameplate above accepted demand.
+          - statement: Permit nameplate up to three times explicitly funded or contracted annual demand.
+            models: ["Gemini 3.1 Pro"]
+            evidence: Gemini explicitly gives 0.2 kt/yr demand supporting a maximum 0.6 kt/yr capacity.
+          - statement: Apply coverage separately and authorise the smallest technically feasible configuration meeting accepted demand and approved reliability requirements.
+            models: ["GPT-6.1 Sol"]
+            evidence: GPT argues that a coverage allowance does not authorise speculative capacity; unavoidable surplus requires economic assessment.
+        resolution_status: open
+        priority: critical
+
+      - id: signed-demand-backing
+        topic: Financial backing and independence of signed demand
+        positions:
+          - statement: Accept committed purchase funding or a costed Earth-supply baseline displaced by demand, with an independent budget-authorised signatory.
+            models: ["Claude Opus 5.5"]
+            evidence: Claude proposes a counterfactual test that demand exists if 0B is cancelled, while acknowledging residual baseline inflation risk.
+          - statement: Accept a binding external offtake agreement or a distinct formally funded internal Phase 1 line item.
+            models: ["Gemini 3.1 Pro"]
+            evidence: Gemini identifies financial commitment and T22 specification artifacts but does not specify an independent signatory.
+          - statement: Require an independent customer budget authority and funded or equivalently approved budget commitment; external demand also needs counterparty-performance evidence.
+            models: ["GPT-6.1 Sol"]
+            evidence: GPT distinguishes resource-backed obligations from technical endorsements and unfunded planning allowances.
+        resolution_status: partially-resolved
+        priority: critical
+
+      - id: approval-conditionality
+        topic: Whether demand may depend on KDP-0B approval
+        positions:
+          - statement: Qualifying demand must not be conditional on 0B approval.
+            models: ["Claude Opus 5.5"]
+            evidence: Claude includes this prohibition in its proposed qualifying-instrument rule.
+          - statement: Explicit KDP-0B and conforming-delivery conditions may qualify, but dependence on an otherwise unapproved downstream programme may not.
+            models: ["GPT-6.1 Sol"]
+            evidence: GPT distinguishes deployment conditions from unresolved downstream need or funding.
+        resolution_status: open
+        priority: high
+
+      - id: demand-window
+        topic: Measurement periods and delivery timing
+        positions:
+          - statement: Average over three years from planned first-nameplate date and require first qualifying delivery within 24 months.
+            models: ["Claude Opus 5.5"]
+            evidence: Claude proposes these parameters; GPT's review finds their justification insufficient.
+          - statement: Require a dated schedule and leave the epoch and delivery window to the owner.
+            models: ["Gemini 3.1 Pro"]
+            evidence: Gemini explicitly lists those definitions as follow-on decisions.
+          - statement: Test coverage in each predeclared annual period and freeze the commitment window and commissioning profile before assessment.
+            models: ["GPT-6.1 Sol"]
+            evidence: GPT seeks to prevent demand shifting between periods and leaves numerical duration for controlled approval.
+        resolution_status: open
+        priority: high
+    ```
+  keyPoints:
+    - Meaning of 3×:** All three now support a quantity ratio. Claude and Gemini state `nameplate ≤ 3 × accepted annual demand`; GPT applies the equivalent inequality to each predeclared annual delivery period.
+    - Specification:** All three require a product specification linked to T22. GPT additionally requires acceptance criteria and reconciliation of product and delivery boundaries.
+    - Internal demand:** All three allow internal Phase 1 demand in principle. Claude and GPT explicitly require customer budget authority distinct from the 0B proposer.
+    - External demand:** All three reject external-offtake-only as the general rule. GPT additionally requires evidence of counterparty ability to perform.
+    - Schedule:** All three require dated deliveries. Claude proposes fixed timing parameters; Gemini defers the epoch and window; GPT requires them to be frozen before assessment.
+    - Fallback:** Claude and GPT explicitly retain “0A only, Earth supply” if a compliant 0B cannot be authorised. GPT emphasises that passing demand does not replace the other gates.
+    - Threshold economics:** GPT states that one-third coverage has not been shown to be economically sufficient; Claude likewise retains an independent economics assessment.
+  unresolvedQuestions:
+    - Sizing:** Should the owner adopt Gemini’s 3× ceiling, Claude’s 3×-and-η cap, or GPT’s separate smallest-feasible-configuration rule?
+    - Financial backing:** Is Claude’s costed Earth-supply counterfactual sufficient, or must counted demand have the committed resources GPT requires?
+    - Conditionality:** Should Claude’s prohibition on KDP-0B-conditional demand apply, or GPT’s narrower allowance?
+    - Measurement period:** Should Claude’s three-year averaging window apply, or GPT’s period-by-period coverage test? Gemini leaves the window unspecified.
+    - Timing bound:** What evidence supports Claude’s proposed 24-month deadline, or an alternative?
+    - Decision authority:** Which customer budget authority signs, and which authority accepts the evidence? Claude and GPT require these roles to be specified.
+    - Exceptions:** Can an owner decision against g-economics permit excess nameplate, as Claude proposes, or must the configuration continue to satisfy GPT’s demand constraint?
+  recommendedActions:
+    - Record the shared interpretation:** Following all three responses, replace the ambiguous phrase with an explicit quantity inequality and a separate delivery-compatibility requirement.
+    - Resolve sizing before recording a pass:** Put Claude’s, Gemini’s and GPT’s distinct capacity rules to the owner without treating them as equivalent.
+    - Approve the commitment standard:** Resolve Claude’s counterfactual option against GPT’s resource-backed standard, including independent authority and approval conditionality.
+    - Freeze the measurement rules:** Following Claude’s and GPT’s auditability requirements, approve the delivery boundary, epoch, periods and commitment window before gate assessment; do not treat Claude’s numerical timing proposals as agreed.
+    - Check evidence that could change the ruling:** Claude and GPT identify the controlled rq-0-58 wording or drafting rationale as potentially decisive on original timing intent. Claude identifies 0A availability/yield data; GPT identifies validated minimum module size, budget authority and lifecycle economics as relevant to the remaining rules.
+    - Update controlled records:** Following GPT’s recommendation, reconcile rq-0-58, the gate text and D-01 sizing language; following Claude’s recommendation, name the independent signatory role in the decision record.
+    - 'id: multiplier-meaning'
+    - 'statement: Interpret 3× as quantity coverage, not a timing tolerance.'
+    - 'id: capacity-sizing'
+    - 'statement: Cap nameplate at the smaller of three times accepted demand and accepted demand divided by justified availability times yield.'
+    - 'statement: Permit nameplate up to three times explicitly funded or contracted annual demand.'
+    - 'statement: Apply coverage separately and authorise the smallest technically feasible configuration meeting accepted demand and approved reliability requirements.'
+    - 'id: signed-demand-backing'
+    - 'statement: Accept committed purchase funding or a costed Earth-supply baseline displaced by demand, with an independent budget-authorised signatory.'
+    - 'statement: Accept a binding external offtake agreement or a distinct formally funded internal Phase 1 line item.'
+    - 'statement: Require an independent customer budget authority and funded or equivalently approved budget commitment; external demand also needs counterparty-performance evidence.'
+    - 'id: approval-conditionality'
+    - 'statement: Qualifying demand must not be conditional on 0B approval.'
+    - 'statement: Explicit KDP-0B and conforming-delivery conditions may qualify, but dependence on an otherwise unapproved downstream programme may not.'
+    - 'id: demand-window'
+    - 'statement: Average over three years from planned first-nameplate date and require first qualifying delivery within 24 months.'
+    - 'statement: Require a dated schedule and leave the epoch and delivery window to the owner.'
+    - 'statement: Test coverage in each predeclared annual period and freeze the commitment window and commissioning profile before assessment.'
+  generatedBy: gpt-6-1-sol
+  generatedAt: '2026-10-17T22:18:10.459Z'
+alternateSyntheses:
+  - synthesizer: claude-opus-5-5
+    generatedAt: '2026-10-17T22:39:08.992Z'
+    file: conclusion.claude-opus-5-5.md
