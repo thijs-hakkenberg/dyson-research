@@ -1,0 +1,306 @@
+{
+  "method": "stage 1: impulsive, 0-2 revolutions, lunar-assist credit, x1.15; stage 2: Sims-Flanagan low thrust (20 segments, SOCP) on the shortlist",
+  "assumptions": {
+    "lunar_assist_vinf_kms": [
+      0.0,
+      1.0,
+      1.5
+    ],
+    "lunar_assist_days_per_leg": 30.0,
+    "tug_accel_out_ms2": 0.00041954038476806185,
+    "tug_accel_in_ms2": 0.0002224835373770025,
+    "scout_accel_ms2": 0.00022489981639613456,
+    "duty": 0.85,
+    "min_stay_days": 60.0,
+    "dep_step_days": 20.0,
+    "tofs_days": [
+      60,
+      90,
+      120,
+      150,
+      180,
+      220,
+      260,
+      300,
+      350,
+      400,
+      460,
+      520,
+      600,
+      700,
+      800,
+      950
+    ],
+    "cycles_start": [
+      2030.0,
+      2040.0
+    ]
+  },
+  "prefiltered_H23": 1263,
+  "prefiltered_H22": 718,
+  "shortlist": 150,
+  "shortlist_eligible": 379,
+  "stage1": {
+    "scout_reachable_H22": {
+      "launch_vinf=0.0": {
+        "cap=3.5": 0,
+        "cap=4.5": 4,
+        "cap=5.5": 20
+      },
+      "launch_vinf=1.0": {
+        "cap=3.5": 6,
+        "cap=4.5": 28,
+        "cap=5.5": 78
+      },
+      "launch_vinf=1.5": {
+        "cap=3.5": 14,
+        "cap=4.5": 49,
+        "cap=5.5": 132
+      },
+      "launch_vinf=3.16": {
+        "cap=3.5": 128,
+        "cap=4.5": 262,
+        "cap=5.5": 432
+      }
+    },
+    "tug_cycles_H22": {
+      "lga=0.0": {
+        "leg=5.0": {
+          "cycle<=3.0": 0,
+          "cycle<=4.0": 2,
+          "cycle<=5.0": 3,
+          "cycle<=6.0": 4
+        },
+        "leg=5.75": {
+          "cycle<=3.0": 6,
+          "cycle<=4.0": 12,
+          "cycle<=5.0": 20,
+          "cycle<=6.0": 24
+        },
+        "leg=6.5": {
+          "cycle<=3.0": 21,
+          "cycle<=4.0": 35,
+          "cycle<=5.0": 46,
+          "cycle<=6.0": 47
+        },
+        "leg=7.5": {
+          "cycle<=3.0": 56,
+          "cycle<=4.0": 98,
+          "cycle<=5.0": 114,
+          "cycle<=6.0": 123
+        }
+      },
+      "lga=1.0": {
+        "leg=5.0": {
+          "cycle<=3.0": 10,
+          "cycle<=4.0": 29,
+          "cycle<=5.0": 35,
+          "cycle<=6.0": 36
+        },
+        "leg=5.75": {
+          "cycle<=3.0": 29,
+          "cycle<=4.0": 62,
+          "cycle<=5.0": 73,
+          "cycle<=6.0": 82
+        },
+        "leg=6.5": {
+          "cycle<=3.0": 66,
+          "cycle<=4.0": 121,
+          "cycle<=5.0": 134,
+          "cycle<=6.0": 151
+        },
+        "leg=7.5": {
+          "cycle<=3.0": 142,
+          "cycle<=4.0": 235,
+          "cycle<=5.0": 267,
+          "cycle<=6.0": 295
+        }
+      },
+      "lga=1.5": {
+        "leg=5.0": {
+          "cycle<=3.0": 20,
+          "cycle<=4.0": 51,
+          "cycle<=5.0": 64,
+          "cycle<=6.0": 69
+        },
+        "leg=5.75": {
+          "cycle<=3.0": 59,
+          "cycle<=4.0": 106,
+          "cycle<=5.0": 118,
+          "cycle<=6.0": 133
+        },
+        "leg=6.5": {
+          "cycle<=3.0": 123,
+          "cycle<=4.0": 192,
+          "cycle<=5.0": 218,
+          "cycle<=6.0": 236
+        },
+        "leg=7.5": {
+          "cycle<=3.0": 227,
+          "cycle<=4.0": 322,
+          "cycle<=5.0": 351,
+          "cycle<=6.0": 379
+        }
+      }
+    }
+  },
+  "stage2_tug_cycles_H22": {
+    "lga=0.0": {
+      "leg=5.0": {
+        "cycle<=3.0": 0,
+        "cycle<=4.0": 2,
+        "cycle<=5.0": 12,
+        "cycle<=6.0": 14
+      },
+      "leg=5.75": {
+        "cycle<=3.0": 1,
+        "cycle<=4.0": 9,
+        "cycle<=5.0": 30,
+        "cycle<=6.0": 35
+      },
+      "leg=6.5": {
+        "cycle<=3.0": 3,
+        "cycle<=4.0": 16,
+        "cycle<=5.0": 43,
+        "cycle<=6.0": 55
+      },
+      "leg=7.5": {
+        "cycle<=3.0": 7,
+        "cycle<=4.0": 29,
+        "cycle<=5.0": 72,
+        "cycle<=6.0": 88
+      }
+    },
+    "lga=1.0": {
+      "leg=5.0": {
+        "cycle<=3.0": 7,
+        "cycle<=4.0": 20,
+        "cycle<=5.0": 53,
+        "cycle<=6.0": 64
+      },
+      "leg=5.75": {
+        "cycle<=3.0": 13,
+        "cycle<=4.0": 41,
+        "cycle<=5.0": 86,
+        "cycle<=6.0": 107
+      },
+      "leg=6.5": {
+        "cycle<=3.0": 15,
+        "cycle<=4.0": 58,
+        "cycle<=5.0": 107,
+        "cycle<=6.0": 124
+      },
+      "leg=7.5": {
+        "cycle<=3.0": 15,
+        "cycle<=4.0": 71,
+        "cycle<=5.0": 121,
+        "cycle<=6.0": 140
+      }
+    },
+    "lga=1.5": {
+      "leg=5.0": {
+        "cycle<=3.0": 12,
+        "cycle<=4.0": 46,
+        "cycle<=5.0": 87,
+        "cycle<=6.0": 104
+      },
+      "leg=5.75": {
+        "cycle<=3.0": 17,
+        "cycle<=4.0": 68,
+        "cycle<=5.0": 106,
+        "cycle<=6.0": 127
+      },
+      "leg=6.5": {
+        "cycle<=3.0": 17,
+        "cycle<=4.0": 83,
+        "cycle<=5.0": 121,
+        "cycle<=6.0": 140
+      },
+      "leg=7.5": {
+        "cycle<=3.0": 18,
+        "cycle<=4.0": 94,
+        "cycle<=5.0": 126,
+        "cycle<=6.0": 142
+      }
+    }
+  },
+  "stage2_joint": {
+    "scout<=3.5@vinf0.0 tug lga=0.0 leg<=5.0 cycle<=3.0": {
+      "H22": 0,
+      "metal_taxonomy": 0,
+      "unclassified": 0
+    },
+    "scout<=3.5@vinf3.16 tug lga=0.0 leg<=6.5 cycle<=4.0": {
+      "H22": 16,
+      "metal_taxonomy": 1,
+      "unclassified": 13
+    },
+    "scout<=3.5@vinf1.0 tug lga=1.0 leg<=5.0 cycle<=3.0": {
+      "H22": 3,
+      "metal_taxonomy": 0,
+      "unclassified": 3
+    },
+    "scout<=3.5@vinf1.0 tug lga=1.0 leg<=5.0 cycle<=4.0": {
+      "H22": 7,
+      "metal_taxonomy": 0,
+      "unclassified": 6
+    },
+    "scout<=3.5@vinf1.0 tug lga=1.0 leg<=6.5 cycle<=4.0": {
+      "H22": 10,
+      "metal_taxonomy": 0,
+      "unclassified": 9
+    },
+    "scout<=3.5@vinf1.5 tug lga=1.5 leg<=5.0 cycle<=3.0": {
+      "H22": 9,
+      "metal_taxonomy": 1,
+      "unclassified": 8
+    },
+    "scout<=3.5@vinf1.5 tug lga=1.5 leg<=5.0 cycle<=4.0": {
+      "H22": 21,
+      "metal_taxonomy": 1,
+      "unclassified": 18
+    },
+    "scout<=3.5@vinf1.5 tug lga=1.5 leg<=6.5 cycle<=4.0": {
+      "H22": 23,
+      "metal_taxonomy": 2,
+      "unclassified": 19
+    },
+    "scout<=3.5@vinf3.16 tug lga=1.5 leg<=5.0 cycle<=4.0": {
+      "H22": 45,
+      "metal_taxonomy": 1,
+      "unclassified": 40
+    },
+    "scout<=3.5@vinf3.16 tug lga=1.5 leg<=6.5 cycle<=4.0": {
+      "H22": 82,
+      "metal_taxonomy": 3,
+      "unclassified": 75
+    },
+    "scout<=4.5@vinf3.16 tug lga=1.5 leg<=6.5 cycle<=5.0": {
+      "H22": 119,
+      "metal_taxonomy": 5,
+      "unclassified": 109
+    }
+  },
+  "low_thrust_over_impulsive_p10_p50_p90": {
+    "out": [
+      0.764,
+      1.011,
+      1.514
+    ],
+    "in": [
+      0.79,
+      1.026,
+      1.423
+    ]
+  },
+  "legs_solved": {
+    "out": {
+      "feasible": 7333,
+      "attempted": 16422
+    },
+    "in": {
+      "feasible": 5735,
+      "attempted": 17764
+    }
+  }
+}
