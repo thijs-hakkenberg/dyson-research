@@ -20,13 +20,33 @@ parameters:
       Eleven query families were run across OpenAlex (free text, and restricted to Metallurgical
       and Materials Transactions B, Metallurgical Transactions B, ISIJ International, Canadian
       Metallurgical Quarterly, Minerals Engineering, JOM and Journal of Sustainable Metallurgy),
-      plus arXiv and NTRS. Exactly one indexed paper has this as its stated subject, Wiltowski
-      et al. 1987, and it is closed through every open-access route; its numbers are therefore
-      not used. The nearest measured analogues are NiS in H2 at 723-873 K, linear kinetics with
+      plus arXiv and NTRS. The one indexed paper with this as its stated subject, Wiltowski
+      et al. 1987, was obtained and read on 2026-11-12: it stops at troilite (see
+      new_pyrrhotite_H2_rate) and gives no rate for FeS to Fe. The nearest measured analogues are NiS in H2 at 723-873 K, linear kinetics with
       Ea = 103 kJ/mol, and the reverse reaction on iron (see new_reverse_rate). Neither fixes
       tau_h2_h. The decision thresholds in the brief - 14 h, 22 h, 40 h - cannot be ranked
       against evidence, so the simulator's pass rates for the hydrogen route are currently
       carried entirely by an unsourced assumption.
+
+  - key: new_pyrrhotite_H2_rate
+    assumed: "not modelled"
+    supported: "last step Fe11S12 -> FeS: k = 0.97e-3 /min at 653 K rising to 4.32e-3 /min at 693 K, Ea = 142.6 kJ/mol"
+    conditions: "pyrite pre-heated in He to >1 m2/g, 40 mg, 80 ml/min H2, 653-693 K, thermogravimetry; endpoint FeS"
+    basis: measured
+    sources: ["10.1016/0022-4596(87)90146-0"]
+    note: >
+      The step before ours. Pyrite loses sulfur to hydrogen in four first-order steps
+      (FeS2 -> Fe7S8 -> Fe8S9 -> Fe11S12 -> FeS) with activation energies 99.4, 122.4, 125.2 and
+      142.6 kJ/mol; a plug-flow estimate for pyrrhotite gives 108 kJ/mol. The conversion curves
+      are not affine and the Gardner slope is 0.83, between first-order and diffusion laws, which
+      the authors read as surface reaction and solid diffusion both contributing. Three things
+      transfer: an activation energy near 100-145 kJ/mol for hydrogen pulling sulfur out of an
+      iron sulfide lattice; rate proportional to surface area; and solid-state diffusion already
+      mattering at about 1 um scale. What does not transfer is the rate itself. These steps
+      remove excess sulfur with a favourable equilibrium; FeS -> Fe has K of about 3e-5 at 693 K
+      and requires iron to nucleate. Extrapolating k4 to 1173 K (a factor of about 25,000) gives
+      sub-second times for micron-scale material, which says the surface chemistry is not the
+      limit at 900 C but says nothing about a 100 um troilite grain. Do not use it as tau_h2_h.
 
   - key: new_dG_FeS_H2
     assumed: "dG = 59960 - 3.2*T  J/mol  (FeS + H2 = Fe + H2S)"

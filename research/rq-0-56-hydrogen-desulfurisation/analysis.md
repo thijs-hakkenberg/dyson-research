@@ -13,8 +13,8 @@ scrutiny - the equilibrium the simulator assumes is confirmed against a standard
 compilation to within 20 percent, and the awkward consequence of that equilibrium, that several
 hundred moles of hydrogen must circulate per mole of sulfur removed, is confirmed rather than
 exaggerated. What does not exist is any measured rate for stripping sulfur out of FeS with
-hydrogen between 700 and 950 C. One paper has it as its stated subject, from 1987, and it is
-closed through every route tried. Everything the simulator reports about the hydrogen route -
+hydrogen between 700 and 950 C. The one paper with that as its stated subject, from 1987, has now
+been read in full and measures the step before ours, pyrite to troilite, not troilite to iron. Everything the simulator reports about the hydrogen route -
 the 24-hour, 48-hour and 96-hour hold times, the pass rates, the grind-size thresholds - rests
 on a parameter with no source behind it, and that is unchanged by this review.
 
@@ -62,12 +62,8 @@ also tried and did not respond.
 
 Exactly one indexed paper has the reduction of iron sulfide by hydrogen as its stated subject:
 Wiltowski, Hinckley, Smith and Nishizawa, *Journal of Solid State Chemistry* 71 (1987) 95. It
-is closed through Unpaywall, Semantic Scholar, PubMed Central, Crossref text-and-data-mining
-links and direct DOI resolution, and the publisher releases no abstract. **None of its numbers
-appear anywhere in `parameters.yaml`**, and it should be obtained through interlibrary loan
-before any further modelling of this route. Its twenty-seven citing papers are almost entirely
-about underground hydrogen storage and iron-oxide reduction, which suggests it has not been
-used as a kinetics source by anyone since.
+was closed to the original search; the owner bought a copy and it was read in full on
+2026-11-12 (see "Update" at the end). It does not contain the number we need.
 
 What exists instead is adjacent and worth reading as such:
 
@@ -286,3 +282,33 @@ unsourced.
    `tau_h2_h` the unexplored lead is coal science: pyrite and pyrrhotite reduction in hydrogen
    during coal hydropyrolysis (journals such as *Fuel* and *Fuel Processing Technology*),
    which is where the Wiltowski group worked.
+
+## Update (2026-11-12): Wiltowski et al. 1987, read in full
+
+The paper does not measure our reaction. It follows pyrite (FeS2) losing sulfur to hydrogen at
+380-420 C and stops when the solid has become troilite. Its only statement on the next step is
+that troilite "may be reduced further by hydrogen to mixtures of iron and troilite". So
+`tau_h2_h` is still unmeasured, and this is now established by reading the source, not by
+failing to open it.
+
+What it does give:
+
+- **Mechanism.** For hydrogen the conversion curves fit neither a pure surface-reaction law
+  nor a pure diffusion law; the authors conclude both contribute, and cite an earlier
+  suggestion (Attar 1978) that sulfur diffusion in the solid is rate-determining. Solid-state
+  diffusion already matters on material with more than 1 m2/g of surface, which is roughly
+  micron scale. That supports the "dense layer" end of the bracket in review note 2 as a real
+  possibility at 100 um.
+- **Temperature dependence.** Activation energies of 99 to 143 kJ/mol, rising as sulfur is
+  removed. With about 140 kJ/mol, a rate at 950 C is about 3.5 times the rate at 850 C, so
+  the bench test should run at the top of the temperature window as well as the middle.
+- **Timescale at low temperature.** The last step to troilite takes 4 to 17 hours at
+  380-420 C. Extrapolated to 900 C it would take under a second, which shows the surface
+  chemistry is not what limits a 900 C process; the limit is the unfavourable equilibrium
+  (gas throughput) and transport inside the grain.
+- **Leads, not yet read.** Its reference list confirms the coal-science trail: Schwab and
+  Philinis, *J. Am. Chem. Soc.* 69, 2588 (1947), pyrite in hydrogen at 420-550 C; Attar,
+  *Coal Processing Technology* 4, 26 (1978); and several papers in *Fuel* from 1972-1982.
+  These are cited here from the reference list only and are not in `papers.yaml`.
+
+The verdict stands: undetermined, and a bench test is the only way to get the number.

@@ -21,8 +21,8 @@ papers:
     year: 1987
     venue: "Journal of Solid State Chemistry 71, 95"
     relevance: critical
-    access: metadata-only
-    summary: "The only indexed study found that measures the kinetics of iron sulfide reduction by hydrogen as its stated subject. Closed access through every route tried (Unpaywall, Semantic Scholar, PMC, Crossref TDM, DOI resolution); no abstract is released, so none of its numbers are used anywhere in parameters.yaml."
+    access: full-text
+    summary: "Read in full on 2026-11-12 (copy purchased by the owner; not stored in the repository). Despite the title it measures pyrite to troilite, not troilite to iron: thermogravimetry at 653-693 K on pyrite with more than 1 m2/g surface area, ending at FeS. Four first-order steps through Fe7S8, Fe8S9 and Fe11S12 with activation energies 99-143 kJ/mol, and a mixed surface-reaction plus solid-diffusion mechanism for hydrogen. It notes that troilite reduces further in hydrogen to iron-troilite mixtures but gives no rate for that step."
 
   - id: "10.1252/jcej.14.389"
     title: "Sulfurization of sintered reduced iron with hydrogen sulfide and its overall rate description by volume reaction model"
