@@ -1,0 +1,2335 @@
+{
+ "tier_searched": "envelope (S\u22640.10, \u226597)",
+ "tiers": {
+  "structural (S\u22640.05, \u226598)": {
+   "S_max_pct": 0.05,
+   "purity_min_pct": 98.0
+  },
+  "envelope (S\u22640.10, \u226597)": {
+   "S_max_pct": 0.1,
+   "purity_min_pct": 97.0
+  },
+  "remelt stock (S\u22640.5, \u226595)": {
+   "S_max_pct": 0.5,
+   "purity_min_pct": 95.0
+  },
+  "bulk mass (S\u22642, \u226590)": {
+   "S_max_pct": 2.0,
+   "purity_min_pct": 90.0
+  }
+ },
+ "physics_ranges": {
+  "metal_d50_um": {
+   "low": 80,
+   "high": 400,
+   "what": "metal grain size in ordinary chondrites"
+  },
+  "locked_fes": {
+   "low": 0.08,
+   "high": 0.45,
+   "what": "share of troilite intergrown with metal at coarse grind"
+  },
+  "locked_sil": {
+   "low": 0.004,
+   "high": 0.03,
+   "what": "share of silicate mass carried at coarse grind"
+  },
+  "mag_recovery": {
+   "low": 0.88,
+   "high": 0.98,
+   "what": "metal recovery of magnetic separation when liberated"
+  },
+  "tau_h2_h": {
+   "low": 2,
+   "high": 40,
+   "what": "H2 desulfurisation time constant, 100 \u00b5m troilite at 900 \u00b0C"
+  },
+  "h2_approach": {
+   "low": 0.3,
+   "high": 0.9,
+   "what": "approach to H2S/H2 equilibrium in the bed"
+  },
+  "gamma_sulfide": {
+   "low": 0.35,
+   "high": 0.9,
+   "what": "surface tension of Fe\u2013S liquid, N/m"
+  },
+  "wetting_cos": {
+   "low": 0.6,
+   "high": 1.0,
+   "what": "cosine of the contact angle of Fe\u2013S liquid on metal"
+  },
+  "residual_factor": {
+   "low": 0.5,
+   "high": 2.0,
+   "what": "multiplier on the residual-saturation correlation"
+  },
+  "bed_porosity": {
+   "low": 0.34,
+   "high": 0.45,
+   "what": "packed metal grain bed"
+  },
+  "mu_sil_1600": {
+   "low": 0.3,
+   "high": 5.0,
+   "what": "silicate melt viscosity at 1600 \u00b0C, Pa\u00b7s"
+  },
+  "incl_d50_um": {
+   "low": 15,
+   "high": 120,
+   "what": "silicate inclusion / metal droplet size in the melt"
+  },
+  "ls_native": {
+   "low": 0.3,
+   "high": 5.0,
+   "what": "S partition slag/metal for FeO-bearing chondritic slag"
+  },
+  "ls_flux": {
+   "low": 20,
+   "high": 200,
+   "what": "S partition with CaO-rich reducing slag"
+  },
+  "k_vac_S": {
+   "low": 5e-07,
+   "high": 1e-05,
+   "what": "vacuum S evaporation rate constant, m/s"
+  },
+  "tau_carb_h": {
+   "low": 15,
+   "high": 300,
+   "what": "Fe carbonylation time constant, 100 \u00b5m at 100 bar, 175 \u00b0C"
+  },
+  "carb_cap": {
+   "low": 0.8,
+   "high": 0.97,
+   "what": "maximum Fe extraction (passivation, locked metal)"
+  },
+  "co_loss": {
+   "low": 0.002,
+   "high": 0.03,
+   "what": "CO lost (leaks, side reactions) per unit of CO bound to product"
+  },
+  "heat_eff": {
+   "low": 0.6,
+   "high": 0.8,
+   "what": "induction heating efficiency"
+  },
+  "eps_eff": {
+   "low": 0.02,
+   "high": 0.06,
+   "what": "effective emissivity of the shielded furnace shell"
+  },
+  "bond_wi": {
+   "low": 12,
+   "high": 20,
+   "what": "Bond work index of chondritic silicate, kWh/t"
+  },
+  "refractory_melt": {
+   "low": 2,
+   "high": 10,
+   "what": "refractory wear in melt routes, kg per t metal"
+  },
+  "mill_wear": {
+   "low": 0.05,
+   "high": 0.5,
+   "what": "grinding media wear, kg per t ROM at 300 \u00b5m"
+  }
+ },
+ "feeds": {
+  "H": [
+   {
+    "route": "grind \u2192 H2 \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 68.44196337886054,
+     "h2": true,
+     "h2_T": 884.1719081769926,
+     "h2_hours": 110.85585484264861,
+     "liquation": false,
+     "liq_T": 1107.4447120555512,
+     "liq_G": 2008.4297663783193,
+     "liq_pellet_um": 899.698491168226,
+     "melt_T": 1603.2504555579044,
+     "melt_G": 11.248782289715503,
+     "melt_minutes": 2.4918490947365677,
+     "melt_depth_m": 0.03781047595073839,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 211.05430982465984,
+     "carb_T": 181.54761041635442,
+     "carb_hours": 58.167792340287704,
+     "rotor_r_m": 2.325785516709435
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 5.226859600120855e-11,
+     "P90": 0.00102369983458876
+    },
+    "purity_pct": 99.99999999994773,
+    "yield": {
+     "P10": 0.8883367820083405,
+     "P50": 0.9275838580840436
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.994460618615556,
+     "P90": 1.0952676137987176
+    },
+    "imports_kg_per_t": {
+     "P50": 9.518971089898862,
+     "P90": 13.395721594531974
+    },
+    "hours_per_batch": 112.39738566089422,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 1.0,
+     "envelope (S\u22640.10, \u226597)": 1.0,
+     "remelt stock (S\u22640.5, \u226595)": 1.0,
+     "bulk mass (S\u22642, \u226590)": 1.0
+    },
+    "S_sensitivity": {
+     "tau_h2_h": 0.978598675550146,
+     "eps_eff": 0.052318463902609566,
+     "locked_sil": 0.03794332263934834,
+     "tau_carb_h": 0.03548195425829909,
+     "locked_fes": 0.028985264101713353,
+     "bed_porosity": 0.027418107025647617
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9519203728800414,
+     "locked_fes": 0.25676084319564924,
+     "metal_d50_um": 0.14448942894326988,
+     "feed_metal": -0.033488786387642924,
+     "heat_eff": -0.0334705219411691,
+     "feed_fes": 0.03075323052813672
+    }
+   },
+   {
+    "route": "grind \u2192 H2 \u2192 liquation \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 46.245904842076754,
+     "h2": true,
+     "h2_T": 874.2401523124472,
+     "h2_hours": 80.92605357240527,
+     "liquation": true,
+     "liq_T": 1197.6170811507511,
+     "liq_G": 9.125645804797944,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1558.899759274687,
+     "melt_G": 2.331792444645898,
+     "melt_minutes": 5.343419441980592,
+     "melt_depth_m": 0.056264856651806416,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 20.603933858358346,
+     "carb_T": 157.91356068779717,
+     "carb_hours": 136.23719408299468,
+     "rotor_r_m": 0.9273077656106993
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 2.6466586101933584e-19,
+     "P90": 4.748018289484246e-05
+    },
+    "purity_pct": 100.0,
+    "yield": {
+     "P10": 0.8921760532575832,
+     "P50": 0.9311966131135222
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.3717445877239123,
+     "P90": 1.4955322169385483
+    },
+    "imports_kg_per_t": {
+     "P50": 10.355605213696734,
+     "P90": 14.590344021287246
+    },
+    "hours_per_batch": 83.51511056310494,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 1.0,
+     "envelope (S\u22640.10, \u226597)": 1.0,
+     "remelt stock (S\u22640.5, \u226595)": 1.0,
+     "bulk mass (S\u22642, \u226590)": 1.0
+    },
+    "S_sensitivity": {
+     "tau_h2_h": 0.9466383478855303,
+     "eps_eff": 0.04418631457944284,
+     "locked_sil": 0.03905973659790829,
+     "tau_carb_h": 0.03378066540662828,
+     "mu_sil_1600": 0.025464531716765076,
+     "residual_factor": 0.02537684964623431
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9713153452572605,
+     "locked_fes": 0.21244887293876363,
+     "metal_d50_um": 0.09660349162261016,
+     "heat_eff": -0.036755290306143364,
+     "feed_metal": -0.027214303023811448,
+     "feed_fes": 0.025425517047279664
+    }
+   },
+   {
+    "route": "grind \u2192 H2 \u2192 sinter",
+    "design": {
+     "finish": "sinter",
+     "grind_um": 40.2374464849247,
+     "h2": true,
+     "h2_T": 835.0194778093238,
+     "h2_hours": 54.393005179236724,
+     "liquation": false,
+     "liq_T": 1442.0900907507403,
+     "liq_G": 10.448665578403055,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1525.1685985336305,
+     "melt_G": 0.8530011726559417,
+     "melt_minutes": 3.1375482672556214,
+     "melt_depth_m": 0.10095784183076056,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 31.737364400599834,
+     "carb_T": 155.1273954576822,
+     "carb_hours": 19.15889349901487,
+     "rotor_r_m": 0.8920481205075834
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 4.613402141602894e-09,
+     "P90": 0.00294095382225127
+    },
+    "purity_pct": 98.67555598582149,
+    "yield": {
+     "P10": 0.8929676876277802,
+     "P50": 0.9323472050909636
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.6436826645404026,
+     "P90": 0.7138167068102758
+    },
+    "imports_kg_per_t": {
+     "P50": 3.7884358288361533,
+     "P90": 7.937664447534145
+    },
+    "hours_per_batch": 56.393005179236724,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.7196666666666667,
+     "envelope (S\u22640.10, \u226597)": 0.9036666666666666,
+     "remelt stock (S\u22640.5, \u226595)": 0.9973333333333333,
+     "bulk mass (S\u22642, \u226590)": 1.0
+    },
+    "S_sensitivity": {
+     "tau_h2_h": 0.9892425809777471,
+     "eps_eff": 0.05065050181104168,
+     "locked_sil": 0.03929650263427646,
+     "tau_carb_h": 0.03334800850594451,
+     "locked_fes": 0.0323597119776854,
+     "bed_porosity": 0.029879063595376364
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9761419613491067,
+     "locked_fes": 0.1995563572840397,
+     "metal_d50_um": 0.0811897432433048,
+     "heat_eff": -0.03773451530383502,
+     "feed_metal": -0.025721127302347477,
+     "feed_fes": 0.02400610311178923
+    }
+   },
+   {
+    "route": "grind \u2192 carbonyl",
+    "design": {
+     "finish": "carbonyl",
+     "grind_um": 46.3073361025108,
+     "h2": false,
+     "h2_T": 921.6063654976795,
+     "h2_hours": 61.75511909209326,
+     "liquation": false,
+     "liq_T": 1179.8187390715752,
+     "liq_G": 1776.7408931031866,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1544.0424347027406,
+     "melt_G": 18.289936213551087,
+     "melt_minutes": 2.4215596256763003,
+     "melt_depth_m": 0.04738935917702367,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 246.0479028344369,
+     "carb_T": 194.04973417166732,
+     "carb_hours": 128.74155084257254,
+     "rotor_r_m": 0.5569952801406104
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 0.0,
+     "P90": 0.0
+    },
+    "purity_pct": 100.0,
+    "yield": {
+     "P10": 0.7420182281136325,
+     "P50": 0.8100281954231265
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.7040654434369173,
+     "P90": 1.7445061106407456
+    },
+    "imports_kg_per_t": {
+     "P50": 24.2700725925806,
+     "P90": 61.53478309958255
+    },
+    "hours_per_batch": 134.74155084257254,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.3463333333333333,
+     "envelope (S\u22640.10, \u226597)": 0.3463333333333333,
+     "remelt stock (S\u22640.5, \u226595)": 0.3463333333333333,
+     "bulk mass (S\u22642, \u226590)": 0.3463333333333333
+    },
+    "S_sensitivity": {},
+    "yield_sensitivity": {
+     "carb_cap": 0.8717879235319914,
+     "mag_recovery": 0.46912108856900986,
+     "metal_d50_um": 0.08227049091894341,
+     "bond_wi": -0.037554346839371866,
+     "wetting_cos": 0.03527374303041589,
+     "ls_native": 0.02625097180566353
+    }
+   },
+   {
+    "route": "grind \u2192 melt+vac",
+    "design": {
+     "finish": "melt",
+     "grind_um": 113.06503069032047,
+     "h2": false,
+     "h2_T": 811.7144863397689,
+     "h2_hours": 9.387577083861704,
+     "liquation": false,
+     "liq_T": 1327.0751916529173,
+     "liq_G": 285.76757489780437,
+     "liq_pellet_um": 3554.256020477357,
+     "melt_T": 1530.9373106652854,
+     "melt_G": 0.292317933349684,
+     "melt_minutes": 4.918947223642877,
+     "melt_depth_m": 0.02923346347826558,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 330.21276117255286,
+     "enclosure": "pressurised",
+     "carb_P_bar": 35.994342914470074,
+     "carb_T": 228.770011366011,
+     "carb_hours": 35.52991514232475,
+     "rotor_r_m": 0.6644433641564349
+    },
+    "S_pct": {
+     "P10": 0.007208280042429204,
+     "P50": 0.25167564239123796,
+     "P90": 1.0013768710151945
+    },
+    "purity_pct": 99.4954065027147,
+    "yield": {
+     "P10": 0.8735714871364297,
+     "P50": 0.915355149286335
+    },
+    "energy_kwh_per_kg": {
+     "P50": 4.846562287565174,
+     "P90": 6.547198919575499
+    },
+    "imports_kg_per_t": {
+     "P50": 11.226829837962146,
+     "P90": 14.6788304551553
+    },
+    "hours_per_batch": 7.085528473269929,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.24933333333333332,
+     "envelope (S\u22640.10, \u226597)": 0.3273333333333333,
+     "remelt stock (S\u22640.5, \u226595)": 0.6846666666666666,
+     "bulk mass (S\u22642, \u226590)": 0.989
+    },
+    "S_sensitivity": {
+     "k_vac_S": -0.9095889295098809,
+     "locked_fes": 0.31251952183550236,
+     "metal_d50_um": -0.1484126520458502,
+     "heat_eff": -0.04733653592628177,
+     "co_loss": 0.044688916965435206,
+     "bed_porosity": -0.023618877290986363
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9093786681531851,
+     "locked_fes": 0.25261019340113255,
+     "metal_d50_um": 0.23923992613776954,
+     "k_vac_S": 0.1652462539162504,
+     "feed_metal": -0.035756507528500826,
+     "feed_fes": 0.030687272298585807
+    }
+   },
+   {
+    "route": "grind \u2192 melt+flux",
+    "design": {
+     "finish": "melt",
+     "grind_um": 50.25428582279466,
+     "h2": false,
+     "h2_T": 784.8388176466202,
+     "h2_hours": 3.696982331120472,
+     "liquation": false,
+     "liq_T": 1391.2805325412153,
+     "liq_G": 74.12672324120362,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1548.2376023852687,
+     "melt_G": 44.60420851261287,
+     "melt_minutes": 25.95940711033269,
+     "melt_depth_m": 0.04526555888831287,
+     "flux_kg_per_kg": 0.01050595428097192,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 51.01986637390097,
+     "carb_T": 155.63195770849921,
+     "carb_hours": 28.308146232345667,
+     "rotor_r_m": 2.7178004498282675
+    },
+    "S_pct": {
+     "P10": 0.11717725035800144,
+     "P50": 0.2957873487409965,
+     "P90": 0.6738069738879159
+    },
+    "purity_pct": 99.704212651259,
+    "yield": {
+     "P10": 0.8858872288850244,
+     "P50": 0.9248243547367904
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.0504891398062366,
+     "P90": 1.200041982486795
+    },
+    "imports_kg_per_t": {
+     "P50": 19.954545550252494,
+     "P90": 24.164047660210468
+    },
+    "hours_per_batch": 1.9326567851722114,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0036666666666666666,
+     "envelope (S\u22640.10, \u226597)": 0.037,
+     "remelt stock (S\u22640.5, \u226595)": 0.397,
+     "bulk mass (S\u22642, \u226590)": 0.5066666666666667
+    },
+    "S_sensitivity": {
+     "locked_fes": 0.6532975294775032,
+     "ls_flux": -0.6103216864801874,
+     "locked_sil": -0.3224237402693045,
+     "metal_d50_um": -0.2143990478221164,
+     "feed_fes": 0.08575260508362277,
+     "feed_metal": -0.04294768566085396
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9729398685488743,
+     "locked_fes": 0.14667092740788082,
+     "metal_d50_um": 0.13816005401778375,
+     "ls_flux": 0.08717776701975187,
+     "heat_eff": -0.03575992486221387,
+     "locked_sil": 0.03138343237593692
+    }
+   },
+   {
+    "route": "grind \u2192 sinter",
+    "design": {
+     "finish": "sinter",
+     "grind_um": 1491.468087935656,
+     "h2": false,
+     "h2_T": 777.3427566170552,
+     "h2_hours": 8.013422098688618,
+     "liquation": false,
+     "liq_T": 1135.407566453783,
+     "liq_G": 39.61978402755006,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1661.9724219466038,
+     "melt_G": 0.06887149874813736,
+     "melt_minutes": 118.58016775409394,
+     "melt_depth_m": 0.05790247182538971,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 46.5783593144093,
+     "carb_T": 128.8620091779342,
+     "carb_hours": 145.7150773383616,
+     "rotor_r_m": 0.3071705960757487
+    },
+    "S_pct": {
+     "P10": 1.4193756046087935,
+     "P50": 3.1175054406308407,
+     "P90": 4.59260888660987
+    },
+    "purity_pct": 91.67321525971983,
+    "yield": {
+     "P10": 0.8050253808582251,
+     "P50": 0.8411084377837347
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.3001027947244111,
+     "P90": 0.32079929890011366
+    },
+    "imports_kg_per_t": {
+     "P50": 0.9795870426873605,
+     "P90": 1.7263060938394093
+    },
+    "hours_per_batch": 2.0,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.0,
+     "bulk mass (S\u22642, \u226590)": 0.16733333333333333
+    },
+    "S_sensitivity": {
+     "locked_fes": 0.9708663683184852,
+     "feed_metal": -0.1251634050181561,
+     "feed_fes": 0.12411121912346879,
+     "locked_sil": -0.09004332956036995,
+     "metal_d50_um": -0.05165284440587159,
+     "mag_recovery": -0.04092864499207166
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9942337846926426,
+     "metal_d50_um": 0.08330594303399366,
+     "heat_eff": -0.04298301188700132,
+     "bed_porosity": -0.02267388474154275,
+     "locked_fes": 0.022639923848880424,
+     "gamma_sulfide": -0.021709451745494636
+    }
+   },
+   {
+    "route": "grind \u2192 liquation \u2192 sinter",
+    "design": {
+     "finish": "sinter",
+     "grind_um": 1319.6423149855975,
+     "h2": false,
+     "h2_T": 885.3599219430464,
+     "h2_hours": 6.287945652609488,
+     "liquation": true,
+     "liq_T": 1000.1783039349283,
+     "liq_G": 719.5413033869842,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1642.0568876628176,
+     "melt_G": 20.722319795808982,
+     "melt_minutes": 3.0261178797994868,
+     "melt_depth_m": 0.14795829449640197,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 42.2513170283479,
+     "carb_T": 208.1086490498576,
+     "carb_hours": 25.45047432925686,
+     "rotor_r_m": 1.1408215729947693
+    },
+    "S_pct": {
+     "P10": 0.7883644345962774,
+     "P50": 1.2820952081322532,
+     "P90": 2.150544661467533
+    },
+    "purity_pct": 93.28304150712287,
+    "yield": {
+     "P10": 0.797283806969451,
+     "P50": 0.8335463116884345
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.6414479025395099,
+     "P90": 0.7026309106631063
+    },
+    "imports_kg_per_t": {
+     "P50": 1.5150453322985191,
+     "P90": 2.3138058815973026
+    },
+    "hours_per_batch": 3.0,
+    "rotor_ok": false,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.0,
+     "bulk mass (S\u22642, \u226590)": 0.0
+    },
+    "S_sensitivity": {
+     "residual_factor": 0.9229624247736026,
+     "locked_fes": 0.15643704715967185,
+     "bed_porosity": 0.14272495141388347,
+     "gamma_sulfide": 0.09614067646007515,
+     "wetting_cos": 0.07999423866602651,
+     "locked_sil": 0.06417032890781432
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.967534226614914,
+     "locked_fes": -0.16517811701979077,
+     "metal_d50_um": 0.10769999285555473,
+     "residual_factor": 0.07057760339751147,
+     "heat_eff": -0.04592768376974264,
+     "feed_fes": -0.030859272762141413
+    }
+   },
+   {
+    "route": "grind \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 1467.897862164979,
+     "h2": false,
+     "h2_T": 782.6708966666005,
+     "h2_hours": 112.59795481038451,
+     "liquation": false,
+     "liq_T": 1369.1507840881932,
+     "liq_G": 1.0244972072616838,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1531.553007145007,
+     "melt_G": 0.09033313965264823,
+     "melt_minutes": 2.2426812488192285,
+     "melt_depth_m": 0.031021986490109284,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 184.56552880966814,
+     "carb_T": 192.67803081831255,
+     "carb_hours": 45.725816594727206,
+     "rotor_r_m": 1.2497812986006702
+    },
+    "S_pct": {
+     "P10": 1.3003711442939327,
+     "P50": 2.9073505174516776,
+     "P90": 4.3958272522155255
+    },
+    "purity_pct": 94.19753075930167,
+    "yield": {
+     "P10": 0.8098987688485701,
+     "P50": 0.8459583149071306
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.6929036985655352,
+     "P90": 0.7886999560477113
+    },
+    "imports_kg_per_t": {
+     "P50": 10.270669583563917,
+     "P90": 13.5249777594428
+    },
+    "hours_per_batch": 1.5373780208136538,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.0,
+     "bulk mass (S\u22642, \u226590)": 0.23566666666666666
+    },
+    "S_sensitivity": {
+     "locked_fes": 0.9462905531433947,
+     "ls_native": -0.1679185524353947,
+     "locked_sil": -0.16472071296896812,
+     "feed_fes": 0.11317087568565284,
+     "feed_metal": -0.11056227406247487,
+     "incl_d50_um": 0.0498138824237647
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9802093711343745,
+     "ls_native": 0.12253648205960911,
+     "locked_fes": 0.08267565363062818,
+     "metal_d50_um": 0.07542753993639331,
+     "locked_sil": 0.07385904953989439,
+     "heat_eff": -0.03766941840771315
+    }
+   },
+   {
+    "route": "grind \u2192 liquation \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 50.329651112496215,
+     "h2": false,
+     "h2_T": 813.6674528330853,
+     "h2_hours": 9.305063798203385,
+     "liquation": true,
+     "liq_T": 1006.6013012034891,
+     "liq_G": 12.752492175556446,
+     "liq_pellet_um": 1687.7863213825005,
+     "melt_T": 1539.5972603175787,
+     "melt_G": 0.6607750577098829,
+     "melt_minutes": 2.164448390774105,
+     "melt_depth_m": 0.029562525435987662,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 29.91288782203745,
+     "carb_T": 180.37608507214696,
+     "carb_hours": 17.269942415026858,
+     "rotor_r_m": 1.6222033042713693
+    },
+    "S_pct": {
+     "P10": 0.38206335317738255,
+     "P50": 0.8543891873226735,
+     "P90": 1.4567958283614626
+    },
+    "purity_pct": 98.97197573568785,
+    "yield": {
+     "P10": 0.8765985356062362,
+     "P50": 0.9162066578644232
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.036771859508252,
+     "P90": 1.151295049326129
+    },
+    "imports_kg_per_t": {
+     "P50": 12.723109812348245,
+     "P90": 16.948747847508525
+    },
+    "hours_per_batch": 2.536074139846235,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.203,
+     "bulk mass (S\u22642, \u226590)": 0.9853333333333333
+    },
+    "S_sensitivity": {
+     "locked_fes": 0.843244458138273,
+     "metal_d50_um": -0.4591082714564745,
+     "feed_metal": -0.10538341615371288,
+     "feed_fes": 0.10334050481561163,
+     "ls_native": -0.0741725077969453,
+     "residual_factor": 0.039946787994087546
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9665444567271617,
+     "metal_d50_um": 0.22805186356131815,
+     "heat_eff": -0.037210178356686475,
+     "ls_native": 0.03198553955394883,
+     "locked_fes": 0.026416464268496028,
+     "bed_porosity": -0.018230673136741458
+    }
+   }
+  ],
+  "L": [
+   {
+    "route": "grind \u2192 H2 \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 86.36136695286173,
+     "h2": true,
+     "h2_T": 914.7312507914645,
+     "h2_hours": 115.41489553213896,
+     "liquation": false,
+     "liq_T": 1302.974023764953,
+     "liq_G": 3.744954132259521,
+     "liq_pellet_um": 1864.1636093209577,
+     "melt_T": 1576.9601440649337,
+     "melt_G": 13.558683964109125,
+     "melt_minutes": 6.113492287881565,
+     "melt_depth_m": 0.07122873476251942,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 45.245607792107634,
+     "carb_T": 175.9895348121689,
+     "carb_hours": 167.5154698864061,
+     "rotor_r_m": 0.8505709165217584
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 1.0428528157166496e-09,
+     "P90": 0.004790580444741397
+    },
+    "purity_pct": 99.99999999895715,
+    "yield": {
+     "P10": 0.9079306216377138,
+     "P50": 0.9565952141591113
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.2707119735238248,
+     "P90": 1.482671993940481
+    },
+    "imports_kg_per_t": {
+     "P50": 13.106249571316042,
+     "P90": 19.495223914872092
+    },
+    "hours_per_batch": 117.01678707027031,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.915,
+     "envelope (S\u22640.10, \u226597)": 0.9163333333333333,
+     "remelt stock (S\u22640.5, \u226595)": 0.9163333333333333,
+     "bulk mass (S\u22642, \u226590)": 0.9163333333333333
+    },
+    "S_sensitivity": {
+     "tau_h2_h": 0.9837853521260833,
+     "eps_eff": 0.052629950979390536,
+     "locked_sil": 0.03739829951625416,
+     "tau_carb_h": 0.03612492848947267,
+     "feed_metal": -0.028965993427083045,
+     "locked_fes": 0.027162275506496192
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.7796448012938666,
+     "locked_fes": 0.5749229149914349,
+     "feed_metal": -0.13825324958369437,
+     "metal_d50_um": -0.08317335946370659,
+     "feed_fes": 0.07219822357758039,
+     "heat_eff": -0.02788164798684977
+    }
+   },
+   {
+    "route": "grind \u2192 H2 \u2192 liquation \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 86.36136695286173,
+     "h2": true,
+     "h2_T": 914.7312507914645,
+     "h2_hours": 115.41489553213896,
+     "liquation": true,
+     "liq_T": 1302.974023764953,
+     "liq_G": 3.744954132259521,
+     "liq_pellet_um": 1864.1636093209577,
+     "melt_T": 1576.9601440649337,
+     "melt_G": 13.558683964109125,
+     "melt_minutes": 6.113492287881565,
+     "melt_depth_m": 0.07122873476251942,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 45.245607792107634,
+     "carb_T": 175.9895348121689,
+     "carb_hours": 167.5154698864061,
+     "rotor_r_m": 0.8505709165217584
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 1.0428528157166496e-09,
+     "P90": 0.004790580444741397
+    },
+    "purity_pct": 99.99999999895715,
+    "yield": {
+     "P10": 0.9079306216377138,
+     "P50": 0.9565952141591113
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.6693581053504518,
+     "P90": 1.9075663762925374
+    },
+    "imports_kg_per_t": {
+     "P50": 13.606280333389101,
+     "P90": 19.995256821874786
+    },
+    "hours_per_batch": 118.01678707027031,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.8993333333333333,
+     "envelope (S\u22640.10, \u226597)": 0.9003333333333333,
+     "remelt stock (S\u22640.5, \u226595)": 0.9003333333333333,
+     "bulk mass (S\u22642, \u226590)": 0.9003333333333333
+    },
+    "S_sensitivity": {
+     "tau_h2_h": 0.9837857482940803,
+     "eps_eff": 0.052643302021372414,
+     "locked_sil": 0.03739943297184436,
+     "tau_carb_h": 0.03612575241061427,
+     "feed_metal": -0.028959736409300666,
+     "locked_fes": 0.027151982809255706
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.7796448012938666,
+     "locked_fes": 0.5749229149914349,
+     "feed_metal": -0.13825324958369437,
+     "metal_d50_um": -0.08317335946370659,
+     "feed_fes": 0.07219822357758039,
+     "heat_eff": -0.02788164798684977
+    }
+   },
+   {
+    "route": "grind \u2192 H2 \u2192 sinter",
+    "design": {
+     "finish": "sinter",
+     "grind_um": 40.2374464849247,
+     "h2": true,
+     "h2_T": 835.0194778093238,
+     "h2_hours": 54.393005179236724,
+     "liquation": false,
+     "liq_T": 1442.0900907507403,
+     "liq_G": 10.448665578403055,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1525.1685985336305,
+     "melt_G": 0.8530011726559417,
+     "melt_minutes": 3.1375482672556214,
+     "melt_depth_m": 0.10095784183076056,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 31.737364400599834,
+     "carb_T": 155.1273954576822,
+     "carb_hours": 19.15889349901487,
+     "rotor_r_m": 0.8920481205075834
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 1.0581077613158265e-08,
+     "P90": 0.007220762466968111
+    },
+    "purity_pct": 96.78609960913903,
+    "yield": {
+     "P10": 0.9092996509185716,
+     "P50": 0.9530140174041406
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.9232144593916656,
+     "P90": 1.0935666877529056
+    },
+    "imports_kg_per_t": {
+     "P50": 7.948545370218829,
+     "P90": 17.176435103209712
+    },
+    "hours_per_batch": 56.393005179236724,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.251,
+     "envelope (S\u22640.10, \u226597)": 0.449,
+     "remelt stock (S\u22640.5, \u226595)": 0.715,
+     "bulk mass (S\u22642, \u226590)": 0.947
+    },
+    "S_sensitivity": {
+     "tau_h2_h": 0.9892562936162471,
+     "eps_eff": 0.050535695195888734,
+     "locked_sil": 0.03838324629383959,
+     "tau_carb_h": 0.03339852969755206,
+     "locked_fes": 0.03185437264825032,
+     "feed_metal": -0.030074312904251013
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.8955771843974648,
+     "locked_fes": 0.4192925728102858,
+     "feed_metal": -0.10271716163524015,
+     "metal_d50_um": -0.05517011768556862,
+     "feed_fes": 0.05390824243424916,
+     "heat_eff": -0.034407032267448026
+    }
+   },
+   {
+    "route": "grind \u2192 carbonyl",
+    "design": {
+     "finish": "carbonyl",
+     "grind_um": 80.21344308842974,
+     "h2": false,
+     "h2_T": 868.6511979152717,
+     "h2_hours": 64.64633552142647,
+     "liquation": false,
+     "liq_T": 1379.7593633758415,
+     "liq_G": 878.5313963891248,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1622.340992065093,
+     "melt_G": 299.3833009037624,
+     "melt_minutes": 16.772280434537223,
+     "melt_depth_m": 0.04136046989066796,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 227.0982320197298,
+     "carb_T": 198.84280382130518,
+     "carb_hours": 133.67412728263156,
+     "rotor_r_m": 1.8384457591317256
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 0.0,
+     "P90": 0.0
+    },
+    "purity_pct": 100.0,
+    "yield": {
+     "P10": 0.7288139060696549,
+     "P50": 0.7965668318787783
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.8176223075109466,
+     "P90": 1.90117723429674
+    },
+    "imports_kg_per_t": {
+     "P50": 27.30044988227246,
+     "P90": 64.36424705337899
+    },
+    "hours_per_batch": 139.67412728263156,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.24966666666666668,
+     "envelope (S\u22640.10, \u226597)": 0.24966666666666668,
+     "remelt stock (S\u22640.5, \u226595)": 0.24966666666666668,
+     "bulk mass (S\u22642, \u226590)": 0.24966666666666668
+    },
+    "S_sensitivity": {},
+    "yield_sensitivity": {
+     "carb_cap": 0.8485051147227903,
+     "mag_recovery": 0.453431174825686,
+     "metal_d50_um": 0.15323386102598455,
+     "tau_carb_h": -0.12136598859622094,
+     "bond_wi": -0.03441931049103449,
+     "wetting_cos": 0.0318147435349715
+    }
+   },
+   {
+    "route": "grind \u2192 melt+vac",
+    "design": {
+     "finish": "melt",
+     "grind_um": 253.58843614697085,
+     "h2": false,
+     "h2_T": 753.0838926213848,
+     "h2_hours": 2.2007057610155543,
+     "liquation": false,
+     "liq_T": 1403.9517945336863,
+     "liq_G": 12.756453307502287,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1530.265912162816,
+     "melt_G": 0.3036164851707882,
+     "melt_minutes": 95.57505256242088,
+     "melt_depth_m": 0.020363731376084146,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 261.20006505464926,
+     "enclosure": "pressurised",
+     "carb_P_bar": 52.79326025906001,
+     "carb_T": 205.40284337300062,
+     "carb_hours": 150.86008674078585,
+     "rotor_r_m": 2.331688780223485
+    },
+    "S_pct": {
+     "P10": 0.011728752126896851,
+     "P50": 0.7028732806870199,
+     "P90": 2.886667696170265
+    },
+    "purity_pct": 99.29712671931298,
+    "yield": {
+     "P10": 0.8850003993527547,
+     "P50": 0.9437167265765161
+    },
+    "energy_kwh_per_kg": {
+     "P50": 5.603196262837452,
+     "P90": 7.615222507748495
+    },
+    "imports_kg_per_t": {
+     "P50": 12.26221568572559,
+     "P90": 16.42651453525545
+    },
+    "hours_per_batch": 7.446251960284502,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.159,
+     "envelope (S\u22640.10, \u226597)": 0.20733333333333334,
+     "remelt stock (S\u22640.5, \u226595)": 0.35833333333333334,
+     "bulk mass (S\u22642, \u226590)": 0.6183333333333333
+    },
+    "S_sensitivity": {
+     "k_vac_S": -0.9313710021523335,
+     "locked_fes": 0.2838224070913785,
+     "metal_d50_um": -0.06696290877365652,
+     "ls_native": -0.05429641892182431,
+     "heat_eff": -0.047151250127916676,
+     "locked_sil": -0.044400964488996046
+    },
+    "yield_sensitivity": {
+     "locked_fes": 0.637434703714967,
+     "mag_recovery": 0.5966237560693061,
+     "k_vac_S": 0.36062519251391023,
+     "feed_metal": -0.16393103199233686,
+     "feed_fes": 0.08318356613150733,
+     "wetting_cos": 0.03231829292425476
+    }
+   },
+   {
+    "route": "grind \u2192 melt+flux",
+    "design": {
+     "finish": "melt",
+     "grind_um": 886.7402803262424,
+     "h2": false,
+     "h2_T": 880.8459368302837,
+     "h2_hours": 5.976327432846564,
+     "liquation": false,
+     "liq_T": 1275.316951961534,
+     "liq_G": 57.33093049605843,
+     "liq_pellet_um": 1779.9189482655293,
+     "melt_T": 1570.6820722132502,
+     "melt_G": 38.648630518130695,
+     "melt_minutes": 9.939359955507806,
+     "melt_depth_m": 0.037026037039917956,
+     "flux_kg_per_kg": 0.010159887248195094,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 60.64013484971904,
+     "carb_T": 168.51870491532117,
+     "carb_hours": 158.5571030390377,
+     "rotor_r_m": 0.3217413492727369
+    },
+    "S_pct": {
+     "P10": 0.20614682451605,
+     "P50": 0.6720774725923451,
+     "P90": 2.0714546260219517
+    },
+    "purity_pct": 99.32792252740767,
+    "yield": {
+     "P10": 0.8837385977807763,
+     "P50": 0.9536209127602574
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.9354723738779024,
+     "P90": 1.1052985991195279
+    },
+    "imports_kg_per_t": {
+     "P50": 20.381407774426066,
+     "P90": 23.92348766126687
+    },
+    "hours_per_batch": 1.6656559992584634,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0006666666666666666,
+     "envelope (S\u22640.10, \u226597)": 0.007666666666666666,
+     "remelt stock (S\u22640.5, \u226595)": 0.15933333333333333,
+     "bulk mass (S\u22642, \u226590)": 0.405
+    },
+    "S_sensitivity": {
+     "ls_flux": -0.6676697910744211,
+     "locked_sil": -0.540410141823349,
+     "locked_fes": 0.49393100110344446,
+     "feed_fes": 0.06287705943078438,
+     "bond_wi": -0.03958780173197796,
+     "residual_factor": 0.027638728848747643
+    },
+    "yield_sensitivity": {
+     "locked_fes": 0.8031326701258521,
+     "mag_recovery": 0.48015344490593825,
+     "feed_metal": -0.21970413863379315,
+     "ls_flux": 0.1522965386996154,
+     "locked_sil": 0.10579705219967245,
+     "feed_fes": 0.0915239257248806
+    }
+   },
+   {
+    "route": "grind \u2192 sinter",
+    "design": {
+     "finish": "sinter",
+     "grind_um": 1491.468087935656,
+     "h2": false,
+     "h2_T": 777.3427566170552,
+     "h2_hours": 8.013422098688618,
+     "liquation": false,
+     "liq_T": 1135.407566453783,
+     "liq_G": 39.61978402755006,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1661.9724219466038,
+     "melt_G": 0.06887149874813736,
+     "melt_minutes": 118.58016775409394,
+     "melt_depth_m": 0.05790247182538971,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 46.5783593144093,
+     "carb_T": 128.8620091779342,
+     "carb_hours": 145.7150773383616,
+     "rotor_r_m": 0.3071705960757487
+    },
+    "S_pct": {
+     "P10": 3.032553150032817,
+     "P50": 6.380787643904201,
+     "P90": 9.097562875040781
+    },
+    "purity_pct": 82.67769673363385,
+    "yield": {
+     "P10": 0.8050253808582248,
+     "P50": 0.8411084377837348
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.38189156813466374,
+     "P90": 0.43864377007220756
+    },
+    "imports_kg_per_t": {
+     "P50": 1.587436297777785,
+     "P90": 3.3203103504134726
+    },
+    "hours_per_batch": 2.0,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.0,
+     "bulk mass (S\u22642, \u226590)": 0.0
+    },
+    "S_sensitivity": {
+     "locked_fes": 0.9442179231353247,
+     "feed_metal": -0.1956521808502423,
+     "locked_sil": -0.18570306730034078,
+     "feed_fes": 0.1096347672927519,
+     "metal_d50_um": -0.041927727325303026,
+     "bond_wi": -0.034599745177749455
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9942337846926426,
+     "metal_d50_um": 0.08330594303399366,
+     "heat_eff": -0.04298301188700132,
+     "bed_porosity": -0.02267388474154275,
+     "locked_fes": 0.022639923848880424,
+     "gamma_sulfide": -0.021709451745494636
+    }
+   },
+   {
+    "route": "grind \u2192 liquation \u2192 sinter",
+    "design": {
+     "finish": "sinter",
+     "grind_um": 1319.6423149855975,
+     "h2": false,
+     "h2_T": 885.3599219430464,
+     "h2_hours": 6.287945652609488,
+     "liquation": true,
+     "liq_T": 1000.1783039349283,
+     "liq_G": 719.5413033869842,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1642.0568876628176,
+     "melt_G": 20.722319795808982,
+     "melt_minutes": 3.0261178797994868,
+     "melt_depth_m": 0.14795829449640197,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 42.2513170283479,
+     "carb_T": 208.1086490498576,
+     "carb_hours": 25.45047432925686,
+     "rotor_r_m": 1.1408215729947693
+    },
+    "S_pct": {
+     "P10": 0.8685023099981068,
+     "P50": 1.5029981656101925,
+     "P90": 2.479841370833173
+    },
+    "purity_pct": 85.69053699950746,
+    "yield": {
+     "P10": 0.7736722573790726,
+     "P50": 0.8137098510218418
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.7999667817694409,
+     "P90": 0.9387188405959479
+    },
+    "imports_kg_per_t": {
+     "P50": 2.1948826975045637,
+     "P90": 4.105776745901602
+    },
+    "hours_per_batch": 3.0,
+    "rotor_ok": false,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.0,
+     "bulk mass (S\u22642, \u226590)": 0.0
+    },
+    "S_sensitivity": {
+     "residual_factor": 0.9592261456917938,
+     "locked_sil": 0.14672987008109664,
+     "bed_porosity": 0.13324398147155347,
+     "gamma_sulfide": 0.1007414343046038,
+     "wetting_cos": 0.068696816966313,
+     "locked_fes": 0.05864069984896664
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.8590970603441176,
+     "locked_fes": -0.424992268999141,
+     "feed_metal": 0.11202748400305376,
+     "metal_d50_um": 0.11011442201271356,
+     "residual_factor": 0.08448184938687213,
+     "feed_fes": -0.06164179351575483
+    }
+   },
+   {
+    "route": "grind \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 1467.897862164979,
+     "h2": false,
+     "h2_T": 782.6708966666005,
+     "h2_hours": 112.59795481038451,
+     "liquation": false,
+     "liq_T": 1369.1507840881932,
+     "liq_G": 1.0244972072616838,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1531.553007145007,
+     "melt_G": 0.09033313965264823,
+     "melt_minutes": 2.2426812488192285,
+     "melt_depth_m": 0.031021986490109284,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 184.56552880966814,
+     "carb_T": 192.67803081831255,
+     "carb_hours": 45.725816594727206,
+     "rotor_r_m": 1.2497812986006702
+    },
+    "S_pct": {
+     "P10": 2.5281556089310544,
+     "P50": 5.442189359574888,
+     "P90": 8.524031132724067
+    },
+    "purity_pct": 87.98717122249599,
+    "yield": {
+     "P10": 0.8206213870775553,
+     "P50": 0.8626862375993971
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.8620815087969214,
+     "P90": 1.0329542790687312
+    },
+    "imports_kg_per_t": {
+     "P50": 11.682739767970599,
+     "P90": 15.311317045183667
+    },
+    "hours_per_batch": 1.5373780208136538,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.0,
+     "bulk mass (S\u22642, \u226590)": 0.010333333333333333
+    },
+    "S_sensitivity": {
+     "locked_fes": 0.8645562965062551,
+     "locked_sil": -0.297881537542393,
+     "ls_native": -0.28689997854444205,
+     "feed_metal": -0.15163230262581137,
+     "incl_d50_um": 0.09979677997741998,
+     "feed_fes": 0.08821010757890083
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.815831299536811,
+     "ls_native": 0.37153111372567926,
+     "locked_sil": 0.24454995206110575,
+     "locked_fes": 0.238220946468994,
+     "feed_metal": -0.09807179267464364,
+     "metal_d50_um": 0.048520046280005134
+    }
+   },
+   {
+    "route": "grind \u2192 liquation \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 155.54368233773886,
+     "h2": false,
+     "h2_T": 860.4722228741535,
+     "h2_hours": 2.321449653432329,
+     "liquation": true,
+     "liq_T": 1041.7111385549883,
+     "liq_G": 191.61892601000085,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1555.6179667538827,
+     "melt_G": 216.28317550941904,
+     "melt_minutes": 2.155802934915801,
+     "melt_depth_m": 0.25420189895163103,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 168.4106372875865,
+     "carb_T": 120.03523055009396,
+     "carb_hours": 164.73172655699892,
+     "rotor_r_m": 1.3944902413047748
+    },
+    "S_pct": {
+     "P10": 1.3686412843075373,
+     "P50": 2.190434801532765,
+     "P90": 3.7364903758696313
+    },
+    "purity_pct": 97.80956519846724,
+    "yield": {
+     "P10": 0.83437993404326,
+     "P50": 0.8818873335102986
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.2521098902898498,
+     "P90": 1.4510264000770607
+    },
+    "imports_kg_per_t": {
+     "P50": 13.964385292781142,
+     "P90": 19.19721358276646
+    },
+    "hours_per_batch": 2.5359300489152634,
+    "rotor_ok": false,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.0,
+     "bulk mass (S\u22642, \u226590)": 0.0
+    },
+    "S_sensitivity": {
+     "residual_factor": 0.6652446068049562,
+     "locked_fes": 0.43567289463032155,
+     "ls_native": -0.22221674735741634,
+     "metal_d50_um": -0.21424004691556073,
+     "bed_porosity": 0.08999681755520193,
+     "feed_metal": -0.08392603999178219
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.7758387230931912,
+     "metal_d50_um": 0.488161095573455,
+     "locked_fes": -0.17089108343234258,
+     "residual_factor": 0.15576158441795382,
+     "ls_native": 0.12265624829513867,
+     "locked_sil": 0.10188669887629986
+    }
+   }
+  ],
+  "EH": [
+   {
+    "route": "grind \u2192 H2 \u2192 liquation \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 46.245904842076754,
+     "h2": true,
+     "h2_T": 874.2401523124472,
+     "h2_hours": 80.92605357240527,
+     "liquation": true,
+     "liq_T": 1197.6170811507511,
+     "liq_G": 9.125645804797944,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1558.899759274687,
+     "melt_G": 2.331792444645898,
+     "melt_minutes": 5.343419441980592,
+     "melt_depth_m": 0.056264856651806416,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 20.603933858358346,
+     "carb_T": 157.91356068779717,
+     "carb_hours": 136.23719408299468,
+     "rotor_r_m": 0.9273077656106993
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 3.465505798298079e-19,
+     "P90": 5.660367932573073e-05
+    },
+    "purity_pct": 100.0,
+    "yield": {
+     "P10": 0.8946731931780013,
+     "P50": 0.93491769046948
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.3326985965660265,
+     "P90": 1.4612497697254003
+    },
+    "imports_kg_per_t": {
+     "P50": 9.61540261282068,
+     "P90": 13.261455330109573
+    },
+    "hours_per_batch": 83.51511056310494,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 1.0,
+     "envelope (S\u22640.10, \u226597)": 1.0,
+     "remelt stock (S\u22640.5, \u226595)": 1.0,
+     "bulk mass (S\u22642, \u226590)": 1.0
+    },
+    "S_sensitivity": {
+     "tau_h2_h": 0.9465850458847246,
+     "eps_eff": 0.04398390690768358,
+     "locked_sil": 0.03916856016711668,
+     "tau_carb_h": 0.03386633133082039,
+     "residual_factor": 0.025252348327887246,
+     "mu_sil_1600": 0.0252521331752988
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9584035838226203,
+     "locked_fes": 0.2521596066844007,
+     "feed_fes": 0.08926478991831,
+     "metal_d50_um": 0.06869898585544287,
+     "feed_metal": -0.050485850498427826,
+     "heat_eff": -0.03418304690922743
+    }
+   },
+   {
+    "route": "grind \u2192 H2 \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 46.3073361025108,
+     "h2": true,
+     "h2_T": 921.6063654976795,
+     "h2_hours": 61.75511909209326,
+     "liquation": false,
+     "liq_T": 1179.8187390715752,
+     "liq_G": 1776.7408931031866,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1544.0424347027406,
+     "melt_G": 18.289936213551087,
+     "melt_minutes": 2.4215596256763003,
+     "melt_depth_m": 0.04738935917702367,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 246.0479028344369,
+     "carb_T": 194.04973417166732,
+     "carb_hours": 128.74155084257254,
+     "rotor_r_m": 0.5569952801406104
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 0.0,
+     "P90": 3.818622528999269e-06
+    },
+    "purity_pct": 100.0,
+    "yield": {
+     "P10": 0.8947199886086453,
+     "P50": 0.9349694456029416
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.9418621003039116,
+     "P90": 1.0256050612994134
+    },
+    "imports_kg_per_t": {
+     "P50": 12.1145453225033,
+     "P90": 15.760193009232315
+    },
+    "hours_per_batch": 63.295478419187866,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.9996666666666667,
+     "envelope (S\u22640.10, \u226597)": 0.9996666666666667,
+     "remelt stock (S\u22640.5, \u226595)": 0.9996666666666667,
+     "bulk mass (S\u22642, \u226590)": 0.9996666666666667
+    },
+    "S_sensitivity": {
+     "tau_h2_h": 0.9141658281364047,
+     "locked_sil": 0.044862256824333126,
+     "eps_eff": 0.0369470997752728,
+     "tau_carb_h": 0.03551469895693772,
+     "feed_metal": -0.02980413534246083,
+     "mu_sil_1600": 0.02927362251474093
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9583453749272637,
+     "locked_fes": 0.252295519588391,
+     "feed_fes": 0.08932247259138583,
+     "metal_d50_um": 0.06879620364402261,
+     "feed_metal": -0.05050900383433375,
+     "heat_eff": -0.03418120290902254
+    }
+   },
+   {
+    "route": "grind \u2192 H2 \u2192 sinter",
+    "design": {
+     "finish": "sinter",
+     "grind_um": 40.837181641441894,
+     "h2": true,
+     "h2_T": 883.7347928293909,
+     "h2_hours": 35.54925768843903,
+     "liquation": false,
+     "liq_T": 1215.8472152335073,
+     "liq_G": 932.1244191048334,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1651.5294375637786,
+     "melt_G": 2.263229056876681,
+     "melt_minutes": 21.75589135831267,
+     "melt_depth_m": 0.037209397849211526,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 38.221461591571455,
+     "carb_T": 180.41164525160264,
+     "carb_hours": 12.714647610187365,
+     "rotor_r_m": 0.22766152830920391
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 5.431530574987982e-10,
+     "P90": 0.0018856956912264844
+    },
+    "purity_pct": 99.18685241933784,
+    "yield": {
+     "P10": 0.8957637501028064,
+     "P50": 0.9356379430747134
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.602856811781912,
+     "P90": 0.6704884340332791
+    },
+    "imports_kg_per_t": {
+     "P50": 3.176141386869161,
+     "P90": 6.072503378888286
+    },
+    "hours_per_batch": 37.54925768843903,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.9213333333333333,
+     "envelope (S\u22640.10, \u226597)": 0.9946666666666667,
+     "remelt stock (S\u22640.5, \u226595)": 1.0,
+     "bulk mass (S\u22642, \u226590)": 1.0
+    },
+    "S_sensitivity": {
+     "tau_h2_h": 0.9849233165651164,
+     "eps_eff": 0.05242238501905264,
+     "locked_sil": 0.03905538951639041,
+     "tau_carb_h": 0.03558891728665023,
+     "locked_fes": 0.029310464907531326,
+     "feed_metal": -0.028166443957501914
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.963993503110389,
+     "locked_fes": 0.2385102051678005,
+     "feed_fes": 0.08414852446094714,
+     "metal_d50_um": 0.0583000562555618,
+     "feed_metal": -0.04769030885447875,
+     "heat_eff": -0.03538718170968685
+    }
+   },
+   {
+    "route": "grind \u2192 carbonyl",
+    "design": {
+     "finish": "carbonyl",
+     "grind_um": 46.3073361025108,
+     "h2": false,
+     "h2_T": 921.6063654976795,
+     "h2_hours": 61.75511909209326,
+     "liquation": false,
+     "liq_T": 1179.8187390715752,
+     "liq_G": 1776.7408931031866,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1544.0424347027406,
+     "melt_G": 18.289936213551087,
+     "melt_minutes": 2.4215596256763003,
+     "melt_depth_m": 0.04738935917702367,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 246.0479028344369,
+     "carb_T": 194.04973417166732,
+     "carb_hours": 128.74155084257254,
+     "rotor_r_m": 0.5569952801406104
+    },
+    "S_pct": {
+     "P10": 0.0,
+     "P50": 0.0,
+     "P90": 0.0
+    },
+    "purity_pct": 100.0,
+    "yield": {
+     "P10": 0.7420182281136326,
+     "P50": 0.8100281954231265
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.6576137711737093,
+     "P90": 1.690304363048619
+    },
+    "imports_kg_per_t": {
+     "P50": 23.197905717497914,
+     "P90": 60.44634122122504
+    },
+    "hours_per_batch": 134.74155084257254,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.372,
+     "envelope (S\u22640.10, \u226597)": 0.372,
+     "remelt stock (S\u22640.5, \u226595)": 0.372,
+     "bulk mass (S\u22642, \u226590)": 0.372
+    },
+    "S_sensitivity": {},
+    "yield_sensitivity": {
+     "carb_cap": 0.8717879235319914,
+     "mag_recovery": 0.46912108856900986,
+     "metal_d50_um": 0.08227049091894341,
+     "bond_wi": -0.037554346839371866,
+     "wetting_cos": 0.03527374303041589,
+     "ls_native": 0.02625097180566353
+    }
+   },
+   {
+    "route": "grind \u2192 melt+vac",
+    "design": {
+     "finish": "melt",
+     "grind_um": 113.06503069032047,
+     "h2": false,
+     "h2_T": 811.7144863397689,
+     "h2_hours": 9.387577083861704,
+     "liquation": false,
+     "liq_T": 1327.0751916529173,
+     "liq_G": 285.76757489780437,
+     "liq_pellet_um": 3554.256020477357,
+     "melt_T": 1530.9373106652854,
+     "melt_G": 0.292317933349684,
+     "melt_minutes": 4.918947223642877,
+     "melt_depth_m": 0.02923346347826558,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 330.21276117255286,
+     "enclosure": "pressurised",
+     "carb_P_bar": 35.994342914470074,
+     "carb_T": 228.770011366011,
+     "carb_hours": 35.52991514232475,
+     "rotor_r_m": 0.6644433641564349
+    },
+    "S_pct": {
+     "P10": 0.009055361728129728,
+     "P50": 0.30461583562361,
+     "P90": 1.2539472312154103
+    },
+    "purity_pct": 99.46574842785444,
+    "yield": {
+     "P10": 0.8767345999172731,
+     "P50": 0.9191237157874657
+    },
+    "energy_kwh_per_kg": {
+     "P50": 4.787681793515109,
+     "P90": 6.458692713760009
+    },
+    "imports_kg_per_t": {
+     "P50": 10.64532644595593,
+     "P90": 13.891484053675976
+    },
+    "hours_per_batch": 7.085528473269929,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.23433333333333334,
+     "envelope (S\u22640.10, \u226597)": 0.31866666666666665,
+     "remelt stock (S\u22640.5, \u226595)": 0.628,
+     "bulk mass (S\u22642, \u226590)": 0.9826666666666667
+    },
+    "S_sensitivity": {
+     "k_vac_S": -0.9051050472338941,
+     "locked_fes": 0.3066301789589087,
+     "metal_d50_um": -0.15105171233907913,
+     "feed_fes": 0.08164150951572327,
+     "heat_eff": -0.04645148471683163,
+     "co_loss": 0.04411882579098064
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.8850980472331162,
+     "locked_fes": 0.29581037420115264,
+     "k_vac_S": 0.20408882578764725,
+     "metal_d50_um": 0.19710259301139918,
+     "feed_fes": 0.10611350023483335,
+     "feed_metal": -0.06302036344670704
+    }
+   },
+   {
+    "route": "grind \u2192 melt+flux",
+    "design": {
+     "finish": "melt",
+     "grind_um": 50.25428582279466,
+     "h2": false,
+     "h2_T": 784.8388176466202,
+     "h2_hours": 3.696982331120472,
+     "liquation": false,
+     "liq_T": 1391.2805325412153,
+     "liq_G": 74.12672324120362,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1548.2376023852687,
+     "melt_G": 44.60420851261287,
+     "melt_minutes": 25.95940711033269,
+     "melt_depth_m": 0.04526555888831287,
+     "flux_kg_per_kg": 0.01050595428097192,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 51.01986637390097,
+     "carb_T": 155.63195770849921,
+     "carb_hours": 28.308146232345667,
+     "rotor_r_m": 2.7178004498282675
+    },
+    "S_pct": {
+     "P10": 0.16703484430876192,
+     "P50": 0.4197179614651677,
+     "P90": 0.9266063632572362
+    },
+    "purity_pct": 99.58028203853483,
+    "yield": {
+     "P10": 0.886971494514096,
+     "P50": 0.92580346312359
+    },
+    "energy_kwh_per_kg": {
+     "P50": 1.008208283316892,
+     "P90": 1.1547927884377076
+    },
+    "imports_kg_per_t": {
+     "P50": 19.132372223387687,
+     "P90": 22.726201860916976
+    },
+    "hours_per_batch": 1.9326567851722114,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0003333333333333333,
+     "envelope (S\u22640.10, \u226597)": 0.014333333333333333,
+     "remelt stock (S\u22640.5, \u226595)": 0.365,
+     "bulk mass (S\u22642, \u226590)": 0.6083333333333333
+    },
+    "S_sensitivity": {
+     "locked_fes": 0.66518198102022,
+     "ls_flux": -0.5673744657082739,
+     "metal_d50_um": -0.2587511309723478,
+     "locked_sil": -0.2469914758879417,
+     "feed_fes": 0.23893874121541564,
+     "feed_metal": -0.07457452828605869
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9678853262094804,
+     "locked_fes": 0.16060910984545662,
+     "metal_d50_um": 0.12638459937606658,
+     "ls_flux": 0.10734440792715642,
+     "feed_fes": 0.04932254103583788,
+     "feed_metal": -0.038678927853214196
+    }
+   },
+   {
+    "route": "grind \u2192 sinter",
+    "design": {
+     "finish": "sinter",
+     "grind_um": 1491.468087935656,
+     "h2": false,
+     "h2_T": 777.3427566170552,
+     "h2_hours": 8.013422098688618,
+     "liquation": false,
+     "liq_T": 1135.407566453783,
+     "liq_G": 39.61978402755006,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1661.9724219466038,
+     "melt_G": 0.06887149874813736,
+     "melt_minutes": 118.58016775409394,
+     "melt_depth_m": 0.05790247182538971,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 46.5783593144093,
+     "carb_T": 128.8620091779342,
+     "carb_hours": 145.7150773383616,
+     "rotor_r_m": 0.3071705960757487
+    },
+    "S_pct": {
+     "P10": 1.7420656921672792,
+     "P50": 3.7538889444193337,
+     "P90": 5.78088437917829
+    },
+    "purity_pct": 92.89669228542144,
+    "yield": {
+     "P10": 0.8050253808582251,
+     "P50": 0.8411084377837348
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.2935510240797917,
+     "P90": 0.3158231493660491
+    },
+    "imports_kg_per_t": {
+     "P50": 0.8392536376860356,
+     "P90": 1.3721199860772506
+    },
+    "hours_per_batch": 2.0,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.0,
+     "bulk mass (S\u22642, \u226590)": 0.14233333333333334
+    },
+    "S_sensitivity": {
+     "locked_fes": 0.9116981168553462,
+     "feed_fes": 0.3220980246775582,
+     "feed_metal": -0.16832262092473566,
+     "locked_sil": -0.059088488787609854,
+     "metal_d50_um": -0.049817347757483074,
+     "mag_recovery": -0.03527919547546616
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9942337846926426,
+     "metal_d50_um": 0.08330594303399366,
+     "heat_eff": -0.04298301188700132,
+     "bed_porosity": -0.02267388474154275,
+     "locked_fes": 0.022639923848880424,
+     "gamma_sulfide": -0.021709451745494636
+    }
+   },
+   {
+    "route": "grind \u2192 liquation \u2192 sinter",
+    "design": {
+     "finish": "sinter",
+     "grind_um": 1319.6423149855975,
+     "h2": false,
+     "h2_T": 885.3599219430464,
+     "h2_hours": 6.287945652609488,
+     "liquation": true,
+     "liq_T": 1000.1783039349283,
+     "liq_G": 719.5413033869842,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1642.0568876628176,
+     "melt_G": 20.722319795808982,
+     "melt_minutes": 3.0261178797994868,
+     "melt_depth_m": 0.14795829449640197,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "lidded",
+     "carb_P_bar": 42.2513170283479,
+     "carb_T": 208.1086490498576,
+     "carb_hours": 25.45047432925686,
+     "rotor_r_m": 1.1408215729947693
+    },
+    "S_pct": {
+     "P10": 0.7681887479287699,
+     "P50": 1.29456562625951,
+     "P90": 2.1364107936013053
+    },
+    "purity_pct": 95.2748626557163,
+    "yield": {
+     "P10": 0.7934082554846636,
+     "P50": 0.8301597451873002
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.6322143438724979,
+     "P90": 0.6956074968528876
+    },
+    "imports_kg_per_t": {
+     "P50": 1.3660819587308919,
+     "P90": 1.9447934143605585
+    },
+    "hours_per_batch": 3.0,
+    "rotor_ok": false,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.0,
+     "bulk mass (S\u22642, \u226590)": 0.0
+    },
+    "S_sensitivity": {
+     "residual_factor": 0.9539306771034084,
+     "bed_porosity": 0.14639165715462854,
+     "gamma_sulfide": 0.09935014792779419,
+     "locked_fes": 0.08477920364213372,
+     "wetting_cos": 0.07513146790349642,
+     "locked_sil": 0.04718252213139135
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9497590095287788,
+     "locked_fes": -0.21344515349390591,
+     "metal_d50_um": 0.10949591972176884,
+     "feed_fes": -0.09556691684076851,
+     "residual_factor": 0.06994956066106228,
+     "feed_metal": 0.0534757561639729
+    }
+   },
+   {
+    "route": "grind \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 371.00301061168767,
+     "h2": false,
+     "h2_T": 751.9412167958164,
+     "h2_hours": 6.607102614890525,
+     "liquation": false,
+     "liq_T": 1145.2844874355462,
+     "liq_G": 14.774921045677333,
+     "liq_pellet_um": 0.0,
+     "melt_T": 1522.2736565402258,
+     "melt_G": 0.10417036347239886,
+     "melt_minutes": 2.1705840387656625,
+     "melt_depth_m": 0.03444234250750459,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 100.11612336901739,
+     "carb_T": 182.8349445561471,
+     "carb_hours": 91.31514236231142,
+     "rotor_r_m": 1.2241602382789338
+    },
+    "S_pct": {
+     "P10": 1.307323736308655,
+     "P50": 2.870163037326394,
+     "P90": 4.7017441053525495
+    },
+    "purity_pct": 95.61716195170726,
+    "yield": {
+     "P10": 0.8249400581788973,
+     "P50": 0.8640752571828211
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.6723933013692083,
+     "P90": 0.7584985819107933
+    },
+    "imports_kg_per_t": {
+     "P50": 10.512239224092149,
+     "P90": 13.78197284443423
+    },
+    "hours_per_batch": 1.5361764006460943,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.0,
+     "bulk mass (S\u22642, \u226590)": 0.2783333333333333
+    },
+    "S_sensitivity": {
+     "locked_fes": 0.8664624029402668,
+     "feed_fes": 0.30366882885209207,
+     "metal_d50_um": -0.2777078877453208,
+     "feed_metal": -0.15198981999886885,
+     "ls_native": -0.09279809919978879,
+     "locked_sil": -0.07997405110822789
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9196583497398165,
+     "metal_d50_um": 0.3504499544944393,
+     "ls_native": 0.07665486985054108,
+     "locked_fes": 0.05438487582054175,
+     "locked_sil": 0.03602240755804528,
+     "heat_eff": -0.029981822442424713
+    }
+   },
+   {
+    "route": "grind \u2192 liquation \u2192 melt",
+    "design": {
+     "finish": "melt",
+     "grind_um": 50.329651112496215,
+     "h2": false,
+     "h2_T": 813.6674528330853,
+     "h2_hours": 9.305063798203385,
+     "liquation": true,
+     "liq_T": 1006.6013012034891,
+     "liq_G": 12.752492175556446,
+     "liq_pellet_um": 1687.7863213825005,
+     "melt_T": 1539.5972603175787,
+     "melt_G": 0.6607750577098829,
+     "melt_minutes": 2.164448390774105,
+     "melt_depth_m": 0.029562525435987662,
+     "flux_kg_per_kg": 0.0,
+     "vacuum_minutes": 0.0,
+     "enclosure": "pressurised",
+     "carb_P_bar": 29.91288782203745,
+     "carb_T": 180.37608507214696,
+     "carb_hours": 17.269942415026858,
+     "rotor_r_m": 1.6222033042713693
+    },
+    "S_pct": {
+     "P10": 0.461922482572497,
+     "P50": 1.026390330138019,
+     "P90": 1.7546465624772156
+    },
+    "purity_pct": 98.84243517822304,
+    "yield": {
+     "P10": 0.8762190167792125,
+     "P50": 0.9159995474090156
+    },
+    "energy_kwh_per_kg": {
+     "P50": 0.9943122483968845,
+     "P90": 1.1076912329167776
+    },
+    "imports_kg_per_t": {
+     "P50": 11.948383281215076,
+     "P90": 15.537405594125339
+    },
+    "hours_per_batch": 2.536074139846235,
+    "rotor_ok": true,
+    "P_pass": {
+     "structural (S\u22640.05, \u226598)": 0.0,
+     "envelope (S\u22640.10, \u226597)": 0.0,
+     "remelt stock (S\u22640.5, \u226595)": 0.124,
+     "bulk mass (S\u22642, \u226590)": 0.9483333333333334
+    },
+    "S_sensitivity": {
+     "locked_fes": 0.8028107629789736,
+     "metal_d50_um": -0.44048939560993283,
+     "feed_fes": 0.2752448443605382,
+     "feed_metal": -0.14816932312992478,
+     "residual_factor": 0.06612313356923705,
+     "ls_native": -0.05284793831643759
+    },
+    "yield_sensitivity": {
+     "mag_recovery": 0.9650293432254825,
+     "metal_d50_um": 0.2330652250072472,
+     "heat_eff": -0.03759976284441809,
+     "ls_native": 0.029797094866343868,
+     "locked_fes": 0.02039872048874672,
+     "wetting_cos": 0.0182709109189901
+    }
+   }
+  ]
+ },
+ "falsifiers": {
+  "h2_tau_h_vs_pass": {
+   "24 h hold": [
+    {
+     "from": 2.0,
+     "to": 4.0,
+     "P_pass": 1.0
+    },
+    {
+     "from": 4.0,
+     "to": 8.0,
+     "P_pass": 1.0
+    },
+    {
+     "from": 8.0,
+     "to": 14.0,
+     "P_pass": 0.7668439716312057
+    },
+    {
+     "from": 14.0,
+     "to": 22.0,
+     "P_pass": 0.14106583072100312
+    },
+    {
+     "from": 22.0,
+     "to": 40.0,
+     "P_pass": 0.0069868995633187774
+    }
+   ],
+   "48 h hold": [
+    {
+     "from": 2.0,
+     "to": 4.0,
+     "P_pass": 1.0
+    },
+    {
+     "from": 4.0,
+     "to": 8.0,
+     "P_pass": 1.0
+    },
+    {
+     "from": 8.0,
+     "to": 14.0,
+     "P_pass": 1.0
+    },
+    {
+     "from": 14.0,
+     "to": 22.0,
+     "P_pass": 0.9383490073145245
+    },
+    {
+     "from": 22.0,
+     "to": 40.0,
+     "P_pass": 0.28296943231441046
+    }
+   ],
+   "96 h hold": [
+    {
+     "from": 2.0,
+     "to": 4.0,
+     "P_pass": 1.0
+    },
+    {
+     "from": 4.0,
+     "to": 8.0,
+     "P_pass": 1.0
+    },
+    {
+     "from": 8.0,
+     "to": 14.0,
+     "P_pass": 1.0
+    },
+    {
+     "from": 14.0,
+     "to": 22.0,
+     "P_pass": 1.0
+    },
+    {
+     "from": 22.0,
+     "to": 40.0,
+     "P_pass": 0.9921397379912664
+    }
+   ]
+  },
+  "h2_grind_vs_pass_48h": {
+   "60 um": 1.0,
+   "100 um": 0.8533333333333334,
+   "150 um": 0.5563333333333333,
+   "250 um": 0.18116666666666667,
+   "400 um": 0.0
+  },
+  "carbonyl_tau_h_vs_yield_pass": {
+   "100 bar, 72 h": [
+    {
+     "from": 15.0,
+     "to": 30.0,
+     "P_pass": 0.27159590043923865
+    },
+    {
+     "from": 30.0,
+     "to": 60.0,
+     "P_pass": 0.02575107296137339
+    },
+    {
+     "from": 60.0,
+     "to": 120.0,
+     "P_pass": 0.0
+    },
+    {
+     "from": 120.0,
+     "to": 300.0,
+     "P_pass": 0.0
+    }
+   ],
+   "200 bar, 168 h": [
+    {
+     "from": 15.0,
+     "to": 30.0,
+     "P_pass": 0.3740849194729136
+    },
+    {
+     "from": 30.0,
+     "to": 60.0,
+     "P_pass": 0.3383404864091559
+    },
+    {
+     "from": 60.0,
+     "to": 120.0,
+     "P_pass": 0.2773294203961849
+    },
+    {
+     "from": 120.0,
+     "to": 300.0,
+     "P_pass": 0.039508809396689805
+    }
+   ]
+  },
+  "melt_gravity": {
+   "concentrate (grind 100 um)": {
+    "0.0001": {
+     "purity_P50": 97.87927461255583,
+     "P_pass": 0.6761666666666667
+    },
+    "0.001": {
+     "purity_P50": 97.91754704309443,
+     "P_pass": 0.6833333333333333
+    },
+    "0.01": {
+     "purity_P50": 98.25173177303417,
+     "P_pass": 0.7571666666666667
+    },
+    "0.1": {
+     "purity_P50": 99.75887690743022,
+     "P_pass": 0.9295
+    },
+    "1": {
+     "purity_P50": 99.99999895273803,
+     "P_pass": 0.9985
+    },
+    "10": {
+     "purity_P50": 99.99999895273803,
+     "P_pass": 0.9985
+    },
+    "100": {
+     "purity_P50": 99.99999895273803,
+     "P_pass": 0.9985
+    }
+   },
+   "coarse concentrate (grind 800 um)": {
+    "0.0001": {
+     "purity_P50": 94.10034940070791,
+     "P_pass": 0.017666666666666667
+    },
+    "0.001": {
+     "purity_P50": 94.15535530016001,
+     "P_pass": 0.018333333333333333
+    },
+    "0.01": {
+     "purity_P50": 94.80116050309104,
+     "P_pass": 0.0225
+    },
+    "0.1": {
+     "purity_P50": 97.68627672867626,
+     "P_pass": 0.049
+    },
+    "1": {
+     "purity_P50": 99.052994632859,
+     "P_pass": 0.06366666666666666
+    },
+    "10": {
+     "purity_P50": 99.052994632859,
+     "P_pass": 0.06366666666666666
+    },
+    "100": {
+     "purity_P50": 99.052994632859,
+     "P_pass": 0.06366666666666666
+    }
+   }
+  }
+ }
+}
