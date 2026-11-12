@@ -1,0 +1,226 @@
+{
+  "catalogue": "JPL SBDB Query API (sb-group=neo), retrieved 2026-10-25",
+  "catalogue_count": 42806,
+  "prefilter": "i <= 12 deg, e <= 0.45, 0.6 <= a <= 1.8 AU, H <= 23",
+  "prefiltered": 1263,
+  "prefiltered_H22": 718,
+  "classified_in_prefilter_H22": 44,
+  "metal_taxonomy_in_prefilter_H22": 31,
+  "model": {
+    "k_lowthrust": 1.15,
+    "dep_step_days": 15.0,
+    "tofs_days": [
+      60,
+      90,
+      120,
+      150,
+      180,
+      220,
+      260,
+      300,
+      350,
+      400,
+      460,
+      520,
+      600,
+      700,
+      800,
+      950
+    ],
+    "min_stay_days": 60,
+    "cycles_start": [
+      2030.0,
+      2040.0
+    ]
+  },
+  "scout_reachable": {
+    "vinf=0.0": {
+      "cap=3.5": {
+        "H22": 0,
+        "H23": 0
+      },
+      "cap=4.5": {
+        "H22": 2,
+        "H23": 6
+      },
+      "cap=5.5": {
+        "H22": 7,
+        "H23": 18
+      }
+    },
+    "vinf=1.5": {
+      "cap=3.5": {
+        "H22": 6,
+        "H23": 12
+      },
+      "cap=4.5": {
+        "H22": 34,
+        "H23": 78
+      },
+      "cap=5.5": {
+        "H22": 76,
+        "H23": 166
+      }
+    },
+    "vinf=3.16": {
+      "cap=3.5": {
+        "H22": 92,
+        "H23": 197
+      },
+      "cap=4.5": {
+        "H22": 197,
+        "H23": 394
+      },
+      "cap=5.5": {
+        "H22": 344,
+        "H23": 647
+      }
+    }
+  },
+  "tug_cycles": {
+    "leg=5.0": {
+      "cycle<=3.0": {
+        "H22": 0,
+        "H23": 1
+      },
+      "cycle<=4.0": {
+        "H22": 0,
+        "H23": 2
+      },
+      "cycle<=5.0": {
+        "H22": 2,
+        "H23": 4
+      },
+      "cycle<=6.0": {
+        "H22": 2,
+        "H23": 5
+      }
+    },
+    "leg=5.75": {
+      "cycle<=3.0": {
+        "H22": 1,
+        "H23": 5
+      },
+      "cycle<=4.0": {
+        "H22": 5,
+        "H23": 17
+      },
+      "cycle<=5.0": {
+        "H22": 8,
+        "H23": 20
+      },
+      "cycle<=6.0": {
+        "H22": 10,
+        "H23": 24
+      }
+    },
+    "leg=6.5": {
+      "cycle<=3.0": {
+        "H22": 9,
+        "H23": 26
+      },
+      "cycle<=4.0": {
+        "H22": 15,
+        "H23": 37
+      },
+      "cycle<=5.0": {
+        "H22": 17,
+        "H23": 40
+      },
+      "cycle<=6.0": {
+        "H22": 19,
+        "H23": 44
+      }
+    },
+    "leg=7.5": {
+      "cycle<=3.0": {
+        "H22": 31,
+        "H23": 57
+      },
+      "cycle<=4.0": {
+        "H22": 36,
+        "H23": 69
+      },
+      "cycle<=5.0": {
+        "H22": 39,
+        "H23": 81
+      },
+      "cycle<=6.0": {
+        "H22": 41,
+        "H23": 84
+      }
+    }
+  },
+  "joint": {
+    "scout<=3.5@vinf0.0 tug leg<=5.0 cycle<=3.0": {
+      "H22": 0,
+      "H23": 0,
+      "H22_metal_taxonomy": 0,
+      "H22_unclassified": 0,
+      "H22_unclassified_rot_ok": 0,
+      "H22_non_metal_taxonomy": 0
+    },
+    "scout<=4.5@vinf0.0 tug leg<=5.0 cycle<=3.0": {
+      "H22": 0,
+      "H23": 1,
+      "H22_metal_taxonomy": 0,
+      "H22_unclassified": 0,
+      "H22_unclassified_rot_ok": 0,
+      "H22_non_metal_taxonomy": 0
+    },
+    "scout<=3.5@vinf3.16 tug leg<=5.0 cycle<=3.0": {
+      "H22": 0,
+      "H23": 1,
+      "H22_metal_taxonomy": 0,
+      "H22_unclassified": 0,
+      "H22_unclassified_rot_ok": 0,
+      "H22_non_metal_taxonomy": 0
+    },
+    "scout<=3.5@vinf3.16 tug leg<=5.0 cycle<=4.0": {
+      "H22": 0,
+      "H23": 2,
+      "H22_metal_taxonomy": 0,
+      "H22_unclassified": 0,
+      "H22_unclassified_rot_ok": 0,
+      "H22_non_metal_taxonomy": 0
+    },
+    "scout<=3.5@vinf3.16 tug leg<=5.75 cycle<=4.0": {
+      "H22": 5,
+      "H23": 17,
+      "H22_metal_taxonomy": 0,
+      "H22_unclassified": 5,
+      "H22_unclassified_rot_ok": 4,
+      "H22_non_metal_taxonomy": 0
+    },
+    "scout<=3.5@vinf3.16 tug leg<=6.5 cycle<=4.0": {
+      "H22": 15,
+      "H23": 37,
+      "H22_metal_taxonomy": 2,
+      "H22_unclassified": 13,
+      "H22_unclassified_rot_ok": 11,
+      "H22_non_metal_taxonomy": 0
+    },
+    "scout<=3.5@vinf3.16 tug leg<=6.5 cycle<=5.0": {
+      "H22": 17,
+      "H23": 40,
+      "H22_metal_taxonomy": 2,
+      "H22_unclassified": 14,
+      "H22_unclassified_rot_ok": 11,
+      "H22_non_metal_taxonomy": 1
+    },
+    "scout<=4.5@vinf3.16 tug leg<=7.5 cycle<=5.0": {
+      "H22": 39,
+      "H23": 81,
+      "H22_metal_taxonomy": 3,
+      "H22_unclassified": 35,
+      "H22_unclassified_rot_ok": 29,
+      "H22_non_metal_taxonomy": 1
+    }
+  },
+  "shortest_cycle_years_H22_by_leg_cap": {
+    "5.0": 4.681724845995893,
+    "5.75": 2.9021218343600275,
+    "6.5": 2.8199863107460645,
+    "7.5": 1.7248459958932238
+  }
+}

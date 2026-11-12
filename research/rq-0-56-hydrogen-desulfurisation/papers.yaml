@@ -1,0 +1,169 @@
+# Sources for rq-0-56: hydrogen desulfurisation of asteroid Fe-Ni before melting
+# Compiled: 2026-11-12, in response to publications/handover/rq-0-56-fe-ni-desulfurisation-literature-brief.md
+# access: full-text  = PDF opened and read in this session
+#         abstract-only = publisher abstract retrieved, full text not reachable
+#         metadata-only = indexed record confirmed (title/authors/venue/DOI), no abstract or full text obtained
+# Nothing in this file is cited from a reference list alone.
+
+papers:
+  - id: "10.2355/isijinternational.44.250"
+    title: "Sulfur Sorption Rate and Equilibrium Content of Reduced Iron in H2-H2S Mixtures"
+    authors: ["Yoshiaki Iguchi", "Yukio Itoh"]
+    year: 2004
+    venue: "ISIJ International 44(2), 250-256"
+    relevance: critical
+    access: full-text
+    summary: "Measures how much sulfur porous reduced iron picks up from H2-H2S gas at 873-1173 K at sulfur activities below the Fe/FeS boundary, and how fast. Carries the tabulated (pH2S/pH2) equilibrium ratio for FeS + H2 = Fe + H2S at four temperatures, and states the bulk solubility limit of sulfur in solid iron at 1173 K."
+
+  - id: "10.1016/0022-4596(87)90146-0"
+    title: "Kinetics and mechanisms of iron sulfide reductions in hydrogen and in carbon monoxide"
+    authors: ["Tomasz S. Wiltowski", "Conrad C. Hinckley", "G. V. Smith", "T. Nishizawa"]
+    year: 1987
+    venue: "Journal of Solid State Chemistry 71, 95"
+    relevance: critical
+    access: full-text
+    summary: "Read in full on 2026-11-12 (copy purchased by the owner; not stored in the repository). Despite the title it measures pyrite to troilite, not troilite to iron: thermogravimetry at 653-693 K on pyrite with more than 1 m2/g surface area, ending at FeS. Four first-order steps through Fe7S8, Fe8S9 and Fe11S12 with activation energies 99-143 kJ/mol, and a mixed surface-reaction plus solid-diffusion mechanism for hydrogen. It notes that troilite reduces further in hydrogen to iron-troilite mixtures but gives no rate for that step."
+
+  - id: "10.1252/jcej.14.389"
+    title: "Sulfurization of sintered reduced iron with hydrogen sulfide and its overall rate description by volume reaction model"
+    authors: ["Shoichi Kimura", "Tetsuo Morita", "Setsuji Tone", "Tsutao Otake"]
+    year: 1981
+    venue: "Journal of Chemical Engineering of Japan 14(5), 389-394"
+    relevance: critical
+    access: full-text
+    summary: "Measures the reverse of our reaction - porous reduced iron sulfurised by H2S in 75 vol% H2 at 457-704 C, particle radius 0.09-0.5 mm - and separates an intrinsic rate constant from pore-diffusion limitation. Reports an apparent activation energy of 5.5 kcal/mol and documents that the solid loses porosity as sulfide forms."
+
+  - id: "10.1007/s11663-019-01646-5"
+    title: "Thermal Upgrading of Nickeliferous Pyrrhotite Tailings for the Recovery of Nickel in the Form of Ferronickel Alloy"
+    authors: ["Dawei Yu", "Feng Liu", "Jiajing Zhang", "Mansoor Barati"]
+    year: 2019
+    venue: "Metallurgical and Materials Transactions B 50, 2186"
+    relevance: critical
+    access: full-text
+    summary: "The closest industrial analogue found: raising the Fe/S ratio of a fine pyrrhotite concentrate at 873-1173 K to precipitate an Fe-Ni alloy from the sulfide. The route chosen is partial oxidation to drive sulfur off as SO2 followed by hydrogen reduction of the resulting oxide - hydrogen is not used to strip sulfur directly."
+
+  - id: "10.1515/amm-2015-0245"
+    title: "Reduction Kinetics of NiS Sulphide"
+    authors: ["G. Smola", "A. Poczekajlo", "Zbigniew Grzesik"]
+    year: 2015
+    venue: "Archives of Metallurgy and Materials 60(2), 981"
+    relevance: high
+    access: abstract-only
+    summary: "Hydrogen reduction of nickel sulfide between 723 and 873 K follows linear kinetics with an activation energy of 103 kJ/mol. The nearest measured sulfide-plus-hydrogen rate obtained in this session, but on NiS, below our temperature window, and linear rather than diffusion-controlled."
+
+  - id: "10.2355/isijinternational.32.1066"
+    title: "Influence of Gaseous Sulfur on Hydrogen Reduction of Wustite Added with Foreign Oxides"
+    authors: ["Shoji Hayashi", "Yoshiaki Iguchi"]
+    year: 1992
+    venue: "ISIJ International 32(10), 1066"
+    relevance: high
+    access: metadata-only
+    summary: "Indexed study of how sulfur in the gas phase affects the hydrogen reduction of wustite containing foreign oxides. Bears on whether circulating H2S poisons the competing reduction of FeO in the silicate fraction; record confirmed but full text not reachable."
+
+  - id: "10.2355/isijinternational.36.1000"
+    title: "Influence of Gaseous Sulfur on CO Reduction of Wustite Added with Foreign Oxides"
+    authors: ["Shoji Hayashi", "Yoshiaki Iguchi"]
+    year: 1996
+    venue: "ISIJ International 36(8), 1000"
+    relevance: medium
+    access: metadata-only
+    summary: "Companion study for carbon monoxide rather than hydrogen. Listed for completeness of the sulfur-poisoning question; full text not reachable."
+
+  - id: "10.1016/j.mineng.2013.03.018"
+    title: "TGA kinetic study on the hydrogen reduction of an iron nickel oxide"
+    authors: ["Dawei Yu", "Mingqian Zhu", "Torstein A. Utigard", "Mansoor Barati"]
+    year: 2013
+    venue: "Minerals Engineering 54, 32"
+    relevance: medium
+    access: metadata-only
+    summary: "Thermogravimetric kinetics for hydrogen reduction of an Fe-Ni oxide, the oxide half of the pyrrhotite upgrading route above. Relevant to the FeO side reaction rather than to sulfide stripping."
+
+  - id: "10.1016/j.pss.2021.105287"
+    title: "Hydrogen reduction of lunar samples in a static system for a water production demonstration on the Moon"
+    authors: ["Hannah Sargeant", "S. J. Barber", "M. Anand", "Feargus A. J. Abernethy"]
+    year: 2021
+    venue: "Planetary and Space Science 205, 105287"
+    relevance: high
+    access: abstract-only
+    summary: "Apollo soils, a lunar meteorite and a simulant reduced in about 420 mbar H2 at 1000 C for 4 h in a static cold-finger system. Reports that pyroxene and olivine, not only ilmenite, underwent minor reduction - the side reaction that would consume hydrogen in our bed."
+
+  - id: "10.1111/maps.14149"
+    title: "Wetting property of Fe-S melt in solid core: Implication for the core crystallization process in planetesimals"
+    authors: ["Shiori Matsubara", "Hidenori Terasaki", "Takashi Yoshino", "Satoru Urakawa"]
+    year: 2024
+    venue: "Meteoritics and Planetary Science 59, 1314"
+    relevance: high
+    access: full-text
+    summary: "Measures the dihedral angle between solid Fe and liquid Fe-S at 0.5-3.0 GPa, finding 30-48 degrees, below the 60 degree percolation threshold, so the sulfide melt forms interconnected films and a fraction stays trapped. Directly supports the simulator's finding that capillary hold-up defeats liquation."
+
+  - id: "10.1038/s41467-025-58517-8"
+    title: "Percolative sulfide core formation in oxidized planetary bodies"
+    authors: ["Samuel D. Crossley", "Jacob Setera", "B. A. Anzures", "Kayla Iacovino"]
+    year: 2025
+    venue: "Nature Communications 16, 3233"
+    relevance: medium
+    access: full-text
+    summary: "Experimental study of sulfide melt percolating through a silicate-metal matrix in oxidised planetesimal compositions. Supporting evidence that Fe-S liquid wets and migrates along grain boundaries rather than draining cleanly."
+
+  - id: "10.1111/j.1945-5100.2011.01244.x"
+    title: "Metal/sulfide-silicate intergrowth textures in EL3 meteorites: Origin by impact melting on the EL parent body"
+    authors: ["D. van Niekerk", "Klaus Keil"]
+    year: 2011
+    venue: "Meteoritics and Planetary Science 46, 1484"
+    relevance: high
+    access: abstract-only
+    summary: "Documents that large metal assemblages in EL3 chondrites are usually intergrown with silicate, and that troilite and other sulfides are also sometimes intergrown with silicate. Qualitative evidence on the locking question, for enstatite rather than ordinary chondrites."
+
+  - id: "10.1029/2002gl016672"
+    title: "Metal size distributions in EH and EL chondrites"
+    authors: ["D. M. Schneider", "Paul H. Benoit", "Alfred Kracher", "Derek W. G. Sears"]
+    year: 2003
+    venue: "Geophysical Research Letters 30"
+    relevance: high
+    access: abstract-only
+    summary: "Reports metal grain size distributions for three EL3 and three EH3 chondrites and finds EL grains are systematically larger. The distributions themselves are in the figures and tables, which were not reachable."
+
+  - id: "10.1111/j.1945-5100.2008.tb01120.x"
+    title: "Fe-Ni metal in primitive chondrites: Indicators of classification and metamorphic conditions for ordinary and CO chondrites"
+    authors: ["Makoto Kimura", "J. N. Grossman", "Michael K. Weisberg"]
+    year: 2008
+    venue: "Meteoritics and Planetary Science 43, 1161"
+    relevance: high
+    access: abstract-only
+    summary: "Petrology of Fe-Ni metal in type 3 ordinary and CO chondrites: metal occurs inside chondrules, on chondrule surfaces and as isolated matrix grains, with internal plessitic intergrowth in the least metamorphosed samples. Establishes that metal occurrence varies strongly with petrologic type, but gives no size distribution in the abstract."
+
+  - id: "10.1111/maps.12268"
+    title: "Metal phases in ordinary chondrites: Magnetic hysteresis properties and implications for thermal history"
+    authors: ["Jerome Gattacceca", "C. Suavet", "P. Rochette", "B. P. Weiss"]
+    year: 2014
+    venue: "Meteoritics and Planetary Science 49, 652"
+    relevance: medium
+    access: abstract-only
+    summary: "Bulk metal contents of 91 ordinary chondrite falls derived from magnetic measurements, agreeing with chemical estimates, and decreasing with increasing petrologic type. Bears on the feed metal fraction rather than on grain size."
+
+  - id: "10.1111/maps.13782"
+    title: "Bulk synthesis of stoichiometric/meteoritic troilite (FeS) by high-temperature pyrite decomposition"
+    authors: ["Juulia-Gabrielle Moreau", "Argo Joeleht", "Jaan Aruvali", "Mikko Heikkila"]
+    year: 2022
+    venue: "Meteoritics and Planetary Science 57, 588"
+    relevance: medium
+    access: metadata-only
+    summary: "A published route to bulk stoichiometric meteoritic troilite by decomposing pyrite. Relevant as the way to obtain the starting material for the bench test recommended in analysis.md, not as a source of kinetics."
+
+  - id: "10.1111/j.1945-5100.2006.tb00528.x"
+    title: "Chemical analyses of meteorites at the Smithsonian Institution: An update"
+    authors: ["Eugene Jarosewich"]
+    year: 2006
+    venue: "Meteoritics and Planetary Science 41, 1381"
+    relevance: high
+    access: metadata-only
+    summary: "The standard compilation of bulk wet-chemical analyses of meteorites, the reference source for metal, troilite and FeO contents by chondrite class. Record confirmed; the tables themselves were not reachable, so no feed numbers are drawn from it."
+
+  - id: "NTRS-19930007697"
+    title: "Beneficiation and extraction of nonterrestrial materials, part 2"
+    authors: ["NASA Space Resources workshop panel"]
+    year: 1992
+    venue: "NASA SP-509 vol. 3, NASA Technical Reports Server"
+    relevance: high
+    access: full-text
+    summary: "Workshop chapter on beneficiating lunar and meteoritic material, including magnetic and electrostatic separation of crushed rock. It is a research-needs statement, not a data set: it recommends that bench-level separation experiments on crushed meteorite be performed, which is evidence that the magnetic-separation numbers this brief asks for did not exist when it was written."

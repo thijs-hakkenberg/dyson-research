@@ -1,0 +1,669 @@
+{
+	"schema": "project-dyson/phase-0-bom@1",
+	"structureDecided": "2026-10-20",
+	"consensusGenerated": "2026-10-20",
+	"panel": [
+		"Claude Opus 5.5",
+		"Gemini 3.1 Pro",
+		"GPT-6.1 Sol"
+	],
+	"sources": {
+		"structure": "reconciliation/phase-0/bom-structure.yaml",
+		"numbers": "reconciliation/phase-0/bom-numbers.yaml"
+	},
+	"items": [
+		{
+			"bomId": "bom-0-1",
+			"slug": "prospecting-satellites",
+			"name": "Prospecting Survey and Rendezvous Scouts",
+			"category": "Spacecraft",
+			"subPhase": "0A",
+			"scope": "Remote survey (observing programme and survey data) plus electric-propulsion rendezvous scouts with subsurface sampling and bulk assay. Replaces the monopropellant prospector fleet.",
+			"quantity": {
+				"value": 6,
+				"unit": "scouts",
+				"range": "4–8",
+				"note": "reference fleet in a 4–8 authorisation; first pair, then evidence-gated tranches"
+			},
+			"a": {
+				"min": 500000000,
+				"max": 900000000,
+				"point": 650000000,
+				"pointIsMidpoint": false
+			},
+			"b": {
+				"min": 0,
+				"max": 150000000,
+				"point": 75000000,
+				"pointIsMidpoint": true
+			},
+			"total": {
+				"min": 500000000,
+				"max": 1050000000,
+				"point": 725000000
+			},
+			"costConfidence": "medium",
+			"source": "consensus §Recommended 1 and 6 (survey $30–60M, development $180–320M, $45–85M per unit; 0B 0–2 site-confirmation scouts)"
+		},
+		{
+			"bomId": "bom-0-2",
+			"slug": "mining-robots",
+			"name": "Mining Robots",
+			"category": "Robotics",
+			"subPhase": "0B (pathfinder units in 0A)",
+			"scope": "Tether-powered excavation robots at the target NEA, with onboard batteries for mobility and safe mode, plus replacements.",
+			"quantity": {
+				"value": 12,
+				"unit": "robots",
+				"range": "2 + 10–12",
+				"note": "2 instrumented flight pathfinders in 0A; 0B planning reference 6 active + 2 reserve + 2–4 replacements"
+			},
+			"a": {
+				"min": 90000000,
+				"max": 245000000,
+				"point": 167500000,
+				"pointIsMidpoint": true
+			},
+			"b": {
+				"min": 280000000,
+				"max": 825000000,
+				"point": 552500000,
+				"pointIsMidpoint": true
+			},
+			"total": {
+				"min": 370000000,
+				"max": 1070000000,
+				"point": 720000000
+			},
+			"costConfidence": "medium",
+			"source": "consensus §Recommended 1–2 (robot NRE $300–850M carried in bom-0-11)"
+		},
+		{
+			"bomId": "bom-0-3",
+			"slug": "material-processing-station",
+			"name": "Processing Plant at the Target NEA",
+			"category": "Infrastructure",
+			"subPhase": "0B",
+			"scope": "Beneficiation and primary processing co-located at the target asteroid; native/reduced Fe-Ni product only (solar-grade Si and oxide-derived Al/Si deferred). Ships product, not ore. Includes waste-heat rejection and containment of tailings. The central SEL4/L5 station is abandoned.",
+			"quantity": {
+				"value": 1,
+				"unit": "plant",
+				"range": "3 trains (N = 2–6)",
+				"note": "~0.6 kt/yr nameplate per train; 3-train reference ≈ 1.0–1.3 kt/yr delivered; 250–400 t delivered mass; 0.6–2.5 MWe"
+			},
+			"a": {
+				"min": 80000000,
+				"max": 200000000,
+				"point": 140000000,
+				"pointIsMidpoint": true
+			},
+			"b": {
+				"min": 4500000000,
+				"max": 9000000000,
+				"point": 6500000000,
+				"pointIsMidpoint": false
+			},
+			"total": {
+				"min": 4580000000,
+				"max": 9200000000,
+				"point": 6640000000
+			},
+			"costConfidence": "medium",
+			"source": "consensus §Recommended 1, 4 and 6 (plant maturation in bom-0-11, pathfinder content in bom-0-12)"
+		},
+		{
+			"bomId": "bom-0-4",
+			"slug": "transport-vehicles",
+			"name": "MW-class Cargo Tugs",
+			"category": "Spacecraft",
+			"subPhase": "0B",
+			"scope": "Electric-propulsion cargo tugs of 1–2.5 MWe with 150–300 t payloads, carrying product from the NEA to the delivery node.",
+			"quantity": {
+				"value": 14,
+				"unit": "tugs",
+				"range": "10–18",
+				"note": "2–4 procured at KDP-0B, the rest after the first full cycle; ~1.2–2.0 MWe to the PPUs at 1.3 AU end of life"
+			},
+			"unitCost": {
+				"min": 300000000,
+				"max": 800000000
+			},
+			"a": {
+				"min": 40000000,
+				"max": 90000000,
+				"point": 65000000,
+				"pointIsMidpoint": true
+			},
+			"b": {
+				"min": 3000000000,
+				"max": 10000000000,
+				"point": 6500000000,
+				"pointIsMidpoint": true
+			},
+			"total": {
+				"min": 3040000000,
+				"max": 10090000000,
+				"point": 6565000000
+			},
+			"costConfidence": "low",
+			"source": "consensus §Recommended 1 and 4 (~$0.3–0.8B per unit including arrays)"
+		},
+		{
+			"bomId": "bom-0-5",
+			"slug": "solar-power-arrays",
+			"name": "Site Power, Arrays and Storage",
+			"category": "Power Systems",
+			"subPhase": "0B",
+			"scope": "Site power generation and HV distribution at the NEA, with distributed storage sized per site. The 200–500 MWh generic battery bank is removed. Whether tug arrays are counted here or with the tugs differs by model; state your choice.",
+			"quantity": {
+				"value": 4,
+				"unit": "MW BOL",
+				"range": "2–8 MW",
+				"note": "200–500 kW modules; ~4 MW interim interface value for 1.3 kt/yr; 1–2.5 MWh survival storage"
+			},
+			"a": {
+				"min": 10000000,
+				"max": 25000000,
+				"point": 17500000,
+				"pointIsMidpoint": true
+			},
+			"b": {
+				"min": 300000000,
+				"max": 1800000000,
+				"point": 700000000,
+				"pointIsMidpoint": false
+			},
+			"total": {
+				"min": 310000000,
+				"max": 1825000000,
+				"point": 717500000
+			},
+			"costConfidence": "low",
+			"source": "consensus §Recommended 2, 5–7 (0B P50 $0.6–0.8B in a $0.3–1.8B scenario range; tug arrays are in bom-0-4)"
+		},
+		{
+			"bomId": "bom-0-6",
+			"slug": "ispp-systems",
+			"name": "Water Pilot (C-type target only)",
+			"category": "Infrastructure",
+			"subPhase": "0B (conditional)",
+			"scope": "A water-extraction pilot, flown only if the selected target is C-type (D-05, proposed). No production LOX/LH₂ and no EML1 depot in Phase 0.",
+			"quantity": {
+				"value": 1,
+				"unit": "pilot",
+				"range": "0–1",
+				"note": "one 10–30 t/yr water pilot, only if the target is C-type (D-05)"
+			},
+			"a": {
+				"min": 15000000,
+				"max": 45000000,
+				"point": 30000000,
+				"pointIsMidpoint": true
+			},
+			"b": {
+				"min": 0,
+				"max": 315000000,
+				"point": 200000000,
+				"pointIsMidpoint": false,
+				"conditional": "C-type target only",
+				"ifExercised": {
+					"min": 120000000,
+					"max": 315000000
+				}
+			},
+			"total": {
+				"min": 15000000,
+				"max": 360000000,
+				"point": 230000000
+			},
+			"costConfidence": "low",
+			"source": "consensus §Recommended 1 and 3"
+		},
+		{
+			"bomId": "bom-0-7",
+			"slug": "organizational-infrastructure",
+			"name": "Organizational Infrastructure",
+			"category": "Governance",
+			"subPhase": "0A",
+			"scope": "Legal, governance and coordination infrastructure, with a full specification (round 2 found none).",
+			"quantity": {
+				"value": 1,
+				"unit": "organization",
+				"note": "Association + Operator, two entities"
+			},
+			"a": {
+				"min": 30000000,
+				"max": 100000000,
+				"point": 55000000,
+				"pointIsMidpoint": false
+			},
+			"b": {
+				"min": 34000000,
+				"max": 46000000,
+				"point": 40000000,
+				"pointIsMidpoint": true
+			},
+			"total": {
+				"min": 64000000,
+				"max": 146000000,
+				"point": 95000000
+			},
+			"costConfidence": "medium",
+			"source": "consensus §Recommended 2 (0A central $45–65M; liquidity reserve and wind-down escrow held as financing lines)"
+		},
+		{
+			"bomId": "bom-0-8",
+			"slug": "launch-delivery",
+			"name": "Earth-to-Space Launch and Delivery",
+			"category": "Logistics",
+			"subPhase": "0A+0B",
+			"scope": "Launch and deep-space delivery of all Phase 0 hardware to its operating location; LEO price and delivered price kept separate.",
+			"quantity": {
+				"value": 3,
+				"unit": "kt delivered",
+				"range": "1.3–6 kt",
+				"note": "central 2.5–4 kt; ~12 t module class at C3 −0.7, dual-sourced"
+			},
+			"a": {
+				"min": 250000000,
+				"max": 900000000,
+				"point": 450000000,
+				"pointIsMidpoint": false
+			},
+			"b": {
+				"min": 3000000000,
+				"max": 16000000000,
+				"point": 8500000000,
+				"pointIsMidpoint": false
+			},
+			"total": {
+				"min": 3250000000,
+				"max": 16900000000,
+				"point": 8950000000
+			},
+			"costConfidence": "low",
+			"source": "consensus §Recommended 2–3 (0B ~$8–9B P50, re-sized at KDP-0B from signed demand)"
+		},
+		{
+			"bomId": "bom-0-9",
+			"slug": "comms-ground-segment",
+			"name": "Communications and Ground Segment",
+			"category": "Operations",
+			"subPhase": "0A+0B",
+			"scope": "Deep-space communications, ground stations or commercial services, and authenticated command for the fleet. DSN is not assumed free.",
+			"quantity": {
+				"value": 8000,
+				"unit": "antenna-h/yr",
+				"per_unit": false,
+				"range": "8,000–14,000 h/yr in 0B",
+				"note": "leased commercial ground access in three longitude bands; no relays, no owned stations"
+			},
+			"a": {
+				"min": 60000000,
+				"max": 170000000,
+				"point": 105000000,
+				"pointIsMidpoint": false
+			},
+			"b": {
+				"min": 130000000,
+				"max": 440000000,
+				"point": 260000000,
+				"pointIsMidpoint": false
+			},
+			"total": {
+				"min": 190000000,
+				"max": 610000000,
+				"point": 365000000
+			},
+			"costConfidence": "low",
+			"source": "consensus §Recommended 3 and 7"
+		},
+		{
+			"bomId": "bom-0-10",
+			"slug": "mission-operations",
+			"name": "Mission Operations",
+			"category": "Operations",
+			"subPhase": "0A+0B",
+			"scope": "Operations staff, facilities and software over the Phase 0 lifetime.",
+			"quantity": {
+				"value": 230,
+				"unit": "FTE peak",
+				"per_unit": false,
+				"range": "80–125 (0A), 180–230 (0B)",
+				"note": "about 10–12 years; 0A $35–55M/yr, 0B steady state $70–130M/yr"
+			},
+			"a": {
+				"min": 190000000,
+				"max": 300000000,
+				"point": 245000000,
+				"pointIsMidpoint": true
+			},
+			"b": {
+				"min": 450000000,
+				"max": 700000000,
+				"point": 575000000,
+				"pointIsMidpoint": true
+			},
+			"total": {
+				"min": 640000000,
+				"max": 1000000000,
+				"point": 820000000
+			},
+			"costConfidence": "medium",
+			"source": "consensus §Recommended 1–3 (autonomy-shortfall risk $200–300M named in bom-0-17)"
+		},
+		{
+			"bomId": "bom-0-11",
+			"slug": "nre-qualification",
+			"name": "NRE, Ground R&D and Qualification",
+			"category": "Development",
+			"subPhase": "0A (and 0B)",
+			"scope": "Non-recurring engineering, ground test facilities and qualification campaigns for the critical technologies (TRL re-baseline T01–T26).",
+			"quantity": {
+				"value": 1,
+				"unit": "programme",
+				"note": "technology maturation, ground facilities, element qualification, SE/independent TRL boards"
+			},
+			"a": {
+				"min": 3900000000,
+				"max": 6600000000,
+				"point": 4750000000,
+				"pointIsMidpoint": false
+			},
+			"b": {
+				"min": 2100000000,
+				"max": 4500000000,
+				"point": 3000000000,
+				"pointIsMidpoint": false
+			},
+			"total": {
+				"min": 6000000000,
+				"max": 11100000000,
+				"point": 7750000000
+			},
+			"costConfidence": "medium",
+			"source": "consensus §Recommended 2 (0A planning point $4.5–5.0B)"
+		},
+		{
+			"bomId": "bom-0-12",
+			"slug": "pathfinder-demonstrator",
+			"name": "0A Pathfinder Demonstrator",
+			"category": "Spacecraft",
+			"subPhase": "0A",
+			"scope": "One mission that tests excavation, processing and containment at the target before KDP-0B.",
+			"quantity": {
+				"value": 1,
+				"unit": "mission",
+				"note": "~6–10 t dry, 60–80 kWe BOL, single launch; full-scale critical units"
+			},
+			"a": {
+				"min": 1000000000,
+				"max": 2500000000,
+				"point": 1600000000,
+				"pointIsMidpoint": false
+			},
+			"b": {
+				"min": 0,
+				"max": 0,
+				"point": 0,
+				"pointIsMidpoint": true
+			},
+			"total": {
+				"min": 1000000000,
+				"max": 2500000000,
+				"point": 1600000000
+			},
+			"costConfidence": "medium",
+			"source": "consensus §Recommended 4 (fully burdened attributable view $1.8–3.5B, across lines)"
+		},
+		{
+			"bomId": "bom-0-13",
+			"slug": "receiving-node",
+			"name": "Phase 1 Receiving Node (SEL1)",
+			"category": "Infrastructure",
+			"subPhase": "0B",
+			"scope": "Where Phase 0 delivers its product; SEL1 is the reference case (D-04, proposed), re-decided with Phase 1.",
+			"quantity": {
+				"value": 1,
+				"unit": "node",
+				"range": "0–1",
+				"note": "passive uncrewed warehouse at SEL1; tier chosen at KDP-0B; 0.6–1.0 kt initial inventory"
+			},
+			"a": {
+				"min": 5000000,
+				"max": 15000000,
+				"point": 10000000,
+				"pointIsMidpoint": true
+			},
+			"b": {
+				"min": 160000000,
+				"max": 550000000,
+				"point": 300000000,
+				"pointIsMidpoint": false
+			},
+			"total": {
+				"min": 165000000,
+				"max": 565000000,
+				"point": 310000000
+			},
+			"costConfidence": "low",
+			"source": "consensus §Recommended 1 and 6 (launch $90–300M in bom-0-8)"
+		},
+		{
+			"bomId": "bom-0-14",
+			"slug": "spares-replacements",
+			"name": "Spares and Replacements",
+			"category": "Logistics",
+			"subPhase": "0B",
+			"scope": "Spares programme for robots, plant, tugs and power, including precision spares imported from Earth.",
+			"quantity": {
+				"value": 1,
+				"unit": "programme",
+				"note": "multi-echelon spares (Earth, SEL1, NEA); 0B initial provisioning $0.5–0.9B plus $70–250M/yr"
+			},
+			"a": {
+				"min": 20000000,
+				"max": 45000000,
+				"point": 32500000,
+				"pointIsMidpoint": true
+			},
+			"b": {
+				"min": 650000000,
+				"max": 1550000000,
+				"point": 1300000000,
+				"pointIsMidpoint": false
+			},
+			"total": {
+				"min": 670000000,
+				"max": 1595000000,
+				"point": 1332500000
+			},
+			"costConfidence": "medium",
+			"source": "consensus §Recommended 2 and 5 (0B over 5 years; ~$2.0B P50 over 10)"
+		},
+		{
+			"bomId": "bom-0-15",
+			"slug": "debris-contamination",
+			"name": "Debris and Contamination Control",
+			"category": "Safety",
+			"subPhase": "0A+0B",
+			"scope": "Escaped-debris and tailings containment, verification and monitoring; ALARP with an interim ceiling (D-03, proposed).",
+			"quantity": {
+				"value": 1,
+				"unit": "programme",
+				"note": "containment, verification and independent monitoring; interim ceiling ≤1×10⁻⁴ of handled mass (D-03)"
+			},
+			"a": {
+				"min": 45000000,
+				"max": 80000000,
+				"point": 62500000,
+				"pointIsMidpoint": true
+			},
+			"b": {
+				"min": 75000000,
+				"max": 145000000,
+				"point": 110000000,
+				"pointIsMidpoint": true
+			},
+			"total": {
+				"min": 120000000,
+				"max": 225000000,
+				"point": 172500000
+			},
+			"costConfidence": "medium",
+			"source": "consensus §Recommended 7 (total $120–225M, point ≈ $170M)"
+		},
+		{
+			"bomId": "bom-0-16",
+			"slug": "ep-propellant-supply",
+			"name": "Electric-Propulsion Propellant Supply",
+			"category": "Logistics",
+			"subPhase": "0B",
+			"scope": "Imported EP propellant for the tugs. No propellant selected; iodine is the costed reference and argon the alternate (D-05, proposed); xenon not baselined.",
+			"quantity": {
+				"value": 300,
+				"unit": "t/yr iodine",
+				"per_unit": false,
+				"range": "230–400 t/yr",
+				"note": "contract envelope 150–700 t/yr; argon 15–45 t/yr auxiliary; delivery mass is costed in bom-0-8"
+			},
+			"a": {
+				"min": 20000000,
+				"max": 60000000,
+				"point": 40000000,
+				"pointIsMidpoint": true
+			},
+			"b": {
+				"min": 320000000,
+				"max": 1775000000,
+				"point": 1047500000,
+				"pointIsMidpoint": true,
+				"derivation": "recurring supply $40–200M/yr before launch over 5–6.5 operating years (bom-0-14 and bom-0-10 horizons), plus the SEL1 yard placeholder $120–475M"
+			},
+			"total": {
+				"min": 340000000,
+				"max": 1835000000,
+				"point": 1087500000
+			},
+			"costConfidence": "low",
+			"source": "consensus §Recommended 1, 3 and 5"
+		},
+		{
+			"bomId": "bom-0-17",
+			"slug": "contingency-reserve",
+			"name": "Contingency and Reserve",
+			"category": "Programme",
+			"subPhase": "0A+0B",
+			"scope": "Contingency on 0A and 0B separately, stated as a percentage with its basis.",
+			"quantity": {
+				"value": 1,
+				"unit": "reserve",
+				"note": "0A 40–50%, 0B 55–70% of base"
+			},
+			"a": {
+				"min": 2502000000,
+				"max": 6137500000,
+				"point": 3789000000,
+				"pointIsMidpoint": false,
+				"rate": [
+					0.4,
+					0.5
+				],
+				"ratePoint": 0.45,
+				"note": "35–40% project contingency + ~10% owner/programme reserve; sets funded 0A authority"
+			},
+			"b": {
+				"min": 8249450000.000001,
+				"max": 33457199999.999996,
+				"point": 19279000000,
+				"pointIsMidpoint": false,
+				"rate": [
+					0.55,
+					0.7
+				],
+				"ratePoint": 0.65,
+				"note": "45–50% project contingency + 15–18% owner reserve; uncommitted planning provision"
+			},
+			"total": {
+				"min": 10751450000,
+				"max": 39594700000,
+				"point": 23068000000
+			},
+			"costConfidence": "low",
+			"source": "bom-0-17 consensus §Recommended 1; applied to the 0A and 0B base of bom-0-1…16"
+		}
+	],
+	"totals": {
+		"base": {
+			"a": {
+				"min": 6255000000,
+				"max": 12275000000,
+				"point": 8420000000
+			},
+			"b": {
+				"min": 14999000000,
+				"max": 47796000000,
+				"point": 29660000000
+			},
+			"all": {
+				"min": 21254000000,
+				"max": 60071000000,
+				"point": 38080000000
+			}
+		},
+		"contingency": {
+			"a": {
+				"min": 2502000000,
+				"max": 6137500000,
+				"point": 3789000000,
+				"pointIsMidpoint": false,
+				"rate": [
+					0.4,
+					0.5
+				],
+				"ratePoint": 0.45,
+				"note": "35–40% project contingency + ~10% owner/programme reserve; sets funded 0A authority"
+			},
+			"b": {
+				"min": 8249450000.000001,
+				"max": 33457199999.999996,
+				"point": 19279000000,
+				"pointIsMidpoint": false,
+				"rate": [
+					0.55,
+					0.7
+				],
+				"ratePoint": 0.65,
+				"note": "45–50% project contingency + 15–18% owner reserve; uncommitted planning provision"
+			}
+		},
+		"withContingency": {
+			"a": {
+				"min": 8757000000,
+				"max": 18412500000,
+				"point": 12209000000
+			},
+			"b": {
+				"min": 23248450000,
+				"max": 81253200000,
+				"point": 48939000000
+			},
+			"all": {
+				"min": 32005450000,
+				"max": 99665700000,
+				"point": 61148000000
+			}
+		}
+	},
+	"removed": [
+		"crew systems, habitat and quarterly visits (Phase 0 is uncrewed; structural reserve and docking interfaces stay)",
+		"the 200–500 MWh generic battery bank (folded into site storage, bom-0-5)",
+		"production LOX/LH₂ and the EML1 depot"
+	],
+	"notAdopted": [
+		{
+			"item": "water-EP qualification track",
+			"reason": "Proposed by Claude only (conditional on a C-type target); kept as a divergent view under D-05."
+		}
+	]
+}
