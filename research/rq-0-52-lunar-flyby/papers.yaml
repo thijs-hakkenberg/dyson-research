@@ -1,0 +1,65 @@
+# Sources for rq-0-52: how much Earth-relative excess speed a lunar flyby gives or absorbs
+# Compiled: 2026-11-13.
+# access: full-text     = PDF or full HTML opened and read in this session
+#         abstract-only = abstract retrieved, full text not read
+# Nothing in this file is cited from a reference list alone.
+
+papers:
+  - id: "10.1007/s42064-023-0161-9"
+    alt_id: "arXiv:2302.12144"
+    title: "Capacity of Sun-driven lunar swingby sequences and their application in asteroid retrieval"
+    authors: ["Hongru Chen"]
+    year: 2023
+    venue: "Astrodynamics 7 (2023)"
+    relevance: critical
+    access: full-text
+    summary: "Bounds what sequences of lunar swingbys joined by Sun-perturbed Moon-to-Moon transfers can give or absorb, for escape and for capture alike. Planar sequences reach an Earth-relative excess speed of 1.46 km/s (C3 2.13 km2/s2) in all directions, 1.8 km/s at best, and 2.2 km/s with an added Earth-passing transfer; each Moon-to-Moon transfer is limited to 200 days, at most two are chained, and minimum lunar flyby altitude is 100 km."
+
+  - id: "hdl:2324/4371999"
+    title: "Earth Escape from a Sun-Earth Halo Orbit using Unstable Manifold and Lunar Swingbys"
+    authors: ["Hongru Chen", "Yasuhiro Kawakatsu", "Toshiya Hanada"]
+    year: 2016
+    venue: "Transactions of the Japan Society for Aeronautical and Space Sciences 59(5), 269-277"
+    relevance: critical
+    access: full-text
+    summary: "The closest published case to a tug leaving a Sun-Earth libration-point node: coast along the halo orbit's unstable manifold to the Moon, then escape by swingby. One swingby gives C3 up to 2.6 km2/s2 for two of the four encounter geometries and 0.5 km2/s2 or no escape for the other two; a second swingby after 75-95 days raises those to about 2.7 km2/s2. Theoretical ceilings are 2.3 (short sequences), 3.3 (double) and 5 km2/s2 (multiple). Assumes the halo orbit is already phased for the lunar encounter and leaves the phasing cost to later work."
+
+  - id: "AAS 13-409"
+    url: "https://kiss.resources.caltech.edu/uploads/2026/09/papers-getanea-2-4-13.pdf"
+    title: "Trajectories to Nab a NEA (Near-Earth Asteroid)"
+    authors: ["Damon Landau", "John Dankanich", "Nathan Strange", "Julie Bellerose", "Pedro Llanos", "Marco Tantardini"]
+    year: 2013
+    venue: "AAS/AIAA Space Flight Mechanics Meeting, paper AAS 13-409"
+    relevance: critical
+    access: full-text
+    summary: "Trajectory design behind the Keck asteroid-retrieval study; the capture case, with return masses up to 1,000 t and more. Takes the Moon to capture objects arriving with C3 up to 2 km2/s2 (1.41 km/s) down to about -0.5 km2/s2, from declinations up to 30 degrees from the ecliptic, with higher energies only for in-plane arrivals at a favourable lunar phase. The returned mass then goes by way of a Sun-Earth L1 or L2 region to its storage orbit."
+
+  - id: "ISSFD-2017-023"
+    url: "https://issfd.org/ISSFD_2017/paper/ISTS-2017-d-023__ISSFD-2017-023.pdf"
+    title: "Design of High-Energy Escape Trajectories with Lunar Gravity Assist"
+    authors: ["Lorenzo Casalino", "Lucio Filizola"]
+    year: 2017
+    venue: "ISTS-2017-d-023 / ISSFD-2017-023"
+    relevance: high
+    access: full-text
+    summary: "Optimises a single lunar flyby from launch for an electric-propulsion mission to a near-Earth asteroid, and verifies it numerically. Escape speeds of 1.2, 1.3 and 1.4 km/s are reached from launch energies of -1.3 to -0.8 km2/s2, with the flyby 160-250 km above the lunar surface and about ten days from the start of the escape sequence to escape. Flyby opportunities depend on the escape date and direction."
+
+  - id: "NTRS 20140002055"
+    url: "https://ntrs.nasa.gov/citations/20140002055"
+    title: "Using Gravity Assists in the Earth-Moon System as a Gateway to the Solar System"
+    authors: ["Tim McElrath", "Gregory Lantoine", "Damon Landau", "Dan Grebow", "Nathan Strange", "Roby Wilson", "Jon Sims"]
+    year: 2012
+    venue: "Global Space Exploration Conference, Washington DC, May 2012"
+    relevance: high
+    access: abstract-only
+    summary: "Abstract states that lunar flybys give a C3 of about 2 km2/s2 within about two months and about 4.5 km2/s2 over four to six months without propulsion, and that a burn at Earth periapsis can raise 2-3 to 10 or more. Chen et al. 2016 report from its body a maximum of 3.25 km2/s2 for double swingbys within 200 days and 4.7 km2/s2 for triple swingbys."
+
+not_obtained:
+  - title: "Efficient lunar gravity assists for solar electric propulsion missions"
+    authors: ["Damon Landau", "Tim McElrath", "Dan Grebow", "Nathan Strange"]
+    venue: "AAS 12-165"
+    note: "Indexed, full text not reachable in this session. Described by Chen et al. 2016 as agreeing with the 2.3 km2/s2 ceiling for short double swingbys."
+  - title: "Families of Solar-Perturbed Moon-to-Moon Transfers"
+    authors: ["Gregory Lantoine", "Tim McElrath"]
+    venue: "AAS 14-471"
+    note: "Seen referenced only; the source for the transfer families that Chen 2016 and 2023 build on."

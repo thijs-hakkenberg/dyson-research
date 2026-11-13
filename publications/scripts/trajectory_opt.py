@@ -154,6 +154,7 @@ class LegResult:
     vinf_kms: float  # Earth-relative excess speed used at the Earth end (from the lunar assist)
     mismatch: float  # scaled position/velocity error where the two halves meet
     thrust_fraction: float  # share of the flight time spent thrusting
+    vinf_vec: tuple = None  # the excess velocity used, km/s, heliocentric ecliptic axes
 
 
 def _mismatch(X, r0, v0, rf, vf, tof, nseg, free_end):
@@ -334,7 +335,8 @@ def low_thrust_leg(r0, v0, rf, vf, tof, accel_ms2, duty=0.85, nseg=20, seed=None
         return LegResult(False, np.inf, 0.0, float(np.max(np.abs(m0))), np.inf)
     cost, xb, err = best
     vinf = float(np.linalg.norm(xb[3 * nseg :])) if nf else 0.0
-    return LegResult(True, cost, vinf, err, cost / (cap * nseg))
+    vec = tuple(float(c) for c in xb[3 * nseg :]) if nf else None
+    return LegResult(True, cost, vinf, err, cost / (cap * nseg), vec)
 
 
 # ---------------------------------------------------------------------------------------
