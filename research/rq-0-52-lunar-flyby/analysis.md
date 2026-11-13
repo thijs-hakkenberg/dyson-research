@@ -87,6 +87,16 @@ ratio stays at 0.42–0.44, but the six-year run rises from about 4.6× to 5.6�
 20-year run from 1.6× to 1.75–1.8×
 (`publications/data/phase0-chain/flyby-allowance.json`).
 
+## Three-body model (added 2026-11-13)
+
+Items 2 and 3 below have since been computed; see "Third pass" in the research question.
+In short: the model reproduces the literature's swingby gain (up to 1.7 km/s from one
+swingby, against 1.61–1.64 in Chen et al. 2016), finds that the coast from the node to the
+Moon takes 22–65 days depending on a 300–50 m/s node burn, and gives the reach by direction
+that the literature only sketches. With that table in the leg optimiser, 26 targets close at
+5 km/s per leg and four years, so the lower bound of 5–16 above was too pessimistic and the
+second pass's 20–45 too optimistic.
+
 ## What this leaves open
 
 1. **The falsifier of 20 candidates no longer clears at the consensus leg cap.** With a
