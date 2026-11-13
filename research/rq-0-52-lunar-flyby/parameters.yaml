@@ -72,3 +72,22 @@ parameters:
       Both retrieval designs end in lunar orbit, by way of the Sun-Earth L1/L2 region, not at
       a Sun-Earth L1 node. The route passes the node's neighbourhood, so the analogue is close,
       but no source computes capture to a Sun-Earth L1 halo orbit for a loaded tug.
+
+  # ---------------- Computed in the project's own three-body model, 2026-11-13 ----------------
+  # (publications/scripts/cislunar_flyby.py; not literature values)
+
+  - key: computed_node_to_moon_days
+    assumed: null
+    supported: [22, 65]
+    conditions: "fastest first lunar encounter after an impulsive in-plane burn of 300 to 50 m/s from a planar Lyapunov orbit about SEL1"
+    basis: computed
+    sources: ["publications/data/cislunar-flyby/summary.json"]
+    note: "37 days at 150 m/s. Escape at 1.4 km/s or more follows at 36, 53 and 77 days for 300, 150 and 50 m/s. Fills new_node_to_moon_phasing; the lunar-phase wait is taken as half a synodic month."
+
+  - key: computed_reach_by_latitude_kms
+    assumed: "1.0 or 1.5 in any direction"
+    supported: {"0-15": 1.58, "15-30": 1.35, "30-45": 0.87, "45-60": 0.46, "60-90": 0.0}
+    conditions: "median over longitude, within 90 days of a 150 m/s node burn, one or two swingbys at 100 km"
+    basis: computed
+    sources: ["publications/data/cislunar-flyby/reach.json", "publications/data/cislunar-flyby/validation.json"]
+    note: "Checked against an integration with the Moon's gravity: largest escape speed 0.95-1.13 times the patched model's over 15 encounters."

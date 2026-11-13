@@ -147,6 +147,53 @@ def propagate(r, v, dt):
 # Low-thrust leg (Sims–Flanagan)
 # ---------------------------------------------------------------------------------------
 
+class FlybyReach:
+    """Direction-dependent limit on the free excess velocity at the Earth end of a leg, from
+    the three-body study (run_cislunar_flyby.py → publications/data/cislunar-flyby/reach.json).
+
+    The table gives the excess speed a tug leaving the SEL1 node by way of the Moon reaches
+    within a time budget, by longitude of the velocity from the Sun→Earth line and by
+    latitude from the ecliptic. An arrival uses the mirror image (see cislunar_flyby.py)."""
+
+    def __init__(self, path: str, burn_ms: int, budget_days: int):
+        import json
+
+        d = json.load(open(path))
+        self.burn_ms, self.budget_days = burn_ms, budget_days
+        self.table = np.asarray(d['vinf_kms'][str(burn_ms)][str(budget_days)], float)  # (lon, lat)
+        lon, lat = np.asarray(d['lon_edges']), np.asarray(d['lat_edges'])
+        self.lon_c = 0.5 * (lon[:-1] + lon[1:])
+        self.lat_c = 0.5 * (lat[:-1] + lat[1:])
+        self.vmax = float(self.table.max())
+
+    def angles(self, w, r_earth, inbound: bool):
+        """Longitude and latitude (deg) of an excess velocity w in the table's convention."""
+        x = np.asarray(r_earth, float) / np.linalg.norm(r_earth)
+        z = np.array([0.0, 0.0, 1.0])
+        y = np.cross(z, x)
+        y /= np.linalg.norm(y)
+        wx, wy, wz = float(w @ x), float(w @ y), float(w @ z)
+        if inbound:
+            wx = -wx
+        n = np.sqrt(wx * wx + wy * wy + wz * wz)
+        if n < 1e-12:
+            return 0.0, 0.0
+        return float(np.degrees(np.arctan2(wy, wx))), float(np.degrees(np.arcsin(abs(wz) / n)))
+
+    def cap_at(self, lon: float, lat: float) -> float:
+        """Bilinear interpolation between bin centres, periodic in longitude."""
+        step = self.lon_c[1] - self.lon_c[0]
+        f = ((lon - self.lon_c[0]) / step) % len(self.lon_c)
+        i0 = int(np.floor(f)) % len(self.lon_c)
+        i1 = (i0 + 1) % len(self.lon_c)
+        a = f - np.floor(f)
+        col = (1 - a) * self.table[i0] + a * self.table[i1]
+        return float(np.interp(lat, self.lat_c, col))
+
+    def cap(self, w, r_earth, inbound: bool) -> float:
+        return self.cap_at(*self.angles(w, r_earth, inbound))
+
+
 @dataclass
 class LegResult:
     ok: bool
@@ -203,7 +250,7 @@ def _spread(total, cap, nseg, from_start: bool):
 
 
 def low_thrust_leg(r0, v0, rf, vf, tof, accel_ms2, duty=0.85, nseg=20, seed=None,
-                   free_end=None, lga_vinf_kms=0.0, iters=14) -> LegResult:
+                   free_end=None, lga_vinf_kms=0.0, iters=14, reach: 'FlybyReach' = None) -> LegResult:
     """Minimum-Δv low-thrust transfer from (r0, v0) to (rf, vf) in `tof` days.
 
     Solved by sequential convex programming: the dynamics are linearised about the current
@@ -213,6 +260,8 @@ def low_thrust_leg(r0, v0, rf, vf, tof, accel_ms2, duty=0.85, nseg=20, seed=None
     seed: (v1, v2) heliocentric velocities of an impulsive transfer between the same points.
     free_end: 'start' or 'end' marks the Earth end, where an excess velocity of up to
     `lga_vinf_kms` relative to (v0 or vf) is free.
+    reach: when given, the free excess velocity is limited by direction (FlybyReach) in
+    place of the single figure. The limit is re-read at the current direction on each pass.
     """
     import clarabel
     from scipy import sparse
@@ -222,6 +271,14 @@ def low_thrust_leg(r0, v0, rf, vf, tof, accel_ms2, duty=0.85, nseg=20, seed=None
     nf = 3 if free_end else 0
     nx = 3 * nseg + nf
     vmax = lga_vinf_kms
+    inbound = free_end == 'end'
+    r_earth = (rf if inbound else r0) if free_end else None
+
+    def limit(w):
+        return reach.cap(w, r_earth, inbound) if reach is not None else lga_vinf_kms
+
+    if reach is not None and free_end and seed is not None:
+        vmax = limit((seed[0] - v0) if not inbound else (seed[1] - vf))
     x = np.zeros(nx)  # km/s
     if seed is not None:
         d0, d1 = (seed[0] - v0) * KMS, (vf - seed[1]) * KMS
@@ -272,7 +329,10 @@ def low_thrust_leg(r0, v0, rf, vf, tof, accel_ms2, duty=0.85, nseg=20, seed=None
         if TRACE:
             print(it, f"err {err:.2e} cost {np.linalg.norm(x[: 3 * nseg].reshape(nseg, 3), axis=1).sum():.4f} delta {delta:.3f}")
         dmag = np.linalg.norm(x[: 3 * nseg].reshape(nseg, 3), axis=1)
-        if err < 2e-5 and np.all(dmag <= cap * 1.001):
+        if nf and reach is not None:
+            vmax = limit(x[3 * nseg :])
+        inside = (not nf) or np.linalg.norm(x[3 * nseg :]) <= vmax * 1.01 + 1e-3
+        if err < 2e-5 and np.all(dmag <= cap * 1.001) and inside:
             cost = float(dmag.sum())
             if best is None or cost < best[0] - 1e-4:
                 improved = best is None or best[0] - cost > 2e-3

@@ -32,6 +32,7 @@ from phase0_cost_risk import ROOT, Settings, load_bom, sample_lines
 G0 = 9.80665
 CANDIDATES = os.path.join(ROOT, 'publications', 'data', 'nea-catalogue', 'candidates.csv')
 LEGS = os.path.join(ROOT, 'publications', 'data', 'nea-trajectories', 'legs.csv')
+MODEL_LEGS = os.path.join(ROOT, 'publications', 'data', 'nea-trajectories', 'legs-flyby-model.csv')
 # The tug the rq-0-52 study flew: 1.5 MW, 60% efficient, 2,500 s; 175 t leaving SEL1, 330 t leaving the asteroid
 STUDY = {'power_mw': 1.5, 'isp_s': 2500.0, 'm_out_t': 175.0, 'm_in_t': 330.0}
 POWER_SHARE = 0.55  # share of tug dry mass and cost that scales with installed power
@@ -69,6 +70,7 @@ class ChainSettings:
     max_cycle_years: float = 4.0
     trajectory: str = 'catalogue'  # 'consensus' (5 km/s legs, 3-year cycle, as written) or 'optimised' (rq-0-52 second pass)
     lga: float = 1.0  # km/s of lunar-flyby excess speed, for 'optimised' (0, 1.0 or 1.5)
+    flyby_burns_ms: tuple = None  # e.g. (150,) or (150, 300): take flyby legs from the three-body study (rq-0-52 third pass); overrides lga
     lga_days: float = LGA_DAYS  # time allowance per flyby-assisted leg; the literature supports 60–90 (rq-0-52)
     tug_power_mw: float = 1.5
     target_fraction: float = 1.0  # sample targets from this fastest share of those that close ('optimised')
@@ -138,6 +140,28 @@ def load_legs(path: str = LEGS) -> dict:
     return legs
 
 
+def load_model_legs(path: str = MODEL_LEGS, burns=None) -> dict:
+    """Legs from the three-body flyby study (rq-0-52 third pass), in the layout of load_legs
+    under the single key 0.0. Each leg is stretched to run node to node: the time between
+    the node and the heliocentric leg is added to it, and its Δv already includes the node
+    burn. `burns` limits the node burn sizes (m/s) allowed."""
+    key = (path, burns)
+    if key in _LEG_CACHE:
+        return _LEG_CACHE[key]
+    legs = {}
+    for r in csv.DictReader(open(path)):
+        if burns is not None and int(r['burn_ms']) not in burns:
+            continue
+        d = legs.setdefault(r['target'], {}).setdefault(0.0, {'out': [], 'in': []})
+        a, dep, tof = float(r['allowance_days']), float(r['depart_year']) * 365.25, float(r['tof_days'])
+        d[r['leg']].append((dep - a if r['leg'] == 'out' else dep, tof + a, float(r['low_thrust_kms']), float(r['thrust_fraction'])))
+    for t in legs.values():
+        for k in ('out', 'in'):
+            t[0.0][k] = np.array(t[0.0][k]).reshape(-1, 4)
+    _LEG_CACHE[key] = legs
+    return legs
+
+
 def best_cycle(g: dict, leg_cap: float, s_out: float, s_in: float, lga: float, lga_days: float = LGA_DAYS):
     """Shortest cycle (years) and its leg Δv for one target, using only legs the tug can fly:
     Δv within the cap and thrust fraction within the tug's acceleration relative to the study's."""
@@ -164,13 +188,15 @@ def optimised_cycles(c: 'ChainSettings', dry_t: float, payload_t: float, isp_s: 
     ve = isp_s * G0 / 1e3
     thrust = (c.tug_power_mw / STUDY['power_mw']) * (STUDY['isp_s'] / isp_s)
     rows = []
-    for name, by_lga in load_legs().items():
-        g = by_lga.get(c.lga)
+    modelled = c.flyby_burns_ms is not None
+    lga = 0.0 if modelled else c.lga
+    for name, by_lga in (load_model_legs(burns=c.flyby_burns_ms) if modelled else load_legs()).items():
+        g = by_lga.get(lga)
         if g is None:
             continue
         s_out, s_in, res = thrust, thrust, None
         for _ in range(2):
-            res = best_cycle(g, c.leg_cap, s_out, s_in, c.lga, c.lga_days)
+            res = best_cycle(g, c.leg_cap, s_out, s_in, lga, c.lga_days)
             if res is None:
                 break
             _, dvo, dvi = res
@@ -180,7 +206,7 @@ def optimised_cycles(c: 'ChainSettings', dry_t: float, payload_t: float, isp_s: 
             s_in = thrust * STUDY['m_in_t'] / m_in_start
             s_out = thrust * STUDY['m_out_t'] / m_out_start
         if res is not None:
-            res = best_cycle(g, c.leg_cap, s_out, s_in, c.lga, c.lga_days)
+            res = best_cycle(g, c.leg_cap, s_out, s_in, lga, c.lga_days)
         if res is not None and res[0] <= c.max_cycle_years:
             rows.append((name,) + res)
     return rows
