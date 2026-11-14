@@ -35,7 +35,7 @@ def envelope(v, lon, lat):
     return out
 
 
-def one(y_dep, t_enc, yc):
+def one(y_dep, t_enc, yc, lead_days: float = LEAD_DAYS):
     vinf, vm, th = c.encounter_vinf(yc[None])
     # patched model
     fan, idx = c.swingby_fan(yc[None], 24, 25)
@@ -43,7 +43,7 @@ def one(y_dep, t_enc, yc):
     ok = f.status == 1
     vp, lp, bp, c3 = c.escape_state(f.y[ok])
     # with the Moon: back up along the approach, then spread aim points over the B-plane
-    t0 = t_enc - LEAD_DAYS * c.DAY
+    t0 = t_enc - lead_days * c.DAY
     y0 = c.integrate(y_dep[None], 0.0, t0, stop_at_escape=False).y[0]
     u = vinf[0] / np.linalg.norm(vinf[0])
     p = np.cross([0, 0, 1.0], u)
@@ -52,7 +52,7 @@ def one(y_dep, t_enc, yc):
     b = np.geomspace(3000.0, 80000.0, 90) / c.AU_KM
     ang = np.arange(0, 360, 5) * np.pi / 180
     B, A = np.meshgrid(b, ang, indexing='ij')
-    dv = (B.ravel()[:, None] * (np.cos(A.ravel())[:, None] * p + np.sin(A.ravel())[:, None] * q)) / (LEAD_DAYS * c.DAY)
+    dv = (B.ravel()[:, None] * (np.cos(A.ravel())[:, None] * p + np.sin(A.ravel())[:, None] * q)) / (lead_days * c.DAY)
     y = np.repeat(y0[None], len(dv), axis=0)
     y[:, 3:] += dv
     moon0 = th[0] - (c.N_MOON - 1.0) * t_enc
@@ -86,13 +86,31 @@ def main():
             res['burn_ms'] = dv
             cases.append(res)
             print(res, flush=True)
+    # scout case: launch from a 200 km perigee that just reaches the Moon, one swingby
+    launch = []
+    for c3 in (-1.4, -0.6, -0.2):
+        vp = np.sqrt(c3 + 2 * c.MU_EARTH / 6700.0) / c.VU_KMS
+        rp = 6700.0 / c.AU_KM  # just above the integrator's perigee floor
+        ph = np.radians(np.arange(0, 360, 90) + 20.0)
+        y = np.zeros((len(ph), 6))
+        y[:, 0], y[:, 1] = c.EARTH[0] + rp * np.cos(ph), rp * np.sin(ph)
+        y[:, 3], y[:, 4] = -vp * np.sin(ph) + rp * np.sin(ph), vp * np.cos(ph) - rp * np.cos(ph)
+        f = c.integrate(y, 0.0, 12 * c.DAY, crossings=1)
+        for r in np.nonzero(f.n_cross > 0)[0]:
+            res = one(y[r], f.t_cross[r, 0], f.y_cross[r, 0], lead_days=min(1.0, 0.5 * f.t_cross[r, 0] * c.TU_DAYS))
+            res['launch_c3'] = c3
+            launch.append(res)
+            print(res, flush=True)
+    la = np.array([[x['max_vinf_patched'], x['max_vinf_with_moon']] for x in launch if x['max_vinf_patched'] > 0])
     a = np.array([[x['max_vinf_patched'], x['max_vinf_with_moon']] for x in cases if x['max_vinf_patched'] > 0])
     d = [x['mean_abs_envelope_difference_kms'] for x in cases if x['mean_abs_envelope_difference_kms'] is not None]
-    out = {'cases': cases, 'cases_where_patched_model_finds_no_escape': sum(1 for x in cases if x['max_vinf_patched'] == 0), 'max_vinf_ratio_with_moon_to_patched': {'min': round(float((a[:, 1] / a[:, 0]).min()), 3), 'median': round(float(np.median(a[:, 1] / a[:, 0])), 3),
+    out = {'cases': cases, 'launch_cases': launch,
+           'launch_max_vinf_ratio_with_moon_to_patched': {'min': round(float((la[:, 1] / la[:, 0]).min()), 3), 'median': round(float(np.median(la[:, 1] / la[:, 0])), 3), 'max': round(float((la[:, 1] / la[:, 0]).max()), 3)},
+           'cases_where_patched_model_finds_no_escape': sum(1 for x in cases if x['max_vinf_patched'] == 0), 'max_vinf_ratio_with_moon_to_patched': {'min': round(float((a[:, 1] / a[:, 0]).min()), 3), 'median': round(float(np.median(a[:, 1] / a[:, 0])), 3),
                                                                     'max': round(float((a[:, 1] / a[:, 0]).max()), 3)},
            'mean_envelope_difference_kms': round(float(np.mean(d)), 3)}
     json.dump(out, open(os.path.join(OUT, 'validation.json'), 'w'), indent=1)
-    print(json.dumps({k: v for k, v in out.items() if k != 'cases'}, indent=1))
+    print(json.dumps({k: v for k, v in out.items() if k not in ('cases', 'launch_cases')}, indent=1))
 
 
 if __name__ == '__main__':

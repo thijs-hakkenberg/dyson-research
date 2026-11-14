@@ -181,6 +181,157 @@
    "burn_ms": 300.0
   }
  ],
+ "launch_cases": [
+  {
+   "moon_relative_speed_kms": 1.16,
+   "max_vinf_patched": 1.313,
+   "max_vinf_with_moon": 1.29,
+   "max_latitude_patched_deg": 46.1,
+   "max_latitude_with_moon_deg": 44.4,
+   "direction_bins_compared": 2,
+   "mean_abs_envelope_difference_kms": 0.03,
+   "bins_only_patched": 0,
+   "bins_only_with_moon": 2,
+   "launch_c3": -1.4
+  },
+  {
+   "moon_relative_speed_kms": 1.152,
+   "max_vinf_patched": 1.362,
+   "max_vinf_with_moon": 1.342,
+   "max_latitude_patched_deg": 40.8,
+   "max_latitude_with_moon_deg": 38.8,
+   "direction_bins_compared": 2,
+   "mean_abs_envelope_difference_kms": 0.055,
+   "bins_only_patched": 0,
+   "bins_only_with_moon": 3,
+   "launch_c3": -1.4
+  },
+  {
+   "moon_relative_speed_kms": 1.16,
+   "max_vinf_patched": 1.314,
+   "max_vinf_with_moon": 1.291,
+   "max_latitude_patched_deg": 46.1,
+   "max_latitude_with_moon_deg": 44.4,
+   "direction_bins_compared": 2,
+   "mean_abs_envelope_difference_kms": 0.03,
+   "bins_only_patched": 0,
+   "bins_only_with_moon": 2,
+   "launch_c3": -1.4
+  },
+  {
+   "moon_relative_speed_kms": 1.152,
+   "max_vinf_patched": 1.362,
+   "max_vinf_with_moon": 1.342,
+   "max_latitude_patched_deg": 40.8,
+   "max_latitude_with_moon_deg": 38.8,
+   "direction_bins_compared": 2,
+   "mean_abs_envelope_difference_kms": 0.054,
+   "bins_only_patched": 0,
+   "bins_only_with_moon": 3,
+   "launch_c3": -1.4
+  },
+  {
+   "moon_relative_speed_kms": 1.464,
+   "max_vinf_patched": 1.658,
+   "max_vinf_with_moon": 1.644,
+   "max_latitude_patched_deg": 65.3,
+   "max_latitude_with_moon_deg": 64.2,
+   "direction_bins_compared": 2,
+   "mean_abs_envelope_difference_kms": 0.211,
+   "bins_only_patched": 1,
+   "bins_only_with_moon": 0,
+   "launch_c3": -0.6
+  },
+  {
+   "moon_relative_speed_kms": 1.458,
+   "max_vinf_patched": 1.669,
+   "max_vinf_with_moon": 1.656,
+   "max_latitude_patched_deg": 62.1,
+   "max_latitude_with_moon_deg": 60.8,
+   "direction_bins_compared": 3,
+   "mean_abs_envelope_difference_kms": 0.23,
+   "bins_only_patched": 0,
+   "bins_only_with_moon": 1,
+   "launch_c3": -0.6
+  },
+  {
+   "moon_relative_speed_kms": 1.464,
+   "max_vinf_patched": 1.658,
+   "max_vinf_with_moon": 1.644,
+   "max_latitude_patched_deg": 65.3,
+   "max_latitude_with_moon_deg": 64.2,
+   "direction_bins_compared": 2,
+   "mean_abs_envelope_difference_kms": 0.211,
+   "bins_only_patched": 1,
+   "bins_only_with_moon": 0,
+   "launch_c3": -0.6
+  },
+  {
+   "moon_relative_speed_kms": 1.458,
+   "max_vinf_patched": 1.669,
+   "max_vinf_with_moon": 1.656,
+   "max_latitude_patched_deg": 62.1,
+   "max_latitude_with_moon_deg": 60.8,
+   "direction_bins_compared": 3,
+   "mean_abs_envelope_difference_kms": 0.231,
+   "bins_only_patched": 0,
+   "bins_only_with_moon": 1,
+   "launch_c3": -0.6
+  },
+  {
+   "moon_relative_speed_kms": 1.595,
+   "max_vinf_patched": 1.786,
+   "max_vinf_with_moon": 1.758,
+   "max_latitude_patched_deg": 72.1,
+   "max_latitude_with_moon_deg": 73.6,
+   "direction_bins_compared": 2,
+   "mean_abs_envelope_difference_kms": 0.114,
+   "bins_only_patched": 0,
+   "bins_only_with_moon": 1,
+   "launch_c3": -0.2
+  },
+  {
+   "moon_relative_speed_kms": 1.589,
+   "max_vinf_patched": 1.785,
+   "max_vinf_with_moon": 1.755,
+   "max_latitude_patched_deg": 72.1,
+   "max_latitude_with_moon_deg": 70.0,
+   "direction_bins_compared": 2,
+   "mean_abs_envelope_difference_kms": 0.17,
+   "bins_only_patched": 0,
+   "bins_only_with_moon": 1,
+   "launch_c3": -0.2
+  },
+  {
+   "moon_relative_speed_kms": 1.595,
+   "max_vinf_patched": 1.786,
+   "max_vinf_with_moon": 1.758,
+   "max_latitude_patched_deg": 72.1,
+   "max_latitude_with_moon_deg": 73.6,
+   "direction_bins_compared": 2,
+   "mean_abs_envelope_difference_kms": 0.114,
+   "bins_only_patched": 0,
+   "bins_only_with_moon": 1,
+   "launch_c3": -0.2
+  },
+  {
+   "moon_relative_speed_kms": 1.589,
+   "max_vinf_patched": 1.785,
+   "max_vinf_with_moon": 1.755,
+   "max_latitude_patched_deg": 72.1,
+   "max_latitude_with_moon_deg": 70.1,
+   "direction_bins_compared": 2,
+   "mean_abs_envelope_difference_kms": 0.17,
+   "bins_only_patched": 0,
+   "bins_only_with_moon": 1,
+   "launch_c3": -0.2
+  }
+ ],
+ "launch_max_vinf_ratio_with_moon_to_patched": {
+  "min": 0.982,
+  "median": 0.985,
+  "max": 0.992
+ },
  "cases_where_patched_model_finds_no_escape": 2,
  "max_vinf_ratio_with_moon_to_patched": {
   "min": 0.946,
