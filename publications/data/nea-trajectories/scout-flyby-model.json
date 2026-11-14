@@ -1,0 +1,92 @@
+{
+ "scout_limit_kms": 3.5,
+ "launch_moon_reach_kms": {
+  "in_plane_min_median_max": [
+   1.749,
+   1.7810000000000001,
+   1.816
+  ],
+  "median_by_latitude": {
+   "0-15": 1.7810000000000001,
+   "15-30": 1.6915,
+   "30-45": 1.522,
+   "45-60": 1.246,
+   "60-90": 0.8160000000000001
+  },
+  "max_found": 1.822,
+  "days_from_launch_median": 13.6
+ },
+ "scouts_within_limit": {
+  "launch C3=10": 141,
+  "C3~0 + Moon, flat 1.5 km/s (second pass)": 28,
+  "C3~0 + Moon, modelled": 32
+ },
+ "joint": {
+  "leg<=5.0 cycle<=4.0": {
+   "tug only": 26,
+   "and scout from C3=10": 26,
+   "and scout from C3~0 + Moon": 16,
+   "and scout by either": 26,
+   "tug with 150 m/s burns only, scout from C3=10": 23,
+   "of the C3=10 set: unclassified / metal-plausible": [
+    23,
+    1
+   ]
+  },
+  "leg<=5.0 cycle<=5.0": {
+   "tug only": 67,
+   "and scout from C3=10": 67,
+   "and scout from C3~0 + Moon": 31,
+   "and scout by either": 67,
+   "tug with 150 m/s burns only, scout from C3=10": 65,
+   "of the C3=10 set: unclassified / metal-plausible": [
+    59,
+    3
+   ]
+  },
+  "leg<=5.75 cycle<=4.0": {
+   "tug only": 39,
+   "and scout from C3=10": 38,
+   "and scout from C3~0 + Moon": 17,
+   "and scout by either": 38,
+   "tug with 150 m/s burns only, scout from C3=10": 34,
+   "of the C3=10 set: unclassified / metal-plausible": [
+    35,
+    1
+   ]
+  },
+  "leg<=5.75 cycle<=5.0": {
+   "tug only": 92,
+   "and scout from C3=10": 91,
+   "and scout from C3~0 + Moon": 31,
+   "and scout by either": 91,
+   "tug with 150 m/s burns only, scout from C3=10": 88,
+   "of the C3=10 set: unclassified / metal-plausible": [
+    82,
+    4
+   ]
+  },
+  "leg<=6.5 cycle<=4.0": {
+   "tug only": 53,
+   "and scout from C3=10": 52,
+   "and scout from C3~0 + Moon": 21,
+   "and scout by either": 52,
+   "tug with 150 m/s burns only, scout from C3=10": 46,
+   "of the C3=10 set: unclassified / metal-plausible": [
+    45,
+    2
+   ]
+  },
+  "leg<=6.5 cycle<=5.0": {
+   "tug only": 114,
+   "and scout from C3=10": 112,
+   "and scout from C3~0 + Moon": 31,
+   "and scout by either": 112,
+   "tug with 150 m/s burns only, scout from C3=10": 109,
+   "of the C3=10 set: unclassified / metal-plausible": [
+    101,
+    6
+   ]
+  }
+ }
+}

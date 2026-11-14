@@ -112,3 +112,14 @@ def test_leg_optimiser_respects_a_direction_limited_credit(tmp_path):
     base = low_thrust_leg(r0, v0, rf, vf, tof, 4.2e-4, seed=seed)
     assert same.ok and same.dv_kms == pytest.approx(flat.dv_kms, abs=0.05)
     assert none.ok and none.vinf_kms < 2e-3 and none.dv_kms == pytest.approx(base.dv_kms, abs=0.05)
+
+
+def test_launch_to_moon_reach_matches_the_published_single_flyby_range(tmp_path, monkeypatch):
+    import run_scout_flyby_model as s
+
+    monkeypatch.setattr(s, 'REACH_LAUNCH', str(tmp_path / 'reach-launch.json'))
+    monkeypatch.setattr(s, 'LAUNCH_C3', (-1.0,))
+    tab, e = s.launch_reach()
+    assert 1.2 < e['vinf'].max() < 1.8  # Casalino and Filizola 2017: 1.2–1.4 km/s verified
+    assert np.median(tab[:, 0]) > np.median(tab[:, 2])  # less reach out of the ecliptic
+    assert e['days'].max() < 60

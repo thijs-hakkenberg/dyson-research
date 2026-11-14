@@ -1,0 +1,13 @@
+{
+ "launch_c3_max": -1.0,
+ "in_plane_median": 1.5154999999999998,
+ "scouts_within_limit": 22,
+ "joint": {
+  "leg<=5.0 cycle<=4.0": 8,
+  "leg<=5.0 cycle<=5.0": 21,
+  "leg<=5.75 cycle<=4.0": 9,
+  "leg<=5.75 cycle<=5.0": 21,
+  "leg<=6.5 cycle<=4.0": 11,
+  "leg<=6.5 cycle<=5.0": 21
+ }
+}

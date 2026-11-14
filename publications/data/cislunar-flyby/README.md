@@ -12,3 +12,5 @@ Produced by `publications/scripts/run_cislunar_flyby.py` (model in `cislunar_fly
 - `validation.json` — the patched swingby against an integration with the Moon's gravity.
 - `escapes.npz` (every escape found, 14 MB) is not stored; the run regenerates it in about
   ten minutes.
+- `reach-launch.json` — the same table for a scout: launch that just reaches the Moon
+  (C3 −1.8 to −0.2 km²/s²), one swingby, escape (`run_scout_flyby_model.py`).
