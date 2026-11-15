@@ -12,3 +12,15 @@ catalogue in `../nea-catalogue/`.
 
 `lga` columns give the Earth-relative excess speed (km/s) a lunar flyby is assumed to provide.
 That figure is an unsourced assumption; see the limits listed in rq-0-52.
+
+## Scout launch trade (2026-11-15)
+
+Produced by `run_scout_launch_sweep.py` then `run_scout_launch_trade.py`.
+
+| File | Contents |
+|---|---|
+| `scout-launch-sweep.json` | Least-Δv scout transfer per target and launch option (C3 = 0, lunar swingby from two launch energies, C3 = 2 to 20); every solution for C3 = 10 |
+| `scout-launch-sweep.csv` | The same as one row per target: scout Δv and flight time by launch option |
+| `scout-launch-trade.json` | Counts by launch option and scout Δv budget, alone and with the tug sets; shared-launch pairs; Earth-loop option; scout mass and thruster hours; perigee kick; launcher payload estimate |
+
+The launcher payloads are an estimate from published figures, not a provider's curve.

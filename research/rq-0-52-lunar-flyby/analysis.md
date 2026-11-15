@@ -87,6 +87,26 @@ ratio stays at 0.42–0.44, but the six-year run rises from about 4.6× to 5.6�
 20-year run from 1.6× to 1.75–1.8×
 (`publications/data/phase0-chain/flyby-allowance.json`).
 
+## Three-body model (added 2026-11-13)
+
+Items 2 and 3 below have since been computed; see "Third pass" in the research question.
+In short: the model reproduces the literature's swingby gain (up to 1.7 km/s from one
+swingby, against 1.61–1.64 in Chen et al. 2016), finds that the coast from the node to the
+Moon takes 22–65 days depending on a 300–50 m/s node burn, and gives the reach by direction
+that the literature only sketches. With that table in the leg optimiser, 26 targets close at
+5 km/s per leg and four years, so the lower bound of 5–16 above was too pessimistic and the
+second pass's 20–45 too optimistic.
+
+## Scout launch trade (added 2026-11-15)
+
+The sources added for the launch side are thin, and say so in `papers.yaml`: launcher payloads and port limits come from encyclopaedia pages, prices from a secondary article, and the provider's payload curve was not reached. Three things they do establish:
+
+1. **A scout-sized pair has flown beyond Earth orbit on its own launch.** ESCAPADE is two 535 kg spacecraft on one launcher, for a launch contract of about $20M.
+2. **A ride-along does not own its launch date.** Janus was removed from its launch, and ESCAPADE lost its first ride, when the main passenger's plans changed.
+3. **Waiting near Earth and leaving by a powered Earth flyby is flown practice** (ESCAPADE, 2025–2026), which is the chemical counterpart of the loop-and-flyby option in the trade.
+
+No source was obtained for the gain of a loop under electric thrust before an Earth flyby; the 0.6–0.7 km/s in the trade is our own computation and is unchecked against literature.
+
 ## What this leaves open
 
 1. **The falsifier of 20 candidates no longer clears at the consensus leg cap.** With a

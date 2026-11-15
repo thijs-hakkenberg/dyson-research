@@ -113,3 +113,17 @@ def test_a_longer_flyby_allowance_lengthens_the_cycle_and_leaves_no_flyby_cycles
     long = best_cycle(g, 5.0, 1.0, 1.0, 1.0, lga_days=90.0)
     assert abs((long[0] - short[0]) * 365.25 - 120.0) < 1e-6
     assert best_cycle(g, 5.0, 1.0, 1.0, 0.0, lga_days=90.0)[0] == best_cycle(g, 5.0, 1.0, 1.0, 0.0)[0]
+
+
+def test_modelled_flyby_legs_run_node_to_node(tmp_path):
+    from phase0_chain_model import load_model_legs
+
+    path = tmp_path / 'legs.csv'
+    path.write_text('target,burn_ms,budget_days,leg,depart_year,tof_days,revs,low_thrust_kms,thruster_only_kms,thrust_fraction,vinf_kms,vinf_lon_deg,vinf_lat_deg,allowance_days\n'
+                    'A,150,90,out,2031.0,300.0,0,4.15,4.0,0.3,1.2,10,5,104.8\n'
+                    'A,300,60,in,2032.5,300.0,0,4.3,4.0,0.3,1.2,10,5,74.8\n')
+    g = load_model_legs(str(path))['A'][0.0]
+    assert g['out'][0, 0] == pytest.approx(2031.0 * 365.25 - 104.8) and g['out'][0, 1] == pytest.approx(404.8)
+    assert g['in'][0, 0] == pytest.approx(2032.5 * 365.25) and g['in'][0, 1] == pytest.approx(374.8)
+    assert best_cycle(g, 5.0, 1.0, 1.0, 0.0)[0] == pytest.approx((1.5 * 365.25 + 300 + 74.8 + 104.8) / 365.25)
+    assert 'A' not in load_model_legs(str(path), burns=(150,)) or len(load_model_legs(str(path), burns=(150,))['A'][0.0]['in']) == 0

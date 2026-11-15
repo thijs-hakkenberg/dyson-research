@@ -1,0 +1,264 @@
+{
+ "model": "Sun-Earth CR3BP, planar Lyapunov node orbits about SEL1, patched lunar swingbys (100 km), up to two swingbys",
+ "burns_ms": [
+  50.0,
+  150.0,
+  300.0
+ ],
+ "node_orbits_km": [
+  20000.0,
+  100000.0,
+  200000.0
+ ],
+ "by_burn": {
+  "50": {
+   "departures": 1152,
+   "reach_the_moon": 472,
+   "days_to_first_encounter": {
+    "min": 64.8,
+    "P10": 66.5,
+    "P50": 74.3
+   },
+   "encounters": 1151,
+   "moon_to_moon_transfers": 9646,
+   "escapes": 243514,
+   "max_vinf_one_swingby": 1.684,
+   "max_vinf_two_swingbys": 1.678,
+   "fastest_escape_days": {
+    "vinf>=0.5": 76.7,
+    "vinf>=1.0": 76.7,
+    "vinf>=1.4": 76.8
+   },
+   "in_plane_reach_by_budget": {
+    "45": {
+     "min": 0.0,
+     "median": 0.0,
+     "max": 0.0
+    },
+    "60": {
+     "min": 0.0,
+     "median": 0.0,
+     "max": 0.0
+    },
+    "75": {
+     "min": 0.0,
+     "median": 0.0,
+     "max": 0.0
+    },
+    "90": {
+     "min": 0.0,
+     "median": 1.428,
+     "max": 1.649
+    },
+    "105": {
+     "min": 0.85,
+     "median": 1.4925000000000002,
+     "max": 1.65
+    },
+    "120": {
+     "min": 0.988,
+     "median": 1.524,
+     "max": 1.65
+    },
+    "150": {
+     "min": 1.278,
+     "median": 1.5495,
+     "max": 1.677
+    },
+    "200": {
+     "min": 1.411,
+     "median": 1.5795,
+     "max": 1.678
+    }
+   },
+   "reach_by_latitude_at_120d": {
+    "0-15": {
+     "median": 1.524,
+     "max": 1.65
+    },
+    "15-30": {
+     "median": 1.302,
+     "max": 1.539
+    },
+    "30-45": {
+     "median": 0.7105,
+     "max": 1.248
+    },
+    "45-60": {
+     "median": 0.0,
+     "max": 1.001
+    },
+    "60-90": {
+     "median": 0.0,
+     "max": 0.0
+    }
+   }
+  },
+  "150": {
+   "departures": 1152,
+   "reach_the_moon": 488,
+   "days_to_first_encounter": {
+    "min": 36.9,
+    "P10": 41.8,
+    "P50": 50.4
+   },
+   "encounters": 1402,
+   "moon_to_moon_transfers": 11715,
+   "escapes": 289593,
+   "max_vinf_one_swingby": 1.698,
+   "max_vinf_two_swingbys": 1.68,
+   "fastest_escape_days": {
+    "vinf>=0.5": 50.9,
+    "vinf>=1.0": 50.9,
+    "vinf>=1.4": 52.7
+   },
+   "in_plane_reach_by_budget": {
+    "45": {
+     "min": 0.0,
+     "median": 0.0,
+     "max": 0.0
+    },
+    "60": {
+     "min": 0.0,
+     "median": 1.417,
+     "max": 1.667
+    },
+    "75": {
+     "min": 0.847,
+     "median": 1.4775,
+     "max": 1.687
+    },
+    "90": {
+     "min": 0.987,
+     "median": 1.5765,
+     "max": 1.687
+    },
+    "105": {
+     "min": 1.262,
+     "median": 1.604,
+     "max": 1.687
+    },
+    "120": {
+     "min": 1.379,
+     "median": 1.6219999999999999,
+     "max": 1.694
+    },
+    "150": {
+     "min": 1.389,
+     "median": 1.6219999999999999,
+     "max": 1.694
+    },
+    "200": {
+     "min": 1.461,
+     "median": 1.625,
+     "max": 1.694
+    }
+   },
+   "reach_by_latitude_at_120d": {
+    "0-15": {
+     "median": 1.6219999999999999,
+     "max": 1.694
+    },
+    "15-30": {
+     "median": 1.429,
+     "max": 1.589
+    },
+    "30-45": {
+     "median": 1.1244999999999998,
+     "max": 1.268
+    },
+    "45-60": {
+     "median": 0.6695,
+     "max": 0.983
+    },
+    "60-90": {
+     "median": 0.0,
+     "max": 0.159
+    }
+   }
+  },
+  "300": {
+   "departures": 1152,
+   "reach_the_moon": 446,
+   "days_to_first_encounter": {
+    "min": 22.4,
+    "P10": 28.0,
+    "P50": 35.3
+   },
+   "encounters": 1313,
+   "moon_to_moon_transfers": 9475,
+   "escapes": 265900,
+   "max_vinf_one_swingby": 1.718,
+   "max_vinf_two_swingbys": 1.678,
+   "fastest_escape_days": {
+    "vinf>=0.5": 34.4,
+    "vinf>=1.0": 34.4,
+    "vinf>=1.4": 35.5
+   },
+   "in_plane_reach_by_budget": {
+    "45": {
+     "min": 0.0,
+     "median": 1.5065,
+     "max": 1.692
+    },
+    "60": {
+     "min": 0.889,
+     "median": 1.637,
+     "max": 1.692
+    },
+    "75": {
+     "min": 1.169,
+     "median": 1.637,
+     "max": 1.692
+    },
+    "90": {
+     "min": 1.203,
+     "median": 1.637,
+     "max": 1.692
+    },
+    "105": {
+     "min": 1.256,
+     "median": 1.6484999999999999,
+     "max": 1.696
+    },
+    "120": {
+     "min": 1.256,
+     "median": 1.6484999999999999,
+     "max": 1.717
+    },
+    "150": {
+     "min": 1.463,
+     "median": 1.651,
+     "max": 1.717
+    },
+    "200": {
+     "min": 1.546,
+     "median": 1.651,
+     "max": 1.717
+    }
+   },
+   "reach_by_latitude_at_120d": {
+    "0-15": {
+     "median": 1.6484999999999999,
+     "max": 1.717
+    },
+    "15-30": {
+     "median": 1.4665,
+     "max": 1.593
+    },
+    "30-45": {
+     "median": 1.226,
+     "max": 1.431
+    },
+    "45-60": {
+     "median": 1.0194999999999999,
+     "max": 1.293
+    },
+    "60-90": {
+     "median": 0.8554999999999999,
+     "max": 1.02
+    }
+   }
+  }
+ }
+}
