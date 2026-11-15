@@ -54,6 +54,78 @@ papers:
     access: abstract-only
     summary: "Abstract states that lunar flybys give a C3 of about 2 km2/s2 within about two months and about 4.5 km2/s2 over four to six months without propulsion, and that a burn at Earth periapsis can raise 2-3 to 10 or more. Chen et al. 2016 report from its body a maximum of 3.25 km2/s2 for double swingbys within 200 days and 4.7 km2/s2 for triple swingbys."
 
+  # ---------------- Scout launch trade (added 2026-11-15) ----------------
+
+  - id: "wikipedia:ESCAPADE"
+    url: "https://en.wikipedia.org/wiki/ESCAPADE"
+    title: "ESCAPADE (Escape and Plasma Acceleration and Dynamics Explorers)"
+    authors: ["Wikipedia contributors"]
+    year: 2026
+    venue: "Wikipedia, read 2026-11-15; trajectory cross-checked against NASA SVS 14915"
+    relevance: high
+    access: full-text
+    summary: "Two 535 kg (wet) spacecraft, the size of a scout, launched together on a New Glenn in November 2025 under a launch contract of about 20 million dollars. They were first a ride-along on Psyche and lost that ride when Psyche moved to a different launcher and trajectory. They waited a year near Sun-Earth L2 and left for Mars with a powered Earth flyby in November 2026."
+
+  - id: "NASA-SVS-14915"
+    url: "https://svs.gsfc.nasa.gov/14915"
+    title: "ESCAPADE Trajectory Animations"
+    authors: ["NASA Scientific Visualization Studio"]
+    year: 2025
+    venue: "NASA Goddard"
+    relevance: medium
+    access: full-text
+    summary: "Describes the loiter orbit about Sun-Earth L2 and the powered Earth flyby (a burn of about nine minutes) a year after launch. States the purpose: the launch date no longer has to match the planetary window."
+
+  - id: "NASA-Janus-2022-11-18"
+    url: "https://science.nasa.gov/blogs/janus/2022/11/18/janus-mission-removed-from-2023-psyche-launch-manifest/"
+    title: "Janus Mission Removed from 2023 Psyche Launch Manifest"
+    authors: ["NASA"]
+    year: 2022
+    venue: "NASA Science blog"
+    relevance: high
+    access: full-text
+    summary: "Two small asteroid spacecraft riding with Psyche were removed when the main mission's launch date moved, because the new date left them unable to reach their asteroids. The case for what a ride-along gives up: the day and direction of departure belong to the main passenger."
+
+  - id: "wikipedia:ESPA"
+    url: "https://en.wikipedia.org/wiki/EELV_Secondary_Payload_Adapter"
+    title: "EELV Secondary Payload Adapter"
+    authors: ["Wikipedia contributors"]
+    year: 2026
+    venue: "Wikipedia, read 2026-11-15"
+    relevance: medium
+    access: full-text
+    summary: "Port limits for ride-along payloads: 180 kg on a standard port, 320 kg on an ESPA Grande port, and up to 700 kg on Moog's ESPA Grande. A provider's own user guide was not obtained."
+
+  - id: "wikipedia:Falcon-9-Block-5"
+    url: "https://en.wikipedia.org/wiki/Falcon_9_Block_5"
+    title: "Falcon 9 Block 5"
+    authors: ["Wikipedia contributors"]
+    year: 2026
+    venue: "Wikipedia, read 2026-11-15"
+    relevance: medium
+    access: full-text
+    summary: "Payload 22.8 t to low orbit and 8.3 t to geostationary transfer with the first stage expended, 5.5 t to geostationary transfer with it recovered, 4.0 t to Mars. Second stage 4.0 t empty and 111.5 t gross. Used as anchors for the launcher estimate; the second-stage specific impulse (348 s) is the provider's published figure and was not re-read in this session."
+
+  - id: "keeptrack:falcon-9-cost"
+    url: "https://keeptrack.space/deep-dive/how-much-does-a-falcon-9-launch-cost"
+    title: "How much does a Falcon 9 launch cost"
+    authors: ["KeepTrack"]
+    year: 2026
+    venue: "web article, search summary only"
+    relevance: low
+    access: abstract-only
+    summary: "List price 70 million dollars in 2025 and 74 million in 2026; NASA science launches from about 69 million (COSI) to about 100 million (NEO Surveyor) including mission services. Secondary source, read as a search summary."
+
+  - id: "10.2322/stj.4.43"
+    url: "https://www.jstage.jst.go.jp/article/stj/4/0/4_0_43/_article/-char/en"
+    title: "Escape Trajectory and Connection to Interplanetary Voyage from the Sun-Earth L2 Point"
+    authors: ["Michihiro Matsumoto", "Jun'ichiro Kawaguchi"]
+    year: 2005
+    venue: "Space Technology Japan 4, 43-52"
+    relevance: medium
+    access: abstract-only
+    summary: "Escape from a Sun-Earth libration point followed by a loop under electric thrust and an Earth flyby (the technique flown by Hayabusa). The abstract gives no figures for the gain per unit of thruster velocity change."
+
 not_obtained:
   - title: "Efficient lunar gravity assists for solar electric propulsion missions"
     authors: ["Damon Landau", "Tim McElrath", "Dan Grebow", "Nathan Strange"]
@@ -63,3 +135,7 @@ not_obtained:
     authors: ["Gregory Lantoine", "Tim McElrath"]
     venue: "AAS 14-471"
     note: "Seen referenced only; the source for the transfer families that Chen 2016 and 2023 build on."
+  - title: "NASA Launch Services Program vehicle performance curves (payload against C3)"
+    authors: ["NASA LSP"]
+    venue: "elvperf.ksc.nasa.gov"
+    note: "Query tool; no table reached in this session. The launcher capacity in the scout launch trade is our estimate from published payloads, not the provider's curve."
