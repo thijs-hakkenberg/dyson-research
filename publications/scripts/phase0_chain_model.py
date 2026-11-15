@@ -71,6 +71,7 @@ class ChainSettings:
     trajectory: str = 'catalogue'  # 'consensus' (5 km/s legs, 3-year cycle, as written) or 'optimised' (rq-0-52 second pass)
     lga: float = 1.0  # km/s of lunar-flyby excess speed, for 'optimised' (0, 1.0 or 1.5)
     flyby_burns_ms: tuple = None  # e.g. (150,) or (150, 300): take flyby legs from the three-body study (rq-0-52 third pass); overrides lga
+    flyby_legs: str = None  # leg file for flyby_burns_ms; default is the planar three-body model's (legs-flyby-model.csv)
     lga_days: float = LGA_DAYS  # time allowance per flyby-assisted leg; the literature supports 60–90 (rq-0-52)
     tug_power_mw: float = 1.5
     target_fraction: float = 1.0  # sample targets from this fastest share of those that close ('optimised')
@@ -190,7 +191,7 @@ def optimised_cycles(c: 'ChainSettings', dry_t: float, payload_t: float, isp_s: 
     rows = []
     modelled = c.flyby_burns_ms is not None
     lga = 0.0 if modelled else c.lga
-    for name, by_lga in (load_model_legs(burns=c.flyby_burns_ms) if modelled else load_legs()).items():
+    for name, by_lga in (load_model_legs(c.flyby_legs or MODEL_LEGS, c.flyby_burns_ms) if modelled else load_legs()).items():
         g = by_lga.get(lga)
         if g is None:
             continue

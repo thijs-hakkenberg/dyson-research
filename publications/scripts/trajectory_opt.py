@@ -147,6 +147,25 @@ def propagate(r, v, dt):
 # Low-thrust leg (Sims–Flanagan)
 # ---------------------------------------------------------------------------------------
 
+_REACH_FILES = {}
+
+
+def _reach_file(path: str) -> dict:
+    import json
+
+    if path not in _REACH_FILES:
+        _REACH_FILES[path] = json.load(open(path))
+    return _REACH_FILES[path]
+
+
+def moon_node_angle(t_jd: float, r_earth) -> float:
+    """Angle (deg) of the Moon's ascending node from the Sun→Earth line at Julian date t_jd.
+    The node's ecliptic longitude is 125.04° at J2000 and regresses 19.34° a year."""
+    node = 125.0445 - 0.0529538 * (t_jd - 2451545.0)
+    earth = np.degrees(np.arctan2(r_earth[1], r_earth[0]))
+    return float((node - earth) % 360.0)
+
+
 class FlybyReach:
     """Direction-dependent limit on the free excess velocity at the Earth end of a leg, from
     the three-body study (run_cislunar_flyby.py → publications/data/cislunar-flyby/reach.json).
@@ -155,13 +174,26 @@ class FlybyReach:
     within a time budget, by longitude of the velocity from the Sun→Earth line and by
     latitude from the ecliptic. An arrival uses the mirror image (see cislunar_flyby.py)."""
 
-    def __init__(self, path: str, burn_ms: int, budget_days: int):
-        import json
-
-        d = json.load(open(path))
+    def __init__(self, path: str, burn_ms: int, budget_days: int, node_deg: float = None, inbound: bool = False):
+        """node_deg: for tables that depend on the Moon's node line (three-dimensional
+        model), the angle of the ascending node from the Sun→Earth line at the Earth end of
+        the leg. inbound selects the mirror image of the table for an arrival."""
+        d = _reach_file(path)
         self.burn_ms, self.budget_days = burn_ms, budget_days
-        self.table = np.asarray(d['vinf_kms'][str(burn_ms)][str(budget_days)], float)  # (lon, lat)
+        tab = np.asarray(d['vinf_kms'][str(burn_ms)][str(budget_days)], float)
         lon, lat = np.asarray(d['lon_edges']), np.asarray(d['lat_edges'])
+        self.signed = bool(lat[0] < 0)
+        if 'node_edges' in d:  # (node, lon, lat): interpolate round the node angle
+            if node_deg is None:
+                raise ValueError('this reach table needs the node angle')
+            ne = np.asarray(d['node_edges'], float)
+            nc = 0.5 * (ne[:-1] + ne[1:])
+            ang = (180.0 - node_deg) if inbound else node_deg  # mirror image: node → 180° − node
+            f = ((ang - nc[0]) / (nc[1] - nc[0])) % len(nc)
+            i0 = int(np.floor(f)) % len(nc)
+            a = f - np.floor(f)
+            tab = (1 - a) * tab[i0] + a * tab[(i0 + 1) % len(nc)]
+        self.table = tab  # (lon, lat)
         self.lon_c = 0.5 * (lon[:-1] + lon[1:])
         self.lat_c = 0.5 * (lat[:-1] + lat[1:])
         self.vmax = float(self.table.max())
@@ -174,11 +206,11 @@ class FlybyReach:
         y /= np.linalg.norm(y)
         wx, wy, wz = float(w @ x), float(w @ y), float(w @ z)
         if inbound:
-            wx = -wx
+            wx, wz = -wx, -wz
         n = np.sqrt(wx * wx + wy * wy + wz * wz)
         if n < 1e-12:
             return 0.0, 0.0
-        return float(np.degrees(np.arctan2(wy, wx))), float(np.degrees(np.arcsin(abs(wz) / n)))
+        return float(np.degrees(np.arctan2(wy, wx))), float(np.degrees(np.arcsin((wz if self.signed else abs(wz)) / n)))
 
     def cap_at(self, lon: float, lat: float) -> float:
         """Bilinear interpolation between bin centres, periodic in longitude."""

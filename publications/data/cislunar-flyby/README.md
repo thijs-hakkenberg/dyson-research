@@ -14,3 +14,17 @@ Produced by `publications/scripts/run_cislunar_flyby.py` (model in `cislunar_fly
   ten minutes.
 - `reach-launch.json` — the same table for a scout: launch that just reaches the Moon
   (C3 −1.8 to −0.2 km²/s²), one swingby, escape (`run_scout_flyby_model.py`).
+
+## Halo node orbits and the inclined Moon (2026-11-15)
+
+Produced by `run_cislunar_flyby_3d.py`.
+
+- `reach-3d-planar-orbits.json`, `reach-3d-halo.json` — as `reach.json`, with two more
+  dimensions: the angle of the Moon's ascending node from the Sun→Earth line at escape
+  (60° bins) and signed latitude (−90 to 90°). One swingby. An arrival reads node angle
+  180° − node with the velocity's out-of-ecliptic part reversed.
+- `summary-3d.json` — orbits, encounters, reach by latitude and by node angle.
+- `summary-3d-inc0.json` — the check run with no inclination, which reproduces the planar
+  model's single-swingby tables exactly.
+- `reach-launch-low.json` — the scout launch table for C3 ≤ −1.0 km²/s².
+- `escapes-3d*.npz` are not stored (88 MB); the run takes about 20 minutes.

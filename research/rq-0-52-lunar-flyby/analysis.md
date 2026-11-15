@@ -107,6 +107,10 @@ The sources added for the launch side are thin, and say so in `papers.yaml`: lau
 
 No source was obtained for the gain of a loop under electric thrust before an Earth flyby; the 0.6–0.7 km/s in the trade is our own computation and is unchecked against literature.
 
+## Halo orbits and the inclined Moon (added 2026-11-15)
+
+Chen et al. 2016 start from halo orbits and treat the Moon's inclination, and report that two of four encounter types escape with one swingby and the others need a second. Our fourth pass is consistent with the direction of that result: from halo orbits the reach is lower and later than from planar orbits (1.36 against 1.53 km/s at 90 days from a 150 m/s burn), and the short budgets fail. It differs in method (we add a departure burn and solve its out-of-plane part; they follow the manifold) so the figures are not directly comparable.
+
 ## What this leaves open
 
 1. **The falsifier of 20 candidates no longer clears at the consensus leg cap.** With a
