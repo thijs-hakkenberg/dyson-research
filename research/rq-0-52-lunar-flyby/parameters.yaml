@@ -91,3 +91,46 @@ parameters:
     basis: computed
     sources: ["publications/data/cislunar-flyby/reach.json", "publications/data/cislunar-flyby/validation.json"]
     note: "Checked against an integration with the Moon's gravity: largest escape speed 0.95-1.13 times the patched model's over 15 encounters."
+
+  # ---------------- Scout launch trade, computed 2026-11-15 ----------------
+  # (publications/scripts/run_scout_launch_trade.py; not literature values)
+
+  - key: computed_scout_launch_c3_needed
+    assumed: "C3 = 0 (consensus) or 10 (second pass)"
+    supported: [4, 6]
+    conditions: "launch C3 (km2/s2) that keeps 20 and all 26 of the tug's targets (5 km/s legs, four-year cycle) inside the scout's 3.5 km/s"
+    basis: computed
+    sources: ["publications/data/nea-trajectories/scout-launch-trade.json"]
+    note: "From C3 ~ 0 with one lunar swingby the scout needs 4.2-5.0 km/s for all 26 and 3.9-4.1 km/s for 20."
+
+  - key: computed_scout_dv_mass_and_hours
+    assumed: null
+    supported: {"3.5 km/s": "518 kg, 3,900 h", "4.5 km/s": "550 kg, 5,200 h", "5.5 km/s": "584 kg, 6,500 h"}
+    conditions: "Claude's 550 kg scout, 2.2 kW to the thrusters, 1,900 s, 50% efficiency, 8% tankage"
+    basis: computed
+    sources: ["publications/data/nea-trajectories/scout-launch-trade.json"]
+    note: "GPT's and Gemini's scouts are in the same file. Gemini's single 600 W thruster needs 6,800 h at 3.5 km/s."
+
+  - key: computed_shared_launch_pairs
+    assumed: "scouts ride together"
+    supported: "25 of 325 asteroid pairs"
+    conditions: "two scouts on one launch to C3 = 10, same day and direction, both inside 3.5 km/s; the 26 targets"
+    basis: computed
+    sources: ["publications/data/nea-trajectories/scout-launch-trade.json"]
+    note: "219 of 2,211 pairs among the 67 five-year targets. Lower bound: the second scout rides the first one's best launch."
+
+  - key: computed_earth_loop
+    assumed: null
+    supported: [0.63, 0.73]
+    conditions: "thruster km/s to turn a 1.5-1.8 km/s departure into a 3.16 km/s return to Earth, in 480-760 days"
+    basis: computed
+    sources: ["publications/data/nea-trajectories/scout-launch-trade.json", "10.2322/stj.4.43"]
+    note: "No published figure was obtained to check it against. The flyby's turn limit is not modelled, so the target count it gives (all 26) is an upper bound."
+
+  - key: launcher_payload_estimate
+    assumed: null
+    supported: {"C3=0 recovered": [3300, 3600], "C3=10 recovered": [2200, 2700], "C3=10 expended": [4000, 4600]}
+    conditions: "kg; Falcon 9 class, two fits through published payloads"
+    basis: extrapolated
+    sources: ["wikipedia:Falcon-9-Block-5"]
+    note: "Our estimate from the second stage and three published payloads. The provider's curve (NASA LSP) was not obtained."

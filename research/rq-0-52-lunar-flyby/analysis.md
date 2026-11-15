@@ -97,6 +97,16 @@ that the literature only sketches. With that table in the leg optimiser, 26 targ
 5 km/s per leg and four years, so the lower bound of 5–16 above was too pessimistic and the
 second pass's 20–45 too optimistic.
 
+## Scout launch trade (added 2026-11-15)
+
+The sources added for the launch side are thin, and say so in `papers.yaml`: launcher payloads and port limits come from encyclopaedia pages, prices from a secondary article, and the provider's payload curve was not reached. Three things they do establish:
+
+1. **A scout-sized pair has flown beyond Earth orbit on its own launch.** ESCAPADE is two 535 kg spacecraft on one launcher, for a launch contract of about $20M.
+2. **A ride-along does not own its launch date.** Janus was removed from its launch, and ESCAPADE lost its first ride, when the main passenger's plans changed.
+3. **Waiting near Earth and leaving by a powered Earth flyby is flown practice** (ESCAPADE, 2025–2026), which is the chemical counterpart of the loop-and-flyby option in the trade.
+
+No source was obtained for the gain of a loop under electric thrust before an Earth flyby; the 0.6–0.7 km/s in the trade is our own computation and is unchecked against literature.
+
 ## What this leaves open
 
 1. **The falsifier of 20 candidates no longer clears at the consensus leg cap.** With a
