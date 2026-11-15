@@ -69,6 +69,7 @@ class ChainSettings:
     max_cycle_years: float = 4.0
     trajectory: str = 'catalogue'  # 'consensus' (5 km/s legs, 3-year cycle, as written) or 'optimised' (rq-0-52 second pass)
     lga: float = 1.0  # km/s of lunar-flyby excess speed, for 'optimised' (0, 1.0 or 1.5)
+    lga_days: float = LGA_DAYS  # time allowance per flyby-assisted leg; the literature supports 60–90 (rq-0-52)
     tug_power_mw: float = 1.5
     target_fraction: float = 1.0  # sample targets from this fastest share of those that close ('optimised')
     replacements: bool = False
@@ -137,7 +138,7 @@ def load_legs(path: str = LEGS) -> dict:
     return legs
 
 
-def best_cycle(g: dict, leg_cap: float, s_out: float, s_in: float, lga: float):
+def best_cycle(g: dict, leg_cap: float, s_out: float, s_in: float, lga: float, lga_days: float = LGA_DAYS):
     """Shortest cycle (years) and its leg Δv for one target, using only legs the tug can fly:
     Δv within the cap and thrust fraction within the tug's acceleration relative to the study's."""
     o, i = g['out'], g['in']
@@ -152,7 +153,7 @@ def best_cycle(g: dict, leg_cap: float, s_out: float, s_in: float, lga: float):
     a, b = np.unravel_index(np.argmin(cyc), cyc.shape)
     if not np.isfinite(cyc[a, b]):
         return None
-    pen = 2 * LGA_DAYS if lga > 0 else 0.0
+    pen = 2 * lga_days if lga > 0 else 0.0
     return (cyc[a, b] + pen) / 365.25, o[a, 2], i[b, 2]
 
 
@@ -169,7 +170,7 @@ def optimised_cycles(c: 'ChainSettings', dry_t: float, payload_t: float, isp_s: 
             continue
         s_out, s_in, res = thrust, thrust, None
         for _ in range(2):
-            res = best_cycle(g, c.leg_cap, s_out, s_in, c.lga)
+            res = best_cycle(g, c.leg_cap, s_out, s_in, c.lga, c.lga_days)
             if res is None:
                 break
             _, dvo, dvi = res
@@ -179,7 +180,7 @@ def optimised_cycles(c: 'ChainSettings', dry_t: float, payload_t: float, isp_s: 
             s_in = thrust * STUDY['m_in_t'] / m_in_start
             s_out = thrust * STUDY['m_out_t'] / m_out_start
         if res is not None:
-            res = best_cycle(g, c.leg_cap, s_out, s_in, c.lga)
+            res = best_cycle(g, c.leg_cap, s_out, s_in, c.lga, c.lga_days)
         if res is not None and res[0] <= c.max_cycle_years:
             rows.append((name,) + res)
     return rows

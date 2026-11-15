@@ -105,3 +105,11 @@ def test_fastest_targets_give_shorter_cycles():
     best = simulate(BOM, replace(OPT, target_fraction=0.25))
     assert best['cycle_years']['P50'] < every['cycle_years']['P50']
     assert best['fleet']['P50'] <= every['fleet']['P50']
+
+
+def test_a_longer_flyby_allowance_lengthens_the_cycle_and_leaves_no_flyby_cycles_alone():
+    g = {'out': np.array([[0.0, 300.0, 4.0, 0.3]]), 'in': np.array([[500.0, 300.0, 4.0, 0.3]])}
+    short = best_cycle(g, 5.0, 1.0, 1.0, 1.0, lga_days=30.0)
+    long = best_cycle(g, 5.0, 1.0, 1.0, 1.0, lga_days=90.0)
+    assert abs((long[0] - short[0]) * 365.25 - 120.0) < 1e-6
+    assert best_cycle(g, 5.0, 1.0, 1.0, 0.0, lga_days=90.0)[0] == best_cycle(g, 5.0, 1.0, 1.0, 0.0)[0]

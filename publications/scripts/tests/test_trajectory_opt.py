@@ -84,6 +84,7 @@ def test_lunar_assist_credit_reduces_thruster_dv_and_respects_its_limit():
     lga = low_thrust_leg(r0, v0, rf, vf, tof, 4.2e-4, seed=seed, free_end='start', lga_vinf_kms=0.5)
     assert lga.ok and lga.dv_kms < base.dv_kms - 0.3
     assert lga.vinf_kms <= 0.5 + 1e-3
+    assert abs(np.linalg.norm(lga.vinf_vec) - lga.vinf_kms) < 1e-9 and base.vinf_vec is None
 
 
 def test_impulsive_tables_improve_with_revolutions_and_credit():

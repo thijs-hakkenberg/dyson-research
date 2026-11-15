@@ -1,0 +1,115 @@
+{
+ "allowance_days_per_leg": {
+  "flyby=1.0 leg<=5.0 cycle<=4.0": {
+   "30": 20,
+   "60": 15,
+   "90": 12,
+   "120": 9,
+   "200": 7
+  },
+  "flyby=1.0 leg<=5.0 cycle<=5.0": {
+   "30": 53,
+   "60": 53,
+   "90": 51,
+   "120": 51,
+   "200": 23
+  },
+  "flyby=1.0 leg<=6.5 cycle<=4.0": {
+   "30": 58,
+   "60": 41,
+   "90": 33,
+   "120": 29,
+   "200": 17
+  },
+  "flyby=1.0 leg<=6.5 cycle<=5.0": {
+   "30": 105,
+   "60": 101,
+   "90": 98,
+   "120": 97,
+   "200": 63
+  },
+  "flyby=1.5 leg<=5.0 cycle<=4.0": {
+   "30": 45,
+   "60": 32,
+   "90": 28,
+   "120": 28,
+   "200": 12
+  },
+  "flyby=1.5 leg<=5.0 cycle<=5.0": {
+   "30": 87,
+   "60": 84,
+   "90": 83,
+   "120": 81,
+   "200": 49
+  },
+  "flyby=1.5 leg<=6.5 cycle<=4.0": {
+   "30": 82,
+   "60": 60,
+   "90": 53,
+   "120": 50,
+   "200": 20
+  },
+  "flyby=1.5 leg<=6.5 cycle<=5.0": {
+   "30": 120,
+   "60": 117,
+   "90": 115,
+   "120": 115,
+   "200": 87
+  }
+ },
+ "direction": {
+  "legs_resolved": 6863,
+  "legs_reproduced": 6863,
+  "latitude_deg_percentiles": {
+   "10": 4.3,
+   "50": 23.4,
+   "90": 56.4,
+   "100": 89.5
+  },
+  "share_of_legs_within": {
+   "30": 0.608,
+   "45": 0.801
+  },
+  "share_using_full_credit": 0.997,
+  "targets flyby=1.0 leg<=5.0 cycle<=4 allowance=30d": {
+   "any direction": 20,
+   "within 30 deg": 10,
+   "within 45 deg": 13
+  },
+  "targets flyby=1.0 leg<=5.0 cycle<=4 allowance=90d": {
+   "any direction": 12,
+   "within 30 deg": 5,
+   "within 45 deg": 8
+  },
+  "targets flyby=1.0 leg<=6.5 cycle<=4 allowance=30d": {
+   "any direction": 58,
+   "within 30 deg": 36,
+   "within 45 deg": 47
+  },
+  "targets flyby=1.0 leg<=6.5 cycle<=4 allowance=90d": {
+   "any direction": 33,
+   "within 30 deg": 17,
+   "within 45 deg": 26
+  },
+  "targets flyby=1.5 leg<=5.0 cycle<=4 allowance=30d": {
+   "any direction": 45,
+   "within 30 deg": 29,
+   "within 45 deg": 35
+  },
+  "targets flyby=1.5 leg<=5.0 cycle<=4 allowance=90d": {
+   "any direction": 28,
+   "within 30 deg": 16,
+   "within 45 deg": 22
+  },
+  "targets flyby=1.5 leg<=6.5 cycle<=4 allowance=30d": {
+   "any direction": 82,
+   "within 30 deg": 53,
+   "within 45 deg": 69
+  },
+  "targets flyby=1.5 leg<=6.5 cycle<=4 allowance=90d": {
+   "any direction": 53,
+   "within 30 deg": 31,
+   "within 45 deg": 41
+  }
+ }
+}

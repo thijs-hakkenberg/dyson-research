@@ -1,0 +1,74 @@
+# Trajectory-study assumptions for rq-0-52 checked against the literature
+# Compiled: 2026-11-13. Companion to papers.yaml and analysis.md.
+# assumed   = what run_trajectory_study.py uses
+# supported = what the sources support
+# basis     = computed (published trajectory analysis) | analogue | not-found
+# There are no flight measurements of a tug-class lunar-assisted escape or capture; every
+# value here comes from published trajectory computation.
+
+parameters:
+
+  - key: lunar_assist_vinf_kms
+    assumed: [1.0, 1.5]
+    supported: [1.0, 1.46]
+    conditions: "Earth-relative excess speed after (escape) or before (capture) lunar swingbys, from or to an orbit bound to Earth; flyby altitude 100-250 km; no propulsion"
+    basis: computed
+    sources: ["10.1007/s42064-023-0161-9", "AAS 13-409", "ISSFD-2017-023", "NTRS 20140002055", "hdl:2324/4371999"]
+    note: >
+      Kept as separate positions. Landau et al. 2013: the Moon captures C3 up to 2 km2/s2
+      (1.41 km/s). McElrath et al. 2012 (abstract): C3 about 2 within about two months. Casalino
+      and Filizola 2017: 1.2, 1.3 and 1.4 km/s verified numerically for one flyby from launch.
+      Chen 2023: 1.46 km/s in all directions for planar Sun-driven sequences, 1.8 km/s at best,
+      2.2 km/s with an Earth-passing transfer. Chen et al. 2016, leaving a Sun-Earth halo
+      orbit: 1.61 km/s (C3 2.6) from one swingby for two of four encounter geometries, 0.7 km/s
+      (C3 0.5) or no escape for the other two until a second swingby. The study's 1.0 km/s
+      case is inside every source; its 1.5 km/s case is just above the general-purpose figures
+      and inside the favourable-geometry ones.
+
+  - key: lunar_assist_days_per_leg
+    assumed: 30
+    supported: [60, 200]
+    conditions: "time from leaving the node to escape, or from arrival to a bound orbit; excludes any wait for lunar phase"
+    basis: computed
+    sources: ["NTRS 20140002055", "hdl:2324/4371999", "10.1007/s42064-023-0161-9", "ISSFD-2017-023"]
+    note: >
+      About two months for C3 of 2 (McElrath et al.). From a halo orbit, the manifold coast
+      to the Moon plus, for half the encounter geometries, a second swingby 75-95 days later
+      (Chen et al. 2016). All-direction coverage uses Moon-to-Moon transfers of up to 200 days
+      each (Chen 2023). The 10 days in Casalino and Filizola is from Earth perigee, which is
+      not where a tug starts. The assumed 30 days is not supported by any source.
+
+  - key: lunar_assist_direction
+    assumed: "any direction"
+    supported: "within about 30 degrees of the ecliptic at 1.41 km/s for a short sequence; any direction at 1.46 km/s with Sun-driven sequences"
+    conditions: "declination of the excess velocity from the ecliptic"
+    basis: computed
+    sources: ["AAS 13-409", "10.1007/s42064-023-0161-9"]
+    note: >
+      The two positions differ in the time they allow, and are not in conflict: Landau et al.
+      give 30 degrees for a single capture flyby; Chen reaches all directions by chaining
+      swingbys over months and notes that the condition gets harder as declination rises.
+      In the study, 61% of flyby legs use an excess velocity within 30 degrees of the ecliptic
+      and 80% within 45 degrees (publications/data/nea-trajectories/flyby-check.json).
+
+  - key: new_node_to_moon_phasing
+    assumed: null
+    supported: null
+    conditions: "wait at the SEL1 node for a lunar encounter that suits the departure date, and the reverse on return"
+    basis: not-found
+    sources: ["hdl:2324/4371999"]
+    note: >
+      Chen et al. 2016 assume the halo orbit is already phased for the lunar encounter and
+      name the phasing cost as follow-up work. No source obtained gives it. The Moon's period
+      bounds the wait at about a month per encounter geometry.
+
+  - key: new_capture_end_state
+    assumed: "tug arrives at the SEL1 node"
+    supported: "after the capture flyby the vehicle is in a loosely bound Earth orbit; reaching a libration-point or lunar orbit takes months more and 20-350 m/s"
+    conditions: "asteroid-retrieval capture designs"
+    basis: analogue
+    sources: ["AAS 13-409", "10.1007/s42064-023-0161-9"]
+    note: >
+      Both retrieval designs end in lunar orbit, by way of the Sun-Earth L1/L2 region, not at
+      a Sun-Earth L1 node. The route passes the node's neighbourhood, so the analogue is close,
+      but no source computes capture to a Sun-Earth L1 halo orbit for a loaded tug.
