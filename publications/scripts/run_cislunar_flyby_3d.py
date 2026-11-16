@@ -3,6 +3,7 @@ rq-0-52: the lunar flyby from the SEL1 node with halo node orbits and the Moon o
 inclined orbit (extension of run_cislunar_flyby.py).
 
     python run_cislunar_flyby_3d.py [--quick]
+    python run_cislunar_flyby_3d.py --station   # reach by the station's place, single orbits
 
 Two things change from the planar model:
 
@@ -17,7 +18,8 @@ One swingby only: in the planar model the second swingby added at most 0.07 km/s
 reach in any direction band.
 
 Writes publications/data/cislunar-flyby/{reach-3d-planar-orbits.json, reach-3d-halo.json,
-summary-3d.json, escapes-3d.npz}. The reach files are read by trajectory_opt.FlybyReach.
+summary-3d.json, escapes-3d.npz}; with --station, one reach-3d-station-<orbit>.json per
+node orbit, which adds where the station is on that orbit (see reach_table_station). The reach files are read by trajectory_opt.FlybyReach.
 """
 
 from __future__ import annotations
@@ -36,7 +38,10 @@ from run_cislunar_flyby import BUDGETS, BURNS_MS, LON_EDGES, MIN_MOON_BINS, MOON
 ORBITS = (('planar', 20e3), ('planar', 100e3), ('planar', 200e3), ('halo', 120e3), ('halo', 300e3))
 NODE_EDGES = np.arange(0.0, 361.0, 60.0)  # node angle at escape, degrees
 LAT_EDGES_SIGNED = np.array([-90.0, -60.0, -45.0, -30.0, -15.0, 0.0, 15.0, 30.0, 45.0, 60.0, 90.0])
-KEYS = ('vinf', 'lon', 'lat', 'days', 'moon', 'node', 'orbit', 'first_days', 'elev')
+KEYS = ('vinf', 'lon', 'lat', 'days', 'moon', 'node', 'orbit', 'first_days', 'elev', 'station')
+PHASE_EDGES = np.linspace(0.0, 1.0, 9)  # where the node station is on its orbit at escape, as a fraction of the period
+STATION_BURNS = (150.0, 300.0)
+STATION_ORBITS = (('planar', 100e3), ('halo', 120e3), ('halo', 300e3))
 
 
 def grid(quick):
@@ -50,7 +55,7 @@ INPLANE = (0.98, 0.8, 0.5)  # share of the burn in the ecliptic; the rest is fre
 
 
 def chunk(args):
-    base, az, orbit, dv, quick, inc, shares = args
+    base, az, orbit, dv, quick, inc, shares, phase, periods = args
     _, _, n_up, nodes, fan_n = grid(quick)
     M = len(base)
     idx = np.repeat(np.arange(M), n_up)
@@ -83,6 +88,7 @@ def chunk(args):
         out['moon'].append(place[s] + (c.N_MOON - 1.0) * (te - tc[s]))
         out['node'].append(np.degrees(node0 - te) % 360.0)
         out['orbit'].append(orbit[ce[s]])
+        out['station'].append((phase[ce[s]] + te / periods[orbit[ce[s]]]) % 1.0)  # the station flies on while the tug leaves
         out['first_days'].append(tc[s] * c.TU_DAYS)
         out['elev'].append(np.degrees(np.arctan2(el[s], share)))
     return {k: np.concatenate(v) if v else np.zeros(0) for k, v in out.items()}, n_enc, first
@@ -102,37 +108,67 @@ def reach_table_3d(e, budget):
     return np.sort(best, axis=3)[:, :, :, ::-1][:, :, :, MIN_MOON_BINS - 1]
 
 
+def reach_table_station(e, budget):
+    """As reach_table_3d with one more index in front: where the node station is on its orbit
+    at the moment of escape (fraction of the period from the Sun-side crossing of y = 0).
+    A tug can only leave from, or return to, the place the station is at."""
+    shape = (len(PHASE_EDGES) - 1, len(NODE_EDGES) - 1, len(LON_EDGES) - 1, len(LAT_EDGES_SIGNED) - 1)
+    sel = e['days'] <= budget
+    pi = np.clip((e['station'][sel] * shape[0]).astype(int), 0, shape[0] - 1)
+    ni = np.clip(np.digitize(e['node'][sel], NODE_EDGES) - 1, 0, shape[1] - 1)
+    li = np.clip(np.digitize(e['lon'][sel], LON_EDGES) - 1, 0, shape[2] - 1)
+    bi = np.clip(np.digitize(e['lat'][sel], LAT_EDGES_SIGNED) - 1, 0, shape[3] - 1)
+    mi = (np.floor((e['moon'][sel] % (2 * np.pi)) / (2 * np.pi) * MOON_BINS).astype(int)) % MOON_BINS
+    best = np.zeros(shape + (MOON_BINS,))
+    np.maximum.at(best, (pi, ni, li, bi, mi), e['vinf'][sel])
+    return np.sort(best, axis=4)[..., ::-1][..., MIN_MOON_BINS - 1]
+
+
+def orbit_label(kind, size_km):
+    return f'{kind}-{int(size_km / 1e3)}'
+
+
 def by_abs_latitude(tab):
     """Median over node angle and longitude of the reach by |latitude| band (both signs pooled)."""
     n = tab.shape[2] // 2
     return [float(np.median(np.concatenate([tab[:, :, n + k].ravel(), tab[:, :, n - 1 - k].ravel()]))) for k in range(n)]
 
 
-def main(inc=c.INC_MOON, tag='', shares=INPLANE, orbits=ORBITS):
+def main(inc=c.INC_MOON, tag='', shares=INPLANE, orbits=ORBITS, burns=BURNS_MS, dense=1, pooled=True):
     quick = '--quick' in sys.argv
     n_phase, n_az, n_up, nodes, _ = grid(quick)
+    n_phase, n_az = n_phase * dense, n_az * dense
     os.makedirs(OUT, exist_ok=True)
     states = [(kind, a, *(c.lyapunov_orbit(a) if kind == 'planar' else c.halo_orbit(a))) for kind, a in orbits]
     base = np.concatenate([np.repeat(c.orbit_points(s, p, n_phase), n_az, axis=0) for _, _, s, p in states])
     az = np.tile(np.arange(n_az) * 2 * np.pi / n_az, len(states) * n_phase)
     orbit = np.repeat(np.arange(len(states)), n_phase * n_az)
+    phase = np.tile(np.repeat(np.arange(n_phase) / n_phase, n_az), len(states))
+    periods = np.array([p for _, _, _, p in states])
+    station = {orbit_label(k, a): {'orbit': {'kind': k, 'size_km': a, 'period_days': round(p * c.TU_DAYS, 4)},
+                                   'lon_edges': LON_EDGES.tolist(), 'lat_edges': LAT_EDGES_SIGNED.tolist(), 'node_edges': NODE_EDGES.tolist(),
+                                   'phase_edges': PHASE_EDGES.tolist(), 'budgets_days': list(BUDGETS), 'vinf_kms': {}} for k, a, _, p in states}
     kinds = {'planar-orbits': [k for k, o in enumerate(orbits) if o[0] == 'planar'], 'halo': [k for k, o in enumerate(orbits) if o[0] == 'halo']}
     reach = {name: {'lon_edges': LON_EDGES.tolist(), 'lat_edges': LAT_EDGES_SIGNED.tolist(), 'node_edges': NODE_EDGES.tolist(),
                     'budgets_days': list(BUDGETS), 'vinf_kms': {}} for name in kinds}
     summary = {'model': 'Sun-Earth CR3BP; planar and halo node orbits about SEL1; Moon on an orbit inclined %.3f deg; one patched swingby (100 km)' % np.degrees(inc),
                'orbits': [{'kind': k, 'size_km': a, 'period_days': round(p * c.TU_DAYS, 2)} for k, a, _, p in states],
-               'burns_ms': list(BURNS_MS), 'by_burn': {}}
+               'burns_ms': list(burns), 'departure_places_and_azimuths': [n_phase, n_az], 'by_burn': {}}
     store = {}
     step = 24 if quick else 32
-    for dv in BURNS_MS:
+    for dv in burns:
         t0 = time.time()
-        parts = [(base[s : s + step], az[s : s + step], orbit[s : s + step], dv, quick, inc, shares) for s in range(0, len(base), step)]
+        parts = [(base[s : s + step], az[s : s + step], orbit[s : s + step], dv, quick, inc, shares, phase[s : s + step], periods) for s in range(0, len(base), step)]
         with Pool(min(7, os.cpu_count() or 2)) as pool:
             res = pool.map(chunk, parts, chunksize=1)
         e = {k: np.concatenate([r[0][k] for r in res]) for k in KEYS}
         first = np.concatenate([r[2] for r in res])
         store.update({f'{k}_{int(dv)}': v for k, v in e.items()})
         row = {'departures_tried': int(len(base) * n_up * len(shares)), 'encounters': int(sum(r[1] for r in res)), 'escapes': int(len(e['vinf']))}
+        if dv in STATION_BURNS:
+            for k, (label, tabs_k) in enumerate(station.items()):
+                sub = {key: v[e['orbit'] == k] for key, v in e.items()}
+                tabs_k['vinf_kms'][str(int(dv))] = {str(int(b)): np.round(reach_table_station(sub, b), 3).tolist() for b in BUDGETS}
         for name, members in kinds.items():
             sel = np.isin(e['orbit'], members)
             sub = {k: v[sel] for k, v in e.items()}
@@ -155,13 +191,17 @@ def main(inc=c.INC_MOON, tag='', shares=INPLANE, orbits=ORBITS):
         print(f'burn {dv:.0f} m/s  {time.time() - t0:.0f}s', json.dumps(row, indent=1), flush=True)
     q = '-quick' if quick else ''
     np.savez_compressed(os.path.join(OUT, f'escapes-3d{tag}{q}.npz'), **{k: v.astype(np.float32) for k, v in store.items()})
-    for name in kinds:
+    for name in (kinds if pooled else ()):
         json.dump(reach[name], open(os.path.join(OUT, f'reach-3d-{name}{tag}{q}.json'), 'w'))
+    for label, tabs_k in (station.items() if not pooled else ()):
+        json.dump(tabs_k, open(os.path.join(OUT, f'reach-3d-station-{label}{q}.json'), 'w'))
     json.dump(summary, open(os.path.join(OUT, f'summary-3d{tag}{q}.json'), 'w'), indent=1)
 
 
 if __name__ == '__main__':
-    if '--inc0' in sys.argv:  # check: no inclination, whole burn in the ecliptic, planar orbits: the first model
+    if '--station' in sys.argv:  # single node orbits by the station's place, on a grid four times as dense
+        main(tag='-station', orbits=STATION_ORBITS, burns=STATION_BURNS, dense=2, pooled=False)
+    elif '--inc0' in sys.argv:  # check: no inclination, whole burn in the ecliptic, planar orbits: the first model
         main(inc=0.0, tag='-inc0', shares=(1.0,), orbits=ORBITS[:3])
     else:
         main()

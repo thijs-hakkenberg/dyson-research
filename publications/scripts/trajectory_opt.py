@@ -166,6 +166,12 @@ def moon_node_angle(t_jd: float, r_earth) -> float:
     return float((node - earth) % 360.0)
 
 
+def station_phase(t_jd: float, period_days: float, phase0: float = 0.0) -> float:
+    """Where a node station is on its orbit at Julian date t_jd, as a fraction of the period
+    from the Sun-side crossing of the Sun–Earth line; phase0 is its place at J2000."""
+    return float((phase0 + (t_jd - 2451545.0) / period_days) % 1.0)
+
+
 class FlybyReach:
     """Direction-dependent limit on the free excess velocity at the Earth end of a leg, from
     the three-body study (run_cislunar_flyby.py → publications/data/cislunar-flyby/reach.json).
@@ -174,15 +180,25 @@ class FlybyReach:
     within a time budget, by longitude of the velocity from the Sun→Earth line and by
     latitude from the ecliptic. An arrival uses the mirror image (see cislunar_flyby.py)."""
 
-    def __init__(self, path: str, burn_ms: int, budget_days: int, node_deg: float = None, inbound: bool = False):
+    def __init__(self, path: str, burn_ms: int, budget_days: int, node_deg: float = None, inbound: bool = False, phase: float = None):
         """node_deg: for tables that depend on the Moon's node line (three-dimensional
         model), the angle of the ascending node from the Sun→Earth line at the Earth end of
-        the leg. inbound selects the mirror image of the table for an arrival."""
+        the leg. inbound selects the mirror image of the table for an arrival.
+        phase: for tables of a single node orbit that also depend on where the station is
+        on it (reach-3d-station-*.json), that place on the same day, as a fraction of the period."""
         d = _reach_file(path)
         self.burn_ms, self.budget_days = burn_ms, budget_days
         tab = np.asarray(d['vinf_kms'][str(burn_ms)][str(budget_days)], float)
         lon, lat = np.asarray(d['lon_edges']), np.asarray(d['lat_edges'])
         self.signed = bool(lat[0] < 0)
+        if 'phase_edges' in d:  # (station place, node, lon, lat): interpolate round the orbit
+            if phase is None:
+                raise ValueError('this reach table needs the place of the station on its orbit')
+            n = len(d['phase_edges']) - 1
+            f = (((-phase) if inbound else phase) % 1.0) * n - 0.5  # mirror image: place → −place
+            i0 = int(np.floor(f)) % n
+            a = f - np.floor(f)
+            tab = (1 - a) * tab[i0] + a * tab[(i0 + 1) % n]
         if 'node_edges' in d:  # (node, lon, lat): interpolate round the node angle
             if node_deg is None:
                 raise ValueError('this reach table needs the node angle')

@@ -2,6 +2,7 @@
 rq-0-61 on the tug legs of the three-body flyby studies (rq-0-52).
 
     python run_phase0_chain_flyby.py [--model=planar|planar-orbits|halo]
+    python run_phase0_chain_flyby.py --model=station-<orbit> --phase0=<k>   # station at one place on one orbit
 
 planar is the first three-body model (planar node orbits, Moon in the ecliptic);
 planar-orbits and halo are the legs solved against the inclined-Moon reach tables.
@@ -18,7 +19,8 @@ from phase0_cost_risk import ROOT, load_bom
 from run_phase0_chain_v2 import run
 
 MODEL = next((a.split('=')[1] for a in sys.argv if a.startswith('--model=')), 'planar')
-NAME = 'flyby-model' if MODEL == 'planar' else f'flyby-3d-{MODEL}'
+PHASE0 = next((a.split('=')[1] for a in sys.argv if a.startswith('--phase0=')), '0')
+NAME = 'flyby-model' if MODEL == 'planar' else f'flyby-{MODEL}-p{PHASE0}' if MODEL.startswith('station-') else f'flyby-3d-{MODEL}'
 LEGS = os.path.join(ROOT, 'publications', 'data', 'nea-trajectories', f'legs-{NAME}.csv')
 OUT = os.path.join(ROOT, 'publications', 'data', 'phase0-chain', f'{NAME}.json')
 RUNS = (6.25, 10.0, 20.0)

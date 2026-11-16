@@ -234,3 +234,54 @@ def test_reach_table_with_node_angle(tmp_path):
     e = np.array([np.cos(np.radians(100.0)), np.sin(np.radians(100.0)), 0.0])
     assert moon_node_angle(2451545.0, e) == pytest.approx(25.0445)
     assert moon_node_angle(2451545.0 + 365.25, e) == pytest.approx(25.0445 - 19.341, abs=0.01)
+
+
+def test_reach_table_with_station_place(tmp_path):
+    from trajectory_opt import station_phase
+
+    tab = np.ones((4, 2, 12, 2))
+    tab[1] = 1.6  # station between a quarter and half way round
+    p = tmp_path / 'reach.json'
+    json.dump({'lon_edges': list(np.arange(-180.0, 181.0, 30.0)), 'lat_edges': [-90.0, 0.0, 90.0], 'node_edges': [0.0, 180.0, 360.0],
+               'phase_edges': [0.0, 0.25, 0.5, 0.75, 1.0], 'budgets_days': [90], 'vinf_kms': {'150': {'90': tab.tolist()}}}, open(p, 'w'))
+    with pytest.raises(ValueError):
+        FlybyReach(str(p), 150, 90, node_deg=90.0)
+    cap = lambda ph, inbound=False: FlybyReach(str(p), 150, 90, node_deg=90.0, phase=ph, inbound=inbound).cap_at(0.0, 45.0)
+    assert cap(0.375) == pytest.approx(1.6)
+    assert cap(0.875) == pytest.approx(1.0)
+    assert cap(0.25) == pytest.approx(1.3)  # half way between two bin centres
+    # an arrival reads the mirror image: the station's place counted backwards
+    assert cap(0.625, inbound=True) == pytest.approx(1.6)
+    assert cap(0.375, inbound=True) == pytest.approx(1.0)
+    assert station_phase(2451545.0 + 1.5 * 177.87, 177.87, 0.125) == pytest.approx(0.625)
+
+
+def test_station_reach_table_separates_station_places():
+    import run_cislunar_flyby_3d as r
+
+    n = 40
+    e = {'days': np.full(n, 50.0), 'node': np.full(n, 10.0), 'lon': np.full(n, 5.0), 'lat': np.full(n, 5.0),
+         'moon': np.tile(np.arange(4) * np.pi / 2, n // 4), 'station': np.repeat([0.05, 0.55], n // 2), 'vinf': np.repeat([1.2, 0.7], n // 2)}
+    tab = r.reach_table_station(e, 60.0)
+    assert tab.shape == (8, 6, 12, 10)
+    assert tab[0, 0, 6, 5] == pytest.approx(1.2) and tab[4, 0, 6, 5] == pytest.approx(0.7)
+    assert tab.sum() == pytest.approx(1.9)
+    assert r.reach_table_3d(e, 60.0)[0, 6, 5] == pytest.approx(1.2)  # pooled over the station's place
+    assert r.reach_table_station(e, 45.0).sum() == 0.0
+
+
+def test_an_arrival_is_the_mirror_image_of_a_departure(halo):
+    """Fly the mirror image of a departure forwards: it must reach the mirrored states."""
+    state, period = halo
+    base = c.orbit_points(state, period, 4)[1:2]
+    y0 = c.burn_states(base, np.array([0.7]), np.array([0.1]), 150.0, 0.9)
+    t1 = 40 * c.DAY
+    f = c.integrate(y0, 0.0, t1, stop_at_escape=False)
+    back = c.integrate(c.mirror(f.y), -t1, 0.0, stop_at_escape=False)
+    assert np.linalg.norm(back.y[0, :3] - c.mirror(y0)[0, :3]) * c.AU_KM < 1.0
+    # the image of a point on the northern halo orbit is on the same orbit, the same time before the crossing
+    pts = c.orbit_points(state, period, 4)
+    assert np.allclose(c.mirror(pts[1]), pts[3], atol=1e-8)
+    # the Moon's orbit normal: node → 180° − node
+    n = c.moon_normal(np.radians(40.0))
+    assert np.allclose(n * np.array([1, -1, 1]), c.moon_normal(np.radians(140.0)))
