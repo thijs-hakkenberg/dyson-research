@@ -25,12 +25,17 @@ import numpy as np
 from nea_accessibility import TUG_IN, TUG_OUT, elements, load_catalogue, prefilter
 from run_nea_accessibility import catalogue_path
 from run_trajectory_study import DUTY, MIN_STAY, OUT, TOFS, YEAR, grids, pick_seeds
-from trajectory_opt import FlybyReach, impulsive_tables, low_thrust_leg, moon_node_angle, seed_velocities
+from trajectory_opt import FlybyReach, impulsive_tables, low_thrust_leg, moon_node_angle, seed_velocities, station_phase
 
 # --model=planar (first three-body model) | planar-orbits | halo (inclined Moon; run_cislunar_flyby_3d.py)
 MODEL = next((a.split('=')[1] for a in sys.argv if a.startswith('--model=')), 'planar')
+# --model=station-<orbit> --phase0=<k>: one node orbit, with the station at k/8 of its period at J2000;
+#   legs can only leave from, or return to, the place the station is at on the day.
 REACH = os.path.join(OUT, '..', 'cislunar-flyby', 'reach.json' if MODEL == 'planar' else f'reach-3d-{MODEL}.json')
-SUFFIX = 'flyby-model' if MODEL == 'planar' else f'flyby-3d-{MODEL}'
+STATION = MODEL.startswith('station-')
+PHASE0 = next((int(a.split('=')[1]) for a in sys.argv if a.startswith('--phase0=')), 0)
+SUFFIX = 'flyby-model' if MODEL == 'planar' else f'flyby-{MODEL}-p{PHASE0}' if STATION else f'flyby-3d-{MODEL}'
+PERIOD = json.load(open(REACH))['orbit']['period_days'] if STATION else None
 MODES = ((150, 60), (150, 90), (150, 150), (300, 60), (300, 105))  # (node burn m/s, days from burn to escape)
 MOON_WAIT_DAYS = 14.8  # mean wait for the lunar phase a solution needs
 LEG_CAPS = (5.0, 5.75, 6.5)
@@ -46,7 +51,8 @@ def reach(mode, t_jd=None, r_earth=None, inbound=False):
         if mode not in _REACH:
             _REACH[mode] = FlybyReach(REACH, *mode)
         return _REACH[mode]
-    return FlybyReach(REACH, *mode, node_deg=moon_node_angle(t_jd, r_earth), inbound=inbound)
+    phase = station_phase(t_jd, PERIOD, PHASE0 / 8.0) if STATION else None
+    return FlybyReach(REACH, *mode, node_deg=moon_node_angle(t_jd, r_earth), inbound=inbound, phase=phase)
 
 
 def target_legs(args):
@@ -101,6 +107,9 @@ def best_cycle(legs, cap, modes=None):
 
 def main():
     names = sorted({r['target'] for r in csv.DictReader(open(os.path.join(OUT, 'legs.csv')))})
+    if STATION:  # only targets that close within the longest cycle with the station's place free
+        col = 'cycle_halo_leg6.5' if 'halo' in MODEL else 'cycle_planar-orbits_leg6.5'
+        names = sorted(r['pdes'] for r in csv.DictReader(open(os.path.join(OUT, 'targets-flyby-3d.csv'))) if r[col] and float(r[col]) <= max(CYCLE_CAPS))
     cand = prefilter(load_catalogue(catalogue_path()), h_max=23.0)
     el = elements(cand)
     index = {r['pdes']: k for k, r in enumerate(cand)}

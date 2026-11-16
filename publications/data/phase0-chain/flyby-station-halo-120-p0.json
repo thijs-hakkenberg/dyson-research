@@ -1,0 +1,746 @@
+{
+ "node burn 150 m/s, legs <=5.0 km/s, cycle <=4.0 yr": {
+  "6.25 yr": {
+   "targets": 3,
+   "cycle_yr": 3.59,
+   "fleet": 21.0,
+   "propellant_t_per_yr": 446,
+   "import_ratio": 0.454,
+   "import_ratio_with_replacements": 0.454,
+   "P(import_ratio<=0.5)": 0.68,
+   "launch_kt": 5.03,
+   "delivered_kt": 3.39,
+   "cost_0B_B": 70.4,
+   "replacement_cost_B": 0.0,
+   "per_kg": 20784,
+   "ratio_to_earth": {
+    "P10": 3.64,
+    "P50": 4.92,
+    "P90": 6.87
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 3,
+   "cycle_yr": 3.59,
+   "fleet": 21.0,
+   "propellant_t_per_yr": 446,
+   "import_ratio": 0.454,
+   "import_ratio_with_replacements": 0.454,
+   "P(import_ratio<=0.5)": 0.68,
+   "launch_kt": 6.99,
+   "delivered_kt": 7.72,
+   "cost_0B_B": 83.6,
+   "replacement_cost_B": 0.1,
+   "per_kg": 10849,
+   "ratio_to_earth": {
+    "P10": 1.99,
+    "P50": 2.57,
+    "P90": 3.41
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 3,
+   "cycle_yr": 3.59,
+   "fleet": 21.0,
+   "propellant_t_per_yr": 446,
+   "import_ratio": 0.454,
+   "import_ratio_with_replacements": 0.491,
+   "P(import_ratio<=0.5)": 0.68,
+   "launch_kt": 13.06,
+   "delivered_kt": 19.24,
+   "cost_0B_B": 138.5,
+   "replacement_cost_B": 9.3,
+   "per_kg": 7228,
+   "ratio_to_earth": {
+    "P10": 1.34,
+    "P50": 1.71,
+    "P90": 2.23
+   },
+   "P(beats Earth)": 0.001
+  }
+ },
+ "node burn 150 m/s, legs <=5.0 km/s, cycle <=5.0 yr": {
+  "6.25 yr": {
+   "targets": 29,
+   "cycle_yr": 4.6,
+   "fleet": 26.0,
+   "propellant_t_per_yr": 461,
+   "import_ratio": 0.469,
+   "import_ratio_with_replacements": 0.469,
+   "P(import_ratio<=0.5)": 0.64,
+   "launch_kt": 5.39,
+   "delivered_kt": 2.85,
+   "cost_0B_B": 76.8,
+   "replacement_cost_B": 0.0,
+   "per_kg": 27102,
+   "ratio_to_earth": {
+    "P10": 4.6,
+    "P50": 6.41,
+    "P90": 9.16
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 29,
+   "cycle_yr": 4.6,
+   "fleet": 26.0,
+   "propellant_t_per_yr": 461,
+   "import_ratio": 0.469,
+   "import_ratio_with_replacements": 0.469,
+   "P(import_ratio<=0.5)": 0.64,
+   "launch_kt": 7.42,
+   "delivered_kt": 7.17,
+   "cost_0B_B": 90.4,
+   "replacement_cost_B": 0.1,
+   "per_kg": 12622,
+   "ratio_to_earth": {
+    "P10": 2.31,
+    "P50": 2.98,
+    "P90": 3.99
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 29,
+   "cycle_yr": 4.6,
+   "fleet": 26.0,
+   "propellant_t_per_yr": 461,
+   "import_ratio": 0.469,
+   "import_ratio_with_replacements": 0.513,
+   "P(import_ratio<=0.5)": 0.64,
+   "launch_kt": 13.8,
+   "delivered_kt": 18.7,
+   "cost_0B_B": 150.0,
+   "replacement_cost_B": 10.8,
+   "per_kg": 8053,
+   "ratio_to_earth": {
+    "P10": 1.5,
+    "P50": 1.9,
+    "P90": 2.49
+   },
+   "P(beats Earth)": 0.0
+  }
+ },
+ "node burn 150 m/s, legs <=5.75 km/s, cycle <=4.0 yr": {
+  "6.25 yr": {
+   "targets": 8,
+   "cycle_yr": 3.17,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 528,
+   "import_ratio": 0.532,
+   "import_ratio_with_replacements": 0.532,
+   "P(import_ratio<=0.5)": 0.38,
+   "launch_kt": 5.52,
+   "delivered_kt": 3.51,
+   "cost_0B_B": 72.2,
+   "replacement_cost_B": 0.0,
+   "per_kg": 20601,
+   "ratio_to_earth": {
+    "P10": 3.65,
+    "P50": 4.88,
+    "P90": 6.79
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 8,
+   "cycle_yr": 3.17,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 528,
+   "import_ratio": 0.532,
+   "import_ratio_with_replacements": 0.532,
+   "P(import_ratio<=0.5)": 0.38,
+   "launch_kt": 7.81,
+   "delivered_kt": 7.82,
+   "cost_0B_B": 87.1,
+   "replacement_cost_B": 0.1,
+   "per_kg": 11158,
+   "ratio_to_earth": {
+    "P10": 2.07,
+    "P50": 2.64,
+    "P90": 3.48
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 8,
+   "cycle_yr": 3.17,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 528,
+   "import_ratio": 0.532,
+   "import_ratio_with_replacements": 0.568,
+   "P(import_ratio<=0.5)": 0.38,
+   "launch_kt": 14.73,
+   "delivered_kt": 19.35,
+   "cost_0B_B": 146.1,
+   "replacement_cost_B": 9.0,
+   "per_kg": 7574,
+   "ratio_to_earth": {
+    "P10": 1.42,
+    "P50": 1.8,
+    "P90": 2.31
+   },
+   "P(beats Earth)": 0.0
+  }
+ },
+ "node burn 150 m/s, legs <=5.75 km/s, cycle <=5.0 yr": {
+  "6.25 yr": {
+   "targets": 54,
+   "cycle_yr": 4.54,
+   "fleet": 25.0,
+   "propellant_t_per_yr": 530,
+   "import_ratio": 0.534,
+   "import_ratio_with_replacements": 0.534,
+   "P(import_ratio<=0.5)": 0.36,
+   "launch_kt": 5.83,
+   "delivered_kt": 2.89,
+   "cost_0B_B": 78.8,
+   "replacement_cost_B": 0.0,
+   "per_kg": 27386,
+   "ratio_to_earth": {
+    "P10": 4.56,
+    "P50": 6.48,
+    "P90": 9.34
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 54,
+   "cycle_yr": 4.54,
+   "fleet": 25.0,
+   "propellant_t_per_yr": 530,
+   "import_ratio": 0.534,
+   "import_ratio_with_replacements": 0.535,
+   "P(import_ratio<=0.5)": 0.36,
+   "launch_kt": 8.14,
+   "delivered_kt": 7.22,
+   "cost_0B_B": 94.0,
+   "replacement_cost_B": 0.1,
+   "per_kg": 13059,
+   "ratio_to_earth": {
+    "P10": 2.38,
+    "P50": 3.08,
+    "P90": 4.11
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 54,
+   "cycle_yr": 4.54,
+   "fleet": 25.0,
+   "propellant_t_per_yr": 530,
+   "import_ratio": 0.534,
+   "import_ratio_with_replacements": 0.578,
+   "P(import_ratio<=0.5)": 0.36,
+   "launch_kt": 15.27,
+   "delivered_kt": 18.75,
+   "cost_0B_B": 157.5,
+   "replacement_cost_B": 10.7,
+   "per_kg": 8425,
+   "ratio_to_earth": {
+    "P10": 1.57,
+    "P50": 1.99,
+    "P90": 2.59
+   },
+   "P(beats Earth)": 0.0
+  }
+ },
+ "node burn 150 m/s, legs <=6.5 km/s, cycle <=4.0 yr": {
+  "6.25 yr": {
+   "targets": 19,
+   "cycle_yr": 3.61,
+   "fleet": 21.0,
+   "propellant_t_per_yr": 567,
+   "import_ratio": 0.568,
+   "import_ratio_with_replacements": 0.568,
+   "P(import_ratio<=0.5)": 0.26,
+   "launch_kt": 5.83,
+   "delivered_kt": 3.41,
+   "cost_0B_B": 74.7,
+   "replacement_cost_B": 0.0,
+   "per_kg": 21993,
+   "ratio_to_earth": {
+    "P10": 3.85,
+    "P50": 5.22,
+    "P90": 7.26
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 19,
+   "cycle_yr": 3.61,
+   "fleet": 21.0,
+   "propellant_t_per_yr": 567,
+   "import_ratio": 0.568,
+   "import_ratio_with_replacements": 0.568,
+   "P(import_ratio<=0.5)": 0.26,
+   "launch_kt": 8.29,
+   "delivered_kt": 7.73,
+   "cost_0B_B": 90.6,
+   "replacement_cost_B": 0.1,
+   "per_kg": 11755,
+   "ratio_to_earth": {
+    "P10": 2.16,
+    "P50": 2.78,
+    "P90": 3.67
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 19,
+   "cycle_yr": 3.61,
+   "fleet": 21.0,
+   "propellant_t_per_yr": 567,
+   "import_ratio": 0.568,
+   "import_ratio_with_replacements": 0.605,
+   "P(import_ratio<=0.5)": 0.26,
+   "launch_kt": 15.66,
+   "delivered_kt": 19.26,
+   "cost_0B_B": 152.8,
+   "replacement_cost_B": 9.3,
+   "per_kg": 7967,
+   "ratio_to_earth": {
+    "P10": 1.49,
+    "P50": 1.89,
+    "P90": 2.44
+   },
+   "P(beats Earth)": 0.0
+  }
+ },
+ "node burn 150 m/s, legs <=6.5 km/s, cycle <=5.0 yr": {
+  "6.25 yr": {
+   "targets": 78,
+   "cycle_yr": 4.43,
+   "fleet": 24.0,
+   "propellant_t_per_yr": 603,
+   "import_ratio": 0.602,
+   "import_ratio_with_replacements": 0.602,
+   "P(import_ratio<=0.5)": 0.16,
+   "launch_kt": 6.29,
+   "delivered_kt": 2.96,
+   "cost_0B_B": 80.8,
+   "replacement_cost_B": 0.0,
+   "per_kg": 27450,
+   "ratio_to_earth": {
+    "P10": 4.58,
+    "P50": 6.51,
+    "P90": 9.34
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 78,
+   "cycle_yr": 4.43,
+   "fleet": 24.0,
+   "propellant_t_per_yr": 603,
+   "import_ratio": 0.602,
+   "import_ratio_with_replacements": 0.602,
+   "P(import_ratio<=0.5)": 0.16,
+   "launch_kt": 8.9,
+   "delivered_kt": 7.29,
+   "cost_0B_B": 97.5,
+   "replacement_cost_B": 0.1,
+   "per_kg": 13430,
+   "ratio_to_earth": {
+    "P10": 2.44,
+    "P50": 3.18,
+    "P90": 4.24
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 78,
+   "cycle_yr": 4.43,
+   "fleet": 24.0,
+   "propellant_t_per_yr": 603,
+   "import_ratio": 0.602,
+   "import_ratio_with_replacements": 0.645,
+   "P(import_ratio<=0.5)": 0.16,
+   "launch_kt": 16.78,
+   "delivered_kt": 18.82,
+   "cost_0B_B": 164.7,
+   "replacement_cost_B": 10.5,
+   "per_kg": 8788,
+   "ratio_to_earth": {
+    "P10": 1.63,
+    "P50": 2.08,
+    "P90": 2.71
+   },
+   "P(beats Earth)": 0.0
+  }
+ },
+ "node burn 150/300 m/s, legs <=5.0 km/s, cycle <=4.0 yr": {
+  "6.25 yr": {
+   "targets": 9,
+   "cycle_yr": 3.61,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 459,
+   "import_ratio": 0.467,
+   "import_ratio_with_replacements": 0.467,
+   "P(import_ratio<=0.5)": 0.65,
+   "launch_kt": 5.09,
+   "delivered_kt": 3.42,
+   "cost_0B_B": 70.5,
+   "replacement_cost_B": 0.0,
+   "per_kg": 20658,
+   "ratio_to_earth": {
+    "P10": 3.59,
+    "P50": 4.89,
+    "P90": 6.87
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 9,
+   "cycle_yr": 3.61,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 459,
+   "import_ratio": 0.467,
+   "import_ratio_with_replacements": 0.467,
+   "P(import_ratio<=0.5)": 0.65,
+   "launch_kt": 7.1,
+   "delivered_kt": 7.74,
+   "cost_0B_B": 84.0,
+   "replacement_cost_B": 0.1,
+   "per_kg": 10868,
+   "ratio_to_earth": {
+    "P10": 2.0,
+    "P50": 2.57,
+    "P90": 3.41
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 9,
+   "cycle_yr": 3.61,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 459,
+   "import_ratio": 0.467,
+   "import_ratio_with_replacements": 0.503,
+   "P(import_ratio<=0.5)": 0.65,
+   "launch_kt": 13.3,
+   "delivered_kt": 19.27,
+   "cost_0B_B": 139.7,
+   "replacement_cost_B": 9.2,
+   "per_kg": 7272,
+   "ratio_to_earth": {
+    "P10": 1.36,
+    "P50": 1.72,
+    "P90": 2.23
+   },
+   "P(beats Earth)": 0.0
+  }
+ },
+ "node burn 150/300 m/s, legs <=5.0 km/s, cycle <=5.0 yr": {
+  "6.25 yr": {
+   "targets": 41,
+   "cycle_yr": 4.46,
+   "fleet": 25.0,
+   "propellant_t_per_yr": 465,
+   "import_ratio": 0.473,
+   "import_ratio_with_replacements": 0.473,
+   "P(import_ratio<=0.5)": 0.62,
+   "launch_kt": 5.36,
+   "delivered_kt": 2.95,
+   "cost_0B_B": 75.7,
+   "replacement_cost_B": 0.0,
+   "per_kg": 25744,
+   "ratio_to_earth": {
+    "P10": 4.3,
+    "P50": 6.09,
+    "P90": 8.79
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 41,
+   "cycle_yr": 4.46,
+   "fleet": 25.0,
+   "propellant_t_per_yr": 465,
+   "import_ratio": 0.473,
+   "import_ratio_with_replacements": 0.474,
+   "P(import_ratio<=0.5)": 0.62,
+   "launch_kt": 7.41,
+   "delivered_kt": 7.28,
+   "cost_0B_B": 89.4,
+   "replacement_cost_B": 0.1,
+   "per_kg": 12309,
+   "ratio_to_earth": {
+    "P10": 2.24,
+    "P50": 2.9,
+    "P90": 3.9
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 41,
+   "cycle_yr": 4.46,
+   "fleet": 25.0,
+   "propellant_t_per_yr": 465,
+   "import_ratio": 0.473,
+   "import_ratio_with_replacements": 0.516,
+   "P(import_ratio<=0.5)": 0.62,
+   "launch_kt": 13.82,
+   "delivered_kt": 18.82,
+   "cost_0B_B": 148.6,
+   "replacement_cost_B": 10.5,
+   "per_kg": 7924,
+   "ratio_to_earth": {
+    "P10": 1.47,
+    "P50": 1.87,
+    "P90": 2.45
+   },
+   "P(beats Earth)": 0.0
+  }
+ },
+ "node burn 150/300 m/s, legs <=5.75 km/s, cycle <=4.0 yr": {
+  "6.25 yr": {
+   "targets": 18,
+   "cycle_yr": 3.5,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 509,
+   "import_ratio": 0.514,
+   "import_ratio_with_replacements": 0.514,
+   "P(import_ratio<=0.5)": 0.44,
+   "launch_kt": 5.41,
+   "delivered_kt": 3.47,
+   "cost_0B_B": 71.9,
+   "replacement_cost_B": 0.0,
+   "per_kg": 20719,
+   "ratio_to_earth": {
+    "P10": 3.63,
+    "P50": 4.91,
+    "P90": 6.86
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 18,
+   "cycle_yr": 3.5,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 509,
+   "import_ratio": 0.514,
+   "import_ratio_with_replacements": 0.514,
+   "P(import_ratio<=0.5)": 0.44,
+   "launch_kt": 7.63,
+   "delivered_kt": 7.79,
+   "cost_0B_B": 86.5,
+   "replacement_cost_B": 0.1,
+   "per_kg": 11123,
+   "ratio_to_earth": {
+    "P10": 2.05,
+    "P50": 2.63,
+    "P90": 3.48
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 18,
+   "cycle_yr": 3.5,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 509,
+   "import_ratio": 0.514,
+   "import_ratio_with_replacements": 0.55,
+   "P(import_ratio<=0.5)": 0.44,
+   "launch_kt": 14.35,
+   "delivered_kt": 19.33,
+   "cost_0B_B": 144.8,
+   "replacement_cost_B": 9.1,
+   "per_kg": 7515,
+   "ratio_to_earth": {
+    "P10": 1.41,
+    "P50": 1.78,
+    "P90": 2.3
+   },
+   "P(beats Earth)": 0.0
+  }
+ },
+ "node burn 150/300 m/s, legs <=5.75 km/s, cycle <=5.0 yr": {
+  "6.25 yr": {
+   "targets": 65,
+   "cycle_yr": 4.37,
+   "fleet": 24.0,
+   "propellant_t_per_yr": 524,
+   "import_ratio": 0.528,
+   "import_ratio_with_replacements": 0.528,
+   "P(import_ratio<=0.5)": 0.39,
+   "launch_kt": 5.73,
+   "delivered_kt": 3.01,
+   "cost_0B_B": 77.2,
+   "replacement_cost_B": 0.0,
+   "per_kg": 25779,
+   "ratio_to_earth": {
+    "P10": 4.27,
+    "P50": 6.11,
+    "P90": 8.88
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 65,
+   "cycle_yr": 4.37,
+   "fleet": 24.0,
+   "propellant_t_per_yr": 524,
+   "import_ratio": 0.528,
+   "import_ratio_with_replacements": 0.528,
+   "P(import_ratio<=0.5)": 0.39,
+   "launch_kt": 8.02,
+   "delivered_kt": 7.34,
+   "cost_0B_B": 92.3,
+   "replacement_cost_B": 0.1,
+   "per_kg": 12605,
+   "ratio_to_earth": {
+    "P10": 2.28,
+    "P50": 2.98,
+    "P90": 4.0
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 65,
+   "cycle_yr": 4.37,
+   "fleet": 24.0,
+   "propellant_t_per_yr": 524,
+   "import_ratio": 0.528,
+   "import_ratio_with_replacements": 0.57,
+   "P(import_ratio<=0.5)": 0.39,
+   "launch_kt": 15.03,
+   "delivered_kt": 18.87,
+   "cost_0B_B": 154.5,
+   "replacement_cost_B": 10.3,
+   "per_kg": 8215,
+   "ratio_to_earth": {
+    "P10": 1.52,
+    "P50": 1.94,
+    "P90": 2.54
+   },
+   "P(beats Earth)": 0.0
+  }
+ },
+ "node burn 150/300 m/s, legs <=6.5 km/s, cycle <=4.0 yr": {
+  "6.25 yr": {
+   "targets": 28,
+   "cycle_yr": 3.53,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 545,
+   "import_ratio": 0.548,
+   "import_ratio_with_replacements": 0.548,
+   "P(import_ratio<=0.5)": 0.32,
+   "launch_kt": 5.66,
+   "delivered_kt": 3.46,
+   "cost_0B_B": 73.3,
+   "replacement_cost_B": 0.0,
+   "per_kg": 21236,
+   "ratio_to_earth": {
+    "P10": 3.71,
+    "P50": 5.04,
+    "P90": 7.03
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 28,
+   "cycle_yr": 3.53,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 545,
+   "import_ratio": 0.548,
+   "import_ratio_with_replacements": 0.548,
+   "P(import_ratio<=0.5)": 0.32,
+   "launch_kt": 8.03,
+   "delivered_kt": 7.78,
+   "cost_0B_B": 88.8,
+   "replacement_cost_B": 0.1,
+   "per_kg": 11431,
+   "ratio_to_earth": {
+    "P10": 2.1,
+    "P50": 2.71,
+    "P90": 3.58
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 28,
+   "cycle_yr": 3.53,
+   "fleet": 20.0,
+   "propellant_t_per_yr": 545,
+   "import_ratio": 0.548,
+   "import_ratio_with_replacements": 0.584,
+   "P(import_ratio<=0.5)": 0.32,
+   "launch_kt": 15.15,
+   "delivered_kt": 19.31,
+   "cost_0B_B": 149.4,
+   "replacement_cost_B": 9.1,
+   "per_kg": 7759,
+   "ratio_to_earth": {
+    "P10": 1.45,
+    "P50": 1.84,
+    "P90": 2.39
+   },
+   "P(beats Earth)": 0.0
+  }
+ },
+ "node burn 150/300 m/s, legs <=6.5 km/s, cycle <=5.0 yr": {
+  "6.25 yr": {
+   "targets": 89,
+   "cycle_yr": 4.34,
+   "fleet": 24.0,
+   "propellant_t_per_yr": 588,
+   "import_ratio": 0.587,
+   "import_ratio_with_replacements": 0.587,
+   "P(import_ratio<=0.5)": 0.2,
+   "launch_kt": 6.14,
+   "delivered_kt": 3.05,
+   "cost_0B_B": 79.3,
+   "replacement_cost_B": 0.0,
+   "per_kg": 26204,
+   "ratio_to_earth": {
+    "P10": 4.32,
+    "P50": 6.21,
+    "P90": 8.96
+   },
+   "P(beats Earth)": 0.0
+  },
+  "10.0 yr": {
+   "targets": 89,
+   "cycle_yr": 4.34,
+   "fleet": 24.0,
+   "propellant_t_per_yr": 588,
+   "import_ratio": 0.587,
+   "import_ratio_with_replacements": 0.588,
+   "P(import_ratio<=0.5)": 0.2,
+   "launch_kt": 8.68,
+   "delivered_kt": 7.37,
+   "cost_0B_B": 95.7,
+   "replacement_cost_B": 0.1,
+   "per_kg": 13023,
+   "ratio_to_earth": {
+    "P10": 2.35,
+    "P50": 3.09,
+    "P90": 4.13
+   },
+   "P(beats Earth)": 0.0
+  },
+  "20.0 yr": {
+   "targets": 89,
+   "cycle_yr": 4.34,
+   "fleet": 24.0,
+   "propellant_t_per_yr": 588,
+   "import_ratio": 0.587,
+   "import_ratio_with_replacements": 0.629,
+   "P(import_ratio<=0.5)": 0.2,
+   "launch_kt": 16.38,
+   "delivered_kt": 18.91,
+   "cost_0B_B": 161.5,
+   "replacement_cost_B": 10.2,
+   "per_kg": 8576,
+   "ratio_to_earth": {
+    "P10": 1.58,
+    "P50": 2.03,
+    "P90": 2.65
+   },
+   "P(beats Earth)": 0.0
+  }
+ }
+}

@@ -597,3 +597,11 @@ def swingby_fan_inclined(yc, tc, node0, n_delta: int = 8, n_roll: int = 16, inc=
     idx = np.repeat(np.arange(M), len(frac))
     vout = turn(vinf[idx], np.tile(frac, M) * dmax[idx], np.tile(roll, M))
     return after_swingby(yc[idx], vout, vm[idx]), idx
+
+
+def mirror(y):
+    """Mirror image of rotating-frame states in the plane through the Sun, the Earth and
+    the ecliptic pole, with time reversed: (x, −y, z, −vx, vy, −vz). The equations of
+    motion are unchanged by it, so a departure flown backwards is an arrival. A northern
+    halo orbit maps onto itself; the Moon stays prograde with its node at 180° − node."""
+    return np.asarray(y, float) * np.array([1.0, -1.0, 1.0, -1.0, 1.0, -1.0])

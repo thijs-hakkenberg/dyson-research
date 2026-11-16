@@ -32,3 +32,4 @@ The launcher payloads are an estimate from published figures, not a provider's c
 | `legs-flyby-3d-planar-orbits.csv`, `legs-flyby-3d-halo.csv` | Tug legs solved against the inclined-Moon reach tables (`run_trajectory_flyby_model.py --model=…`), same columns as `legs-flyby-model.csv`; latitude is signed |
 | `flyby-3d-planar-orbits.json`, `flyby-3d-halo.json` | Target counts and cycle times per model |
 | `flyby-3d-compare.json`, `targets-flyby-3d.csv` | The three flyby models side by side, with the scout constraint (`run_flyby_3d_compare.py`) |
+| `flyby-station-compare.json`, `targets-flyby-station.csv` | Target counts with the station at one place on one node orbit, for eight initial places on three orbits, against the pooled tables (`run_flyby_station_compare.py`). The legs behind it (`legs-flyby-station-*.csv`, 24 files) are not stored; each takes about four minutes to regenerate |

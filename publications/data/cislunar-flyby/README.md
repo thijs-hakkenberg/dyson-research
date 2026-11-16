@@ -27,4 +27,13 @@ Produced by `run_cislunar_flyby_3d.py`.
 - `summary-3d-inc0.json` — the check run with no inclination, which reproduces the planar
   model's single-swingby tables exactly.
 - `reach-launch-low.json` — the scout launch table for C3 ≤ −1.0 km²/s².
-- `escapes-3d*.npz` are not stored (88 MB); the run takes about 20 minutes.
+- `reach-3d-station-{halo-120,halo-300,planar-100}.json` — reach for one node orbit each, with
+  one more dimension in front: where the station is on that orbit at the moment of escape
+  (eighths of the period from the Sun-side crossing of the Sun–Earth line). From
+  `run_cislunar_flyby_3d.py --station` (32 places × 48 burn directions). An arrival reads
+  the place counted backwards. `summary-3d-station.json` is that run's summary.
+- `station-reach-convergence.json` — mean in-plane reach of those tables with all, half, a
+  quarter and an eighth of the escapes: they are not converged (3–4% per halving).
+- `arrival-check.json` — arrivals flown forwards from the mirror image of departures
+  (`run_flyby_arrival_check.py`): errors at the Moon and at the node orbit.
+- `escapes-3d*.npz` are not stored (88 MB and more); the runs take 20 to 30 minutes.
