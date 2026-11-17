@@ -320,10 +320,139 @@
    ]
   }
  },
+ "parking_two_burn_phasing": {
+  "targets_min": 6,
+  "targets_max": 11,
+  "note": "one station; tugs phase round the orbit with two-burn transfers (an upper bound on the phasing cost) paid from the leg cap",
+  "by_station": [
+   {
+    "station": 0,
+    "targets": 9,
+    "closing": [
+     "138911",
+     "2016 UP41",
+     "292220",
+     "341843",
+     "350751",
+     "401954",
+     "65679",
+     "756476",
+     "99942"
+    ],
+    "median_cycle_yr": 3.5
+   },
+   {
+    "station": 1,
+    "targets": 8,
+    "closing": [
+     "138911",
+     "2025 VD24",
+     "341843",
+     "350751",
+     "401954",
+     "471240",
+     "65679",
+     "99942"
+    ],
+    "median_cycle_yr": 3.5
+   },
+   {
+    "station": 2,
+    "targets": 6,
+    "closing": [
+     "138911",
+     "350751",
+     "401954",
+     "471240",
+     "65679",
+     "99942"
+    ],
+    "median_cycle_yr": 3.58
+   },
+   {
+    "station": 3,
+    "targets": 6,
+    "closing": [
+     "2025 VD24",
+     "350751",
+     "401954",
+     "471240",
+     "65679",
+     "99942"
+    ],
+    "median_cycle_yr": 3.45
+   },
+   {
+    "station": 4,
+    "targets": 8,
+    "closing": [
+     "2006 YF",
+     "2025 VD24",
+     "350523",
+     "350751",
+     "401954",
+     "471240",
+     "65679",
+     "99942"
+    ],
+    "median_cycle_yr": 3.73
+   },
+   {
+    "station": 5,
+    "targets": 9,
+    "closing": [
+     "138911",
+     "2006 YF",
+     "2025 VD24",
+     "350523",
+     "350751",
+     "401954",
+     "65679",
+     "756476",
+     "99942"
+    ],
+    "median_cycle_yr": 3.63
+   },
+   {
+    "station": 6,
+    "targets": 9,
+    "closing": [
+     "138911",
+     "2025 VD24",
+     "292220",
+     "350523",
+     "350751",
+     "401954",
+     "65679",
+     "756476",
+     "99942"
+    ],
+    "median_cycle_yr": 3.56
+   },
+   {
+    "station": 7,
+    "targets": 11,
+    "closing": [
+     "138911",
+     "2015 NA14",
+     "2016 UP41",
+     "2025 VD24",
+     "292220",
+     "350751",
+     "401954",
+     "65679",
+     "68278",
+     "756476",
+     "99942"
+    ],
+    "median_cycle_yr": 3.55
+   }
+  ]
+ },
  "legs": {
-  "distinct": 167,
-  "delivered_in_full_from_some_place": 55,
-  "delivered_at_all_from_some_place": 148,
+  "distinct": 235,
+  "delivered_in_full_from_some_place": 64,
+  "delivered_at_all_from_some_place": 201,
   "places_delivering_in_full_median_where_any": 1.0
  }
 }

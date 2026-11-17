@@ -30,3 +30,20 @@ def test_stay_and_cycle_caps_hold():
     assert s.best_cycle(short_stay, (0,)) is None
     too_long = [leg('out', 0, 1000.0, 990.0), leg('in', 0, 2000.0, 990.0 + 4.1 * 365.25)]
     assert s.best_cycle(too_long, (0,)) is None
+
+
+def test_parking_pays_for_phasing_in_dv_and_time(tmp_path):
+    import json
+    # 2 start places, offsets ±1..4, two transfer times: 100 m/s in 50 days or 50 m/s in 100 days
+    plane = [[100.0, 50.0]] * 8
+    path = tmp_path / 'ph.json'
+    json.dump({'starts': [0.0, 0.5], 'offsets_eighths': [1, 2, 3, 4, -1, -2, -3, -4], 'taus_days': [50, 100], 'cost_ms': [plane, plane]}, open(path, 'w'))
+    ph = s.Phasing(str(path), 180.0)
+    assert ph.cost_at(0.3, 0, 0) == 0.0 and ph.cost_at(0.3, 9, 1) == 0.05  # 9 eighths is one
+    rows = [leg('out', 1, 1000.0, 990.0, dv=4.96), leg('in', 0, 1500.0, 1700.0)]
+    assert s.best_cycle_parking(rows, 0, ph) is None  # even the cheaper transfer puts the leg over the cap
+    rows[0]['dv_eff'] = 4.92  # only the cheaper, slower transfer fits
+    assert abs(s.best_cycle_parking(rows, 0, ph) - (1700.0 - 890.0) / 365.25) < 1e-12
+    rows[0]['dv_eff'] = 4.85  # both fit: the faster one gives the shorter cycle
+    assert abs(s.best_cycle_parking(rows, 0, ph) - (1700.0 - 940.0) / 365.25) < 1e-12
+    assert abs(s.best_cycle_parking(rows, 1, ph) - (1700.0 - 990.0 + 50.0) / 365.25) < 1e-12  # station at 1: the return pays instead
