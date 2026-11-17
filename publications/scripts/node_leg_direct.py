@@ -20,6 +20,7 @@ escapes. An arrival is solved as its mirror image (cislunar_flyby.mirror).
 
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass
 
 import numpy as np
@@ -82,6 +83,19 @@ def _escape(t, s):
 
 _escape.terminal, _escape.direction = True, 1
 
+_deadline = [np.inf]  # wall-clock limit (time.monotonic) on the leg being solved; reachable() sets it
+
+
+def _clock(t, s):
+    return _deadline[0] - time.monotonic()
+
+
+_clock.terminal = True
+
+
+def out_of_time() -> bool:
+    return time.monotonic() > _deadline[0]
+
 
 @dataclass
 class Flown:
@@ -101,8 +115,8 @@ def fly(orbit: NodeOrbit, clocks: Clocks, x, dv_ms: float, tc_guess_days: float,
     T, az, share, up, frac, roll = x
     y0 = c.burn_states(orbit.at(float(clocks.place(T)))[None, :], np.array([az]), np.array([up]), dv_ms, share)[0]
     t1 = (tc_guess_days + 6.0) * c.DAY
-    a = solve_ivp(c._f1, (0, t1), y0, method='DOP853', rtol=1e-10, atol=1e-12, events=_moon_cross)
-    if not len(a.t_events[0]):
+    a = solve_ivp(c._f1, (0, t1), y0, method='DOP853', rtol=1e-10, atol=1e-12, events=(_moon_cross, _clock))
+    if not len(a.t_events[0]) or len(a.t_events[1]):
         return Flown(False)
     k = int(np.argmin(np.abs(a.t_events[0] - tc_guess_days * c.DAY)))
     tc, yc = a.t_events[0][k], a.y_events[0][k][None, :]
@@ -117,8 +131,8 @@ def fly(orbit: NodeOrbit, clocks: Clocks, x, dv_ms: float, tc_guess_days: float,
     speed = np.linalg.norm(vinf, axis=1)
     out = c.turn(vinf, np.array([frac]) * c.max_turn(speed), np.array([roll]))
     y1 = c.after_swingby(yc, out, vm)[0]
-    b = solve_ivp(c._f1, (tc, t_max_days * c.DAY), y1, method='DOP853', rtol=1e-10, atol=1e-12, events=_escape)
-    if not len(b.t_events[0]):
+    b = solve_ivp(c._f1, (tc, t_max_days * c.DAY), y1, method='DOP853', rtol=1e-10, atol=1e-12, events=(_escape, _clock))
+    if not len(b.t_events[0]) or len(b.t_events[1]):
         return Flown(False, plane, moon_km)
     te, ye = b.t_events[0][0], b.y_events[0][0][None, :]
     v, lon, lat, c3 = c.escape_state(ye)
@@ -195,7 +209,7 @@ def climb(orbit, clocks, seed, seed_speed, u, speed, dv_ms, escape_T, window_day
             break
     if best is None:
         return Solution(False, evals=evals)
-    while best.speed < speed - 1e-9 and step >= 0.03:
+    while best.speed < speed - 1e-9 and step >= 0.03 and not out_of_time():
         v = min(best.speed + step, speed)
         s = solve(orbit, clocks, (best.x, best.flown.encounter_days), v * u, *args)
         evals += s.evals
@@ -248,16 +262,26 @@ class Cloud:
         return [((Te[i] - self.days[i], self.burn_az[i], self.burn_share[i], self.burn_up[i], self.turn_frac[i], self.roll[i]), self.first_days[i], self.vinf[i]) for i in best]
 
 
-def reachable(orbit: NodeOrbit, cloud: Cloud, clocks: Clocks, lon_deg, lat_deg, speed, dv_ms, escape_T, window_days, budget_days, n_seeds: int = 4):
+def reachable(orbit: NodeOrbit, cloud: Cloud, clocks: Clocks, lon_deg, lat_deg, speed, dv_ms, escape_T, window_days, budget_days, n_seeds: int = 4,
+              seconds: float = np.inf):
     """Most excess speed (km/s, up to `speed`) that can be delivered exactly in the wanted
-    direction, over the seeds tried. Returns (speed or 0, best Solution or None, seeds tried)."""
+    direction, over the seeds tried, within `seconds` of wall clock (a few solves stall in
+    slow integrations; the best found by then is kept). Returns (speed or 0, best Solution
+    or None, seeds tried, whether the time ran out)."""
     u = direction(lon_deg, lat_deg)
     best, runs = None, 0
-    for x, tc, v in cloud.seeds(clocks, u, speed, escape_T, window_days, budget_days, n_seeds):
-        runs += 1
-        s = climb(orbit, clocks, (x, tc), v, u, speed, dv_ms, escape_T, window_days, budget_days)
-        if s.ok and (best is None or s.speed > best.speed):
-            best = s
-        if best is not None and best.speed >= speed - 0.005:
-            break
-    return (best.speed if best else 0.0), best, runs
+    _deadline[0] = time.monotonic() + seconds
+    try:
+        for x, tc, v in cloud.seeds(clocks, u, speed, escape_T, window_days, budget_days, n_seeds):
+            if out_of_time():
+                break
+            runs += 1
+            s = climb(orbit, clocks, (x, tc), v, u, speed, dv_ms, escape_T, window_days, budget_days)
+            if s.ok and (best is None or s.speed > best.speed):
+                best = s
+            if best is not None and best.speed >= speed - 0.005:
+                break
+        timed_out = out_of_time()
+    finally:
+        _deadline[0] = np.inf
+    return (best.speed if best else 0.0), best, runs, timed_out

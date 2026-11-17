@@ -1,0 +1,329 @@
+{
+ "orbit": "halo-120",
+ "leg_cap_kms": 5.0,
+ "cycle_cap_yr": 4.0,
+ "min_stay_days": 60.0,
+ "places": 8,
+ "targets_tried": 23,
+ "legs_per_place": {
+  "0": 235,
+  "1": 235,
+  "2": 235,
+  "3": 235,
+  "4": 235,
+  "5": 235,
+  "6": 235,
+  "7": 235
+ },
+ "legs_timed_out": 0,
+ "stations": {
+  "1": {
+   "targets_min": 2,
+   "targets_max": 6,
+   "targets_same_station_min": 2,
+   "targets_same_station_max": 6,
+   "sets": [
+    {
+     "places": [
+      0
+     ],
+     "targets": 6,
+     "targets_same_station": 6,
+     "median_cycle_yr": 3.49,
+     "closing": [
+      "2016 UP41",
+      "341843",
+      "350751",
+      "401954",
+      "65679",
+      "99942"
+     ]
+    },
+    {
+     "places": [
+      1
+     ],
+     "targets": 3,
+     "targets_same_station": 3,
+     "median_cycle_yr": 3.24,
+     "closing": [
+      "138911",
+      "2025 VD24",
+      "350751"
+     ]
+    },
+    {
+     "places": [
+      2
+     ],
+     "targets": 2,
+     "targets_same_station": 2,
+     "median_cycle_yr": 3.59,
+     "closing": [
+      "65679",
+      "99942"
+     ]
+    },
+    {
+     "places": [
+      3
+     ],
+     "targets": 4,
+     "targets_same_station": 4,
+     "median_cycle_yr": 3.39,
+     "closing": [
+      "350751",
+      "471240",
+      "65679",
+      "99942"
+     ]
+    },
+    {
+     "places": [
+      4
+     ],
+     "targets": 3,
+     "targets_same_station": 3,
+     "median_cycle_yr": 3.14,
+     "closing": [
+      "2025 VD24",
+      "350751",
+      "99942"
+     ]
+    },
+    {
+     "places": [
+      5
+     ],
+     "targets": 6,
+     "targets_same_station": 6,
+     "median_cycle_yr": 3.37,
+     "closing": [
+      "138911",
+      "2025 VD24",
+      "350751",
+      "401954",
+      "756476",
+      "99942"
+     ]
+    },
+    {
+     "places": [
+      6
+     ],
+     "targets": 3,
+     "targets_same_station": 3,
+     "median_cycle_yr": 3.44,
+     "closing": [
+      "138911",
+      "350751",
+      "99942"
+     ]
+    },
+    {
+     "places": [
+      7
+     ],
+     "targets": 6,
+     "targets_same_station": 6,
+     "median_cycle_yr": 3.53,
+     "closing": [
+      "138911",
+      "2016 UP41",
+      "292220",
+      "350751",
+      "401954",
+      "99942"
+     ]
+    }
+   ]
+  },
+  "2": {
+   "targets_min": 7,
+   "targets_max": 10,
+   "targets_same_station_min": 4,
+   "targets_same_station_max": 8,
+   "sets": [
+    {
+     "places": [
+      0,
+      4
+     ],
+     "targets": 7,
+     "targets_same_station": 7,
+     "median_cycle_yr": 3.46,
+     "closing": [
+      "2016 UP41",
+      "2025 VD24",
+      "341843",
+      "350751",
+      "401954",
+      "65679",
+      "99942"
+     ]
+    },
+    {
+     "places": [
+      1,
+      5
+     ],
+     "targets": 8,
+     "targets_same_station": 6,
+     "median_cycle_yr": 3.3,
+     "closing": [
+      "138911",
+      "2025 VD24",
+      "341843",
+      "350751",
+      "401954",
+      "65679",
+      "756476",
+      "99942"
+     ]
+    },
+    {
+     "places": [
+      2,
+      6
+     ],
+     "targets": 7,
+     "targets_same_station": 4,
+     "median_cycle_yr": 3.54,
+     "closing": [
+      "138911",
+      "350523",
+      "350751",
+      "471240",
+      "65679",
+      "756476",
+      "99942"
+     ]
+    },
+    {
+     "places": [
+      3,
+      7
+     ],
+     "targets": 10,
+     "targets_same_station": 8,
+     "median_cycle_yr": 3.6,
+     "closing": [
+      "138911",
+      "2015 NA14",
+      "2016 UP41",
+      "292220",
+      "350751",
+      "401954",
+      "471240",
+      "65679",
+      "756476",
+      "99942"
+     ]
+    }
+   ]
+  },
+  "4": {
+   "targets_min": 11,
+   "targets_max": 12,
+   "targets_same_station_min": 8,
+   "targets_same_station_max": 10,
+   "sets": [
+    {
+     "places": [
+      0,
+      2,
+      4,
+      6
+     ],
+     "targets": 11,
+     "targets_same_station": 8,
+     "median_cycle_yr": 3.48,
+     "closing": [
+      "138911",
+      "2016 UP41",
+      "2025 VD24",
+      "341843",
+      "350523",
+      "350751",
+      "401954",
+      "471240",
+      "65679",
+      "756476",
+      "99942"
+     ]
+    },
+    {
+     "places": [
+      1,
+      3,
+      5,
+      7
+     ],
+     "targets": 12,
+     "targets_same_station": 10,
+     "median_cycle_yr": 3.43,
+     "closing": [
+      "138911",
+      "2015 NA14",
+      "2016 UP41",
+      "2025 VD24",
+      "292220",
+      "341843",
+      "350751",
+      "401954",
+      "471240",
+      "65679",
+      "756476",
+      "99942"
+     ]
+    }
+   ]
+  },
+  "8": {
+   "targets_min": 15,
+   "targets_max": 15,
+   "targets_same_station_min": 11,
+   "targets_same_station_max": 11,
+   "sets": [
+    {
+     "places": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "targets": 15,
+     "targets_same_station": 11,
+     "median_cycle_yr": 3.54,
+     "closing": [
+      "138911",
+      "2006 YF",
+      "2015 NA14",
+      "2016 UP41",
+      "2025 VD24",
+      "292220",
+      "341843",
+      "350523",
+      "350751",
+      "401954",
+      "471240",
+      "65679",
+      "68278",
+      "756476",
+      "99942"
+     ]
+    }
+   ]
+  }
+ },
+ "legs": {
+  "distinct": 167,
+  "delivered_in_full_from_some_place": 55,
+  "delivered_at_all_from_some_place": 148,
+  "places_delivering_in_full_median_where_any": 1.0
+ }
+}
