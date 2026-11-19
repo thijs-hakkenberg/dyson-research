@@ -1,0 +1,116 @@
+{
+ "model": "arrivals flown forwards from the mirror image of departures; see run_flyby_arrival_check.py",
+ "cases": [
+  {
+   "orbit": {
+    "kind": "halo",
+    "size_km": 300000.0,
+    "period_days": 177.72
+   },
+   "burn_ms": 300.0,
+   "node_deg_at_burn": 59.99999999999999,
+   "departures_with_escape": 887,
+   "arrivals_reaching_the_moon_as_mirrored": 887,
+   "arrivals_lost_to_integration_error": 0,
+   "at_the_moon": {
+    "max_position_error_km": 0.09861876820374375,
+    "max_velocity_error_ms": 0.00013798090381707316,
+    "max_distance_from_moon_plane_km": 2.304615722397752,
+    "max_distance_from_moon_orbit_radius_km": 0.05086845139115755,
+    "max_excess_speed_change_ms": 0.00019162569724626797,
+    "max_turn_over_allowed": 1.0000000219487295
+   },
+   "at_the_node": {
+    "max_position_error_km": 708.0043599090473,
+    "max_insertion_burn_ms": 298.5689174419547,
+    "budget_ms": 300.0,
+    "max_distance_of_image_from_orbit_km": 0.00019644296332758642,
+    "max_velocity_difference_from_orbit_ms": 3.919105252292075e-08
+   },
+   "lookup": {
+    "max_longitude_error_deg": 2.842170943040401e-14,
+    "max_latitude_error_deg": 1.4210854715202004e-14,
+    "max_node_angle_error_deg": 5.684341886080802e-14,
+    "max_station_place_error": 5.551115123125783e-17
+   },
+   "excess_speed_kms": {
+    "min": 0.04483251044763297,
+    "max": 1.6998956520866215
+   }
+  },
+  {
+   "orbit": {
+    "kind": "halo",
+    "size_km": 120000.0,
+    "period_days": 177.87
+   },
+   "burn_ms": 150.0,
+   "node_deg_at_burn": 200.0,
+   "departures_with_escape": 742,
+   "arrivals_reaching_the_moon_as_mirrored": 742,
+   "arrivals_lost_to_integration_error": 0,
+   "at_the_moon": {
+    "max_position_error_km": 0.09439444633799614,
+    "max_velocity_error_ms": 0.00013656980310480335,
+    "max_distance_from_moon_plane_km": 0.8682707509615626,
+    "max_distance_from_moon_orbit_radius_km": 0.04410562722191838,
+    "max_excess_speed_change_ms": 0.00018398796825511266,
+    "max_turn_over_allowed": 1.0000000205293464
+   },
+   "at_the_node": {
+    "max_position_error_km": 830.948701356999,
+    "max_insertion_burn_ms": 149.9000065585439,
+    "budget_ms": 150.0,
+    "max_distance_of_image_from_orbit_km": 3.0781590396485134e-05,
+    "max_velocity_difference_from_orbit_ms": 4.649170840584194e-09
+   },
+   "lookup": {
+    "max_longitude_error_deg": 5.684341886080802e-14,
+    "max_latitude_error_deg": 1.4210854715202004e-14,
+    "max_node_angle_error_deg": 2.842170943040401e-14,
+    "max_station_place_error": 5.551115123125783e-17
+   },
+   "excess_speed_kms": {
+    "min": 0.04272504127879046,
+    "max": 1.68258965483675
+   }
+  },
+  {
+   "orbit": {
+    "kind": "planar",
+    "size_km": 100000.0,
+    "period_days": 175.85
+   },
+   "burn_ms": 150.0,
+   "node_deg_at_burn": 310.0,
+   "departures_with_escape": 854,
+   "arrivals_reaching_the_moon_as_mirrored": 854,
+   "arrivals_lost_to_integration_error": 0,
+   "at_the_moon": {
+    "max_position_error_km": 0.07430633407261705,
+    "max_velocity_error_ms": 0.0001293491379942417,
+    "max_distance_from_moon_plane_km": 0.8716867308324812,
+    "max_distance_from_moon_orbit_radius_km": 0.03619878405046143,
+    "max_excess_speed_change_ms": 0.00011709981987551089,
+    "max_turn_over_allowed": 1.0000000290676816
+   },
+   "at_the_node": {
+    "max_position_error_km": 527.5885195951417,
+    "max_insertion_burn_ms": 146.98288121750855,
+    "budget_ms": 150.0,
+    "max_distance_of_image_from_orbit_km": 0.00012457159882563794,
+    "max_velocity_difference_from_orbit_ms": 3.3776514714228275e-08
+   },
+   "lookup": {
+    "max_longitude_error_deg": 5.684341886080802e-14,
+    "max_latitude_error_deg": 7.105427357601002e-15,
+    "max_node_angle_error_deg": 5.684341886080802e-14,
+    "max_station_place_error": 5.551115123125783e-17
+   },
+   "excess_speed_kms": {
+    "min": 0.02133740001075482,
+    "max": 1.5582658368847029
+   }
+  }
+ ]
+}

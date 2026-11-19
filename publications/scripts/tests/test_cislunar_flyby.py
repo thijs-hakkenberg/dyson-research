@@ -123,3 +123,165 @@ def test_launch_to_moon_reach_matches_the_published_single_flyby_range(tmp_path,
     assert 1.2 < e['vinf'].max() < 1.8  # Casalino and Filizola 2017: 1.2–1.4 km/s verified
     assert np.median(tab[:, 0]) > np.median(tab[:, 2])  # less reach out of the ecliptic
     assert e['days'].max() < 60
+
+
+# ----------------------------------------------------------------------------- halo orbits, inclined Moon
+
+@pytest.fixture(scope='module')
+def halo():
+    return c.halo_orbit(120e3)
+
+
+def test_halo_orbit_closes_and_is_out_of_plane(halo):
+    from scipy.integrate import solve_ivp
+
+    s, period = halo
+    sol = solve_ivp(c._f1, (0, period), s, method='DOP853', rtol=1e-12, atol=1e-13)
+    assert np.abs(sol.y[:, -1] - s).max() < 1e-9
+    assert period * c.TU_DAYS == pytest.approx(177.9, abs=0.5)  # the SOHO-class halo
+    assert sol.y[2].max() * c.AU_KM == pytest.approx(120e3, rel=1e-6)
+    assert sol.y[2].min() < 0 < sol.y[2].max()
+    assert 600e3 < np.abs(sol.y[1]).max() * c.AU_KM < 720e3
+
+
+def test_moon_geometry():
+    node, u = np.radians([0.0, 40.0, 200.0]), np.radians([10.0, 95.0, 300.0])
+    p = c.moon_position(node, u)
+    n = c.moon_normal(node)
+    assert np.allclose(np.linalg.norm(p, axis=1), c.A_MOON)
+    assert np.allclose(np.sum(p * n, axis=1), 0.0, atol=1e-18)
+    assert np.allclose(np.linalg.norm(n, axis=1), 1.0)
+    # highest above the ecliptic a quarter of an orbit after the ascending node
+    assert c.moon_position(0.3, np.pi / 2)[2] == pytest.approx(c.A_MOON * np.sin(c.INC_MOON))
+    # no inclination: the planar Moon at longitude node + u
+    flat = c.moon_position(node, u, inc=0.0)
+    assert np.allclose(flat[:, 2], 0.0)
+    assert np.allclose(np.arctan2(flat[:, 1], flat[:, 0]), c._wrap(node + u))
+
+
+def test_plane_miss_follows_the_node_line():
+    # a point on the Moon's orbit stays in the plane only at the right time
+    node0, t = 1.1, 0.4
+    p = c.moon_position(node0 - t, 2.0)
+    y = np.concatenate([c.EARTH + p, np.zeros(3)])[None, :]
+    assert c.plane_miss(y, np.array([t]), node0)[0] == pytest.approx(0.0, abs=1e-15)
+    assert abs(c.plane_miss(y, np.array([t + 0.5]), node0)[0]) > 1e-5
+
+
+def test_inclined_encounters_lie_in_the_moons_plane(halo):
+    s, period = halo
+    base = np.repeat(c.orbit_points(s, period, 4), 6, axis=0)
+    az = np.tile(np.arange(6) * np.pi / 3, 4)
+    ups = np.linspace(-1, 1, 7) * np.sqrt(1 - 0.9**2)
+    node0 = 0.7
+    ce, el, yc, tc = c.encounters_inclined(base, az, ups, 300.0, node0, 150 * c.DAY)
+    assert len(ce) > 5
+    assert np.abs(c.plane_miss(yc, tc, node0)).max() * c.AU_KM < 300.0
+    assert np.allclose(np.linalg.norm(yc[:, :3] - c.EARTH, axis=1), c.A_MOON, rtol=1e-6)
+    assert np.all(np.abs(el) <= np.sqrt(1 - 0.9**2) + 1e-12)  # the whole burn stays within 300 m/s
+    # re-flying the solved burn reaches the same place
+    k = 0
+    f = c.integrate(c.burn_states(base[ce[k]][None], az[ce[k]][None], el[k][None], 300.0), 0.0, tc[k] + c.DAY, crossings=12)
+    j = np.nanargmin(np.abs(f.t_cross[0] - tc[k]))
+    assert np.allclose(f.y_cross[0, j], yc[k], atol=1e-7)
+
+
+def test_inclined_swingby_keeps_the_excess_speed(halo):
+    s, period = halo
+    base = np.repeat(c.orbit_points(s, period, 4), 6, axis=0)
+    az = np.tile(np.arange(6) * np.pi / 3, 4)
+    node0 = 0.7
+    ce, el, yc, tc = c.encounters_inclined(base, az, np.linspace(-1, 1, 7) * np.sqrt(1 - 0.9**2), 300.0, node0, 150 * c.DAY)
+    vinf, vm, _ = c.encounter_vinf_inclined(yc, tc, node0)
+    assert np.allclose(np.linalg.norm(vm, axis=1), c.V_MOON)
+    rho = yc[:, :3] - c.EARTH
+    assert np.allclose(np.sum(vm * rho, axis=1), 0.0, atol=1e-12)
+    assert np.abs(vm[:, 2]).max() > 0.02 * c.V_MOON  # the Moon moves out of the ecliptic
+    fan, src = c.swingby_fan_inclined(yc, tc, node0, 3, 4)
+    v2, _, _ = c.encounter_vinf_inclined(fan, tc[src], node0)
+    assert np.allclose(np.linalg.norm(v2, axis=1), np.linalg.norm(vinf[src], axis=1), rtol=1e-9)
+    assert np.allclose(fan[:, :3], yc[src, :3])
+
+
+def test_reach_table_with_node_angle(tmp_path):
+    from trajectory_opt import moon_node_angle
+
+    lat = [-90.0, -30.0, 0.0, 30.0, 90.0]
+    tab = np.zeros((4, 12, 4))
+    for k in range(4):
+        tab[k] = 1.0 + 0.1 * k
+    tab[1, :, 3] = 1.9  # node bin 90-180, northern high latitudes
+    p = tmp_path / 'reach.json'
+    json.dump({'lon_edges': list(np.arange(-180.0, 181.0, 30.0)), 'lat_edges': lat, 'node_edges': [0.0, 90.0, 180.0, 270.0, 360.0],
+               'budgets_days': [90], 'vinf_kms': {'150': {'90': tab.tolist()}}}, open(p, 'w'))
+    with pytest.raises(ValueError):
+        FlybyReach(str(p), 150, 90)
+    r = FlybyReach(str(p), 150, 90, node_deg=135.0)
+    assert r.signed
+    assert r.cap_at(0.0, 60.0) == pytest.approx(1.9)
+    assert r.cap_at(0.0, -60.0) == pytest.approx(1.1)
+    # between bin centres, and round the end of the circle
+    assert FlybyReach(str(p), 150, 90, node_deg=90.0).cap_at(0.0, -60.0) == pytest.approx(1.05)
+    assert FlybyReach(str(p), 150, 90, node_deg=0.0).cap_at(0.0, -60.0) == pytest.approx(1.15)
+    # an arrival reads the mirror image: node 180° − node, and the velocity's z reversed
+    arr = FlybyReach(str(p), 150, 90, node_deg=45.0, inbound=True)
+    x = np.array([1.0, 0.0, 0.0])
+    w_up = np.array([0.3, 0.2, 0.9])
+    lon, la = arr.angles(w_up, x, True)
+    assert la < 0 and lon == pytest.approx(np.degrees(np.arctan2(0.2, -0.3)))
+    assert arr.cap(-w_up * np.array([1, -1, 1]), x, True) == pytest.approx(1.9)
+    # node longitude 125.04° at J2000, seen from an Earth at longitude 100°
+    e = np.array([np.cos(np.radians(100.0)), np.sin(np.radians(100.0)), 0.0])
+    assert moon_node_angle(2451545.0, e) == pytest.approx(25.0445)
+    assert moon_node_angle(2451545.0 + 365.25, e) == pytest.approx(25.0445 - 19.341, abs=0.01)
+
+
+def test_reach_table_with_station_place(tmp_path):
+    from trajectory_opt import station_phase
+
+    tab = np.ones((4, 2, 12, 2))
+    tab[1] = 1.6  # station between a quarter and half way round
+    p = tmp_path / 'reach.json'
+    json.dump({'lon_edges': list(np.arange(-180.0, 181.0, 30.0)), 'lat_edges': [-90.0, 0.0, 90.0], 'node_edges': [0.0, 180.0, 360.0],
+               'phase_edges': [0.0, 0.25, 0.5, 0.75, 1.0], 'budgets_days': [90], 'vinf_kms': {'150': {'90': tab.tolist()}}}, open(p, 'w'))
+    with pytest.raises(ValueError):
+        FlybyReach(str(p), 150, 90, node_deg=90.0)
+    cap = lambda ph, inbound=False: FlybyReach(str(p), 150, 90, node_deg=90.0, phase=ph, inbound=inbound).cap_at(0.0, 45.0)
+    assert cap(0.375) == pytest.approx(1.6)
+    assert cap(0.875) == pytest.approx(1.0)
+    assert cap(0.25) == pytest.approx(1.3)  # half way between two bin centres
+    # an arrival reads the mirror image: the station's place counted backwards
+    assert cap(0.625, inbound=True) == pytest.approx(1.6)
+    assert cap(0.375, inbound=True) == pytest.approx(1.0)
+    assert station_phase(2451545.0 + 1.5 * 177.87, 177.87, 0.125) == pytest.approx(0.625)
+
+
+def test_station_reach_table_separates_station_places():
+    import run_cislunar_flyby_3d as r
+
+    n = 40
+    e = {'days': np.full(n, 50.0), 'node': np.full(n, 10.0), 'lon': np.full(n, 5.0), 'lat': np.full(n, 5.0),
+         'moon': np.tile(np.arange(4) * np.pi / 2, n // 4), 'station': np.repeat([0.05, 0.55], n // 2), 'vinf': np.repeat([1.2, 0.7], n // 2)}
+    tab = r.reach_table_station(e, 60.0)
+    assert tab.shape == (8, 6, 12, 10)
+    assert tab[0, 0, 6, 5] == pytest.approx(1.2) and tab[4, 0, 6, 5] == pytest.approx(0.7)
+    assert tab.sum() == pytest.approx(1.9)
+    assert r.reach_table_3d(e, 60.0)[0, 6, 5] == pytest.approx(1.2)  # pooled over the station's place
+    assert r.reach_table_station(e, 45.0).sum() == 0.0
+
+
+def test_an_arrival_is_the_mirror_image_of_a_departure(halo):
+    """Fly the mirror image of a departure forwards: it must reach the mirrored states."""
+    state, period = halo
+    base = c.orbit_points(state, period, 4)[1:2]
+    y0 = c.burn_states(base, np.array([0.7]), np.array([0.1]), 150.0, 0.9)
+    t1 = 40 * c.DAY
+    f = c.integrate(y0, 0.0, t1, stop_at_escape=False)
+    back = c.integrate(c.mirror(f.y), -t1, 0.0, stop_at_escape=False)
+    assert np.linalg.norm(back.y[0, :3] - c.mirror(y0)[0, :3]) * c.AU_KM < 1.0
+    # the image of a point on the northern halo orbit is on the same orbit, the same time before the crossing
+    pts = c.orbit_points(state, period, 4)
+    assert np.allclose(c.mirror(pts[1]), pts[3], atol=1e-8)
+    # the Moon's orbit normal: node → 180° − node
+    n = c.moon_normal(np.radians(40.0))
+    assert np.allclose(n * np.array([1, -1, 1]), c.moon_normal(np.radians(140.0)))

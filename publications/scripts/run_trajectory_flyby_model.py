@@ -17,6 +17,7 @@ from __future__ import annotations
 import csv
 import json
 import os
+import sys
 from multiprocessing import Pool
 
 import numpy as np
@@ -24,9 +25,17 @@ import numpy as np
 from nea_accessibility import TUG_IN, TUG_OUT, elements, load_catalogue, prefilter
 from run_nea_accessibility import catalogue_path
 from run_trajectory_study import DUTY, MIN_STAY, OUT, TOFS, YEAR, grids, pick_seeds
-from trajectory_opt import FlybyReach, impulsive_tables, low_thrust_leg, seed_velocities
+from trajectory_opt import FlybyReach, impulsive_tables, low_thrust_leg, moon_node_angle, seed_velocities, station_phase
 
-REACH = os.path.join(OUT, '..', 'cislunar-flyby', 'reach.json')
+# --model=planar (first three-body model) | planar-orbits | halo (inclined Moon; run_cislunar_flyby_3d.py)
+MODEL = next((a.split('=')[1] for a in sys.argv if a.startswith('--model=')), 'planar')
+# --model=station-<orbit> --phase0=<k>: one node orbit, with the station at k/8 of its period at J2000;
+#   legs can only leave from, or return to, the place the station is at on the day.
+REACH = os.path.join(OUT, '..', 'cislunar-flyby', 'reach.json' if MODEL == 'planar' else f'reach-3d-{MODEL}.json')
+STATION = MODEL.startswith('station-')
+PHASE0 = next((int(a.split('=')[1]) for a in sys.argv if a.startswith('--phase0=')), 0)
+SUFFIX = 'flyby-model' if MODEL == 'planar' else f'flyby-{MODEL}-p{PHASE0}' if STATION else f'flyby-3d-{MODEL}'
+PERIOD = json.load(open(REACH))['orbit']['period_days'] if STATION else None
 MODES = ((150, 60), (150, 90), (150, 150), (300, 60), (300, 105))  # (node burn m/s, days from burn to escape)
 MOON_WAIT_DAYS = 14.8  # mean wait for the lunar phase a solution needs
 LEG_CAPS = (5.0, 5.75, 6.5)
@@ -35,10 +44,15 @@ SEED_CREDITS = (1.0, 1.5)
 _REACH = {}
 
 
-def reach(mode):
-    if mode not in _REACH:
-        _REACH[mode] = FlybyReach(REACH, *mode)
-    return _REACH[mode]
+def reach(mode, t_jd=None, r_earth=None, inbound=False):
+    """The reach table for a node burn and time budget. The three-dimensional tables depend
+    on where the Moon's node line points on the day the leg leaves or reaches Earth."""
+    if MODEL == 'planar':
+        if mode not in _REACH:
+            _REACH[mode] = FlybyReach(REACH, *mode)
+        return _REACH[mode]
+    phase = station_phase(t_jd, PERIOD, PHASE0 / 8.0) if STATION else None
+    return FlybyReach(REACH, *mode, node_deg=moon_node_angle(t_jd, r_earth), inbound=inbound, phase=phase)
 
 
 def target_legs(args):
@@ -58,7 +72,8 @@ def target_legs(args):
             if not np.all(np.isfinite(v1)):
                 continue
             for mode in MODES:
-                rc = reach(mode)
+                t_earth = grid[d] if outbound else grid[d] + TOFS[t]
+                rc = reach(mode, t_earth, r1 if outbound else r2, not outbound)
                 res = low_thrust_leg(r1, vs1, r2, vs2, TOFS[t], veh.accel, DUTY, seed=(v1, v2),
                                      free_end='start' if outbound else 'end', reach=rc)
                 if not res.ok:
@@ -92,6 +107,9 @@ def best_cycle(legs, cap, modes=None):
 
 def main():
     names = sorted({r['target'] for r in csv.DictReader(open(os.path.join(OUT, 'legs.csv')))})
+    if STATION:  # only targets that close within the longest cycle with the station's place free
+        col = 'cycle_halo_leg6.5' if 'halo' in MODEL else 'cycle_planar-orbits_leg6.5'
+        names = sorted(r['pdes'] for r in csv.DictReader(open(os.path.join(OUT, 'targets-flyby-3d.csv'))) if r[col] and float(r[col]) <= max(CYCLE_CAPS))
     cand = prefilter(load_catalogue(catalogue_path()), h_max=23.0)
     el = elements(cand)
     index = {r['pdes']: k for k, r in enumerate(cand)}
@@ -103,7 +121,7 @@ def main():
             if k % 10 == 9:
                 print(f'{k + 1}/{len(jobs)} targets', flush=True)
     by = dict(res)
-    with open(os.path.join(OUT, 'legs-flyby-model.csv'), 'w', newline='') as f:
+    with open(os.path.join(OUT, f'legs-{SUFFIX}.csv'), 'w', newline='') as f:
         w = csv.writer(f)
         w.writerow(['target', 'burn_ms', 'budget_days', 'leg', 'depart_year', 'tof_days', 'revs', 'low_thrust_kms', 'thruster_only_kms',
                     'thrust_fraction', 'vinf_kms', 'vinf_lon_deg', 'vinf_lat_deg', 'allowance_days'])
@@ -112,7 +130,7 @@ def main():
                 w.writerow([n, l['burn_ms'], l['budget_days'], l['leg'], round(YEAR(l['depart']), 3), l['tof'], l['revs'], round(l['dv'], 3),
                             round(l['thruster_dv'], 3), round(l['thrust_fraction'], 3), round(l['vinf'], 3), round(l['lon'], 1), round(l['lat'], 1),
                             round(l['allowance'], 1)])
-    summary = {'modes': [list(m) for m in MODES], 'moon_wait_days': MOON_WAIT_DAYS, 'targets_studied': len(names), 'targets_closing': {}, 'cycle_years': {}}
+    summary = {'model': MODEL, 'modes': [list(m) for m in MODES], 'moon_wait_days': MOON_WAIT_DAYS, 'targets_studied': len(names), 'targets_closing': {}, 'cycle_years': {}}
     groups = {'any mode': None, **{f'burn {b} m/s, {d} d': {(b, d)} for b, d in MODES},
               'burn 150 m/s, any budget': {m for m in MODES if m[0] == 150}}
     for label, modes in groups.items():
@@ -128,8 +146,8 @@ def main():
     used = [l for n in names for l in by[n]]
     summary['legs_solved'] = len(used)
     summary['vinf_used_kms'] = {str(p): round(float(np.percentile([l['vinf'] for l in used], p)), 2) for p in (10, 50, 90)}
-    summary['latitude_used_deg'] = {str(p): round(float(np.percentile([l['lat'] for l in used], p)), 1) for p in (50, 90, 100)}
-    json.dump(summary, open(os.path.join(OUT, 'flyby-model.json'), 'w'), indent=1)
+    summary['latitude_used_deg'] = {str(p): round(float(np.percentile([abs(l['lat']) for l in used], p)), 1) for p in (50, 90, 100)}
+    json.dump(summary, open(os.path.join(OUT, f'{SUFFIX}.json'), 'w'), indent=1)
     print(json.dumps(summary, indent=1))
 
 

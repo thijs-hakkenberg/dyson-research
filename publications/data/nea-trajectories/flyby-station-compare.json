@@ -1,0 +1,773 @@
+{
+ "phase0": "place of the station on its orbit at J2000, in eighths of the period",
+ "orbits": {
+  "halo-120": {
+   "targets_studied": 108,
+   "station_phases_run": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "reach": {
+    "150 m/s, 90 d": {
+     "best_place_any_node_kms": 1.34,
+     "median_kms": 0.81,
+     "share_of_place_and_node_pairs_with_no_reach": 0.25,
+     "share_with_at_least_1.4_kms": 0.0,
+     "median_by_station_place_kms": [
+      0.99,
+      1.25,
+      1.11,
+      0.95,
+      0.66,
+      0.0,
+      0.0,
+      0.57
+     ]
+    },
+    "150 m/s, 150 d": {
+     "best_place_any_node_kms": 1.49,
+     "median_kms": 1.07,
+     "share_of_place_and_node_pairs_with_no_reach": 0.0,
+     "share_with_at_least_1.4_kms": 0.06,
+     "median_by_station_place_kms": [
+      1.36,
+      1.37,
+      1.15,
+      1.01,
+      1.06,
+      1.0,
+      1.05,
+      1.09
+     ]
+    },
+    "300 m/s, 60 d": {
+     "best_place_any_node_kms": 1.26,
+     "median_kms": 0.98,
+     "share_of_place_and_node_pairs_with_no_reach": 0.0,
+     "share_with_at_least_1.4_kms": 0.0,
+     "median_by_station_place_kms": [
+      0.95,
+      1.2,
+      1.21,
+      1.15,
+      1.0,
+      0.9,
+      0.85,
+      0.9
+     ]
+    },
+    "300 m/s, 105 d": {
+     "best_place_any_node_kms": 1.55,
+     "median_kms": 1.3,
+     "share_of_place_and_node_pairs_with_no_reach": 0.0,
+     "share_with_at_least_1.4_kms": 0.17,
+     "median_by_station_place_kms": [
+      1.37,
+      1.38,
+      1.51,
+      1.32,
+      1.16,
+      1.22,
+      1.23,
+      1.33
+     ]
+    }
+   },
+   "targets": {
+    "leg<=5.0 cycle<=4.0": {
+     "pooled_over_orbits_and_places": 23,
+     "by_phase0": [
+      9,
+      9,
+      8,
+      8,
+      8,
+      7,
+      9,
+      8
+     ],
+     "min": 7,
+     "median": 8.0,
+     "max": 9,
+     "for_every_phase0": 3,
+     "for_some_phase0": 15,
+     "not_in_pooled": 0
+    },
+    "leg<=5.0 cycle<=5.0": {
+     "pooled_over_orbits_and_places": 58,
+     "by_phase0": [
+      41,
+      35,
+      38,
+      35,
+      33,
+      41,
+      41,
+      42
+     ],
+     "min": 33,
+     "median": 39.5,
+     "max": 42,
+     "for_every_phase0": 26,
+     "for_some_phase0": 51,
+     "not_in_pooled": 0
+    },
+    "leg<=5.75 cycle<=4.0": {
+     "pooled_over_orbits_and_places": 34,
+     "by_phase0": [
+      18,
+      18,
+      14,
+      14,
+      15,
+      19,
+      21,
+      19
+     ],
+     "min": 14,
+     "median": 18.0,
+     "max": 21,
+     "for_every_phase0": 12,
+     "for_some_phase0": 28,
+     "not_in_pooled": 0
+    },
+    "leg<=5.75 cycle<=5.0": {
+     "pooled_over_orbits_and_places": 83,
+     "by_phase0": [
+      66,
+      64,
+      59,
+      61,
+      58,
+      59,
+      64,
+      68
+     ],
+     "min": 58,
+     "median": 62.5,
+     "max": 68,
+     "for_every_phase0": 43,
+     "for_some_phase0": 78,
+     "not_in_pooled": 1
+    },
+    "leg<=6.5 cycle<=4.0": {
+     "pooled_over_orbits_and_places": 48,
+     "by_phase0": [
+      28,
+      25,
+      24,
+      27,
+      25,
+      24,
+      27,
+      30
+     ],
+     "min": 24,
+     "median": 26.0,
+     "max": 30,
+     "for_every_phase0": 15,
+     "for_some_phase0": 39,
+     "not_in_pooled": 1
+    },
+    "leg<=6.5 cycle<=5.0": {
+     "pooled_over_orbits_and_places": 108,
+     "by_phase0": [
+      89,
+      86,
+      88,
+      87,
+      83,
+      89,
+      91,
+      91
+     ],
+     "min": 83,
+     "median": 88.5,
+     "max": 91,
+     "for_every_phase0": 69,
+     "for_some_phase0": 105,
+     "not_in_pooled": 0
+    },
+    "leg<=5.0 cycle<=4.0, 150 m/s burns only": {
+     "pooled_over_orbits_and_places": 13,
+     "by_phase0": [
+      3,
+      5,
+      5,
+      4,
+      4,
+      4,
+      3,
+      3
+     ],
+     "min": 3,
+     "median": 4.0,
+     "max": 5,
+     "for_every_phase0": 1,
+     "for_some_phase0": 5,
+     "not_in_pooled": 0
+    }
+   },
+   "joint_with_scout": {
+    "c3_6 within 3.5 km/s": [
+     9,
+     9,
+     8,
+     8,
+     8,
+     7,
+     9,
+     8
+    ],
+    "moon within 3.5 km/s": [
+     8,
+     7,
+     8,
+     8,
+     6,
+     6,
+     8,
+     8
+    ],
+    "moon within 4.5 km/s": [
+     9,
+     9,
+     8,
+     8,
+     8,
+     7,
+     9,
+     8
+    ]
+   },
+   "median_cycle_yr_by_phase0": [
+    3.61,
+    3.65,
+    3.82,
+    3.93,
+    3.85,
+    3.83,
+    3.82,
+    3.74
+   ]
+  },
+  "halo-300": {
+   "targets_studied": 108,
+   "station_phases_run": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "reach": {
+    "150 m/s, 90 d": {
+     "best_place_any_node_kms": 1.22,
+     "median_kms": 0.0,
+     "share_of_place_and_node_pairs_with_no_reach": 0.56,
+     "share_with_at_least_1.4_kms": 0.0,
+     "median_by_station_place_kms": [
+      0.39,
+      1.02,
+      0.44,
+      0.0,
+      0.52,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "150 m/s, 150 d": {
+     "best_place_any_node_kms": 1.43,
+     "median_kms": 0.91,
+     "share_of_place_and_node_pairs_with_no_reach": 0.0,
+     "share_with_at_least_1.4_kms": 0.02,
+     "median_by_station_place_kms": [
+      1.09,
+      1.29,
+      1.04,
+      0.82,
+      0.86,
+      0.75,
+      0.61,
+      0.84
+     ]
+    },
+    "300 m/s, 60 d": {
+     "best_place_any_node_kms": 1.33,
+     "median_kms": 0.96,
+     "share_of_place_and_node_pairs_with_no_reach": 0.0,
+     "share_with_at_least_1.4_kms": 0.0,
+     "median_by_station_place_kms": [
+      0.87,
+      1.17,
+      1.23,
+      1.18,
+      1.0,
+      0.89,
+      0.86,
+      0.76
+     ]
+    },
+    "300 m/s, 105 d": {
+     "best_place_any_node_kms": 1.52,
+     "median_kms": 1.26,
+     "share_of_place_and_node_pairs_with_no_reach": 0.0,
+     "share_with_at_least_1.4_kms": 0.21,
+     "median_by_station_place_kms": [
+      1.31,
+      1.46,
+      1.46,
+      1.24,
+      1.12,
+      1.07,
+      1.05,
+      1.26
+     ]
+    }
+   },
+   "targets": {
+    "leg<=5.0 cycle<=4.0": {
+     "pooled_over_orbits_and_places": 23,
+     "by_phase0": [
+      6,
+      7,
+      7,
+      5,
+      6,
+      7,
+      7,
+      6
+     ],
+     "min": 5,
+     "median": 6.5,
+     "max": 7,
+     "for_every_phase0": 4,
+     "for_some_phase0": 8,
+     "not_in_pooled": 0
+    },
+    "leg<=5.0 cycle<=5.0": {
+     "pooled_over_orbits_and_places": 58,
+     "by_phase0": [
+      26,
+      29,
+      30,
+      31,
+      29,
+      29,
+      27,
+      26
+     ],
+     "min": 26,
+     "median": 29.0,
+     "max": 31,
+     "for_every_phase0": 20,
+     "for_some_phase0": 38,
+     "not_in_pooled": 0
+    },
+    "leg<=5.75 cycle<=4.0": {
+     "pooled_over_orbits_and_places": 34,
+     "by_phase0": [
+      14,
+      12,
+      13,
+      13,
+      13,
+      12,
+      15,
+      12
+     ],
+     "min": 12,
+     "median": 13.0,
+     "max": 15,
+     "for_every_phase0": 8,
+     "for_some_phase0": 20,
+     "not_in_pooled": 1
+    },
+    "leg<=5.75 cycle<=5.0": {
+     "pooled_over_orbits_and_places": 83,
+     "by_phase0": [
+      52,
+      50,
+      54,
+      55,
+      47,
+      49,
+      50,
+      49
+     ],
+     "min": 47,
+     "median": 50.0,
+     "max": 55,
+     "for_every_phase0": 37,
+     "for_some_phase0": 68,
+     "not_in_pooled": 0
+    },
+    "leg<=6.5 cycle<=4.0": {
+     "pooled_over_orbits_and_places": 48,
+     "by_phase0": [
+      23,
+      20,
+      21,
+      21,
+      20,
+      21,
+      25,
+      22
+     ],
+     "min": 20,
+     "median": 21.0,
+     "max": 25,
+     "for_every_phase0": 12,
+     "for_some_phase0": 34,
+     "not_in_pooled": 1
+    },
+    "leg<=6.5 cycle<=5.0": {
+     "pooled_over_orbits_and_places": 108,
+     "by_phase0": [
+      77,
+      87,
+      81,
+      76,
+      83,
+      81,
+      88,
+      79
+     ],
+     "min": 76,
+     "median": 81.0,
+     "max": 88,
+     "for_every_phase0": 58,
+     "for_some_phase0": 98,
+     "not_in_pooled": 0
+    },
+    "leg<=5.0 cycle<=4.0, 150 m/s burns only": {
+     "pooled_over_orbits_and_places": 13,
+     "by_phase0": [
+      3,
+      4,
+      2,
+      3,
+      4,
+      3,
+      3,
+      4
+     ],
+     "min": 2,
+     "median": 3.0,
+     "max": 4,
+     "for_every_phase0": 1,
+     "for_some_phase0": 4,
+     "not_in_pooled": 0
+    }
+   },
+   "joint_with_scout": {
+    "c3_6 within 3.5 km/s": [
+     6,
+     7,
+     7,
+     5,
+     6,
+     7,
+     7,
+     6
+    ],
+    "moon within 3.5 km/s": [
+     6,
+     6,
+     7,
+     5,
+     6,
+     7,
+     7,
+     6
+    ],
+    "moon within 4.5 km/s": [
+     6,
+     7,
+     7,
+     5,
+     6,
+     7,
+     7,
+     6
+    ]
+   },
+   "median_cycle_yr_by_phase0": [
+    3.84,
+    3.93,
+    3.93,
+    3.93,
+    3.91,
+    3.86,
+    3.8,
+    3.67
+   ]
+  },
+  "planar-100": {
+   "targets_studied": 110,
+   "station_phases_run": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "reach": {
+    "150 m/s, 90 d": {
+     "best_place_any_node_kms": 1.14,
+     "median_kms": 0.86,
+     "share_of_place_and_node_pairs_with_no_reach": 0.0,
+     "share_with_at_least_1.4_kms": 0.0,
+     "median_by_station_place_kms": [
+      1.03,
+      0.76,
+      1.11,
+      0.96,
+      0.74,
+      0.51,
+      0.38,
+      0.96
+     ]
+    },
+    "150 m/s, 150 d": {
+     "best_place_any_node_kms": 1.17,
+     "median_kms": 1.05,
+     "share_of_place_and_node_pairs_with_no_reach": 0.0,
+     "share_with_at_least_1.4_kms": 0.0,
+     "median_by_station_place_kms": [
+      1.05,
+      0.96,
+      1.11,
+      1.02,
+      1.06,
+      1.04,
+      1.16,
+      1.15
+     ]
+    },
+    "300 m/s, 60 d": {
+     "best_place_any_node_kms": 1.1,
+     "median_kms": 0.83,
+     "share_of_place_and_node_pairs_with_no_reach": 0.0,
+     "share_with_at_least_1.4_kms": 0.0,
+     "median_by_station_place_kms": [
+      0.74,
+      1.05,
+      1.1,
+      0.83,
+      0.77,
+      0.91,
+      0.75,
+      0.75
+     ]
+    },
+    "300 m/s, 105 d": {
+     "best_place_any_node_kms": 1.53,
+     "median_kms": 1.37,
+     "share_of_place_and_node_pairs_with_no_reach": 0.0,
+     "share_with_at_least_1.4_kms": 0.38,
+     "median_by_station_place_kms": [
+      1.38,
+      1.38,
+      1.42,
+      1.43,
+      1.21,
+      1.22,
+      1.33,
+      1.43
+     ]
+    }
+   },
+   "targets": {
+    "leg<=5.0 cycle<=4.0": {
+     "pooled_over_orbits_and_places": 25,
+     "by_phase0": [
+      5,
+      4,
+      5,
+      6,
+      6,
+      5,
+      6,
+      5
+     ],
+     "min": 4,
+     "median": 5.0,
+     "max": 6,
+     "for_every_phase0": 2,
+     "for_some_phase0": 7,
+     "not_in_pooled": 0
+    },
+    "leg<=5.0 cycle<=5.0": {
+     "pooled_over_orbits_and_places": 65,
+     "by_phase0": [
+      26,
+      27,
+      25,
+      28,
+      30,
+      28,
+      28,
+      28
+     ],
+     "min": 25,
+     "median": 28.0,
+     "max": 30,
+     "for_every_phase0": 19,
+     "for_some_phase0": 39,
+     "not_in_pooled": 0
+    },
+    "leg<=5.75 cycle<=4.0": {
+     "pooled_over_orbits_and_places": 38,
+     "by_phase0": [
+      10,
+      14,
+      13,
+      9,
+      11,
+      11,
+      10,
+      12
+     ],
+     "min": 9,
+     "median": 11.0,
+     "max": 14,
+     "for_every_phase0": 8,
+     "for_some_phase0": 18,
+     "not_in_pooled": 0
+    },
+    "leg<=5.75 cycle<=5.0": {
+     "pooled_over_orbits_and_places": 90,
+     "by_phase0": [
+      52,
+      57,
+      51,
+      55,
+      55,
+      54,
+      49,
+      52
+     ],
+     "min": 49,
+     "median": 53.0,
+     "max": 57,
+     "for_every_phase0": 38,
+     "for_some_phase0": 68,
+     "not_in_pooled": 0
+    },
+    "leg<=6.5 cycle<=4.0": {
+     "pooled_over_orbits_and_places": 52,
+     "by_phase0": [
+      19,
+      27,
+      25,
+      22,
+      20,
+      17,
+      17,
+      20
+     ],
+     "min": 17,
+     "median": 20.0,
+     "max": 27,
+     "for_every_phase0": 13,
+     "for_some_phase0": 30,
+     "not_in_pooled": 0
+    },
+    "leg<=6.5 cycle<=5.0": {
+     "pooled_over_orbits_and_places": 110,
+     "by_phase0": [
+      75,
+      79,
+      77,
+      74,
+      76,
+      74,
+      74,
+      75
+     ],
+     "min": 74,
+     "median": 75.0,
+     "max": 79,
+     "for_every_phase0": 60,
+     "for_some_phase0": 89,
+     "not_in_pooled": 0
+    },
+    "leg<=5.0 cycle<=4.0, 150 m/s burns only": {
+     "pooled_over_orbits_and_places": 21,
+     "by_phase0": [
+      3,
+      1,
+      1,
+      3,
+      4,
+      4,
+      2,
+      3
+     ],
+     "min": 1,
+     "median": 3.0,
+     "max": 4,
+     "for_every_phase0": 0,
+     "for_some_phase0": 4,
+     "not_in_pooled": 0
+    }
+   },
+   "joint_with_scout": {
+    "c3_6 within 3.5 km/s": [
+     5,
+     4,
+     5,
+     6,
+     6,
+     5,
+     6,
+     5
+    ],
+    "moon within 3.5 km/s": [
+     5,
+     4,
+     5,
+     6,
+     6,
+     5,
+     6,
+     5
+    ],
+    "moon within 4.5 km/s": [
+     5,
+     4,
+     5,
+     6,
+     6,
+     5,
+     6,
+     5
+    ]
+   },
+   "median_cycle_yr_by_phase0": [
+    3.71,
+    3.73,
+    3.8,
+    3.9,
+    3.79,
+    3.87,
+    3.79,
+    3.71
+   ]
+  }
+ }
+}

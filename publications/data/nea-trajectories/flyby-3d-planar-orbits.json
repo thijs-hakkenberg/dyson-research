@@ -1,0 +1,217 @@
+{
+ "model": "planar-orbits",
+ "modes": [
+  [
+   150,
+   60
+  ],
+  [
+   150,
+   90
+  ],
+  [
+   150,
+   150
+  ],
+  [
+   300,
+   60
+  ],
+  [
+   300,
+   105
+  ]
+ ],
+ "moon_wait_days": 14.8,
+ "targets_studied": 150,
+ "targets_closing": {
+  "any mode": {
+   "leg<=5.0 cycle<=4.0": 25,
+   "leg<=5.0 cycle<=5.0": 65,
+   "leg<=5.75 cycle<=4.0": 38,
+   "leg<=5.75 cycle<=5.0": 90,
+   "leg<=6.5 cycle<=4.0": 53,
+   "leg<=6.5 cycle<=5.0": 112
+  },
+  "burn 150 m/s, 60 d": {
+   "leg<=5.0 cycle<=4.0": 0,
+   "leg<=5.0 cycle<=5.0": 6,
+   "leg<=5.75 cycle<=4.0": 2,
+   "leg<=5.75 cycle<=5.0": 17,
+   "leg<=6.5 cycle<=4.0": 5,
+   "leg<=6.5 cycle<=5.0": 40
+  },
+  "burn 150 m/s, 90 d": {
+   "leg<=5.0 cycle<=4.0": 6,
+   "leg<=5.0 cycle<=5.0": 35,
+   "leg<=5.75 cycle<=4.0": 15,
+   "leg<=5.75 cycle<=5.0": 64,
+   "leg<=6.5 cycle<=4.0": 23,
+   "leg<=6.5 cycle<=5.0": 84
+  },
+  "burn 150 m/s, 150 d": {
+   "leg<=5.0 cycle<=4.0": 12,
+   "leg<=5.0 cycle<=5.0": 58,
+   "leg<=5.75 cycle<=4.0": 26,
+   "leg<=5.75 cycle<=5.0": 78,
+   "leg<=6.5 cycle<=4.0": 36,
+   "leg<=6.5 cycle<=5.0": 98
+  },
+  "burn 300 m/s, 60 d": {
+   "leg<=5.0 cycle<=4.0": 12,
+   "leg<=5.0 cycle<=5.0": 38,
+   "leg<=5.75 cycle<=4.0": 19,
+   "leg<=5.75 cycle<=5.0": 64,
+   "leg<=6.5 cycle<=4.0": 26,
+   "leg<=6.5 cycle<=5.0": 91
+  },
+  "burn 300 m/s, 105 d": {
+   "leg<=5.0 cycle<=4.0": 20,
+   "leg<=5.0 cycle<=5.0": 62,
+   "leg<=5.75 cycle<=4.0": 32,
+   "leg<=5.75 cycle<=5.0": 84,
+   "leg<=6.5 cycle<=4.0": 42,
+   "leg<=6.5 cycle<=5.0": 104
+  },
+  "burn 150 m/s, any budget": {
+   "leg<=5.0 cycle<=4.0": 21,
+   "leg<=5.0 cycle<=5.0": 62,
+   "leg<=5.75 cycle<=4.0": 32,
+   "leg<=5.75 cycle<=5.0": 85,
+   "leg<=6.5 cycle<=4.0": 47,
+   "leg<=6.5 cycle<=5.0": 107
+  }
+ },
+ "cycle_years": {
+  "any mode": {
+   "leg<=5.0": {
+    "closing at any cycle": 101,
+    "median": 4.6,
+    "P10": 3.59
+   },
+   "leg<=5.75": {
+    "closing at any cycle": 136,
+    "median": 4.48,
+    "P10": 3.56
+   },
+   "leg<=6.5": {
+    "closing at any cycle": 147,
+    "median": 4.32,
+    "P10": 3.25
+   }
+  },
+  "burn 150 m/s, 60 d": {
+   "leg<=5.0": {
+    "closing at any cycle": 21,
+    "median": 5.39,
+    "P10": 4.57
+   },
+   "leg<=5.75": {
+    "closing at any cycle": 42,
+    "median": 5.2,
+    "P10": 4.08
+   },
+   "leg<=6.5": {
+    "closing at any cycle": 81,
+    "median": 5.01,
+    "P10": 4.13
+   }
+  },
+  "burn 150 m/s, 90 d": {
+   "leg<=5.0": {
+    "closing at any cycle": 58,
+    "median": 4.72,
+    "P10": 4.03
+   },
+   "leg<=5.75": {
+    "closing at any cycle": 106,
+    "median": 4.69,
+    "P10": 3.72
+   },
+   "leg<=6.5": {
+    "closing at any cycle": 131,
+    "median": 4.63,
+    "P10": 3.64
+   }
+  },
+  "burn 150 m/s, 150 d": {
+   "leg<=5.0": {
+    "closing at any cycle": 99,
+    "median": 4.93,
+    "P10": 3.97
+   },
+   "leg<=5.75": {
+    "closing at any cycle": 133,
+    "median": 4.9,
+    "P10": 3.91
+   },
+   "leg<=6.5": {
+    "closing at any cycle": 144,
+    "median": 4.74,
+    "P10": 3.77
+   }
+  },
+  "burn 300 m/s, 60 d": {
+   "leg<=5.0": {
+    "closing at any cycle": 57,
+    "median": 4.52,
+    "P10": 3.59
+   },
+   "leg<=5.75": {
+    "closing at any cycle": 107,
+    "median": 4.52,
+    "P10": 3.59
+   },
+   "leg<=6.5": {
+    "closing at any cycle": 133,
+    "median": 4.46,
+    "P10": 3.53
+   }
+  },
+  "burn 300 m/s, 105 d": {
+   "leg<=5.0": {
+    "closing at any cycle": 93,
+    "median": 4.68,
+    "P10": 3.78
+   },
+   "leg<=5.75": {
+    "closing at any cycle": 135,
+    "median": 4.65,
+    "P10": 3.67
+   },
+   "leg<=6.5": {
+    "closing at any cycle": 145,
+    "median": 4.54,
+    "P10": 3.56
+   }
+  },
+  "burn 150 m/s, any budget": {
+   "leg<=5.0": {
+    "closing at any cycle": 99,
+    "median": 4.74,
+    "P10": 3.85
+   },
+   "leg<=5.75": {
+    "closing at any cycle": 133,
+    "median": 4.63,
+    "P10": 3.68
+   },
+   "leg<=6.5": {
+    "closing at any cycle": 146,
+    "median": 4.48,
+    "P10": 3.45
+   }
+  }
+ },
+ "legs_solved": 21394,
+ "vinf_used_kms": {
+  "10": 0.26,
+  "50": 1.09,
+  "90": 1.56
+ },
+ "latitude_used_deg": {
+  "50": 17.5,
+  "90": 48.2,
+  "100": 87.9
+ }
+}

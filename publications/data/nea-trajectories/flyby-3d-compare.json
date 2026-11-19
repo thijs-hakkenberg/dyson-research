@@ -1,0 +1,267 @@
+{
+ "models": [
+  "planar",
+  "planar-orbits",
+  "halo"
+ ],
+ "targets_studied": 150,
+ "tug": {
+  "planar": {
+   "leg<=5.0 cycle<=4.0": 26,
+   "leg<=5.0 cycle<=5.0": 67,
+   "leg<=5.0 closing at any cycle": 105,
+   "leg<=5.0 median cycle yr": 4.59,
+   "leg<=5.75 cycle<=4.0": 39,
+   "leg<=5.75 cycle<=5.0": 92,
+   "leg<=5.75 closing at any cycle": 139,
+   "leg<=5.75 median cycle yr": 4.46,
+   "leg<=6.5 cycle<=4.0": 53,
+   "leg<=6.5 cycle<=5.0": 114,
+   "leg<=6.5 closing at any cycle": 147,
+   "leg<=6.5 median cycle yr": 4.3,
+   "leg<=5.0 cycle<=4.0, 150 m/s burns only": 23,
+   "legs_solved": 22245,
+   "vinf_used_kms": {
+    "10": 0.61,
+    "50": 1.17,
+    "90": 1.58
+   }
+  },
+  "planar-orbits": {
+   "leg<=5.0 cycle<=4.0": 25,
+   "leg<=5.0 cycle<=5.0": 65,
+   "leg<=5.0 closing at any cycle": 101,
+   "leg<=5.0 median cycle yr": 4.61,
+   "leg<=5.75 cycle<=4.0": 38,
+   "leg<=5.75 cycle<=5.0": 90,
+   "leg<=5.75 closing at any cycle": 136,
+   "leg<=5.75 median cycle yr": 4.48,
+   "leg<=6.5 cycle<=4.0": 52,
+   "leg<=6.5 cycle<=5.0": 110,
+   "leg<=6.5 closing at any cycle": 147,
+   "leg<=6.5 median cycle yr": 4.35,
+   "leg<=5.0 cycle<=4.0, 150 m/s burns only": 21,
+   "legs_solved": 21394,
+   "vinf_used_kms": {
+    "10": 0.26,
+    "50": 1.09,
+    "90": 1.56
+   }
+  },
+  "halo": {
+   "leg<=5.0 cycle<=4.0": 23,
+   "leg<=5.0 cycle<=5.0": 58,
+   "leg<=5.0 closing at any cycle": 91,
+   "leg<=5.0 median cycle yr": 4.61,
+   "leg<=5.75 cycle<=4.0": 34,
+   "leg<=5.75 cycle<=5.0": 83,
+   "leg<=5.75 closing at any cycle": 135,
+   "leg<=5.75 median cycle yr": 4.54,
+   "leg<=6.5 cycle<=4.0": 48,
+   "leg<=6.5 cycle<=5.0": 108,
+   "leg<=6.5 closing at any cycle": 146,
+   "leg<=6.5 median cycle yr": 4.38,
+   "leg<=5.0 cycle<=4.0, 150 m/s burns only": 13,
+   "legs_solved": 20703,
+   "vinf_used_kms": {
+    "10": 0.03,
+    "50": 0.97,
+    "90": 1.54
+   }
+  }
+ },
+ "joint_with_scout": {
+  "planar": {
+   "leg<=5.0 cycle<=4.0": {
+    "c3_6 within 3.5 km/s": 26,
+    "c3_10 within 3.5 km/s": 26,
+    "moon within 3.5 km/s": 16,
+    "moon within 4.5 km/s": 26
+   },
+   "leg<=5.0 cycle<=5.0": {
+    "c3_6 within 3.5 km/s": 62,
+    "c3_10 within 3.5 km/s": 67,
+    "moon within 3.5 km/s": 31,
+    "moon within 4.5 km/s": 62
+   },
+   "leg<=5.75 cycle<=4.0": {
+    "c3_6 within 3.5 km/s": 35,
+    "c3_10 within 3.5 km/s": 38,
+    "moon within 3.5 km/s": 17,
+    "moon within 4.5 km/s": 36
+   },
+   "leg<=5.75 cycle<=5.0": {
+    "c3_6 within 3.5 km/s": 74,
+    "c3_10 within 3.5 km/s": 91,
+    "moon within 3.5 km/s": 31,
+    "moon within 4.5 km/s": 75
+   },
+   "leg<=6.5 cycle<=4.0": {
+    "c3_6 within 3.5 km/s": 45,
+    "c3_10 within 3.5 km/s": 52,
+    "moon within 3.5 km/s": 21,
+    "moon within 4.5 km/s": 46
+   },
+   "leg<=6.5 cycle<=5.0": {
+    "c3_6 within 3.5 km/s": 81,
+    "c3_10 within 3.5 km/s": 112,
+    "moon within 3.5 km/s": 31,
+    "moon within 4.5 km/s": 80
+   }
+  },
+  "planar-orbits": {
+   "leg<=5.0 cycle<=4.0": {
+    "c3_6 within 3.5 km/s": 25,
+    "c3_10 within 3.5 km/s": 25,
+    "moon within 3.5 km/s": 15,
+    "moon within 4.5 km/s": 25
+   },
+   "leg<=5.0 cycle<=5.0": {
+    "c3_6 within 3.5 km/s": 61,
+    "c3_10 within 3.5 km/s": 65,
+    "moon within 3.5 km/s": 31,
+    "moon within 4.5 km/s": 62
+   },
+   "leg<=5.75 cycle<=4.0": {
+    "c3_6 within 3.5 km/s": 35,
+    "c3_10 within 3.5 km/s": 37,
+    "moon within 3.5 km/s": 18,
+    "moon within 4.5 km/s": 35
+   },
+   "leg<=5.75 cycle<=5.0": {
+    "c3_6 within 3.5 km/s": 74,
+    "c3_10 within 3.5 km/s": 89,
+    "moon within 3.5 km/s": 31,
+    "moon within 4.5 km/s": 74
+   },
+   "leg<=6.5 cycle<=4.0": {
+    "c3_6 within 3.5 km/s": 44,
+    "c3_10 within 3.5 km/s": 51,
+    "moon within 3.5 km/s": 20,
+    "moon within 4.5 km/s": 45
+   },
+   "leg<=6.5 cycle<=5.0": {
+    "c3_6 within 3.5 km/s": 80,
+    "c3_10 within 3.5 km/s": 109,
+    "moon within 3.5 km/s": 31,
+    "moon within 4.5 km/s": 80
+   }
+  },
+  "halo": {
+   "leg<=5.0 cycle<=4.0": {
+    "c3_6 within 3.5 km/s": 23,
+    "c3_10 within 3.5 km/s": 23,
+    "moon within 3.5 km/s": 14,
+    "moon within 4.5 km/s": 23
+   },
+   "leg<=5.0 cycle<=5.0": {
+    "c3_6 within 3.5 km/s": 55,
+    "c3_10 within 3.5 km/s": 58,
+    "moon within 3.5 km/s": 31,
+    "moon within 4.5 km/s": 56
+   },
+   "leg<=5.75 cycle<=4.0": {
+    "c3_6 within 3.5 km/s": 31,
+    "c3_10 within 3.5 km/s": 33,
+    "moon within 3.5 km/s": 17,
+    "moon within 4.5 km/s": 31
+   },
+   "leg<=5.75 cycle<=5.0": {
+    "c3_6 within 3.5 km/s": 72,
+    "c3_10 within 3.5 km/s": 82,
+    "moon within 3.5 km/s": 31,
+    "moon within 4.5 km/s": 72
+   },
+   "leg<=6.5 cycle<=4.0": {
+    "c3_6 within 3.5 km/s": 41,
+    "c3_10 within 3.5 km/s": 47,
+    "moon within 3.5 km/s": 19,
+    "moon within 4.5 km/s": 42
+   },
+   "leg<=6.5 cycle<=5.0": {
+    "c3_6 within 3.5 km/s": 79,
+    "c3_10 within 3.5 km/s": 107,
+    "moon within 3.5 km/s": 31,
+    "moon within 4.5 km/s": 79
+   }
+  }
+ },
+ "against_planar": {
+  "planar-orbits": {
+   "leg<=5.0 cycle<=4.0": {
+    "kept": 25,
+    "lost": 1,
+    "gained": 0,
+    "median_cycle_change_yr": 0.0
+   },
+   "leg<=5.0 cycle<=5.0": {
+    "kept": 65,
+    "lost": 2,
+    "gained": 0,
+    "median_cycle_change_yr": 0.0
+   },
+   "leg<=5.75 cycle<=4.0": {
+    "kept": 37,
+    "lost": 2,
+    "gained": 1,
+    "median_cycle_change_yr": 0.0
+   },
+   "leg<=5.75 cycle<=5.0": {
+    "kept": 90,
+    "lost": 2,
+    "gained": 0,
+    "median_cycle_change_yr": 0.0
+   },
+   "leg<=6.5 cycle<=4.0": {
+    "kept": 52,
+    "lost": 1,
+    "gained": 0,
+    "median_cycle_change_yr": 0.0
+   },
+   "leg<=6.5 cycle<=5.0": {
+    "kept": 110,
+    "lost": 4,
+    "gained": 0,
+    "median_cycle_change_yr": 0.0
+   }
+  },
+  "halo": {
+   "leg<=5.0 cycle<=4.0": {
+    "kept": 23,
+    "lost": 3,
+    "gained": 0,
+    "median_cycle_change_yr": 0.0
+   },
+   "leg<=5.0 cycle<=5.0": {
+    "kept": 58,
+    "lost": 9,
+    "gained": 0,
+    "median_cycle_change_yr": 0.03
+   },
+   "leg<=5.75 cycle<=4.0": {
+    "kept": 34,
+    "lost": 5,
+    "gained": 0,
+    "median_cycle_change_yr": 0.03
+   },
+   "leg<=5.75 cycle<=5.0": {
+    "kept": 83,
+    "lost": 9,
+    "gained": 0,
+    "median_cycle_change_yr": 0.0
+   },
+   "leg<=6.5 cycle<=4.0": {
+    "kept": 48,
+    "lost": 5,
+    "gained": 0,
+    "median_cycle_change_yr": 0.0
+   },
+   "leg<=6.5 cycle<=5.0": {
+    "kept": 107,
+    "lost": 7,
+    "gained": 1,
+    "median_cycle_change_yr": 0.0
+   }
+  }
+ }
+}

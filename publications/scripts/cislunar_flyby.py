@@ -403,3 +403,205 @@ def moon_to_moon(yc, tc, t_limit, n_delta: int = 241, k: int = 8):
         hi = np.where(left, hi, mid)
     keep = alive & (np.abs(mb) < 1e-3)
     return ce[keep], 0.5 * (lo + hi)[keep], yb[keep], tb[keep]
+
+
+# ---------------------------------------------------------------------------------------
+# Halo node orbits and the Moon's inclined orbit (extension of 2026-11-15)
+# ---------------------------------------------------------------------------------------
+
+INC_MOON = np.radians(5.145)  # to the ecliptic
+
+
+def _half_period_3d(x0, z0, vy0):
+    ev = lambda t, s: s[1]
+    ev.terminal, ev.direction = True, -1
+    sol = solve_ivp(_f1, (0, 6), [x0, 0, z0, 0, vy0, 0], method='DOP853', rtol=1e-12, atol=1e-13, events=ev)
+    if not len(sol.t_events[0]):
+        return np.nan, np.full(6, np.nan)
+    return sol.t_events[0][0], sol.y_events[0][0]
+
+
+def _halo_correct(x0, z0, vy0, iters=30):
+    """Newton on (x0, vy0) at fixed z0 until the next crossing of y = 0 is perpendicular."""
+    for _ in range(iters):
+        _, y = _half_period_3d(x0, z0, vy0)
+        g = np.array([y[3], y[5]])
+        if not np.all(np.isfinite(g)):
+            return None
+        if np.max(np.abs(g)) < 1e-11:
+            return x0, vy0
+        J = np.zeros((2, 2))
+        for k, (dx, dv) in enumerate(((1e-8, 0.0), (0.0, 1e-8))):
+            yp = _half_period_3d(x0 + dx, z0, vy0 + dv)[1]
+            ym = _half_period_3d(x0 - dx, z0, vy0 - dv)[1]
+            J[:, k] = (np.array([yp[3], yp[5]]) - np.array([ym[3], ym[5]])) / 2e-8
+        step = np.linalg.solve(J, -g)
+        scale = min(1.0, 2e-4 / np.max(np.abs(step)))
+        x0, vy0 = x0 + scale * step[0], vy0 + scale * step[1]
+    return None
+
+
+def halo_orbit(az_km: float):
+    """Northern halo orbit about SEL1 whose Sun-side crossing of the y = 0 plane is az_km
+    above the ecliptic. Found by continuation in height from the planar orbit where the
+    family branches off. Returns (state at that crossing, period). The southern orbit is
+    the mirror image in the ecliptic."""
+    xl = l1_x()
+    start = None
+    for ax in np.arange(190e3, 260e3, 5e3):  # the branch point is near 210,000 km
+        s, _ = lyapunov_orbit(ax)
+        got = _halo_correct(s[0], 10e3 / AU_KM, s[4])
+        if got is not None and abs(got[0] - s[0]) < 20e3 / AU_KM:
+            start = got
+            break
+    if start is None:
+        raise RuntimeError('halo family not found')
+    x0, vy0 = start
+    z = 10e3
+    while z < az_km - 1e-6:
+        z = min(z + 10e3, az_km)
+        got = _halo_correct(x0, z / AU_KM, vy0)
+        if got is None:
+            raise RuntimeError(f'halo continuation failed at {z:.0f} km')
+        x0, vy0 = got
+    t_half, _ = _half_period_3d(x0, az_km / AU_KM, vy0)
+    return np.array([x0, 0, az_km / AU_KM, 0, vy0, 0]), 2 * t_half
+
+
+def moon_normal(node, inc=INC_MOON):
+    """Unit normal of the Moon's orbit plane; `node` is the angle of the ascending node
+    from the Sun→Earth line, in the rotating frame, at that instant."""
+    node = np.asarray(node, float)
+    return np.stack([np.sin(inc) * np.sin(node), -np.sin(inc) * np.cos(node), np.full(node.shape, np.cos(inc))], axis=-1)
+
+
+def moon_position(node, u, inc=INC_MOON):
+    """Earth-relative position of the Moon for node angle `node` and argument of latitude u."""
+    node, u = np.asarray(node, float), np.asarray(u, float)
+    return A_MOON * np.stack([np.cos(node) * np.cos(u) - np.sin(node) * np.sin(u) * np.cos(inc),
+                              np.sin(node) * np.cos(u) + np.cos(node) * np.sin(u) * np.cos(inc),
+                              np.sin(u) * np.sin(inc)], axis=-1)
+
+
+def plane_miss(yc, tc, node0, inc=INC_MOON):
+    """Signed distance of states at the Moon's orbital distance from the Moon's orbit plane.
+    node0 is the node angle at t = 0; the node line is fixed in space, so it turns backwards
+    in the rotating frame at the frame's rate."""
+    n = moon_normal(np.asarray(node0) - tc, inc)
+    return np.sum(n * (yc[..., :3] - EARTH), axis=-1)
+
+
+def burn_states(base, az, up, dv_ms, inplane: float = 0.9):
+    """States after a departure burn. The part in the ecliptic is `inplane` × dv_ms towards
+    azimuth az (from +x); the part out of it is `up` × dv_ms, with |up| ≤ √(1 − inplane²) so
+    that the whole burn stays within dv_ms. Holding the in-plane part fixed while `up`
+    varies leaves the path in the ecliptic almost unchanged, which is what lets the
+    out-of-plane part be solved for on its own."""
+    y = np.array(base, float)
+    dv = dv_ms / 1e3 / VU_KMS
+    y[:, 3] += dv * inplane * np.cos(az)
+    y[:, 4] += dv * inplane * np.sin(az)
+    y[:, 5] += dv * np.asarray(up)
+    return y
+
+
+def orbit_points(state, period, n_phase):
+    """States at n_phase points evenly spaced in time round a periodic orbit."""
+    times = np.arange(n_phase) * period / n_phase
+    return solve_ivp(_f1, (0, period), state, method='DOP853', rtol=1e-12, atol=1e-13, t_eval=times).y.T
+
+
+def encounters_inclined(base, az, ups, dv_ms, node0, t_limit, inc=INC_MOON, k: int = 12, iters: int = 14,
+                        tol: float = 2e-6, flights=None, inplane: float = 0.9):
+    """Departures that meet the Moon's inclined orbit.
+
+    base (M, 6) and az (M,) give the place on the node orbit and the in-plane direction of
+    the burn; the burn's out-of-plane part (`ups`, see burn_states) is the free parameter.
+    For every crossing of the Moon's orbital distance, the out-of-plane part is found at
+    which the crossing lies in the Moon's orbit
+    plane (the Moon's place on its orbit is free, as in the planar model: it sets the lunar
+    phase the departure needs). `flights` may carry the grid integration, which does not
+    depend on the node angle.
+
+    Returns (index into base, out-of-plane part, state at the encounter, time of the encounter)."""
+    M, E = len(base), len(ups)
+    idx = np.repeat(np.arange(M), E)
+    el = np.tile(ups, M)
+    if flights is None:
+        flights = integrate(burn_states(base[idx], az[idx], el, dv_ms, inplane), 0.0, t_limit, crossings=k)
+    f = flights
+
+    def measure(fl, node):
+        mis = plane_miss(fl.y_cross, fl.t_cross, np.asarray(node)[:, None], inc)
+        rad = np.sign(np.sum((fl.y_cross[:, :, :3] - EARTH) * fl.y_cross[:, :, 3:], axis=2))
+        return mis, rad
+
+    mis, rad = measure(f, np.full(len(idx), node0))
+    ok = np.isfinite(mis) & (f.t_cross < t_limit)
+    a = np.arange(len(idx) - 1)
+    same = idx[a] == idx[a + 1]
+    cands = []
+    for j in range(k):
+        for jj in (j - 1, j, j + 1):
+            if jj < 0 or jj >= k:
+                continue
+            good = (same & ok[a, j] & ok[a + 1, jj] & (rad[a, j] == rad[a + 1, jj]) & (mis[a, j] * mis[a + 1, jj] <= 0)
+                    & (np.abs(f.t_cross[a, j] - f.t_cross[a + 1, jj]) < 2 * DAY))
+            for r in np.nonzero(good)[0]:
+                cands.append((idx[r], el[r], el[r + 1], mis[r, j], 0.5 * (f.t_cross[r, j] + f.t_cross[r + 1, jj]), rad[r, j]))
+    if not cands:
+        return np.zeros(0, int), np.zeros(0), np.zeros((0, 6)), np.zeros(0)
+    ce, lo, hi, mlo, tt, rr = (np.array(c) for c in zip(*cands))
+    ce = ce.astype(int)
+    n = len(ce)
+    alive = np.ones(n, bool)
+    yb, tb, mb, eb = np.zeros((n, 6)), np.zeros(n), np.full(n, np.inf), np.zeros(n)
+    rows = np.arange(n)
+    for _ in range(iters):
+        mid = 0.5 * (lo + hi)
+        fl = integrate(burn_states(base[ce], az[ce], mid, dv_ms, inplane), 0.0, tt + 6 * DAY, crossings=k)
+        mis, rad = measure(fl, np.full(n, node0))
+        dt = np.where(np.isfinite(fl.t_cross) & (rad == rr[:, None]), np.abs(fl.t_cross - tt[:, None]), np.inf)
+        j = np.argmin(dt, axis=1)
+        found = dt[rows, j] < 3 * DAY
+        alive &= found
+        m = np.where(found, mis[rows, j], 0.0)
+        better = found & (np.abs(m) < np.abs(mb))
+        yb[better], tb[better], mb[better], eb[better] = fl.y_cross[rows, j][better], fl.t_cross[rows, j][better], m[better], mid[better]
+        tt = np.where(found, fl.t_cross[rows, j], tt)
+        left = m * mlo > 0
+        lo, mlo = np.where(left, mid, lo), np.where(left, m, mlo)
+        hi = np.where(left, hi, mid)
+    keep = alive & (np.abs(mb) < tol)
+    return ce[keep], eb[keep], yb[keep], tb[keep]
+
+
+def encounter_vinf_inclined(yc, tc, node0, inc=INC_MOON):
+    """As encounter_vinf, for the Moon on its inclined orbit: the Moon moves along its orbit
+    plane at the place of the crossing. Returns (v_inf, Moon velocity, longitude of the place)."""
+    rho = yc[:, :3] - EARTH
+    rh = rho / np.linalg.norm(rho, axis=1, keepdims=True)
+    vi = yc[:, 3:] + np.stack([-rho[:, 1], rho[:, 0], np.zeros(len(yc))], axis=1)
+    vm = V_MOON * np.cross(moon_normal(np.asarray(node0) - tc, inc), rh)
+    return vi - vm, vm, np.arctan2(rho[:, 1], rho[:, 0])
+
+
+def swingby_fan_inclined(yc, tc, node0, n_delta: int = 8, n_roll: int = 16, inc=INC_MOON):
+    """Outgoing states of a swingby of the inclined Moon over turn angle and the full circle
+    of azimuth (the mirror symmetry in the ecliptic no longer holds)."""
+    vinf, vm, _ = encounter_vinf_inclined(yc, tc, node0, inc)
+    dmax = max_turn(np.linalg.norm(vinf, axis=1))
+    M = len(yc)
+    frac = np.concatenate([[0.0], np.repeat(np.arange(1, n_delta + 1) / n_delta, n_roll)])
+    roll = np.concatenate([[0.0], np.tile(np.arange(n_roll) * 2 * np.pi / n_roll, n_delta)])
+    idx = np.repeat(np.arange(M), len(frac))
+    vout = turn(vinf[idx], np.tile(frac, M) * dmax[idx], np.tile(roll, M))
+    return after_swingby(yc[idx], vout, vm[idx]), idx
+
+
+def mirror(y):
+    """Mirror image of rotating-frame states in the plane through the Sun, the Earth and
+    the ecliptic pole, with time reversed: (x, −y, z, −vx, vy, −vz). The equations of
+    motion are unchanged by it, so a departure flown backwards is an arrival. A northern
+    halo orbit maps onto itself; the Moon stays prograde with its node at 180° − node."""
+    return np.asarray(y, float) * np.array([1.0, -1.0, 1.0, -1.0, 1.0, -1.0])
