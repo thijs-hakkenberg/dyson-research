@@ -1,0 +1,583 @@
+{
+ "legs_from": "pooled",
+ "orbit": "halo-120",
+ "phase0_eighths": 1,
+ "window_days": 10.0,
+ "leg_cap_kms": 5.0,
+ "cycle_cap_yr": 5.0,
+ "seeds_per_leg": 3,
+ "seconds_per_leg_limit": 900.0,
+ "tolerances": {
+  "plane_km": 50.0,
+  "moon_km": 500.0,
+  "direction_ms": 10.0
+ },
+ "targets_closing_on_table": 58,
+ "targets_closing_direct": 31,
+ "closing": [
+  "10302",
+  "138404",
+  "138911",
+  "163000",
+  "2006 QQ23",
+  "2006 YF",
+  "2013 XV8",
+  "2015 HV182",
+  "2015 XA352",
+  "2020 UF2",
+  "2025 VD24",
+  "253062",
+  "307564",
+  "341843",
+  "344756",
+  "350523",
+  "350751",
+  "363305",
+  "382875",
+  "441304",
+  "455415",
+  "459200",
+  "470975",
+  "471240",
+  "591179",
+  "65679",
+  "756476",
+  "762379",
+  "89136",
+  "98943",
+  "99942"
+ ],
+ "legs_tried": 1816,
+ "legs_delivered_in_full": 125,
+ "legs_delivered_in_part": 561,
+ "legs_without_seed": 284,
+ "legs_timed_out": 0,
+ "flight_days_median": 83.0,
+ "burn_fraction_median": 0.98,
+ "median_cycle_yr": 4.34,
+ "seconds": 60773,
+ "targets": {
+  "10302": {
+   "table_cycle_yr": 4.297,
+   "legs_tried": 63,
+   "legs_delivered_in_full": 8,
+   "legs_delivered_in_part": 12,
+   "out_legs_delivered": 5,
+   "in_legs_delivered": 10,
+   "direct_cycle_yr": 4.431
+  },
+  "138404": {
+   "table_cycle_yr": 4.544,
+   "legs_tried": 40,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 16,
+   "out_legs_delivered": 5,
+   "in_legs_delivered": 12,
+   "direct_cycle_yr": 4.808
+  },
+  "138911": {
+   "table_cycle_yr": 3.832,
+   "legs_tried": 52,
+   "legs_delivered_in_full": 3,
+   "legs_delivered_in_part": 19,
+   "out_legs_delivered": 13,
+   "in_legs_delivered": 7,
+   "direct_cycle_yr": 3.464
+  },
+  "141018": {
+   "table_cycle_yr": 3.791,
+   "legs_tried": 29,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 8,
+   "out_legs_delivered": 3,
+   "in_legs_delivered": 5,
+   "direct_cycle_yr": null
+  },
+  "162173": {
+   "table_cycle_yr": 4.599,
+   "legs_tried": 6,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 3,
+   "out_legs_delivered": 2,
+   "in_legs_delivered": 1,
+   "direct_cycle_yr": null
+  },
+  "163000": {
+   "table_cycle_yr": 4.626,
+   "legs_tried": 20,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 8,
+   "out_legs_delivered": 4,
+   "in_legs_delivered": 4,
+   "direct_cycle_yr": 4.674
+  },
+  "190491": {
+   "table_cycle_yr": 4.488,
+   "legs_tried": 43,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 20,
+   "out_legs_delivered": 2,
+   "in_legs_delivered": 18,
+   "direct_cycle_yr": null
+  },
+  "2004 BE86": {
+   "table_cycle_yr": 3.654,
+   "legs_tried": 5,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 1,
+   "out_legs_delivered": 0,
+   "in_legs_delivered": 1,
+   "direct_cycle_yr": null
+  },
+  "2006 QQ23": {
+   "table_cycle_yr": 3.586,
+   "legs_tried": 33,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 7,
+   "out_legs_delivered": 2,
+   "in_legs_delivered": 6,
+   "direct_cycle_yr": 4.517
+  },
+  "2006 YF": {
+   "table_cycle_yr": 3.174,
+   "legs_tried": 27,
+   "legs_delivered_in_full": 2,
+   "legs_delivered_in_part": 8,
+   "out_legs_delivered": 5,
+   "in_legs_delivered": 5,
+   "direct_cycle_yr": 4.188
+  },
+  "2011 GD60": {
+   "table_cycle_yr": 4.16,
+   "legs_tried": 15,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 6,
+   "out_legs_delivered": 5,
+   "in_legs_delivered": 1,
+   "direct_cycle_yr": null
+  },
+  "2013 XV8": {
+   "table_cycle_yr": 4.339,
+   "legs_tried": 29,
+   "legs_delivered_in_full": 6,
+   "legs_delivered_in_part": 11,
+   "out_legs_delivered": 4,
+   "in_legs_delivered": 11,
+   "direct_cycle_yr": 4.544
+  },
+  "2015 DP155": {
+   "table_cycle_yr": 4.558,
+   "legs_tried": 40,
+   "legs_delivered_in_full": 4,
+   "legs_delivered_in_part": 13,
+   "out_legs_delivered": 7,
+   "in_legs_delivered": 10,
+   "direct_cycle_yr": null
+  },
+  "2015 HV182": {
+   "table_cycle_yr": 4.435,
+   "legs_tried": 39,
+   "legs_delivered_in_full": 3,
+   "legs_delivered_in_part": 14,
+   "out_legs_delivered": 10,
+   "in_legs_delivered": 6,
+   "direct_cycle_yr": 4.429
+  },
+  "2015 NA14": {
+   "table_cycle_yr": 3.23,
+   "legs_tried": 23,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 4,
+   "out_legs_delivered": 4,
+   "in_legs_delivered": 1,
+   "direct_cycle_yr": null
+  },
+  "2015 XA352": {
+   "table_cycle_yr": 4.352,
+   "legs_tried": 55,
+   "legs_delivered_in_full": 7,
+   "legs_delivered_in_part": 16,
+   "out_legs_delivered": 9,
+   "in_legs_delivered": 11,
+   "direct_cycle_yr": 4.159
+  },
+  "2016 UP41": {
+   "table_cycle_yr": 3.311,
+   "legs_tried": 18,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 5,
+   "out_legs_delivered": 1,
+   "in_legs_delivered": 4,
+   "direct_cycle_yr": null
+  },
+  "2019 XN1": {
+   "table_cycle_yr": 3.955,
+   "legs_tried": 2,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 0,
+   "out_legs_delivered": 0,
+   "in_legs_delivered": 0,
+   "direct_cycle_yr": null
+  },
+  "2020 UF2": {
+   "table_cycle_yr": 4.708,
+   "legs_tried": 20,
+   "legs_delivered_in_full": 4,
+   "legs_delivered_in_part": 7,
+   "out_legs_delivered": 7,
+   "in_legs_delivered": 4,
+   "direct_cycle_yr": 4.746
+  },
+  "2025 VD24": {
+   "table_cycle_yr": 3.326,
+   "legs_tried": 37,
+   "legs_delivered_in_full": 6,
+   "legs_delivered_in_part": 3,
+   "out_legs_delivered": 2,
+   "in_legs_delivered": 2,
+   "direct_cycle_yr": 3.239
+  },
+  "216985": {
+   "table_cycle_yr": 4.708,
+   "legs_tried": 6,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 4,
+   "out_legs_delivered": 0,
+   "in_legs_delivered": 4,
+   "direct_cycle_yr": null
+  },
+  "25143": {
+   "table_cycle_yr": 4.667,
+   "legs_tried": 7,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 5,
+   "out_legs_delivered": 4,
+   "in_legs_delivered": 2,
+   "direct_cycle_yr": null
+  },
+  "251732": {
+   "table_cycle_yr": 4.613,
+   "legs_tried": 8,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 4,
+   "out_legs_delivered": 1,
+   "in_legs_delivered": 3,
+   "direct_cycle_yr": null
+  },
+  "253062": {
+   "table_cycle_yr": 4.393,
+   "legs_tried": 28,
+   "legs_delivered_in_full": 2,
+   "legs_delivered_in_part": 10,
+   "out_legs_delivered": 9,
+   "in_legs_delivered": 2,
+   "direct_cycle_yr": 4.286
+  },
+  "264308": {
+   "table_cycle_yr": 3.832,
+   "legs_tried": 5,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 1,
+   "out_legs_delivered": 0,
+   "in_legs_delivered": 1,
+   "direct_cycle_yr": null
+  },
+  "292220": {
+   "table_cycle_yr": 3.723,
+   "legs_tried": 4,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 3,
+   "out_legs_delivered": 1,
+   "in_legs_delivered": 2,
+   "direct_cycle_yr": null
+  },
+  "307564": {
+   "table_cycle_yr": 3.695,
+   "legs_tried": 60,
+   "legs_delivered_in_full": 3,
+   "legs_delivered_in_part": 19,
+   "out_legs_delivered": 12,
+   "in_legs_delivered": 10,
+   "direct_cycle_yr": 4.292
+  },
+  "341843": {
+   "table_cycle_yr": 3.051,
+   "legs_tried": 55,
+   "legs_delivered_in_full": 8,
+   "legs_delivered_in_part": 8,
+   "out_legs_delivered": 10,
+   "in_legs_delivered": 2,
+   "direct_cycle_yr": 4.343
+  },
+  "344756": {
+   "table_cycle_yr": 4.611,
+   "legs_tried": 39,
+   "legs_delivered_in_full": 7,
+   "legs_delivered_in_part": 16,
+   "out_legs_delivered": 13,
+   "in_legs_delivered": 10,
+   "direct_cycle_yr": 4.617
+  },
+  "350523": {
+   "table_cycle_yr": 3.75,
+   "legs_tried": 33,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 11,
+   "out_legs_delivered": 4,
+   "in_legs_delivered": 7,
+   "direct_cycle_yr": 3.917
+  },
+  "350751": {
+   "table_cycle_yr": 2.956,
+   "legs_tried": 34,
+   "legs_delivered_in_full": 2,
+   "legs_delivered_in_part": 15,
+   "out_legs_delivered": 3,
+   "in_legs_delivered": 13,
+   "direct_cycle_yr": 3.178
+  },
+  "363305": {
+   "table_cycle_yr": 4.38,
+   "legs_tried": 63,
+   "legs_delivered_in_full": 3,
+   "legs_delivered_in_part": 26,
+   "out_legs_delivered": 14,
+   "in_legs_delivered": 14,
+   "direct_cycle_yr": 4.285
+  },
+  "382875": {
+   "table_cycle_yr": 4.229,
+   "legs_tried": 78,
+   "legs_delivered_in_full": 12,
+   "legs_delivered_in_part": 16,
+   "out_legs_delivered": 9,
+   "in_legs_delivered": 10,
+   "direct_cycle_yr": 4.103
+  },
+  "401954": {
+   "table_cycle_yr": 3.586,
+   "legs_tried": 61,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 15,
+   "out_legs_delivered": 7,
+   "in_legs_delivered": 9,
+   "direct_cycle_yr": null
+  },
+  "416186": {
+   "table_cycle_yr": 4.817,
+   "legs_tried": 5,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 3,
+   "out_legs_delivered": 2,
+   "in_legs_delivered": 1,
+   "direct_cycle_yr": null
+  },
+  "424482": {
+   "table_cycle_yr": 4.831,
+   "legs_tried": 3,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 1,
+   "out_legs_delivered": 1,
+   "in_legs_delivered": 0,
+   "direct_cycle_yr": null
+  },
+  "441304": {
+   "table_cycle_yr": 3.64,
+   "legs_tried": 45,
+   "legs_delivered_in_full": 2,
+   "legs_delivered_in_part": 20,
+   "out_legs_delivered": 15,
+   "in_legs_delivered": 7,
+   "direct_cycle_yr": 4.834
+  },
+  "451157": {
+   "table_cycle_yr": 4.652,
+   "legs_tried": 12,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 5,
+   "out_legs_delivered": 3,
+   "in_legs_delivered": 2,
+   "direct_cycle_yr": null
+  },
+  "451370": {
+   "table_cycle_yr": 4.708,
+   "legs_tried": 13,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 2,
+   "out_legs_delivered": 2,
+   "in_legs_delivered": 0,
+   "direct_cycle_yr": null
+  },
+  "452807": {
+   "table_cycle_yr": 4.584,
+   "legs_tried": 26,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 15,
+   "out_legs_delivered": 2,
+   "in_legs_delivered": 13,
+   "direct_cycle_yr": null
+  },
+  "455415": {
+   "table_cycle_yr": 4.407,
+   "legs_tried": 56,
+   "legs_delivered_in_full": 2,
+   "legs_delivered_in_part": 26,
+   "out_legs_delivered": 11,
+   "in_legs_delivered": 16,
+   "direct_cycle_yr": 4.345
+  },
+  "458375": {
+   "table_cycle_yr": 4.653,
+   "legs_tried": 9,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 5,
+   "out_legs_delivered": 5,
+   "in_legs_delivered": 0,
+   "direct_cycle_yr": null
+  },
+  "459200": {
+   "table_cycle_yr": 4.516,
+   "legs_tried": 32,
+   "legs_delivered_in_full": 3,
+   "legs_delivered_in_part": 8,
+   "out_legs_delivered": 2,
+   "in_legs_delivered": 9,
+   "direct_cycle_yr": 4.487
+  },
+  "470975": {
+   "table_cycle_yr": 4.53,
+   "legs_tried": 26,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 11,
+   "out_legs_delivered": 6,
+   "in_legs_delivered": 5,
+   "direct_cycle_yr": 4.716
+  },
+  "471240": {
+   "table_cycle_yr": 3.681,
+   "legs_tried": 44,
+   "legs_delivered_in_full": 3,
+   "legs_delivered_in_part": 17,
+   "out_legs_delivered": 12,
+   "in_legs_delivered": 8,
+   "direct_cycle_yr": 4.297
+  },
+  "488490": {
+   "table_cycle_yr": 4.078,
+   "legs_tried": 36,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 7,
+   "out_legs_delivered": 6,
+   "in_legs_delivered": 1,
+   "direct_cycle_yr": null
+  },
+  "52381": {
+   "table_cycle_yr": 4.817,
+   "legs_tried": 9,
+   "legs_delivered_in_full": 2,
+   "legs_delivered_in_part": 2,
+   "out_legs_delivered": 1,
+   "in_legs_delivered": 3,
+   "direct_cycle_yr": null
+  },
+  "591179": {
+   "table_cycle_yr": 4.626,
+   "legs_tried": 8,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 2,
+   "out_legs_delivered": 1,
+   "in_legs_delivered": 1,
+   "direct_cycle_yr": 4.821
+  },
+  "612356": {
+   "table_cycle_yr": 3.654,
+   "legs_tried": 11,
+   "legs_delivered_in_full": 2,
+   "legs_delivered_in_part": 3,
+   "out_legs_delivered": 4,
+   "in_legs_delivered": 1,
+   "direct_cycle_yr": null
+  },
+  "65679": {
+   "table_cycle_yr": 3.75,
+   "legs_tried": 70,
+   "legs_delivered_in_full": 7,
+   "legs_delivered_in_part": 14,
+   "out_legs_delivered": 13,
+   "in_legs_delivered": 8,
+   "direct_cycle_yr": 4.386
+  },
+  "65717": {
+   "table_cycle_yr": 4.516,
+   "legs_tried": 28,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 5,
+   "out_legs_delivered": 2,
+   "in_legs_delivered": 4,
+   "direct_cycle_yr": null
+  },
+  "674590": {
+   "table_cycle_yr": 4.845,
+   "legs_tried": 3,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 1,
+   "out_legs_delivered": 0,
+   "in_legs_delivered": 1,
+   "direct_cycle_yr": null
+  },
+  "68278": {
+   "table_cycle_yr": 3.831,
+   "legs_tried": 17,
+   "legs_delivered_in_full": 0,
+   "legs_delivered_in_part": 5,
+   "out_legs_delivered": 3,
+   "in_legs_delivered": 2,
+   "direct_cycle_yr": null
+  },
+  "756476": {
+   "table_cycle_yr": 3.817,
+   "legs_tried": 78,
+   "legs_delivered_in_full": 5,
+   "legs_delivered_in_part": 24,
+   "out_legs_delivered": 18,
+   "in_legs_delivered": 6,
+   "direct_cycle_yr": 4.259
+  },
+  "762379": {
+   "table_cycle_yr": 4.161,
+   "legs_tried": 61,
+   "legs_delivered_in_full": 1,
+   "legs_delivered_in_part": 15,
+   "out_legs_delivered": 5,
+   "in_legs_delivered": 11,
+   "direct_cycle_yr": 4.206
+  },
+  "89136": {
+   "table_cycle_yr": 4.338,
+   "legs_tried": 27,
+   "legs_delivered_in_full": 3,
+   "legs_delivered_in_part": 9,
+   "out_legs_delivered": 6,
+   "in_legs_delivered": 4,
+   "direct_cycle_yr": 4.368
+  },
+  "98943": {
+   "table_cycle_yr": 4.229,
+   "legs_tried": 20,
+   "legs_delivered_in_full": 2,
+   "legs_delivered_in_part": 2,
+   "out_legs_delivered": 1,
+   "in_legs_delivered": 2,
+   "direct_cycle_yr": 4.364
+  },
+  "99942": {
+   "table_cycle_yr": 2.628,
+   "legs_tried": 100,
+   "legs_delivered_in_full": 3,
+   "legs_delivered_in_part": 25,
+   "out_legs_delivered": 12,
+   "in_legs_delivered": 13,
+   "direct_cycle_yr": 4.149
+  }
+ }
+}

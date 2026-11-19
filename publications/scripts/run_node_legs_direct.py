@@ -3,7 +3,7 @@ rq-0-52: settle the target count with the station's place fixed, by solving the 
 between the node and the edge of the Earth's sphere of influence for each tug leg.
 
     python run_cislunar_flyby_3d.py --station        # the sample of escapes used as seeds
-    python run_node_legs_direct.py --orbit=halo-120 --phase0=0 [--legs=pooled|station] [--window=10] [--cap=5.0] [--cycle=4.0]
+    python run_node_legs_direct.py --orbit=halo-120 --phase0=0[,1,...] [--legs=pooled|station] [--window=10] [--cap=5.0] [--cycle=4.0] [--seconds=900]
 
 Takes tug legs already solved against a reach table: the pooled halo table
 (legs-flyby-3d-halo.csv; only targets that close there can close with the station's place
@@ -15,7 +15,16 @@ excess speed is charged to the tug's thrusters one for one (an upper bound on it
 The escape may fall within `window` days of the date the leg was solved for; the
 heliocentric leg is kept as solved.
 
-Writes publications/data/nea-trajectories/node-legs-direct-<orbit>-p<k>[-w<window>].json.
+Several station places can be given at once (--phase0=0,1,2,...,7); their legs share one
+pool of workers. A leg is given at most --seconds of wall clock; the best found by then is
+kept and the leg is marked timed_out.
+
+Legs already solved for this place under other caps are reused (the solve does not depend
+on the caps).
+
+Writes publications/data/nea-trajectories/node-legs-direct-<orbit>-p<k>[-w<window>][-c<cap>-y<cycle>].json
+(caps other than 5 km/s and 4 yr are tagged) and, per leg, node-legs-direct-<orbit>-p<k>[...]-legs.csv
+(read by run_node_stations_direct.py).
 """
 
 from __future__ import annotations
@@ -36,25 +45,33 @@ from run_trajectory_study import OUT
 
 arg = lambda k, default: next((a.split('=')[1] for a in sys.argv if a.startswith(f'--{k}=')), default)
 ORBIT = arg('orbit', 'halo-120')
-PHASE0 = int(arg('phase0', '0'))
+PHASES = [int(p) for p in arg('phase0', '0').split(',')]
 WINDOW = float(arg('window', '10'))
 CAP = float(arg('cap', '5.0'))
 CYCLE = float(arg('cycle', '4.0'))
 MIN_STAY = 60.0
 LEGS = arg('legs', 'pooled')  # pooled: legs solved against the pooled halo table; station: against this station's own table
 SEEDS = int(arg('seeds', '3'))
+SECONDS = float(arg('seconds', '900'))
+LEG_COLUMNS = ('target', 'leg', 'burn_ms', 'budget', 'depart', 'tof', 'dv', 'vinf', 'lon', 'lat', 'allowance', 'delivered', 'dv_eff', 'node_T',
+               'flight_days', 'burn_frac', 'escape_shift_days', 'runs', 'timed_out', 'seconds')
 _ctx = {}
 
 
-def load_legs():
+def load_legs(phase0):
     legs = {}
-    name = 'legs-flyby-3d-halo.csv' if LEGS == 'pooled' else f'legs-flyby-station-{ORBIT}-p{PHASE0}.csv'
+    name = 'legs-flyby-3d-halo.csv' if LEGS == 'pooled' else f'legs-flyby-station-{ORBIT}-p{phase0}.csv'
     for r in csv.DictReader(open(os.path.join(OUT, name))):
         legs.setdefault(r['target'], []).append({
             'target': r['target'], 'leg': r['leg'], 'burn_ms': int(r['burn_ms']), 'budget': float(r['budget_days']),
             'depart': d.J2000 + (float(r['depart_year']) - 2000.0) * 365.25, 'tof': float(r['tof_days']), 'dv': float(r['low_thrust_kms']),
             'vinf': float(r['vinf_kms']), 'lon': float(r['vinf_lon_deg']), 'lat': float(r['vinf_lat_deg']), 'allowance': float(r['allowance_days'])})
     return legs
+
+
+def caps_tag(cap=None, cycle=None):
+    cap, cycle = CAP if cap is None else cap, CYCLE if cycle is None else cycle
+    return '' if (cap, cycle) == (5.0, 4.0) else f'-c{cap:g}-y{cycle:g}'
 
 
 def pairs(outs, ins, cap, cycle, direct=False):
@@ -75,25 +92,58 @@ def pairs(outs, ins, cap, cycle, direct=False):
     return res
 
 
+NUMERIC = {'burn_ms': int, 'runs': int}
+
+
+def reuse(phase0):
+    """Legs of this place already solved under other caps (same date, burn and window), by key.
+    The solve does not depend on the caps, so they are taken as they are."""
+    import glob
+    done = {}
+    for path in glob.glob(os.path.join(OUT, f'node-legs-direct-{ORBIT}-p{phase0}*-legs.csv')):
+        if '-station-legs' in path or (WINDOW != 10) != ('-w' in os.path.basename(path)):
+            continue
+        for r in csv.DictReader(open(path)):
+            row = {}
+            for k, v in r.items():
+                if k in ('target', 'leg'):
+                    row[k] = v
+                elif k == 'timed_out':
+                    row[k] = v == 'True'
+                elif v == '':
+                    continue
+                else:
+                    row[k] = NUMERIC.get(k, float)(v)
+            row['phase0'] = phase0
+            done[key(row)] = row
+    return done
+
+
+def key(leg):
+    return (leg['target'], leg['leg'], int(leg['burn_ms']), round(leg['depart'], 4), round(leg['tof'], 4), round(leg['vinf'], 4), round(leg['budget'], 1))
+
+
 def setup():
     if not _ctx:
         kinds = [orbit_label(k, a) for k, a in STATION_ORBITS]
         kind, size = STATION_ORBITS[kinds.index(ORBIT)]
         orbit = d.NodeOrbit(kind, size)
         z = np.load(os.path.join(CIS, 'escapes-3d-station.npz'))
-        _ctx.update(orbit=orbit, clouds={b: d.Cloud(z, b, kinds.index(ORBIT), orbit.period_days) for b in (150, 300)},
-                    clocks=d.Clocks(PHASE0 / 8.0, orbit.period_days))
+        _ctx.update(orbit=orbit, clouds={b: d.Cloud(z, b, kinds.index(ORBIT), orbit.period_days) for b in (150, 300)})
     return _ctx
 
 
-def solve_leg(leg):
+def solve_leg(job):
+    phase0, leg = job
     ctx = setup()
     out = leg['leg'] == 'out'
     T_earth = (leg['depart'] if out else leg['depart'] + leg['tof']) - d.J2000  # day the leg leaves or reaches the sphere of influence
-    clocks = ctx['clocks'] if out else ctx['clocks'].mirrored()
-    v, sol, runs = d.reachable(ctx['orbit'], ctx['clouds'][leg['burn_ms']], clocks, leg['lon'], leg['lat'], leg['vinf'], float(leg['burn_ms']),
-                               T_earth if out else -T_earth, WINDOW, leg['budget'], n_seeds=SEEDS)
-    res = dict(leg, delivered=v, runs=runs)
+    clocks = d.Clocks(phase0 / 8.0, ctx['orbit'].period_days)
+    clocks = clocks if out else clocks.mirrored()
+    t0 = time.time()
+    v, sol, runs, timed_out = d.reachable(ctx['orbit'], ctx['clouds'][leg['burn_ms']], clocks, leg['lon'], leg['lat'], leg['vinf'], float(leg['burn_ms']),
+                                          T_earth if out else -T_earth, WINDOW, leg['budget'], n_seeds=SEEDS, seconds=SECONDS)
+    res = dict(leg, phase0=phase0, delivered=v, runs=runs, timed_out=timed_out, seconds=round(time.time() - t0, 1))
     if sol is not None:
         f = sol.flown
         burn_T = float(sol.x[0])
@@ -106,23 +156,34 @@ def solve_leg(leg):
 
 
 def main():
-    legs = load_legs()
-    jobs, base = [], {}
-    for n, L in legs.items():
-        outs, ins = [l for l in L if l['leg'] == 'out'], [l for l in L if l['leg'] == 'in']
-        ps = pairs(outs, ins, CAP, CYCLE)
-        if ps:
-            base[n] = min(p[0] for p in ps)
-            used = {id(p[1]): p[1] for p in ps} | {id(p[2]): p[2] for p in ps}
-            jobs += list(used.values())
-    print(f'{ORBIT} phase0 {PHASE0}/8 window {WINDOW:g} d: {len(base)} targets, {len(jobs)} legs', flush=True)
+    jobs, base, reused = [], {}, []
+    for phase0 in PHASES:
+        done = reuse(phase0) if LEGS == 'pooled' else {}
+        base[phase0] = {}
+        for n, L in load_legs(phase0).items():
+            outs, ins = [l for l in L if l['leg'] == 'out'], [l for l in L if l['leg'] == 'in']
+            ps = pairs(outs, ins, CAP, CYCLE)
+            if ps:
+                base[phase0][n] = min(p[0] for p in ps)
+                used = {id(p[1]): p[1] for p in ps} | {id(p[2]): p[2] for p in ps}
+                for l in used.values():
+                    if key(l) in done:
+                        reused.append(dict(done[key(l)], **{k: l[k] for k in ('budget', 'tof', 'allowance')}))
+                    else:
+                        jobs.append((phase0, l))
+    print(f'{ORBIT} phases {PHASES} window {WINDOW:g} d, legs <= {CAP:g} km/s, cycles <= {CYCLE:g} yr: {len(jobs)} legs to solve, {len(reused)} reused', flush=True)
     t0 = time.time()
-    with Pool(min(7, os.cpu_count() or 2)) as pool:
-        solved = []
+    with Pool(min(9, os.cpu_count() or 2)) as pool:
+        solved = list(reused)
         for k, r in enumerate(pool.imap_unordered(solve_leg, jobs, chunksize=1)):
             solved.append(r)
             if k % 25 == 24:
                 print(f'{k + 1}/{len(jobs)} legs, {time.time() - t0:.0f}s', flush=True)
+    for phase0 in PHASES:
+        write(phase0, base[phase0], [r for r in solved if r['phase0'] == phase0], time.time() - t0)
+
+
+def write(phase0, base, solved, seconds):
     by = {}
     for r in solved:
         by.setdefault(r['target'], []).append(r)
@@ -138,18 +199,23 @@ def main():
                       'direct_cycle_yr': round(min(p[0] for p in ps), 3) if ps else None}
     closing = [n for n, t in targets.items() if t['direct_cycle_yr'] is not None]
     ok = [l for l in solved if l['delivered'] > 0]
-    summary = {'legs_from': LEGS, 'orbit': ORBIT, 'phase0_eighths': PHASE0, 'window_days': WINDOW, 'leg_cap_kms': CAP, 'cycle_cap_yr': CYCLE, 'seeds_per_leg': SEEDS,
-               'tolerances': d.TOL, 'targets_closing_on_table': len(base), 'targets_closing_direct': len(closing), 'closing': closing,
+    summary = {'legs_from': LEGS, 'orbit': ORBIT, 'phase0_eighths': phase0, 'window_days': WINDOW, 'leg_cap_kms': CAP, 'cycle_cap_yr': CYCLE, 'seeds_per_leg': SEEDS,
+               'seconds_per_leg_limit': SECONDS, 'tolerances': d.TOL, 'targets_closing_on_table': len(base), 'targets_closing_direct': len(closing), 'closing': closing,
                'legs_tried': len(solved), 'legs_delivered_in_full': sum(l['delivered'] >= l['vinf'] - 0.005 for l in solved),
                'legs_delivered_in_part': sum(0 < l['delivered'] < l['vinf'] - 0.005 for l in solved),
-               'legs_without_seed': sum(l['runs'] == 0 for l in solved),
+               'legs_without_seed': sum(l['runs'] == 0 for l in solved), 'legs_timed_out': sum(bool(l['timed_out']) for l in solved),
                'flight_days_median': round(float(np.median([l['flight_days'] for l in ok])), 1) if ok else None,
                'burn_fraction_median': round(float(np.median([l['burn_frac'] for l in ok])), 2) if ok else None,
                'median_cycle_yr': round(float(np.median([targets[n]['direct_cycle_yr'] for n in closing])), 2) if closing else None,
-               'seconds': round(time.time() - t0), 'targets': targets}
-    tag = f'{ORBIT}-p{PHASE0}' + ('' if LEGS == 'pooled' else '-station-legs') + ('' if WINDOW == 10 else f'-w{WINDOW:g}')
+               'seconds': round(seconds), 'targets': targets}
+    tag = f'{ORBIT}-p{phase0}' + ('' if LEGS == 'pooled' else '-station-legs') + ('' if WINDOW == 10 else f'-w{WINDOW:g}') + caps_tag()
     json.dump(summary, open(os.path.join(OUT, f'node-legs-direct-{tag}.json'), 'w'), indent=1)
-    print(json.dumps({k: v for k, v in summary.items() if k != 'targets'}, indent=1))
+    with open(os.path.join(OUT, f'node-legs-direct-{tag}-legs.csv'), 'w', newline='') as f:
+        w = csv.writer(f)
+        w.writerow(LEG_COLUMNS)
+        for r in sorted(solved, key=lambda r: (r['target'], r['leg'], r['depart'], r['burn_ms'])):
+            w.writerow([round(r[k], 4) if isinstance(r.get(k), float) else r.get(k, '') for k in LEG_COLUMNS])
+    print(json.dumps({k: v for k, v in summary.items() if k != 'targets'}, indent=1), flush=True)
 
 
 if __name__ == '__main__':
