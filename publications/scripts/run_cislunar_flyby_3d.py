@@ -38,7 +38,8 @@ from run_cislunar_flyby import BUDGETS, BURNS_MS, LON_EDGES, MIN_MOON_BINS, MOON
 ORBITS = (('planar', 20e3), ('planar', 100e3), ('planar', 200e3), ('halo', 120e3), ('halo', 300e3))
 NODE_EDGES = np.arange(0.0, 361.0, 60.0)  # node angle at escape, degrees
 LAT_EDGES_SIGNED = np.array([-90.0, -60.0, -45.0, -30.0, -15.0, 0.0, 15.0, 30.0, 45.0, 60.0, 90.0])
-KEYS = ('vinf', 'lon', 'lat', 'days', 'moon', 'node', 'orbit', 'first_days', 'elev', 'station')
+KEYS = ('vinf', 'lon', 'lat', 'days', 'moon', 'node', 'orbit', 'first_days', 'elev', 'station',
+        'burn_place', 'burn_az', 'burn_up', 'burn_share', 'turn_frac', 'roll')  # the last six: settings to re-fly an escape from
 PHASE_EDGES = np.linspace(0.0, 1.0, 9)  # where the node station is on its orbit at escape, as a fraction of the period
 STATION_BURNS = (150.0, 300.0)
 STATION_ORBITS = (('planar', 100e3), ('halo', 120e3), ('halo', 300e3))
@@ -76,6 +77,9 @@ def chunk(args):
         np.minimum.at(first, ce, tc * c.TU_DAYS)
         _, _, place = c.encounter_vinf_inclined(yc, tc, node0, inc)
         fan, src = c.swingby_fan_inclined(yc, tc, node0, *fan_n, inc=inc)
+        nf = 1 + fan_n[0] * fan_n[1]  # as laid out by swingby_fan_inclined
+        fan_frac = np.tile(np.concatenate([[0.0], np.repeat(np.arange(1, fan_n[0] + 1) / fan_n[0], fan_n[1])]), len(yc))
+        fan_roll = np.tile(np.concatenate([[0.0], np.tile(np.arange(fan_n[1]) * 2 * np.pi / fan_n[1], fan_n[0])]), len(yc))
         f = c.integrate(fan, tc[src], T_TOTAL * c.DAY)
         ok = f.status == 1
         v, lon, lat, c3 = c.escape_state(f.y[ok])
@@ -90,6 +94,12 @@ def chunk(args):
         out['orbit'].append(orbit[ce[s]])
         out['station'].append((phase[ce[s]] + te / periods[orbit[ce[s]]]) % 1.0)  # the station flies on while the tug leaves
         out['first_days'].append(tc[s] * c.TU_DAYS)
+        out['burn_place'].append(phase[ce[s]])
+        out['burn_az'].append(az[ce[s]])
+        out['burn_up'].append(el[s])
+        out['burn_share'].append(np.full(len(s), share))
+        out['turn_frac'].append(fan_frac[ok][keep])
+        out['roll'].append(fan_roll[ok][keep])
         out['elev'].append(np.degrees(np.arctan2(el[s], share)))
     return {k: np.concatenate(v) if v else np.zeros(0) for k, v in out.items()}, n_enc, first
 
