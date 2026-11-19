@@ -159,8 +159,12 @@ def main():
         out['stations'][k] = {'targets_min': min(counts), 'targets_max': max(counts),
                               'targets_same_station_min': min(r['targets_same_station'] for r in res),
                               'targets_same_station_max': max(r['targets_same_station'] for r in res), 'sets': res}
-    path = os.path.join(OUT, f'node-phasing-{ORBIT}.json')
-    if os.path.exists(path):
+    tables = {'parking_two_burn_phasing': (f'node-phasing-{ORBIT}.json', 'two-burn transfers (an upper bound on the phasing cost)'),
+              'parking_multi_burn_phasing': (f'node-phasing-multi-{ORBIT}.json', 'multi-burn transfers of up to 360 days (a lower upper bound)')}
+    for name, (fname, how) in tables.items():
+        path = os.path.join(OUT, fname)
+        if not os.path.exists(path):
+            continue
         from run_cislunar_flyby_3d import STATION_ORBITS, orbit_label
         import node_leg_direct as d
         kinds = [orbit_label(k, a) for k, a in STATION_ORBITS]
@@ -171,8 +175,8 @@ def main():
             closing = sorted(n for n in names if cyc[n] is not None)
             res.append({'station': st, 'targets': len(closing), 'closing': closing,
                         'median_cycle_yr': round(float(np.median([cyc[n] for n in closing])), 2) if closing else None})
-        out['parking_two_burn_phasing'] = {'targets_min': min(r['targets'] for r in res), 'targets_max': max(r['targets'] for r in res),
-                                           'note': 'one station; tugs phase round the orbit with two-burn transfers (an upper bound on the phasing cost) paid from the leg cap', 'by_station': res}
+        out[name] = {'targets_min': min(r['targets'] for r in res), 'targets_max': max(r['targets'] for r in res),
+                     'note': f'one station; tugs phase round the orbit with {how} paid from the leg cap', 'by_station': res}
     # legs: which places deliver each leg in full or in part
     deliver = {}
     for n in names:
@@ -190,10 +194,10 @@ def main():
         for n in names:
             w.writerow([n] + [len(per_target[n].get(k, [])) for k in COUNTS] + [min(per_target[n][8]) if 8 in per_target[n] else ''])
     json.dump(out, open(os.path.join(OUT, f'node-stations-direct-{ORBIT}{TAG}.json'), 'w'), indent=1)
-    print(json.dumps({k: v for k, v in out.items() if k not in ('stations', 'parking_two_burn_phasing')}, indent=1))
-    if 'parking_two_burn_phasing' in out:
-        p = out['parking_two_burn_phasing']
-        print('1 station, tugs parking with two-burn phasing:', p['targets_min'], '-', p['targets_max'], 'targets')
+    print(json.dumps({k: v for k, v in out.items() if k != 'stations' and not k.startswith('parking_')}, indent=1))
+    for name in tables:
+        if name in out:
+            print('1 station, tugs parking,', name, ':', out[name]['targets_min'], '-', out[name]['targets_max'], 'targets')
     for k in COUNTS:
         s = out['stations'][k]
         print(k, 'stations:', s['targets_min'], '-', s['targets_max'], 'targets; returning to the same station', s['targets_same_station_min'], '-', s['targets_same_station_max'])
