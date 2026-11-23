@@ -1,0 +1,40 @@
+{
+ "orbit": "halo-120",
+ "place": 0,
+ "leg_cap_kms": 5.0,
+ "cycle_cap_yr": 5.0,
+ "pairs_per_target": 3,
+ "maxiter": 300,
+ "model": "Sun-Earth CR3BP with the Earth and the Moon about the barycentre; correction burns allowed every 10 days",
+ "targets_closing_patched": 32,
+ "legs_checked": 125,
+ "legs_solved": 109,
+ "extra_ms": {
+  "median": 134.9,
+  "p90": 347.5,
+  "max": 572.5,
+  "share_over_100": 0.651
+ },
+ "corrections_median": 6.0,
+ "lowest_km_min": 100.0,
+ "targets_if_unsolved_kept": 27,
+ "targets_if_unsolved_dropped": 24,
+ "lost_if_unsolved_kept": [
+  "2015 HV182",
+  "2020 UF2",
+  "363305",
+  "459200",
+  "470975"
+ ],
+ "lost_if_unsolved_dropped": [
+  "2015 HV182",
+  "2015 NA14",
+  "2020 UF2",
+  "2025 VD24",
+  "363305",
+  "459200",
+  "470975",
+  "89136"
+ ],
+ "note": "extra_ms is an upper bound (SLSQP stopped at its iteration cap). Legs outside each target's checked cycles are not counted in the recount."
+}
