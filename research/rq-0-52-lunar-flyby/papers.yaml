@@ -139,3 +139,167 @@ not_obtained:
     authors: ["NASA LSP"]
     venue: "elvperf.ksc.nasa.gov"
     note: "Query tool; no table reached in this session. The launcher capacity in the scout launch trade is our estimate from published payloads, not the provider's curve."
+
+# ---------------------------------------------------------------------------------------
+# Added 2026-11-24 from the outside novelty review (novelty-review.md), answering
+# publications/handover/rq-0-52-nea-tug-cycles-literature-brief.md. Access levels below are
+# the reviewer's, not ours: reviewer-full-text / reviewer-abstract. Papers it resolved by
+# metadata or saw only in a reference list are under identified_2026_11_24, not here.
+papers_2026_11_24:
+  - id: "10.2322/tjsass.58.261"
+    title: "Spacecraft Rendezvous Utilizing Invariant Manifolds for a Halo Orbit"
+    authors: ["Sato", "Kitamura", "Shima"]
+    year: 2015
+    venue: "Trans. JSASS 58, 261-269"
+    relevance: critical
+    access: reviewer-full-text
+    summary: "Phasing along an Earth-Moon L2 halo: 61 / 180 / 331 / 397 m/s at 20 / 60 / 120 / 180 deg, symmetric about half an orbit and almost independent of the starting phase (the shape of our chord law, C6). A manifold detour costs 122 m/s at 180 deg in 36 days (3.2x cheaper); it wins above about 70 deg."
+  - id: "10.1007/s40295-020-00229-w"
+    title: "Design of Lunar-Gravity-Assisted Escape Trajectories"
+    authors: ["Lorenzo Casalino", "Gregory Lantoine"]
+    year: 2020
+    venue: "J. Astronaut. Sci. 67, 1374-1390"
+    relevance: critical
+    access: reviewer-full-text
+    summary: "Double lunar swingbys with Sun-perturbed Moon-to-Moon transfers: C3 up to 1.5 km2/s2 guaranteed in any direction, declination limited to +-30 deg at C3 2; our v-inf band of 1.2-1.46 km/s (C9) sits between the two. Moon in the ecliptic. Re-optimised in a DE405 four-body model it changed escape mass by 28 of 9,664 kg."
+  - id: "10.3389/fams.2018.00032"
+    title: "Two Periodic Models for the Earth-Moon System"
+    authors: ["Jorba-Cusco", "Farres", "Jorba"]
+    year: 2018
+    venue: "Front. Appl. Math. Stat. 4:32"
+    relevance: high
+    access: reviewer-full-text
+    summary: "States that the bicircular problem is not coherent (the primaries do not obey Newton's laws); the class of defect behind our mixed-frame drift (C8). Earth-Moon system only; no drift quantified."
+  - id: "10.1016/j.actaastro.2021.03.002"
+    title: "On asteroid retrieval missions enabled by invariant manifold dynamics"
+    authors: ["Tyler", "Wittig"]
+    year: 2021
+    venue: "Acta Astronaut. 183, 43-51"
+    relevance: high
+    access: reviewer-full-text
+    summary: "Recomputes easily retrievable objects: 17 to 44; a 20% higher threshold gives 50% more (published form of our cap sensitivity, C3). Transfers re-converged in the full CR3BP differ by only m/s."
+  - id: "10.3389/fspas.2023.1177573"
+    title: "Phasing analysis on DRO with impulsive maneuver"
+    authors: ["Fu", "Wang", "Zhang"]
+    year: 2023
+    venue: "Front. Astron. Space Sci. 10:1177573"
+    relevance: medium
+    access: reviewer-full-text
+    summary: "On a lunar DRO the phasing cost falls with time of flight (30 deg: 67 to 16 m/s with one more period) and levels off past 1.5 periods; contrasts with our near time-independence on a Sun-Earth halo (we tested to about 2 periods). CR3BP to ephemeris adds about 8%."
+  - id: "10.1016/j.actaastro.2011.11.007"
+    title: "Applications of multi-body dynamical environments: The ARTEMIS transfer trajectory design"
+    authors: ["Folta", "Woodard", "Howell", "Patterson", "Schlei"]
+    year: 2011
+    venue: "Acta Astronaut. 73, 237-249"
+    relevance: medium
+    access: reviewer-full-text
+    summary: "Flown correction budget for lunar-swingby legs: 4% of propellant for TCMs; deep-space manoeuvres 1.6-24 m/s, TCMs 0.2-2.2 m/s, spaced 29-61 days. Context for our 5-10 deterministic corrections per leg."
+  - id: "10.1007/s10569-013-9495-6"
+    title: "Easily retrievable objects among the NEO population"
+    authors: ["Garcia Yarnoz", "Sanchez", "McInnes"]
+    year: 2013
+    venue: "Celest. Mech. Dyn. Astron. 116, 367-388"
+    relevance: high
+    access: reviewer-full-text
+    summary: "12 objects capturable to Sun-Earth L1/L2 orbits below 500 m/s. One-way only, no reuse or cycle time, Moon and lunar swingbys excluded."
+  - id: "10.3389/fams.2018.00044"
+    title: "Trajectory Design for Asteroid Retrieval Missions: A Short Review"
+    authors: ["Sanchez", "Neves", "Urrutxua"]
+    year: 2018
+    venue: "Front. Appl. Math. Stat. 4:44"
+    relevance: medium
+    access: reviewer-full-text
+    summary: "Tabulates retrieval endgames and delivery cost (e.g. 58 m/s to a Sun-Earth libration orbit for 2006 RH120, 79 m/s with a lunar gravity assist for 2000 SG344)."
+  - id: "10.1016/j.asr.2022.10.036"
+    title: "Phasing with near rectilinear Halo orbits: Design and comparison"
+    authors: ["Bucchioni", "Lizy-Destrez", "Vaujour", "Thoraval", "Rouverand", "Silva"]
+    year: 2022
+    venue: "Adv. Space Res. 71, 2449-2466"
+    relevance: low
+    access: reviewer-full-text
+    summary: "NRHO phasing strategies against a 100 m/s ceiling: direct transfers 4-100 m/s but limited phase; butterfly parking 300-800 m/s."
+  - id: "10.2514/1.g009468"
+    title: "On-Manifold Low-Thrust Rephasing of Quasi-Periodic Orbits"
+    authors: ["Down", "Majji", "Howell"]
+    year: 2026
+    venue: "J. Guid. Control Dyn. 49, 1300-1316"
+    relevance: low
+    access: reviewer-full-text
+    summary: "Low-thrust rephasing on invariant tori; staying on the torus while thrusting is infeasible for a large class of systems. No scaling with phase shift."
+  - id: "10.1016/j.actaastro.2016.05.003"
+    title: "Phasing Delta-V for transfers from Sun-Earth halo orbits to the Moon"
+    authors: ["Hongru Chen", "Yasuhiro Kawakatsu", "Toshiya Hanada"]
+    year: 2016
+    venue: "Acta Astronaut. 127, 464-473"
+    relevance: critical
+    access: reviewer-abstract
+    summary: "Minimum phasing delta-v to reach the Moon from a Sun-Earth halo for every initial lunar phase: about 14 m/s for Az = 1e5 km, 45 m/s above 3.5e5 km. Bears on whether several stations are needed (C2): it prices meeting the Moon, not a given escape v-inf on a given date."
+  - id: "10.2514/1.g002518"
+    title: "Phasing Trajectories to Deploy a Constellation in a Halo Orbit"
+    authors: ["Hongru Chen", "Chao Ma"]
+    year: 2017
+    venue: "J. Guid. Control Dyn. 40, 2662-2667"
+    relevance: high
+    access: reviewer-abstract
+    summary: "Four spacecraft spaced 90 deg on an Earth-Moon L2 halo (Az 15,000 km) for at most 101 m/s each; compares phasing, lunar tours and manifold connections."
+  - id: "10.2514/1.g004751"
+    title: "Achievable Halo Phasing with Short-Range Trajectories"
+    authors: ["Qi", "de Ruiter"]
+    year: 2020
+    venue: "J. Guid. Control Dyn. 43, 928-938"
+    relevance: medium
+    access: reviewer-abstract
+    summary: "Phase change achievable from a given impulse on halo phasing orbits, and how start and end points change it."
+  - id: "10.3390/aerospace11070546"
+    title: "Trajectory Design of Potentially Hazardous Asteroid Exploration with Reusable Probes from Cislunar Space"
+    authors: ["Peng", "Zhang", "Gao"]
+    year: 2024
+    venue: "Aerospace 11:546"
+    relevance: high
+    access: reviewer-abstract
+    summary: "Twenty reusable probes on round trips from a lunar DRO station reach 105 hazardous asteroids in ten years (12th CTOC problem). Flybys, not stays with mass return; cislunar station; tour optimisation rather than a feasibility count."
+  - id: "10.1109/aero53065.2022.9843463"
+    title: "A Survey of Near-Earth Asteroids for Low-Thrust Round-Trip Missions"
+    authors: ["Xie", "Dempster"]
+    year: 2022
+    venue: "IEEE Aerospace Conference"
+    relevance: high
+    access: reviewer-abstract
+    summary: "1,684 of 24,149 NEAs accessible for low-thrust round trips from Earth (no node orbit, no halo phase, no swingby constraint); surrogate-network method."
+  - id: "10.3390/aerospace9040186"
+    title: "Optimal Escape from Sun-Earth and Earth-Moon L2 with Electric Propulsion"
+    authors: ["Mascolo", "Casalino"]
+    year: 2022
+    venue: "Aerospace 9:186"
+    relevance: medium
+    access: reviewer-abstract
+    summary: "Low-thrust escape from L2 in an ephemeris model, including toward NEAs; the no-swingby control case for our departure."
+  - id: "10.5281/zenodo.32160"
+    title: "Delta-v to Near-Earth Asteroids: An Examination of the Shoemaker-Helin Equations"
+    authors: ["Murphy"]
+    year: 2015
+    venue: "Zenodo"
+    relevance: low
+    access: reviewer-abstract
+    summary: "Tests a delta-v approximation against about 1,200 asteroids; nearest comparator for our reach-table over-count (C4)."
+
+identified_2026_11_24:
+  # resolved by the reviewer from metadata or a reference list; not read by anyone yet
+  - "Tan, Zhang & Li 2023, Long-term capture of asteroids to the Sun-Earth L1/L2 using a lunar flyby and station-keeping maneuvers, Adv. Space Res. 72, 10.1016/j.asr.2023.03.034 (closest to our return leg)"
+  - "Tan, Shen & Ma 2022, Energy analysis of Sun-Earth stable manifolds with a lunar flyby, Acta Astronaut. 198, 10.1016/j.actaastro.2022.05.059"
+  - "Tan, Zhang & Wang 2021, Strategies to capture asteroids to distant retrograde orbits in the Sun-Earth system, Acta Astronaut. 189, 10.1016/j.actaastro.2021.08.041"
+  - "Wang et al. 2024, Trajectory optimization of NEA exploration by reusable probes from cislunar space, Chin. J. Aeronaut., 10.1016/j.cja.2024.09.010"
+  - "Xie, Saydam & Dempster 2023, Low-thrust trajectory design for NEA supply delivery and resource transportation, Aerosp. Sci. Technol. 137, 10.1016/j.ast.2023.108304"
+  - "Rosales, Jorba & Jorba-Cusco 2023, Invariant manifolds near L1 and L2 in the quasi-bicircular problem, CMDA 135:15, 10.1007/s10569-023-10129-4"
+  - "Li, Masdemont, Zhu & Gao 2025, Sun-Earth heteroclinics in restricted four-body non-autonomous models, CNSNS 152, 10.1016/j.cnsns.2025.109356"
+  - "Li, Masdemont, Zhu & Gao 2026, Consistent four-body invariant-manifold framework, CNSNS 162, 10.1016/j.cnsns.2026.110231"
+  - "Nakamiya, Scheeres, Yamakawa & Yoshikawa 2008, Capture trajectories into periodic orbits about libration points, JGCD 31, 10.2514/1.33796"
+  - "Howell & Kakoi 2006, Transfers between the Earth-Moon and Sun-Earth systems, Acta Astronaut. 59, 10.1016/j.actaastro.2006.02.010"
+  - "Ozaki et al. 2022, Mission design of DESTINY+, Acta Astronaut. 196, 10.1016/j.actaastro.2022.03.029"
+  - "Brophy, Culick & Friedman 2012, Asteroid Retrieval Feasibility Study, Keck Institute, 10.26206/wn0e-vn09"
+  - "Elvis et al. 2011, Ultra-low delta-v objects, Planet. Space Sci. 59, 10.1016/j.pss.2011.05.006"
+  - "Sanchez & Garcia Yarnoz 2016, Asteroid retrieval missions enabled by invariant manifold dynamics, Acta Astronaut. 127, 10.1016/j.actaastro.2016.05.034"
+  - "Fu et al. 2026, Energy transition domain for gravity-assist escapes, JGCD 49, 10.2514/1.g009571; Liu, Fu, Wu & Gong 2026, AST 177, 10.1016/j.ast.2026.112274; Shen et al. 2026 review, Sci. China PMA 69, 10.1007/s11433-025-2836-7"
+  - "Yang, Zhang, Li & Jiang 2025, DNN mapping of 3D lunar gravity assist, IEEE TAES 61, 10.1109/taes.2025.3567278; Yu, Shang & Wei 2021, AST 118, 10.1016/j.ast.2021.106944; Zhang, Yu & Dai 2022 review, CMES 135, 10.32604/cmes.2022.022585"
+  - "Dunham, Guzman & Sharer 2009, STEREO trajectory and maneuver design, JHU APL Tech. Digest 28; Uesugi, Kawaguchi, Ishii & Ishii 1989, double lunar swingby orbits for Muses-A and Geotail"
+  - "Landau, McElrath, Grebow & Strange 2012, AAS 12-165 (already under not_obtained). Lantoine & McElrath, Families of Solar-Perturbed Moon-to-Moon Transfers: the reviewer gives AAS 14-233, not_obtained above gives AAS 14-471; not checked which is right"
